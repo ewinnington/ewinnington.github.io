@@ -4,7 +4,7 @@
 	<title>Eric's personal page</title>
 	<link rel="self" href="http://ewinnington.github.io/" />
 	<rights>2019</rights>
-	<updated>2019-11-03T13:37:09Z</updated>
+	<updated>2019-11-03T13:56:57Z</updated>
 	<subtitle>You will find here a collection of my thoughts, snippets and articles.</subtitle>
 	<entry>
 		<id>http://ewinnington.github.io/posts/wyam-github-actions</id>
@@ -381,6 +381,15 @@ WHERE b.table_name = 'XXXXX';
 		<summary>&lt;p&gt;A couple of days ago, I stumbled upon &lt;a href="http://www.sqlfiddle.com/"&gt;SQLFiddle&lt;/a&gt;, a little magical website that allows you to upload a DBSchema and run queries on it, live in the browser. It also allows to share them with other users.&lt;/p&gt;</summary>
 	</entry>
 	<entry>
+		<id>http://ewinnington.github.io/posts/debugging-tips</id>
+		<title>Debugging tips</title>
+		<link href="http://ewinnington.github.io/posts/debugging-tips" />
+		<updated>2013-10-31T00:00:00Z</updated>
+		<content>&lt;p&gt;If you get a bug in a loop, remember that the bug could be caused by the previous execution of the loop and thus be below the code point that fails.&lt;/p&gt;
+</content>
+		<summary>&lt;p&gt;If you get a bug in a loop, remember that the bug could be caused by the previous execution of the loop and thus be below the code point that fails.&lt;/p&gt;</summary>
+	</entry>
+	<entry>
 		<id>http://ewinnington.github.io/posts/raspberry-pi-update-arkos</id>
 		<title>Raspberry Pi update Arkos</title>
 		<link href="http://ewinnington.github.io/posts/raspberry-pi-update-arkos" />
@@ -391,15 +400,6 @@ WHERE b.table_name = 'XXXXX';
 &lt;p&gt;For dynamic DNS, instead of my previous self-hosted &amp;quot;poor man's&amp;quot; link, I am now using &lt;a href="http://duckdns.org/"&gt;DuckDNS&lt;/a&gt; which promises free dynamic DNS and is really easy to use.&lt;/p&gt;
 </content>
 		<summary>&lt;p&gt;Since I haven't talked much about what I've been doing with my Pi, here's the latest:&lt;/p&gt;</summary>
-	</entry>
-	<entry>
-		<id>http://ewinnington.github.io/posts/debugging-tips</id>
-		<title>Debugging tips</title>
-		<link href="http://ewinnington.github.io/posts/debugging-tips" />
-		<updated>2013-10-31T00:00:00Z</updated>
-		<content>&lt;p&gt;If you get a bug in a loop, remember that the bug could be caused by the previous execution of the loop and thus be below the code point that fails.&lt;/p&gt;
-</content>
-		<summary>&lt;p&gt;If you get a bug in a loop, remember that the bug could be caused by the previous execution of the loop and thus be below the code point that fails.&lt;/p&gt;</summary>
 	</entry>
 	<entry>
 		<id>http://ewinnington.github.io/posts/commenting-and-uncommenting-in-vi</id>

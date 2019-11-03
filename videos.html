@@ -8,7 +8,7 @@
 <html lang="en">
 
 	<head>
-		<title>Eric&#x27;s personal page - Oracle - Reclaiming LOB space after deletion (CLOB, BLOB)</title>
+		<title>Eric&#x27;s personal page - Videos on programming</title>
 		<meta charset="utf-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1" />		
         <link href="/assets/css/highlight.css" rel="stylesheet">
@@ -28,9 +28,9 @@
 		<meta name="msapplication-tooltip" content="Eric&#x27;s personal page" />
 		<meta name="msapplication-starturl" content="/" />
 
-		<meta property="og:title" content="Eric&#x27;s personal page - Oracle - Reclaiming LOB space after deletion (CLOB, BLOB)" /> 
+		<meta property="og:title" content="Eric&#x27;s personal page - Videos on programming" /> 
 		<meta property="og:type" content="website" />
-		<meta property="og:url" content="http://ewinnington.github.io/posts/oracle-reclaiming-lob-space-after-deletion-clob-blob" />
+		<meta property="og:url" content="http://ewinnington.github.io/videos" />
 		<!-- TODO: More social graph meta tags -->
 
         <script src="/assets/js/highlight.pack.js"></script>   
@@ -78,60 +78,18 @@
 			<!-- Main -->
 			<div id="main">
 				<div class="inner">
-
-    
-<header>
-    <h1>Oracle - Reclaiming LOB space after deletion (CLOB, BLOB)</h1>
-            <p><em>Published on Monday, 3 February 2014</em></p>
-            <ul class="actions small">
-                    <li><a role="button" href="/tags/Migrated" class="button small">Migrated</a></li>
-                    <li><a role="button" href="/tags/Oracle" class="button small">Oracle</a></li>
-        </ul>     
-</header>
-
+<h1>Videos on programming</h1>  
 					
 					<div id="content">
-						
-
-<p>To reclaim space after a deleting LOBs, use the following commands. XXXXX is my tablename, data is my column name for the lob, in pink the size of the table.</p>
-<ol>
-<li>Check size of the table XXXXX</li>
-</ol>
-<pre><code>SELECT table_name, column_name, segment_name, a.bytes
-FROM dba_segments a JOIN dba_lobs b
-USING (owner, segment_name)
-WHERE b.table_name = 'XXXXX';
-</code></pre>
-<pre><code>&gt;&gt; XXXXX DATA SYS_LOB0000025315C00007$$ 1073741824
-</code></pre>
-<ol start="2">
-<li>Delete, in my case, I just clean up all files in my table.</li>
-</ol>
-<pre><code>DELETE FROM XXXXX;
-COMMIT;
-</code></pre>
-<pre><code>&gt;&gt; 183 rows deleted.
-&gt;&gt; committed.
-</code></pre>
-<ol start="3">
-<li>Ask Oracle to shrink the tablespace used by the LOB column ‘data’. Have a coffee break.</li>
-</ol>
-<pre><code>ALTER TABLE XXXXX MODIFY LOB (data) (SHRINK SPACE);
-</code></pre>
-<pre><code>&gt;&gt; table XXXXX altered.
-</code></pre>
-<ol start="4">
-<li>Check size again:</li>
-</ol>
-<pre><code>SELECT table_name, column_name, segment_name, a.bytes
-FROM dba_segments a JOIN dba_lobs b
-USING (owner, segment_name)
-WHERE b.table_name = 'XXXXX';
-</code></pre>
-<pre><code>&gt;&gt; XXXXX DATA SYS\_LOB0000025315C00007$$ 65536
-</code></pre>
-
-
+						<h1 id="links-to-programming-videos">Links to programming videos</h1>
+<p>A curated collection of videos offering insight or wisdom on programming topics:</p>
+<p><a href="https://www.destroyallsoftware.com/talks/the-birth-and-death-of-javascript">Birth and death of JavaScript</a> by Gary Bernhardt, an excellent talk about the history and possible future of JavaScript as a language underlying a cpu architecture independent future.</p>
+<p><a href="http://youtu.be/MijmeoH9LT4">UTF-8 character encoding and Unicode explained</a>, or why you won’t need any other encoding again.</p>
+<p><a href="http://vimeo.com/36579366">Brett Victor’s Inventing on Principle for inspiration</a>. Also check out his <a href="http://worrydream.com/">Worry Dream</a> website.</p>
+<p><a href="https://www.youtube.com/watch?v=PlI-gPu3SPI">Brett Victor’s CUSEC 2012 presentation</a>. On interacting with your code while developing and testing.</p>
+<p><a href="https://www.youtube.com/watch?v=7V8HikBP1vQ">Troy Hunt’s Greatest Azure Demo</a>, on how to setup and use Azure’s capabilities to deploy and scale applications. A great all-round into on “How do I Azure?”.</p>
+<p><a href="https://youtu.be/j6ow-UemzBc">Design Microservice architectures the right way</a></p>
+<p><a href="https://youtu.be/RJ3v5cSNcB8">Architecting The Unknown with Grady Booch</a> a thoughtful discussion about building software.</p>
 
 					</div>
 				</div>

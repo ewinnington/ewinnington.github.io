@@ -5,8 +5,8 @@
 		<link>http://ewinnington.github.io/</link>
 		<description>You will find here a collection of my thoughts, snippets and articles.</description>
 		<copyright>2019</copyright>
-		<pubDate>Sun, 03 Nov 2019 13:37:09 GMT</pubDate>
-		<lastBuildDate>Sun, 03 Nov 2019 13:37:09 GMT</lastBuildDate>
+		<pubDate>Sun, 03 Nov 2019 13:56:57 GMT</pubDate>
+		<lastBuildDate>Sun, 03 Nov 2019 13:56:57 GMT</lastBuildDate>
 		<item>
 			<title>Using Github actions to build Wyam and publish to github pages</title>
 			<link>http://ewinnington.github.io/posts/wyam-github-actions</link>
@@ -382,6 +382,15 @@ WHERE b.table_name = 'XXXXX';
 </content:encoded>
 		</item>
 		<item>
+			<title>Debugging tips</title>
+			<link>http://ewinnington.github.io/posts/debugging-tips</link>
+			<description>&lt;p&gt;If you get a bug in a loop, remember that the bug could be caused by the previous execution of the loop and thus be below the code point that fails.&lt;/p&gt;</description>
+			<guid>http://ewinnington.github.io/posts/debugging-tips</guid>
+			<pubDate>Thu, 31 Oct 2013 00:00:00 GMT</pubDate>
+			<content:encoded>&lt;p&gt;If you get a bug in a loop, remember that the bug could be caused by the previous execution of the loop and thus be below the code point that fails.&lt;/p&gt;
+</content:encoded>
+		</item>
+		<item>
 			<title>Raspberry Pi update Arkos</title>
 			<link>http://ewinnington.github.io/posts/raspberry-pi-update-arkos</link>
 			<description>&lt;p&gt;Since I haven't talked much about what I've been doing with my Pi, here's the latest:&lt;/p&gt;</description>
@@ -391,15 +400,6 @@ WHERE b.table_name = 'XXXXX';
 &lt;p&gt;I've installed a distribution called &lt;a href="https://arkos.io/"&gt;ArkOS&lt;/a&gt;, which exposes a web interface allowing the easy configuration of many network accessible services, including a blog and an &lt;a href="http://owncloud.org/"&gt;owncloud&lt;/a&gt; instance.&lt;/p&gt;
 &lt;p&gt;I use owncloud as my private, unlimited, Dropbox. The first time I set it up, on a nginx server, it took a lot of configuration to get just right. ArkOS does it all out of the box.&lt;/p&gt;
 &lt;p&gt;For dynamic DNS, instead of my previous self-hosted &amp;quot;poor man's&amp;quot; link, I am now using &lt;a href="http://duckdns.org/"&gt;DuckDNS&lt;/a&gt; which promises free dynamic DNS and is really easy to use.&lt;/p&gt;
-</content:encoded>
-		</item>
-		<item>
-			<title>Debugging tips</title>
-			<link>http://ewinnington.github.io/posts/debugging-tips</link>
-			<description>&lt;p&gt;If you get a bug in a loop, remember that the bug could be caused by the previous execution of the loop and thus be below the code point that fails.&lt;/p&gt;</description>
-			<guid>http://ewinnington.github.io/posts/debugging-tips</guid>
-			<pubDate>Thu, 31 Oct 2013 00:00:00 GMT</pubDate>
-			<content:encoded>&lt;p&gt;If you get a bug in a loop, remember that the bug could be caused by the previous execution of the loop and thus be below the code point that fails.&lt;/p&gt;
 </content:encoded>
 		</item>
 		<item>
