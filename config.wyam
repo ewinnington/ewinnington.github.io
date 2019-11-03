@@ -10,6 +10,8 @@ Settings[BlogKeys.IndexPageSize] = 4;
 // Add any pipeline customizations here
 #n Wyam.Highlight
 
+System.Globalization.CultureInfo.DefaultThreadCurrentCulture = System.Globalization.CultureInfo.CreateSpecificCulture("en-GB");
+
 Pipelines.Add("Highlight",
     ReadFiles("*.html"),
     Highlight(),
