@@ -5,30 +5,114 @@
 		<link>http://ewinnington.github.io//</link>
 		<description>You will find here a collection of my thoughts, snippets and articles.</description>
 		<copyright>2019</copyright>
-		<pubDate>Sun, 03 Nov 2019 03:42:02 GMT</pubDate>
-		<lastBuildDate>Sun, 03 Nov 2019 03:42:02 GMT</lastBuildDate>
+		<pubDate>Sun, 03 Nov 2019 05:28:17 GMT</pubDate>
+		<lastBuildDate>Sun, 03 Nov 2019 05:28:17 GMT</lastBuildDate>
 		<item>
-			<title>R - Reading JSON from redis</title>
-			<link>http://ewinnington.github.io//posts/R-Redis-Json</link>
-			<description>&lt;p&gt;I needed to access Redis from R. Here's the code I used to connect, set a value, then deserialize a key that was in json format and publish a message. &lt;a href="https://cran.r-project.org/web/packages/rredis/vignettes/rredis.pdf"&gt;Rredis documentation located here&lt;/a&gt;&lt;/p&gt;</description>
-			<guid>http://ewinnington.github.io//posts/R-Redis-Json</guid>
+			<title>Using Github actions to build Wyam and publish to github pages</title>
+			<link>http://ewinnington.github.io//posts/wyam-github-actions</link>
+			<description>&lt;p&gt;Not that I have Wyam as a static site generator, I want to use &lt;a href="https://github.com/features/actions"&gt;Github Actions&lt;/a&gt; to automatically deploy it on push. This requires a quite few steps to setup, but I did it, now so can you!&lt;/p&gt;</description>
+			<guid>http://ewinnington.github.io//posts/wyam-github-actions</guid>
 			<pubDate>Sun, 03 Nov 2019 00:00:00 GMT</pubDate>
-			<content:encoded>&lt;p&gt;I needed to access Redis from R. Here's the code I used to connect, set a value, then deserialize a key that was in json format and publish a message. &lt;a href="https://cran.r-project.org/web/packages/rredis/vignettes/rredis.pdf"&gt;Rredis documentation located here&lt;/a&gt;&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;library(&amp;quot;rredis&amp;quot;)
-library(&amp;quot;jsonlite&amp;quot;, lib.loc=&amp;quot;~/R/win-library/3.2&amp;quot;)
-
-redisConnect()
-redisSet(&amp;quot;x&amp;quot;,rnorm(5))
-redisGet(&amp;quot;x&amp;quot;)
-
-x = fromJSON(redisGet(&amp;quot;ts_1&amp;quot;))
-x$t &amp;lt;-  strptime(x$t, &amp;quot;%Y-%m-%dT%H:%M:%S&amp;quot;)
-
-//https://cran.r-project.org/web/packages/rredis/vignettes/rredis.pdf
-redisPublish(&amp;quot;General:Active&amp;quot;, charToRaw('Message'))
-
-redisClose()
+			<content:encoded>&lt;h1 id="introduction"&gt;Introduction&lt;/h1&gt;
+&lt;p&gt;Not that I have Wyam as a static site generator, I want to use &lt;a href="https://github.com/features/actions"&gt;Github Actions&lt;/a&gt; to automatically deploy it on push. This requires a quite few steps to setup, but I did it, now so can you!&lt;/p&gt;
+&lt;p&gt;Github actions is still in beta, so you'll have to enroll to use the functionality:
+&lt;img src="images/github-actions-wyam/EnrollActions.png" class="img-fluid" alt="EnrollActions" /&gt;&lt;/p&gt;
+&lt;h1 id="setup-procedure"&gt;Setup procedure&lt;/h1&gt;
+&lt;p&gt;This setup assumes you have a local Wyam that is working on your local machine. You can easily set one up by &lt;a href="http://ewinnington.github.io/posts/Switching-to-wyam"&gt;following these steps&lt;/a&gt;. You can always have a look at my &lt;a href="https://github.com/ewinnington/ewinnington.github.io"&gt;https://github.com/ewinnington/ewinnington.github.io&lt;/a&gt; repository to see what I have configured in my config.wyam.&lt;/p&gt;
+&lt;h2 id="personal-page"&gt;Personal page&lt;/h2&gt;
+&lt;p&gt;First you must have a &lt;a href="https://pages.github.com/"&gt;Personal Page&lt;/a&gt; setup in github. This is done by creating a public repository &lt;em&gt;username&lt;/em&gt;.github.io.&lt;/p&gt;
+&lt;p&gt;&lt;img src="images/github-actions-wyam/CreateRepo.png" class="img-fluid" alt="RepoCreation" /&gt;&lt;/p&gt;
+&lt;h3 id="create-the-correct-branches"&gt;Create the correct branches&lt;/h3&gt;
+&lt;p&gt;Inside that repository, you will want to create a second branch next to the master: source. This can be done by typing a new branch name in the Switch branches/tags text box.&lt;/p&gt;
+&lt;p&gt;&lt;img src="images/github-actions-wyam/SourceBranch.png" class="img-fluid" alt="SourceBranch" /&gt;&lt;/p&gt;
+&lt;p&gt;Next step is to make this branch the default when we push commits to the repository. This is because the &lt;em&gt;master&lt;/em&gt; branch of the username.gitub.io is what is hosted on github's personal pages. Therefore the source of the wyam site has to be stored on another branch. To set the branch as default, Go to &lt;em&gt;Settings&lt;/em&gt;, then &lt;em&gt;Branches&lt;/em&gt; and select &lt;strong&gt;source&lt;/strong&gt; in the dropdown box. Confirm with update.&lt;/p&gt;
+&lt;p&gt;&lt;img src="images/github-actions-wyam/SettingsBranches.png" class="img-fluid" alt="SettingsBranches" /&gt;&lt;/p&gt;
+&lt;h3 id="prepare-keys-and-install-them"&gt;Prepare keys and install them&lt;/h3&gt;
+&lt;p&gt;We will be doing automated pushes from the &lt;strong&gt;source&lt;/strong&gt; branch to the &lt;strong&gt;master&lt;/strong&gt; branch, this means that we need to setup deploy keys and the associated secrets so that github allows us to update in an automated manner.&lt;/p&gt;
+&lt;p&gt;First, you need to generate your keys locally on your own machine with &lt;code&gt;ssh-keygen -t rsa -b 4096 -C &amp;quot;Github-user-email&amp;#64;example.com&amp;quot; -f gh-pages -N &amp;quot;&amp;quot;&lt;/code&gt;. You will need to replace &lt;em&gt;Github-user-email&amp;#64;example.com&lt;/em&gt; with your own, of course.&lt;/p&gt;
+&lt;p&gt;This will generate two files:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;gh-pages : the private key file, this will go into the secrets tab on github.&lt;/li&gt;
+&lt;li&gt;gh-pages.pub : the public key file, this will go to the deploy tab on github. I named my deploy key &lt;strong&gt;public ACTIONS_DEPLOY_KEY&lt;/strong&gt; on&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Once installed, they should be like this in the github user interface of the repository:&lt;/p&gt;
+&lt;p&gt;&lt;img src="images/github-actions-wyam/SecretsKey.png" class="img-fluid" alt="Secrets" /&gt;
+&lt;img src="images/github-actions-wyam/DeployKey.png" class="img-fluid" alt="Deploy" /&gt;&lt;/p&gt;
+&lt;h2 id="clone-the-repository-or-import-an-existing-git-repo"&gt;Clone the repository (or import an existing git repo)&lt;/h2&gt;
+&lt;p&gt;If you have nothing yet in the repository, I suppose you can now directly clone it from github using &lt;code&gt;git clone https://github.com/username/username.github.io&lt;/code&gt; and it should come out all pre-prepared for you. Check something in and push.&lt;/p&gt;
+&lt;h3 id="existing-repository"&gt;Existing repository&lt;/h3&gt;
+&lt;p&gt;I had an existing repository, so I had a few things to do with it before it was ready to be uploaded. I had already a master branch named &lt;strong&gt;master&lt;/strong&gt;, so to make it conform with github, I renamed my local master branch with &lt;code&gt;git branch -m source &lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;I then removed the previous origin before that was in use and I had to add the correct origin that I wanted to push to. Because I had previously had contents on the repository, I had to use the -f command on the push.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;git remote remove origin&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;git remote add origin https://github.com/username/username.github.io&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;git push -u -f origin source&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Now that I had pushed the Wyam blog, I was ready to setup the actions.&lt;/p&gt;
+&lt;h4 id="side-note-good-wyam.gitignore-file"&gt;Side note - good wyam .gitignore file&lt;/h4&gt;
+&lt;p&gt;To avoid checking in the output files of the wyam build, I have the following .gitignore file in the repository:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;config.wyam.dll
+config.wyam.hash
+config.wyam.packages.xml
+wwwroot
+output
 &lt;/code&gt;&lt;/pre&gt;
+&lt;h2 id="setting-up-the-github-actions"&gt;Setting up the github actions&lt;/h2&gt;
+&lt;p&gt;First you will want to check that you are allowing external workflow scripts to be launched on your repository, since I will be relying on a few steps from pre-existing scripts.&lt;/p&gt;
+&lt;p&gt;&lt;img src="images/github-actions-wyam/SetupActions.png" class="img-fluid" alt="SetupActions.png" /&gt;&lt;/p&gt;
+&lt;p&gt;Here the first mistake I made while configuring actions was not going through the Github user interface and instead creating the folders manually in my github repository. I created &lt;em&gt;.github/workflow&lt;/em&gt; instead of &lt;strong&gt;.github/workflows&lt;/strong&gt; which meant that my actions were never kicking off. So don't make my mistake, use the github UI to set up the action and they will create the correct folder structure in your project.&lt;/p&gt;
+&lt;p&gt;&lt;img src="images/github-actions-wyam/SetUpActionsWorkflow.png" class="img-fluid" alt="Actions workflow" /&gt;&lt;/p&gt;
+&lt;p&gt;I setup a yaml file name &lt;a href="https://github.com/ewinnington/ewinnington.github.io/blob/source/.github/workflows/wyam.yml"&gt;wyam.yml&lt;/a&gt;. You can see what it looks like here below (I have included the code below on the page for you to copy and paste if you want. Let's go through this line by line.&lt;/p&gt;
+&lt;p&gt;&lt;img src="images/github-actions-wyam/wyam-yaml.png" class="img-fluid" alt="Wyam Yaml" /&gt;&lt;/p&gt;
+&lt;p&gt;Line 1: Name of the action that will appear in the action tab&lt;/p&gt;
+&lt;p&gt;Line 3-6: Triggers of the action. Here we trigger the action &lt;strong&gt;on push&lt;/strong&gt; of &lt;strong&gt;branch source&lt;/strong&gt;.&lt;/p&gt;
+&lt;p&gt;Line 8: List of jobs to run.
+Line 9: First job is my build and deploy, I just called it build.&lt;/p&gt;
+&lt;p&gt;Line 11: The choice of the image to run on, like in docker. I chose ubuntu-latest.&lt;/p&gt;
+&lt;p&gt;Line 13: Each line prexifed with a - is a seperate action.&lt;/p&gt;
+&lt;p&gt;Line 14: Checkout the repository with the branch that has just been pushed. This is a standard github action, you can find &lt;a href="https://github.com/actions/checkout"&gt;explanations here&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Line 15: Installing .net core for Wyam.&lt;/p&gt;
+&lt;p&gt;Line 19-20: Installing Wyam. Here I install Wyam as a local tool by giving the &lt;code&gt;--tool-path .&lt;/code&gt;, since if you install it as a global tool with &lt;em&gt;-g&lt;/em&gt;, the build system won't find it due to .net core's requirement &lt;a href="https://github.com/dotnet/cli/issues/8368"&gt;to restart the shell after being installed for the paths to be valid&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;Line 21-22: Running Wyam to render the blog to a set of static pages. Here is where you can change the template (Phantom) to something else if you want.&lt;/p&gt;
+&lt;p&gt;Line 23-28: We take the output of Wyam, which lives in the ./output folder and we use &lt;a href="https://github.com/peaceiris/actions-gh-pages"&gt;peaceiris's github action for Github Pages&lt;/a&gt; to publish our results to the correct branch &lt;em&gt;master&lt;/em&gt; of our repository for deployment. We pass the &lt;em&gt;secrets.ACTIONS_DEPLOY_KEY&lt;/em&gt; we defined earlier to allow the script to publish to the master branch.&lt;/p&gt;
+&lt;pre&gt;&lt;code class="language-yaml"&gt;name: Wyam
+
+on:
+  push:
+    branches:
+    - source  # default branch
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout&amp;#64;v1
+    - name: Setup .NET Core
+      uses: actions/setup-dotnet&amp;#64;v1
+      with:
+        dotnet-version: 2.1.802
+    - name: Install Wyam
+      run: dotnet tool install --tool-path . wyam.tool
+    - name: Publish blog
+      run: ./wyam -r blog -t Phantom
+    - name: Deploy
+      uses: peaceiris/actions-gh-pages&amp;#64;v2.5.0
+      env:
+        ACTIONS_DEPLOY_KEY: ${{ secrets.ACTIONS_DEPLOY_KEY }}
+        PUBLISH_BRANCH: master  # deploying branch
+        PUBLISH_DIR: ./output
+
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2 id="running-the-workflow"&gt;Running the workflow&lt;/h2&gt;
+&lt;p&gt;Once you have setup this file, you can commit it and it should start off the build action. You can follow the progress of the action workflow on the github action page.&lt;/p&gt;
+&lt;p&gt;&lt;img src="images/github-actions-wyam/ActionOverview.png" class="img-fluid" alt="Action Overview" /&gt;&lt;/p&gt;
+&lt;p&gt;You can drill down into the details of the actions in case you had any failures. This is where I had the most trouble, but with these instructions, you should be fine.&lt;/p&gt;
+&lt;p&gt;&lt;img src="images/github-actions-wyam/ActionDetail.png" class="img-fluid" alt="Action Detail" /&gt;&lt;/p&gt;
+&lt;h1 id="closing"&gt;Closing&lt;/h1&gt;
+&lt;p&gt;If all went well, you should now have your personal wyam generated site up and running at &lt;a href="http://username.github.io"&gt;http://username.github.io&lt;/a&gt; .&lt;/p&gt;
+&lt;p&gt;Please feel free to look around both branches &lt;em&gt;source&lt;/em&gt; and &lt;em&gt;master&lt;/em&gt; on &lt;a href="https://github.com/ewinnington/ewinnington.github.io"&gt;my github repo&lt;/a&gt; to understand how my blog is setup.&lt;/p&gt;
 </content:encoded>
 		</item>
 		<item>
@@ -52,9 +136,28 @@ dim(y) &amp;lt;- c(51, 50, 50, 15, 13)
 </content:encoded>
 		</item>
 		<item>
-			<link>http://ewinnington.github.io//posts/template</link>
-			<guid>http://ewinnington.github.io//posts/template</guid>
+			<title>R - Reading JSON from redis</title>
+			<link>http://ewinnington.github.io//posts/R-Redis-Json</link>
+			<description>&lt;p&gt;I needed to access Redis from R. Here's the code I used to connect, set a value, then deserialize a key that was in json format and publish a message. &lt;a href="https://cran.r-project.org/web/packages/rredis/vignettes/rredis.pdf"&gt;Rredis documentation located here&lt;/a&gt;&lt;/p&gt;</description>
+			<guid>http://ewinnington.github.io//posts/R-Redis-Json</guid>
 			<pubDate>Sun, 03 Nov 2019 00:00:00 GMT</pubDate>
+			<content:encoded>&lt;p&gt;I needed to access Redis from R. Here's the code I used to connect, set a value, then deserialize a key that was in json format and publish a message. &lt;a href="https://cran.r-project.org/web/packages/rredis/vignettes/rredis.pdf"&gt;Rredis documentation located here&lt;/a&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;library(&amp;quot;rredis&amp;quot;)
+library(&amp;quot;jsonlite&amp;quot;, lib.loc=&amp;quot;~/R/win-library/3.2&amp;quot;)
+
+redisConnect()
+redisSet(&amp;quot;x&amp;quot;,rnorm(5))
+redisGet(&amp;quot;x&amp;quot;)
+
+x = fromJSON(redisGet(&amp;quot;ts_1&amp;quot;))
+x$t &amp;lt;-  strptime(x$t, &amp;quot;%Y-%m-%dT%H:%M:%S&amp;quot;)
+
+//https://cran.r-project.org/web/packages/rredis/vignettes/rredis.pdf
+redisPublish(&amp;quot;General:Active&amp;quot;, charToRaw('Message'))
+
+redisClose()
+&lt;/code&gt;&lt;/pre&gt;
+</content:encoded>
 		</item>
 		<item>
 			<title>Switching to Wyam</title>
@@ -279,6 +382,15 @@ WHERE b.table_name = 'XXXXX';
 </content:encoded>
 		</item>
 		<item>
+			<title>Debugging tips</title>
+			<link>http://ewinnington.github.io//posts/debugging-tips</link>
+			<description>&lt;p&gt;If you get a bug in a loop, remember that the bug could be caused by the previous execution of the loop and thus be below the code point that fails.&lt;/p&gt;</description>
+			<guid>http://ewinnington.github.io//posts/debugging-tips</guid>
+			<pubDate>Thu, 31 Oct 2013 00:00:00 GMT</pubDate>
+			<content:encoded>&lt;p&gt;If you get a bug in a loop, remember that the bug could be caused by the previous execution of the loop and thus be below the code point that fails.&lt;/p&gt;
+</content:encoded>
+		</item>
+		<item>
 			<title>Raspberry Pi update Arkos</title>
 			<link>http://ewinnington.github.io//posts/raspberry-pi-update-arkos</link>
 			<description>&lt;p&gt;Since I haven't talked much about what I've been doing with my Pi, here's the latest:&lt;/p&gt;</description>
@@ -288,15 +400,6 @@ WHERE b.table_name = 'XXXXX';
 &lt;p&gt;I've installed a distribution called &lt;a href="https://arkos.io/"&gt;ArkOS&lt;/a&gt;, which exposes a web interface allowing the easy configuration of many network accessible services, including a blog and an &lt;a href="http://owncloud.org/"&gt;owncloud&lt;/a&gt; instance.&lt;/p&gt;
 &lt;p&gt;I use owncloud as my private, unlimited, Dropbox. The first time I set it up, on a nginx server, it took a lot of configuration to get just right. ArkOS does it all out of the box.&lt;/p&gt;
 &lt;p&gt;For dynamic DNS, instead of my previous self-hosted &amp;quot;poor man's&amp;quot; link, I am now using &lt;a href="http://duckdns.org/"&gt;DuckDNS&lt;/a&gt; which promises free dynamic DNS and is really easy to use.&lt;/p&gt;
-</content:encoded>
-		</item>
-		<item>
-			<title>Debugging tips</title>
-			<link>http://ewinnington.github.io//posts/debugging-tips</link>
-			<description>&lt;p&gt;If you get a bug in a loop, remember that the bug could be caused by the previous execution of the loop and thus be below the code point that fails.&lt;/p&gt;</description>
-			<guid>http://ewinnington.github.io//posts/debugging-tips</guid>
-			<pubDate>Thu, 31 Oct 2013 00:00:00 GMT</pubDate>
-			<content:encoded>&lt;p&gt;If you get a bug in a loop, remember that the bug could be caused by the previous execution of the loop and thus be below the code point that fails.&lt;/p&gt;
 </content:encoded>
 		</item>
 		<item>
