@@ -1,0 +1,8 @@
+@{ 
+	string Title = Model.WithoutSettings.String(BlogKeys.Title); 
+	string PageTitle = Context.String(BlogKeys.Title) + (string.IsNullOrWhiteSpace(Title) ? string.Empty : " - " + Title);
+}
+<meta name="twitter:card" content="summary" />
+<meta name="twitter:site" content="@@ewinnington" />
+<meta name="twitter:title" content="@PageTitle" />
+<meta name="twitter:description" content="@Context.String(BlogKeys.Description)" />
