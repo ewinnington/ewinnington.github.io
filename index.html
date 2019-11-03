@@ -8,7 +8,7 @@
 <html lang="en">
 
 	<head>
-		<title>Eric&#x27;s personal page</title>
+		<title>Eric Winnington</title>
 		<meta charset="utf-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1" />		
         <link href="/assets/css/highlight.css" rel="stylesheet">
@@ -18,17 +18,17 @@
 		<!--[if lte IE 8]><link rel="stylesheet" href="/assets/css/ie8.css" /><![endif]-->
         <link href="/assets/css/override.css" rel="stylesheet" />
 
-		<meta name="description" content="You will find here a collection of my thoughts, snippets and articles." />
-		<link type="application/rss+xml" rel="alternate" title="Eric&#x27;s personal page" href="/feed.rss" />
-				<link type="application/atom+xml" rel="alternate" title="Eric&#x27;s personal page" href="/feed.atom" />
+		<meta name="description" content="A collection of thoughts, code and snippets." />
+		<link type="application/rss+xml" rel="alternate" title="Eric Winnington" href="/feed.rss" />
+				<link type="application/atom+xml" rel="alternate" title="Eric Winnington" href="/feed.atom" />
 		<link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
 		<link rel="icon" href="/favicon.ico" type="image/x-icon">
 
-		<meta name="application-name" content="Eric&#x27;s personal page" />
-		<meta name="msapplication-tooltip" content="Eric&#x27;s personal page" />
+		<meta name="application-name" content="Eric Winnington" />
+		<meta name="msapplication-tooltip" content="Eric Winnington" />
 		<meta name="msapplication-starturl" content="/" />
 
-		<meta property="og:title" content="Eric&#x27;s personal page" /> 
+		<meta property="og:title" content="Eric Winnington" /> 
 		<meta property="og:type" content="website" />
 		<meta property="og:url" content="http://ewinnington.github.io/" />
 		<!-- TODO: More social graph meta tags -->
@@ -37,8 +37,8 @@
 		
         <meta name="twitter:card" content="summary" />
 <meta name="twitter:site" content="@ewinnington" />
-<meta name="twitter:title" content="Eric&#x27;s personal page" />
-<meta name="twitter:description" content="You will find here a collection of my thoughts, snippets and articles." />
+<meta name="twitter:title" content="Eric Winnington" />
+<meta name="twitter:description" content="A collection of thoughts, code and snippets." />
 		
 	</head>
 
@@ -52,7 +52,7 @@
 
 					<!-- Logo -->
 					<a href="/" class="logo">
-						<span class="title">Eric&#x27;s personal page</span>
+						<span class="title">Eric Winnington</span>
 					</a>
 
 					<!-- Nav -->
@@ -82,7 +82,7 @@
 				<div class="inner">
 
     <header>
-        <h1>You will find here a collection of my thoughts, snippets and articles.</h1>
+        <h1>A collection of thoughts, code and snippets.</h1>
     </header>
 
 					
@@ -110,6 +110,28 @@
 <iframe width="480" height="270" src="https://www.youtube.com/embed/3yVc5t-g-VU?feature=oembed" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
 <p>As I noted on twitter, as I read, watch and learn about webassembly, I'm getting the feeling this is going to be a titanic shift in the way we reason about programs, languages, frameworks and software design in general.</p>
 <p>&quot;The avalanche has already started, it is too late for the pebbles to vote&quot; - Ambassador Kosh, Babylon 5.</p>
+                </div>       
+                <div>
+                    <a href="/posts/R-Redis-Json">
+                        <h2>R - Reading JSON from redis</h2>
+                    </a>
+                    <p>Posted on Sunday, 3 November 2019</p>
+<p>I needed to access Redis from R. Here's the code I used to connect, set a value, then deserialize a key that was in json format and publish a message. <a href="https://cran.r-project.org/web/packages/rredis/vignettes/rredis.pdf">Rredis documentation located here</a></p>
+<pre><code>library(&quot;rredis&quot;)
+library(&quot;jsonlite&quot;, lib.loc=&quot;~/R/win-library/3.2&quot;)
+
+redisConnect()
+redisSet(&quot;x&quot;,rnorm(5))
+redisGet(&quot;x&quot;)
+
+x = fromJSON(redisGet(&quot;ts_1&quot;))
+x$t &lt;-  strptime(x$t, &quot;%Y-%m-%dT%H:%M:%S&quot;)
+
+//https://cran.r-project.org/web/packages/rredis/vignettes/rredis.pdf
+redisPublish(&quot;General:Active&quot;, charToRaw('Message'))
+
+redisClose()
+</code></pre>
                 </div>       
                 <div>
                     <a href="/posts/wyam-github-actions">
@@ -218,28 +240,6 @@ jobs:
 <p>Please feel free to look around both branches <em>source</em> and <em>master</em> on <a href="https://github.com/ewinnington/ewinnington.github.io">my github repo</a> to understand how my blog is setup.</p>
                 </div>       
                 <div>
-                    <a href="/posts/R-Redis-Json">
-                        <h2>R - Reading JSON from redis</h2>
-                    </a>
-                    <p>Posted on Sunday, 3 November 2019</p>
-<p>I needed to access Redis from R. Here's the code I used to connect, set a value, then deserialize a key that was in json format and publish a message. <a href="https://cran.r-project.org/web/packages/rredis/vignettes/rredis.pdf">Rredis documentation located here</a></p>
-<pre><code>library(&quot;rredis&quot;)
-library(&quot;jsonlite&quot;, lib.loc=&quot;~/R/win-library/3.2&quot;)
-
-redisConnect()
-redisSet(&quot;x&quot;,rnorm(5))
-redisGet(&quot;x&quot;)
-
-x = fromJSON(redisGet(&quot;ts_1&quot;))
-x$t &lt;-  strptime(x$t, &quot;%Y-%m-%dT%H:%M:%S&quot;)
-
-//https://cran.r-project.org/web/packages/rredis/vignettes/rredis.pdf
-redisPublish(&quot;General:Active&quot;, charToRaw('Message'))
-
-redisClose()
-</code></pre>
-                </div>       
-                <div>
                     <a href="/posts/R-read-binary-file">
                         <h2>R - Reading binary files</h2>
                     </a>
@@ -270,14 +270,14 @@ dim(y) &lt;- c(51, 50, 50, 15, 13)
             <ul class="actions small">
                     <li><a role="button" href="/tags/Migrated" class="button small">Migrated (38)</a></li>
                     <li><a role="button" href="/tags/WPF" class="button small">WPF (4)</a></li>
-                    <li><a role="button" href="/tags/CommandLine" class="button small">CommandLine (4)</a></li>
                     <li><a role="button" href="/tags/Oracle" class="button small">Oracle (4)</a></li>
+                    <li><a role="button" href="/tags/CommandLine" class="button small">CommandLine (4)</a></li>
                     <li><a role="button" href="/tags/Rpi" class="button small">Rpi (4)</a></li>
-                    <li><a role="button" href="/tags/iOS" class="button small">iOS (3)</a></li>
                     <li><a role="button" href="/tags/OSX" class="button small">OSX (3)</a></li>
+                    <li><a role="button" href="/tags/iOS" class="button small">iOS (3)</a></li>
+                    <li><a role="button" href="/tags/Livescribe" class="button small">Livescribe (2)</a></li>
+                    <li><a role="button" href="/tags/WinXP" class="button small">WinXP (2)</a></li>
                     <li><a role="button" href="/tags/Google" class="button small">Google (2)</a></li>
-                    <li><a role="button" href="/tags/Python" class="button small">Python (2)</a></li>
-                    <li><a role="button" href="/tags/VisualStudio" class="button small">VisualStudio (2)</a></li>
             </ul>
             <ul class="actions small">
                 <li><a href="/tags" class="button small">View All Tags &rarr;</a></li>
