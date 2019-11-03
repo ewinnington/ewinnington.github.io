@@ -1,59 +1,15 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
-	<id>http://ewinnington.github.io//</id>
+	<id>http://ewinnington.github.io/</id>
 	<title>Eric's personal page</title>
-	<link rel="self" href="http://ewinnington.github.io//" />
+	<link rel="self" href="http://ewinnington.github.io/" />
 	<rights>2019</rights>
-	<updated>2019-11-03T05:58:24Z</updated>
+	<updated>2019-11-03T06:01:01Z</updated>
 	<subtitle>You will find here a collection of my thoughts, snippets and articles.</subtitle>
 	<entry>
-		<id>http://ewinnington.github.io//posts/R-Redis-Json</id>
-		<title>R - Reading JSON from redis</title>
-		<link href="http://ewinnington.github.io//posts/R-Redis-Json" />
-		<updated>2019-11-03T00:00:00Z</updated>
-		<content>&lt;p&gt;I needed to access Redis from R. Here's the code I used to connect, set a value, then deserialize a key that was in json format and publish a message. &lt;a href="https://cran.r-project.org/web/packages/rredis/vignettes/rredis.pdf"&gt;Rredis documentation located here&lt;/a&gt;&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;library(&amp;quot;rredis&amp;quot;)
-library(&amp;quot;jsonlite&amp;quot;, lib.loc=&amp;quot;~/R/win-library/3.2&amp;quot;)
-
-redisConnect()
-redisSet(&amp;quot;x&amp;quot;,rnorm(5))
-redisGet(&amp;quot;x&amp;quot;)
-
-x = fromJSON(redisGet(&amp;quot;ts_1&amp;quot;))
-x$t &amp;lt;-  strptime(x$t, &amp;quot;%Y-%m-%dT%H:%M:%S&amp;quot;)
-
-//https://cran.r-project.org/web/packages/rredis/vignettes/rredis.pdf
-redisPublish(&amp;quot;General:Active&amp;quot;, charToRaw('Message'))
-
-redisClose()
-&lt;/code&gt;&lt;/pre&gt;
-</content>
-		<summary>&lt;p&gt;I needed to access Redis from R. Here's the code I used to connect, set a value, then deserialize a key that was in json format and publish a message. &lt;a href="https://cran.r-project.org/web/packages/rredis/vignettes/rredis.pdf"&gt;Rredis documentation located here&lt;/a&gt;&lt;/p&gt;</summary>
-	</entry>
-	<entry>
-		<id>http://ewinnington.github.io//posts/R-read-binary-file</id>
-		<title>R - Reading binary files</title>
-		<link href="http://ewinnington.github.io//posts/R-read-binary-file" />
-		<updated>2019-11-03T00:00:00Z</updated>
-		<content>&lt;p&gt;I had to get some data out of files written by Fortran. The format was a large array of doubles.&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;numeric() for doubles&lt;/li&gt;
-&lt;li&gt;integer() for integers&lt;/li&gt;
-&lt;/ul&gt;
-&lt;p&gt;readBin takes the input file and reads the binary data. If you want to read to the end of the file, don't give a dimension as 3rd parameter.&lt;/p&gt;
-&lt;pre&gt;&lt;code class="language-R"&gt;#### Reading value field from file
-z &amp;lt;- file(&amp;quot;/BoundValueRemain.bin&amp;quot;, &amp;quot;rb&amp;quot;)
-y &amp;lt;- readBin (z, numeric(), 51*50*50*15*13)
-close(z)
-dim(y) &amp;lt;- c(51, 50, 50, 15, 13)
-&lt;/code&gt;&lt;/pre&gt;
-</content>
-		<summary>&lt;p&gt;I had to get some data out of files written by Fortran. The format was a large array of doubles.&lt;/p&gt;</summary>
-	</entry>
-	<entry>
-		<id>http://ewinnington.github.io//posts/wyam-github-actions</id>
+		<id>http://ewinnington.github.io/posts/wyam-github-actions</id>
 		<title>Using Github actions to build Wyam and publish to github pages</title>
-		<link href="http://ewinnington.github.io//posts/wyam-github-actions" />
+		<link href="http://ewinnington.github.io/posts/wyam-github-actions" />
 		<updated>2019-11-03T00:00:00Z</updated>
 		<content>&lt;h1 id="introduction"&gt;Introduction&lt;/h1&gt;
 &lt;p&gt;Not that I have Wyam as a static site generator, I want to use &lt;a href="https://github.com/features/actions"&gt;Github Actions&lt;/a&gt; to automatically deploy it on push. This requires a quite few steps to setup, but I did it, now so can you!&lt;/p&gt;
@@ -159,9 +115,53 @@ jobs:
 		<summary>&lt;p&gt;Not that I have Wyam as a static site generator, I want to use &lt;a href="https://github.com/features/actions"&gt;Github Actions&lt;/a&gt; to automatically deploy it on push. This requires a quite few steps to setup, but I did it, now so can you!&lt;/p&gt;</summary>
 	</entry>
 	<entry>
-		<id>http://ewinnington.github.io//posts/Switching-to-wyam</id>
+		<id>http://ewinnington.github.io/posts/R-read-binary-file</id>
+		<title>R - Reading binary files</title>
+		<link href="http://ewinnington.github.io/posts/R-read-binary-file" />
+		<updated>2019-11-03T00:00:00Z</updated>
+		<content>&lt;p&gt;I had to get some data out of files written by Fortran. The format was a large array of doubles.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;numeric() for doubles&lt;/li&gt;
+&lt;li&gt;integer() for integers&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;readBin takes the input file and reads the binary data. If you want to read to the end of the file, don't give a dimension as 3rd parameter.&lt;/p&gt;
+&lt;pre&gt;&lt;code class="language-R"&gt;#### Reading value field from file
+z &amp;lt;- file(&amp;quot;/BoundValueRemain.bin&amp;quot;, &amp;quot;rb&amp;quot;)
+y &amp;lt;- readBin (z, numeric(), 51*50*50*15*13)
+close(z)
+dim(y) &amp;lt;- c(51, 50, 50, 15, 13)
+&lt;/code&gt;&lt;/pre&gt;
+</content>
+		<summary>&lt;p&gt;I had to get some data out of files written by Fortran. The format was a large array of doubles.&lt;/p&gt;</summary>
+	</entry>
+	<entry>
+		<id>http://ewinnington.github.io/posts/R-Redis-Json</id>
+		<title>R - Reading JSON from redis</title>
+		<link href="http://ewinnington.github.io/posts/R-Redis-Json" />
+		<updated>2019-11-03T00:00:00Z</updated>
+		<content>&lt;p&gt;I needed to access Redis from R. Here's the code I used to connect, set a value, then deserialize a key that was in json format and publish a message. &lt;a href="https://cran.r-project.org/web/packages/rredis/vignettes/rredis.pdf"&gt;Rredis documentation located here&lt;/a&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;library(&amp;quot;rredis&amp;quot;)
+library(&amp;quot;jsonlite&amp;quot;, lib.loc=&amp;quot;~/R/win-library/3.2&amp;quot;)
+
+redisConnect()
+redisSet(&amp;quot;x&amp;quot;,rnorm(5))
+redisGet(&amp;quot;x&amp;quot;)
+
+x = fromJSON(redisGet(&amp;quot;ts_1&amp;quot;))
+x$t &amp;lt;-  strptime(x$t, &amp;quot;%Y-%m-%dT%H:%M:%S&amp;quot;)
+
+//https://cran.r-project.org/web/packages/rredis/vignettes/rredis.pdf
+redisPublish(&amp;quot;General:Active&amp;quot;, charToRaw('Message'))
+
+redisClose()
+&lt;/code&gt;&lt;/pre&gt;
+</content>
+		<summary>&lt;p&gt;I needed to access Redis from R. Here's the code I used to connect, set a value, then deserialize a key that was in json format and publish a message. &lt;a href="https://cran.r-project.org/web/packages/rredis/vignettes/rredis.pdf"&gt;Rredis documentation located here&lt;/a&gt;&lt;/p&gt;</summary>
+	</entry>
+	<entry>
+		<id>http://ewinnington.github.io/posts/Switching-to-wyam</id>
 		<title>Switching to Wyam</title>
-		<link href="http://ewinnington.github.io//posts/Switching-to-wyam" />
+		<link href="http://ewinnington.github.io/posts/Switching-to-wyam" />
 		<updated>2019-10-23T00:00:00Z</updated>
 		<content>&lt;p&gt;After many years with a half abandoned Wordpress blog, I'm switching to &lt;a href="https://wyam.io/"&gt;Wyam&lt;/a&gt; for a static site generator.&lt;/p&gt;
 &lt;p&gt;This blog was generated as follows:&lt;/p&gt;
@@ -175,9 +175,9 @@ wyam -r blog -t Phantom -p -w
 		<summary>&lt;p&gt;After many years with a half abandoned Wordpress blog, I'm switching to &lt;a href="https://wyam.io/"&gt;Wyam&lt;/a&gt; for a static site generator.&lt;/p&gt;</summary>
 	</entry>
 	<entry>
-		<id>http://ewinnington.github.io//posts/append-files-together-using-windows-command-line</id>
+		<id>http://ewinnington.github.io/posts/append-files-together-using-windows-command-line</id>
 		<title>Append files together using windows command line</title>
-		<link href="http://ewinnington.github.io//posts/append-files-together-using-windows-command-line" />
+		<link href="http://ewinnington.github.io/posts/append-files-together-using-windows-command-line" />
 		<updated>2015-06-26T00:00:00Z</updated>
 		<content>&lt;p&gt;In the command prompt, an easy way to append files together is to use the &amp;quot;type&amp;quot; command and pipe it to an output file.&lt;/p&gt;
 &lt;p&gt;&lt;code&gt;type Results\_\* &amp;gt; Results\_combined.txt&lt;/code&gt;&lt;/p&gt;
@@ -196,9 +196,9 @@ wyam -r blog -t Phantom -p -w
 		<summary>&lt;p&gt;In the command prompt, an easy way to append files together is to use the "type" command and pipe it to an output file.&lt;/p&gt;</summary>
 	</entry>
 	<entry>
-		<id>http://ewinnington.github.io//posts/tail-command-with-powershell</id>
+		<id>http://ewinnington.github.io/posts/tail-command-with-powershell</id>
 		<title>Tail command with powershell</title>
-		<link href="http://ewinnington.github.io//posts/tail-command-with-powershell" />
+		<link href="http://ewinnington.github.io/posts/tail-command-with-powershell" />
 		<updated>2015-02-19T00:00:00Z</updated>
 		<content>&lt;p&gt;Powershell has now got a command to see the last lines of a file. The syntax is for the last 10 lines:&lt;/p&gt;
 &lt;pre&gt;&lt;code class="language-powershell"&gt;Get-Content _filename _\-Tail 10
@@ -208,9 +208,9 @@ wyam -r blog -t Phantom -p -w
 		<summary>&lt;p&gt;Powershell has now got a command to see the last lines of a file. The syntax is for the last 10 lines:&lt;/p&gt;</summary>
 	</entry>
 	<entry>
-		<id>http://ewinnington.github.io//posts/oracle-getting-a-list-of-all-columns-data-types-lengths-of-column-for-every-table-in-your-schema</id>
+		<id>http://ewinnington.github.io/posts/oracle-getting-a-list-of-all-columns-data-types-lengths-of-column-for-every-table-in-your-schema</id>
 		<title>Oracle Getting a list of all columns, data types, lengths of column for every table in your schema</title>
-		<link href="http://ewinnington.github.io//posts/oracle-getting-a-list-of-all-columns-data-types-lengths-of-column-for-every-table-in-your-schema" />
+		<link href="http://ewinnington.github.io/posts/oracle-getting-a-list-of-all-columns-data-types-lengths-of-column-for-every-table-in-your-schema" />
 		<updated>2014-09-16T00:00:00Z</updated>
 		<content>&lt;p&gt;To get all the columns in the schema of an oracle DB, with the appropriate datatype and column length you can use:&lt;/p&gt;
 &lt;pre&gt;&lt;code class="language-sql"&gt;select column_name, data_type, data_length, table_name 
@@ -221,9 +221,9 @@ from all_tab_columns where table_name in
 		<summary>&lt;p&gt;To get all the columns in the schema of an oracle DB, with the appropriate datatype and column length you can use:&lt;/p&gt;</summary>
 	</entry>
 	<entry>
-		<id>http://ewinnington.github.io//posts/getting-autoincremented-version-numbers-in-visual-studio</id>
+		<id>http://ewinnington.github.io/posts/getting-autoincremented-version-numbers-in-visual-studio</id>
 		<title>Getting autoincremented version numbers in Visual Studio</title>
-		<link href="http://ewinnington.github.io//posts/getting-autoincremented-version-numbers-in-visual-studio" />
+		<link href="http://ewinnington.github.io/posts/getting-autoincremented-version-numbers-in-visual-studio" />
 		<updated>2014-08-25T00:00:00Z</updated>
 		<content>&lt;p&gt;On C# projects, in the &amp;quot;AssemblyInfo.cs&amp;quot; file, you can set the Assembly Version to contain *, which sets the version automatically to the build date and time.&lt;/p&gt;
 &lt;p&gt;If you comment out the AssemblyFileVersion, then you can see it in the Windows explorer. If you don't then Windows Explorer will always report the AssemblyFileVersion which does not support the * notation.&lt;/p&gt;
@@ -233,9 +233,9 @@ from all_tab_columns where table_name in
 		<summary>&lt;p&gt;On C# projects, in the "AssemblyInfo.cs" file, you can set the Assembly Version to contain *, which sets the version automatically to the build date and time.&lt;/p&gt;</summary>
 	</entry>
 	<entry>
-		<id>http://ewinnington.github.io//posts/using-svg-images-on-azure-websites</id>
+		<id>http://ewinnington.github.io/posts/using-svg-images-on-azure-websites</id>
 		<title>Using SVG images on Azure Websites</title>
-		<link href="http://ewinnington.github.io//posts/using-svg-images-on-azure-websites" />
+		<link href="http://ewinnington.github.io/posts/using-svg-images-on-azure-websites" />
 		<updated>2014-08-23T00:00:00Z</updated>
 		<content>&lt;p&gt;I've been using &lt;a href="https://useiconic.com/"&gt;Iconic's icon set&lt;/a&gt; for the development of a dashboard for one of my projects. While publishing it to &lt;a href="http://azure.microsoft.com/en-us/"&gt;Azure&lt;/a&gt; to test it out, none of the SVGs images or icons were being served.&lt;/p&gt;
 &lt;p&gt;It required a little bit of configuration to get it all running:&lt;/p&gt;
@@ -290,9 +290,9 @@ string status = (DbServer.isAvailable ? &amp;quot;ok&amp;quot; : &amp;quot;nok&a
 		<summary>&lt;p&gt;I've been using &lt;a href="https://useiconic.com/"&gt;Iconic's icon&amp;nbsp;set&lt;/a&gt; for the development of a dashboard for one of my projects. While publishing&amp;nbsp;it to &lt;a href="http://azure.microsoft.com/en-us/"&gt;Azure&lt;/a&gt; to test it out, none of the SVGs images or icons were being served.&lt;/p&gt;</summary>
 	</entry>
 	<entry>
-		<id>http://ewinnington.github.io//posts/diff-compare-two-files-in-visual-studio</id>
+		<id>http://ewinnington.github.io/posts/diff-compare-two-files-in-visual-studio</id>
 		<title>Diff / Compare two files in Visual Studio</title>
-		<link href="http://ewinnington.github.io//posts/diff-compare-two-files-in-visual-studio" />
+		<link href="http://ewinnington.github.io/posts/diff-compare-two-files-in-visual-studio" />
 		<updated>2014-03-23T00:00:00Z</updated>
 		<content>&lt;p&gt;In visual studio, you can use the integrated command line to diff two files by using the command &lt;em&gt;Tools.DiffFiles file1 file2&lt;/em&gt;&lt;/p&gt;
 &lt;p&gt;Thanks to my work colleagues for that trick!&lt;/p&gt;
@@ -300,9 +300,9 @@ string status = (DbServer.isAvailable ? &amp;quot;ok&amp;quot; : &amp;quot;nok&a
 		<summary>&lt;p&gt;In visual studio, you can use the integrated command line to diff two files by using the command &lt;em&gt;Tools.DiffFiles file1 file2&lt;/em&gt;&lt;/p&gt;</summary>
 	</entry>
 	<entry>
-		<id>http://ewinnington.github.io//posts/listing-the-channels-of-the-wifi-networks-around-you-in-windows</id>
+		<id>http://ewinnington.github.io/posts/listing-the-channels-of-the-wifi-networks-around-you-in-windows</id>
 		<title>Listing the channels of the WIFI networks around you in Windows</title>
-		<link href="http://ewinnington.github.io//posts/listing-the-channels-of-the-wifi-networks-around-you-in-windows" />
+		<link href="http://ewinnington.github.io/posts/listing-the-channels-of-the-wifi-networks-around-you-in-windows" />
 		<updated>2014-03-11T00:00:00Z</updated>
 		<content>&lt;p&gt;To list the network channels in use by the various wi-fi networks, you can always use this command in an Administrator command prompt.&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;netsh wlan show all
@@ -311,9 +311,9 @@ string status = (DbServer.isAvailable ? &amp;quot;ok&amp;quot; : &amp;quot;nok&a
 		<summary>&lt;p&gt;To list the network channels in use by the various wi-fi networks, you can always use this command in an Administrator command prompt.&lt;/p&gt;</summary>
 	</entry>
 	<entry>
-		<id>http://ewinnington.github.io//posts/oracle-reclaiming-lob-space-after-deletion-clob-blob</id>
+		<id>http://ewinnington.github.io/posts/oracle-reclaiming-lob-space-after-deletion-clob-blob</id>
 		<title>Oracle - Reclaiming LOB space after deletion (CLOB, BLOB)</title>
-		<link href="http://ewinnington.github.io//posts/oracle-reclaiming-lob-space-after-deletion-clob-blob" />
+		<link href="http://ewinnington.github.io/posts/oracle-reclaiming-lob-space-after-deletion-clob-blob" />
 		<updated>2014-02-03T00:00:00Z</updated>
 		<content>&lt;p&gt;To reclaim space after a deleting LOBs, use the following commands. XXXXX is my tablename, data is my column name for the lob, in pink the size of the table.&lt;/p&gt;
 &lt;ol&gt;
@@ -356,9 +356,9 @@ WHERE b.table_name = 'XXXXX';
 		<summary>&lt;p&gt;To reclaim space after a deleting LOBs, use the following commands. XXXXX is my tablename, data is my column name for the lob, in pink the size of the table.&lt;/p&gt;</summary>
 	</entry>
 	<entry>
-		<id>http://ewinnington.github.io//posts/oracle-sql-developer-set-nls-to-give-you-full-date-and-time</id>
+		<id>http://ewinnington.github.io/posts/oracle-sql-developer-set-nls-to-give-you-full-date-and-time</id>
 		<title>Oracle SQL Developer - Set NLS to give you full date and time</title>
-		<link href="http://ewinnington.github.io//posts/oracle-sql-developer-set-nls-to-give-you-full-date-and-time" />
+		<link href="http://ewinnington.github.io/posts/oracle-sql-developer-set-nls-to-give-you-full-date-and-time" />
 		<updated>2014-01-31T00:00:00Z</updated>
 		<content>&lt;p&gt;In the SQL sheet for the database, use the following SQL:&lt;/p&gt;
 &lt;pre&gt;&lt;code class="language-sql"&gt;alter session set NLS_DATE_FORMAT = &amp;quot;dd.mm.yyyy hh24:mi:ss&amp;quot;;
@@ -367,9 +367,9 @@ WHERE b.table_name = 'XXXXX';
 		<summary>&lt;p&gt;In the SQL sheet for the database, use the following SQL:&lt;/p&gt;</summary>
 	</entry>
 	<entry>
-		<id>http://ewinnington.github.io//posts/sqlfiddle-a-way-to-share-sql-snippets-so-that-they-can-be-tested-in-the-browser</id>
+		<id>http://ewinnington.github.io/posts/sqlfiddle-a-way-to-share-sql-snippets-so-that-they-can-be-tested-in-the-browser</id>
 		<title>SqlFiddle - A way to share SQL snippets so that they can be tested in the browser</title>
-		<link href="http://ewinnington.github.io//posts/sqlfiddle-a-way-to-share-sql-snippets-so-that-they-can-be-tested-in-the-browser" />
+		<link href="http://ewinnington.github.io/posts/sqlfiddle-a-way-to-share-sql-snippets-so-that-they-can-be-tested-in-the-browser" />
 		<updated>2013-11-05T00:00:00Z</updated>
 		<content>&lt;p&gt;A couple of days ago, I stumbled upon &lt;a href="http://www.sqlfiddle.com/"&gt;SQLFiddle&lt;/a&gt;, a little magical website that allows you to upload a DBSchema and run queries on it, live in the browser. It also allows to share them with other users.&lt;/p&gt;
 &lt;p&gt;In the course of my work, I've often come across a table that has an identifier, a timestamp and a value, and these rows must be mapped to one new row containing multiple identifiers. Two typical examples of that are two identifiers defining a minimum and a maximum value timeseries that must be put into a single row entry and an entry that is built from three identified timeseries representing value, volatility and mean reversion parameters of a stochastic process.&lt;/p&gt;
@@ -381,18 +381,18 @@ WHERE b.table_name = 'XXXXX';
 		<summary>&lt;p&gt;A couple of days ago, I stumbled upon &lt;a href="http://www.sqlfiddle.com/"&gt;SQLFiddle&lt;/a&gt;, a little magical website that allows you to upload a DBSchema and run queries on it, live in the browser. It also allows to share them with other users.&lt;/p&gt;</summary>
 	</entry>
 	<entry>
-		<id>http://ewinnington.github.io//posts/debugging-tips</id>
+		<id>http://ewinnington.github.io/posts/debugging-tips</id>
 		<title>Debugging tips</title>
-		<link href="http://ewinnington.github.io//posts/debugging-tips" />
+		<link href="http://ewinnington.github.io/posts/debugging-tips" />
 		<updated>2013-10-31T00:00:00Z</updated>
 		<content>&lt;p&gt;If you get a bug in a loop, remember that the bug could be caused by the previous execution of the loop and thus be below the code point that fails.&lt;/p&gt;
 </content>
 		<summary>&lt;p&gt;If you get a bug in a loop, remember that the bug could be caused by the previous execution of the loop and thus be below the code point that fails.&lt;/p&gt;</summary>
 	</entry>
 	<entry>
-		<id>http://ewinnington.github.io//posts/raspberry-pi-update-arkos</id>
+		<id>http://ewinnington.github.io/posts/raspberry-pi-update-arkos</id>
 		<title>Raspberry Pi update Arkos</title>
-		<link href="http://ewinnington.github.io//posts/raspberry-pi-update-arkos" />
+		<link href="http://ewinnington.github.io/posts/raspberry-pi-update-arkos" />
 		<updated>2013-10-31T00:00:00Z</updated>
 		<content>&lt;p&gt;Since I haven't talked much about what I've been doing with my Pi, here's the latest:&lt;/p&gt;
 &lt;p&gt;I've installed a distribution called &lt;a href="https://arkos.io/"&gt;ArkOS&lt;/a&gt;, which exposes a web interface allowing the easy configuration of many network accessible services, including a blog and an &lt;a href="http://owncloud.org/"&gt;owncloud&lt;/a&gt; instance.&lt;/p&gt;
@@ -402,9 +402,9 @@ WHERE b.table_name = 'XXXXX';
 		<summary>&lt;p&gt;Since I haven't talked much about what I've been doing with my Pi, here's the latest:&lt;/p&gt;</summary>
 	</entry>
 	<entry>
-		<id>http://ewinnington.github.io//posts/commenting-and-uncommenting-in-vi</id>
+		<id>http://ewinnington.github.io/posts/commenting-and-uncommenting-in-vi</id>
 		<title>Commenting and Uncommenting in vi</title>
-		<link href="http://ewinnington.github.io//posts/commenting-and-uncommenting-in-vi" />
+		<link href="http://ewinnington.github.io/posts/commenting-and-uncommenting-in-vi" />
 		<updated>2013-07-23T00:00:00Z</updated>
 		<content>&lt;p&gt;Sometimes I have to edit large config files in vi. Typically I have to comment out a block or even the whole file. Here's the command to insert a # before every line in the file:&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;:%s/^/# /
@@ -422,9 +422,9 @@ WHERE b.table_name = 'XXXXX';
 		<summary>&lt;p&gt;Sometimes I have to edit large config files in vi. Typically I have to comment out a block or even the whole file. Here's the command to insert a # before every line in the file:&lt;/p&gt;</summary>
 	</entry>
 	<entry>
-		<id>http://ewinnington.github.io//posts/updating-my-raspberry-pis-ip-address-on-a-distant-server-via-sftp</id>
+		<id>http://ewinnington.github.io/posts/updating-my-raspberry-pis-ip-address-on-a-distant-server-via-sftp</id>
 		<title>Updating my Raspberry Pi's IP address on a distant server via SFTP</title>
-		<link href="http://ewinnington.github.io//posts/updating-my-raspberry-pis-ip-address-on-a-distant-server-via-sftp" />
+		<link href="http://ewinnington.github.io/posts/updating-my-raspberry-pis-ip-address-on-a-distant-server-via-sftp" />
 		<updated>2013-07-05T00:00:00Z</updated>
 		<content>&lt;p&gt;Now I have my external IP address, I want to collect it on a regular basis and push it to a server that accepts SFTP. Now sadly, that server doesn't allow me to use passkey files, so I have to workaround using sshpass (a great little module allowing to pass passwords to the SSH commands - install as usual with &lt;code&gt;apt-get install sshpass&lt;/code&gt; ).&lt;/p&gt;
 &lt;p&gt;The EOF at the end of the sftp command is to ensure that I am passing the rest of the commands to the sftp command. I could also use a -b flag and a file, but it would mean one more file to deal with.&lt;/p&gt;
@@ -443,9 +443,9 @@ bye
 		<summary>&lt;p&gt;Now I have my external IP address, I want to collect it on a regular basis and push it to a server that accepts SFTP. Now sadly, that server doesn't allow me to use passkey files, so I have to workaround using sshpass (a great little module allowing to pass passwords to the SSH commands - install as usual with &lt;code&gt;apt-get install sshpass&lt;/code&gt; ).&lt;/p&gt;</summary>
 	</entry>
 	<entry>
-		<id>http://ewinnington.github.io//posts/raspberry-pi</id>
+		<id>http://ewinnington.github.io/posts/raspberry-pi</id>
 		<title>Raspberry pi</title>
-		<link href="http://ewinnington.github.io//posts/raspberry-pi" />
+		<link href="http://ewinnington.github.io/posts/raspberry-pi" />
 		<updated>2013-01-23T00:00:00Z</updated>
 		<content>&lt;p&gt;Since I've finally had time to do something with my &lt;a href="http://www.raspberrypi.org/"&gt;Raspberry Pi&lt;/a&gt;, I've set it up as a file server for macs and iTunes server for the house. I'm using a 7 port USB hub, powered, that uses 2 4-port hubs inside. As a drive, I used a Toshiba 500 gig USB powered HDD that supports USB3. The Raspberry is powered directly from the USB hub, so there is only one power supply for the setup with 3 USB cables (1 hub to pi for power supply, 1 pi to hub data, 1 hub to hdd data cable) and 1 ethernet cat5 cable.&lt;/p&gt;
 &lt;p&gt;The distribution is a standard Raspbian that I keep up to date using &lt;em&gt;sudo apt-get update&lt;/em&gt; and &lt;em&gt;sudo apt-get upgrade&lt;/em&gt;. (&lt;em&gt;Linux raspberrypi 3.2.27+ #250 PREEMPT Thu Oct 18 19:03:02 BST 2012 armv6l&lt;/em&gt;)&lt;/p&gt;
@@ -473,9 +473,9 @@ bye
 		<summary>&lt;p&gt;Since I've finally had time to do something with my &lt;a href="http://www.raspberrypi.org/"&gt;Raspberry Pi&lt;/a&gt;, I've set it up&amp;nbsp;as a file server for macs and iTunes server for the house. I'm using a 7 port USB hub, powered, that uses 2 4-port hubs inside. As a drive, I used a Toshiba 500 gig USB powered HDD that supports USB3. The Raspberry is powered directly from the USB hub, so there is only one power supply for the setup with 3 USB cables (1 hub to pi for power supply, 1 pi to hub data, 1 hub to hdd data cable) and 1 ethernet cat5 cable.&lt;/p&gt;</summary>
 	</entry>
 	<entry>
-		<id>http://ewinnington.github.io//posts/making-fortran-dlls-to-interface-with-vba-in-excel</id>
+		<id>http://ewinnington.github.io/posts/making-fortran-dlls-to-interface-with-vba-in-excel</id>
 		<title>Making Fortran DLLs to interface with VBA in Excel</title>
-		<link href="http://ewinnington.github.io//posts/making-fortran-dlls-to-interface-with-vba-in-excel" />
+		<link href="http://ewinnington.github.io/posts/making-fortran-dlls-to-interface-with-vba-in-excel" />
 		<updated>2012-05-24T00:00:00Z</updated>
 		<content>&lt;p&gt;Note to self, Remember:&lt;/p&gt;
 &lt;ul&gt;
