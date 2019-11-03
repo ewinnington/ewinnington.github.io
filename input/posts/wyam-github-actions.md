@@ -8,7 +8,7 @@ Tags: [Github, Wyam, GithubPages, GithubActions]
 Not that I have Wyam as a static site generator, I want to use [Github Actions](https://github.com/features/actions) to automatically deploy it on push. This requires a quite few steps to setup, but I did it, now so can you!
 
 Github actions is still in beta, so you'll have to enroll to use the functionality: 
-![EnrollActions](images/github-actions-wyam/EnrollActions.png)
+![EnrollActions](posts/images/github-actions-wyam/EnrollActions.png)
 
 # Setup procedure
 
@@ -17,16 +17,16 @@ This setup assumes you have a local Wyam that is working on your local machine. 
 ## Personal page
 First you must have a [Personal Page](https://pages.github.com/) setup in github. This is done by creating a public repository *username*.github.io.
 
-![RepoCreation](images/github-actions-wyam/CreateRepo.png)
+![RepoCreation](posts/images/github-actions-wyam/CreateRepo.png)
 
 ### Create the correct branches 
 Inside that repository, you will want to create a second branch next to the master: source. This can be done by typing a new branch name in the Switch branches/tags text box. 
 
-![SourceBranch](images/github-actions-wyam/SourceBranch.png)
+![SourceBranch](posts/images/github-actions-wyam/SourceBranch.png)
 
 Next step is to make this branch the default when we push commits to the repository. This is because the *master* branch of the username.gitub.io is what is hosted on github's personal pages. Therefore the source of the wyam site has to be stored on another branch. To set the branch as default, Go to *Settings*, then *Branches* and select **source** in the dropdown box. Confirm with update. 
 
-![SettingsBranches](images/github-actions-wyam/SettingsBranches.png)  
+![SettingsBranches](posts/images/github-actions-wyam/SettingsBranches.png)  
 
 ### Prepare keys and install them 
 
@@ -41,8 +41,8 @@ This will generate two files:
 
 Once installed, they should be like this in the github user interface of the repository: 
 
-![Secrets](images/github-actions-wyam/SecretsKey.png)
-![Deploy](images/github-actions-wyam/DeployKey.png)
+![Secrets](posts/images/github-actions-wyam/SecretsKey.png)
+![Deploy](posts/images/github-actions-wyam/DeployKey.png)
 
 ## Clone the repository (or import an existing git repo) 
 
@@ -76,15 +76,15 @@ output
 
 First you will want to check that you are allowing external workflow scripts to be launched on your repository, since I will be relying on a few steps from pre-existing scripts. 
 
-![SetupActions.png](images/github-actions-wyam/SetupActions.png)
+![SetupActions.png](posts/images/github-actions-wyam/SetupActions.png)
 
 Here the first mistake I made while configuring actions was not going through the Github user interface and instead creating the folders manually in my github repository. I created *.github/workflow* instead of **.github/workflows** which meant that my actions were never kicking off. So don't make my mistake, use the github UI to set up the action and they will create the correct folder structure in your project. 
 
-![Actions workflow](images/github-actions-wyam/SetUpActionsWorkflow.png)
+![Actions workflow](posts/images/github-actions-wyam/SetUpActionsWorkflow.png)
 
 I setup a yaml file name [wyam.yml](https://github.com/ewinnington/ewinnington.github.io/blob/source/.github/workflows/wyam.yml). You can see what it looks like here below (I have included the code below on the page for you to copy and paste if you want. Let's go through this line by line.  
 
-![Wyam Yaml](images/github-actions-wyam/wyam-yaml.png) 
+![Wyam Yaml](posts/images/github-actions-wyam/wyam-yaml.png) 
 
 Line 1: Name of the action that will appear in the action tab
 
@@ -143,11 +143,11 @@ jobs:
 
 Once you have setup this file, you can commit it and it should start off the build action. You can follow the progress of the action workflow on the github action page. 
 
-![Action Overview](images/github-actions-wyam/ActionOverview.png)
+![Action Overview](posts/images/github-actions-wyam/ActionOverview.png)
 
 You can drill down into the details of the actions in case you had any failures. This is where I had the most trouble, but with these instructions, you should be fine.
 
-![Action Detail](images/github-actions-wyam/ActionDetail.png)
+![Action Detail](posts/images/github-actions-wyam/ActionDetail.png)
 
 # Closing
 
