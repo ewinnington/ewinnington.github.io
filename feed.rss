@@ -5,30 +5,29 @@
 		<link>http://ewinnington.github.io/</link>
 		<description>You will find here a collection of my thoughts, snippets and articles.</description>
 		<copyright>2019</copyright>
-		<pubDate>Sun, 03 Nov 2019 17:09:29 GMT</pubDate>
-		<lastBuildDate>Sun, 03 Nov 2019 17:09:29 GMT</lastBuildDate>
+		<pubDate>Sun, 03 Nov 2019 17:15:17 GMT</pubDate>
+		<lastBuildDate>Sun, 03 Nov 2019 17:15:17 GMT</lastBuildDate>
 		<item>
-			<title>R - Reading JSON from redis</title>
-			<link>http://ewinnington.github.io/posts/R-Redis-Json</link>
-			<description>&lt;p&gt;I needed to access Redis from R. Here's the code I used to connect, set a value, then deserialize a key that was in json format and publish a message. &lt;a href="https://cran.r-project.org/web/packages/rredis/vignettes/rredis.pdf"&gt;Rredis documentation located here&lt;/a&gt;&lt;/p&gt;</description>
-			<guid>http://ewinnington.github.io/posts/R-Redis-Json</guid>
-			<pubDate>Sun, 03 Nov 2019 00:00:00 GMT</pubDate>
-			<content:encoded>&lt;p&gt;I needed to access Redis from R. Here's the code I used to connect, set a value, then deserialize a key that was in json format and publish a message. &lt;a href="https://cran.r-project.org/web/packages/rredis/vignettes/rredis.pdf"&gt;Rredis documentation located here&lt;/a&gt;&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;library(&amp;quot;rredis&amp;quot;)
-library(&amp;quot;jsonlite&amp;quot;, lib.loc=&amp;quot;~/R/win-library/3.2&amp;quot;)
-
-redisConnect()
-redisSet(&amp;quot;x&amp;quot;,rnorm(5))
-redisGet(&amp;quot;x&amp;quot;)
-
-x = fromJSON(redisGet(&amp;quot;ts_1&amp;quot;))
-x$t &amp;lt;-  strptime(x$t, &amp;quot;%Y-%m-%dT%H:%M:%S&amp;quot;)
-
-//https://cran.r-project.org/web/packages/rredis/vignettes/rredis.pdf
-redisPublish(&amp;quot;General:Active&amp;quot;, charToRaw('Message'))
-
-redisClose()
-&lt;/code&gt;&lt;/pre&gt;
+			<title>Reflections on Webassembly - May/Nov 19</title>
+			<link>http://ewinnington.github.io/posts/webassembly-thoughts</link>
+			<description>&lt;p&gt;I rewatched this talk from 2014, &lt;a href="https://www.destroyallsoftware.com/talks/the-birth-and-death-of-javascript"&gt;The Birth and Death of JavaScript&lt;/a&gt;, and am still amazed at how prescient it was and still is.&lt;/p&gt;</description>
+			<guid>http://ewinnington.github.io/posts/webassembly-thoughts</guid>
+			<pubDate>Sun, 03 Nov 2019 17:00:00 GMT</pubDate>
+			<content:encoded>&lt;h1 id="initial-post"&gt;Initial post&lt;/h1&gt;
+&lt;p&gt;I rewatched this talk from 2014, &lt;a href="https://www.destroyallsoftware.com/talks/the-birth-and-death-of-javascript"&gt;The Birth and Death of JavaScript&lt;/a&gt;, and am still amazed at how prescient it was and still is.&lt;/p&gt;
+&lt;p&gt;The blurb for this is:
+“This science fiction / comedy / absurdist / completely serious talk traces the history of JavaScript, and programming in general, from 1995 until 2035.”&lt;/p&gt;
+&lt;p&gt;ASM JS is still there, but what Gary Bernhardt calls Metal in the talk is WebAssembly. And WebAssembly (Wasm) is coming, and not just for the web.&lt;/p&gt;
+&lt;p&gt;In the .Net world, we see the first glimpses of the power of Wasm with the arrival of &lt;a href="https://dotnet.microsoft.com/apps/aspnet/web-apps/blazor"&gt;Blazor&lt;/a&gt;, which allows the execution of code running on the .net framework (using the mono runtime) inside a browser.&lt;/p&gt;
+&lt;p&gt;Wasm is not stopping there. With the &lt;a href="https://hacks.mozilla.org/2019/03/standardizing-wasi-a-webassembly-system-interface/"&gt;standardising of WASI&lt;/a&gt;, a system interface to run Wasm outside the web, we are truly moving towards architecture independence.&lt;/p&gt;
+&lt;p&gt;It might take until 2035, like in the video, for Wasm to take over the world, but I have the feeling we will see its impact in the near future. Looking at the progress on Wasm in the two last years, I would recommend any programmer to read up on it and understanding its implications on the way they work.&lt;/p&gt;
+&lt;p&gt;For further reading on Wasm, I would recommend the mozilla &lt;a href="https://hacks.mozilla.org/category/webassembly/"&gt;WebAssembly Archives&lt;/a&gt; and in particular, the &lt;a href="https://hacks.mozilla.org/2018/10/webassemblys-post-mvp-future/"&gt;WebAssembly post mvp future by Lin Clark&lt;/a&gt;.&lt;/p&gt;
+&lt;h1 id="update-in-november-2019"&gt;Update in november 2019&lt;/h1&gt;
+&lt;p&gt;Over the last few months, I have seen Wasm cropping up in more and more places, for example as a way to deploy code to running inside databases, such as the case of &lt;a href="https://medium.com/wasmer/announcing-the-first-postgres-extension-to-run-webassembly-561af2cfcb1"&gt;Wasm for Postgres&lt;/a&gt; which allows stored procedures to run webassembly code.&lt;/p&gt;
+&lt;p&gt;Another case of that is the reflection on using &lt;a href="https://youtu.be/3yVc5t-g-VU"&gt;WebAssembly as a glue between programming languages&lt;/a&gt; by allowing type information and guarantees to flow between programming languages. This would allow future systems to take the best of breed choice of programming language for each component of the system while still allowing compile time reasoning on type safety by using a type preserving compiler.&lt;/p&gt;
+&lt;?# YouTube 3yVc5t-g-VU /?&gt;
+&lt;p&gt;As I noted on twitter, as I read, watch and learn about webassembly, I'm getting the feeling this is going to be a titanic shift in the way we reason about programs, languages, frameworks and software design in general.&lt;/p&gt;
+&lt;p&gt;&amp;quot;The avalanche has already started, it is too late for the pebbles to vote&amp;quot; - Ambassador Kosh, Babylon 5.&lt;/p&gt;
 </content:encoded>
 		</item>
 		<item>
@@ -156,6 +155,30 @@ z &amp;lt;- file(&amp;quot;/BoundValueRemain.bin&amp;quot;, &amp;quot;rb&amp;quo
 y &amp;lt;- readBin (z, numeric(), 51*50*50*15*13)
 close(z)
 dim(y) &amp;lt;- c(51, 50, 50, 15, 13)
+&lt;/code&gt;&lt;/pre&gt;
+</content:encoded>
+		</item>
+		<item>
+			<title>R - Reading JSON from redis</title>
+			<link>http://ewinnington.github.io/posts/R-Redis-Json</link>
+			<description>&lt;p&gt;I needed to access Redis from R. Here's the code I used to connect, set a value, then deserialize a key that was in json format and publish a message. &lt;a href="https://cran.r-project.org/web/packages/rredis/vignettes/rredis.pdf"&gt;Rredis documentation located here&lt;/a&gt;&lt;/p&gt;</description>
+			<guid>http://ewinnington.github.io/posts/R-Redis-Json</guid>
+			<pubDate>Sun, 03 Nov 2019 00:00:00 GMT</pubDate>
+			<content:encoded>&lt;p&gt;I needed to access Redis from R. Here's the code I used to connect, set a value, then deserialize a key that was in json format and publish a message. &lt;a href="https://cran.r-project.org/web/packages/rredis/vignettes/rredis.pdf"&gt;Rredis documentation located here&lt;/a&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;library(&amp;quot;rredis&amp;quot;)
+library(&amp;quot;jsonlite&amp;quot;, lib.loc=&amp;quot;~/R/win-library/3.2&amp;quot;)
+
+redisConnect()
+redisSet(&amp;quot;x&amp;quot;,rnorm(5))
+redisGet(&amp;quot;x&amp;quot;)
+
+x = fromJSON(redisGet(&amp;quot;ts_1&amp;quot;))
+x$t &amp;lt;-  strptime(x$t, &amp;quot;%Y-%m-%dT%H:%M:%S&amp;quot;)
+
+//https://cran.r-project.org/web/packages/rredis/vignettes/rredis.pdf
+redisPublish(&amp;quot;General:Active&amp;quot;, charToRaw('Message'))
+
+redisClose()
 &lt;/code&gt;&lt;/pre&gt;
 </content:encoded>
 		</item>
@@ -471,43 +494,6 @@ bye
 &lt;p&gt;I want to investigate using the pi with a LAMP stack on it and &lt;a href="https://owncloud.com/"&gt;&lt;strong&gt;OwnCloud&lt;/strong&gt;&lt;/a&gt; to serve as a private owned dropbox.&lt;/p&gt;
 &lt;p&gt;Finally, I really should stop relying on passwords with my SSH connection and start using an SSH keyfile, Especially if it will be more and more internet facing.&lt;/p&gt;
 &lt;p&gt;The command &lt;strong&gt;history&lt;/strong&gt; to helped me remember all the things I did.&lt;/p&gt;
-</content:encoded>
-		</item>
-		<item>
-			<title>Making Fortran DLLs to interface with VBA in Excel</title>
-			<link>http://ewinnington.github.io/posts/making-fortran-dlls-to-interface-with-vba-in-excel</link>
-			<description>&lt;p&gt;Note to self, Remember:&lt;/p&gt;</description>
-			<guid>http://ewinnington.github.io/posts/making-fortran-dlls-to-interface-with-vba-in-excel</guid>
-			<pubDate>Thu, 24 May 2012 00:00:00 GMT</pubDate>
-			<content:encoded>&lt;p&gt;Note to self, Remember:&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;When working with Intel visual fortran, always perform a static link (/MT) in the command line options so that you don't dependent on a DLL being present on the target machine.&lt;/li&gt;
-&lt;li&gt;DLLs need Kernel32.lib to be added to the dependencies&lt;/li&gt;
-&lt;li&gt;ByVal in VBA doesn't always mean ByVal, when calling a DLL it means &amp;quot;Copy then give a Ref&amp;quot;, so on the Fortran side, get the address by reference.&lt;/li&gt;
-&lt;/ul&gt;
-&lt;p&gt;On the VB side, the string gets declared as &amp;quot;ByVal stringname as string&amp;quot;. You also need to add the string length to the end of the argument list as &amp;quot;ByVal stringlen as Integer&amp;quot;. I also changed the numeric args to ByRef, especially as one of them is written. For example:&lt;/p&gt;
-&lt;pre&gt;&lt;code class="language-VBA"&gt;Module Module1
-    Declare Sub TestSSdll _
-        Lib &amp;quot;C:\Documents and Settings\ . . . \TestSSdll.dll&amp;quot; _
-        (ByRef Phi0 As Double, ByRef RLambda0 As Double, _
-        ByRef NWinTimStps As Long, ByVal gridfile As String, _
-        ByVal len_gridfile As Integer)
-End Module
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;You will need to pass the length of the string explicitly using this arrangement.&lt;/p&gt;
-&lt;p&gt;On the Fortran side, the routine needs to have the STDCALL and REFERENCE attributes, the string argument should not have the REFERENCE attribute, assuming you want the length passed. For example:&lt;/p&gt;
-&lt;pre&gt;&lt;code class="language-Fortran"&gt;subroutine TestSSdll (phi0, rlambda0, lgridfile, nWinTimStps, &amp;amp;
-    gridfile)
-implicit none
-
-!DEC$ ATTRIBUTES DLLEXPORT, STDCALL, REFERENCE :: TestSSdll
-!DEC$ ATTRIBUTES ALIAS: &amp;quot;TestSSdll&amp;quot; :: TestSSdll
-
-    real(8), intent(in) :: phi0, rlambda0
-    integer(8) :: nWinTimStps
-    character(*), intent(in) :: gridfile
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;Note that the string length is not explicitly specified in the Fortran, as the compiler will look for it, passed by value.&lt;/p&gt;
 </content:encoded>
 		</item>
 	</channel>
