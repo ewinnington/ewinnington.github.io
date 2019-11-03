@@ -19,7 +19,7 @@ jobs:
     - name: Install Wyam
       run: dotnet tool install --tool-path . wyam.tool
     - name: Publish blog
-      run: ./wyam -r blog -t SolidState
+      run: ./wyam -r blog -t Phantom
     - name: Deploy
       uses: peaceiris/actions-gh-pages@v2.5.0
       env:
