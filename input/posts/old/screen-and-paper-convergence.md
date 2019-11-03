@@ -1,6 +1,6 @@
 Title: Screen and paper convergence
 Published: 01/01/2012
-Tags: [Migrated, Livescrive] 
+Tags: [Migrated, Livescribe] 
 ---
 
 The Livescribe pen is one of the devices which bridges the real and digital world. All your notes, on paper, always accessible wherever you are.
