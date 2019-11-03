@@ -1,10 +1,10 @@
 #recipe Blog
 
 // Customize your settings and add new ones here
-Settings[Keys.Host] = "ewinnington.github.io/";
+Settings[Keys.Host] = "ewinnington.github.io";
 Settings[BlogKeys.Title] = "Eric's personal page";
 Settings[BlogKeys.Description] = "You will find here a collection of my thoughts, snippets and articles.";
-Settings[BlogKeys.IndexFullPosts] = true;
+//Settings[BlogKeys.IndexFullPosts] = true;
 Settings[BlogKeys.IndexPageSize] = 4;
 
 // Add any pipeline customizations here
