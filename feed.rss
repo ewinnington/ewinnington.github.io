@@ -5,8 +5,8 @@
 		<link>http://ewinnington.github.io//</link>
 		<description>You will find here a collection of my thoughts, snippets and articles.</description>
 		<copyright>2019</copyright>
-		<pubDate>Sun, 03 Nov 2019 05:53:05 GMT</pubDate>
-		<lastBuildDate>Sun, 03 Nov 2019 05:53:05 GMT</lastBuildDate>
+		<pubDate>Sun, 03 Nov 2019 05:58:24 GMT</pubDate>
+		<lastBuildDate>Sun, 03 Nov 2019 05:58:24 GMT</lastBuildDate>
 		<item>
 			<title>R - Reading JSON from redis</title>
 			<link>http://ewinnington.github.io//posts/R-Redis-Json</link>
@@ -60,17 +60,17 @@ dim(y) &amp;lt;- c(51, 50, 50, 15, 13)
 			<content:encoded>&lt;h1 id="introduction"&gt;Introduction&lt;/h1&gt;
 &lt;p&gt;Not that I have Wyam as a static site generator, I want to use &lt;a href="https://github.com/features/actions"&gt;Github Actions&lt;/a&gt; to automatically deploy it on push. This requires a quite few steps to setup, but I did it, now so can you!&lt;/p&gt;
 &lt;p&gt;Github actions is still in beta, so you'll have to enroll to use the functionality:
-&lt;img src="posts/images/github-actions-wyam/EnrollActions.png" class="img-fluid" alt="EnrollActions" /&gt;&lt;/p&gt;
+&lt;img src="images/github-actions-wyam/EnrollActions.png" class="img-fluid" alt="EnrollActions" /&gt;&lt;/p&gt;
 &lt;h1 id="setup-procedure"&gt;Setup procedure&lt;/h1&gt;
 &lt;p&gt;This setup assumes you have a local Wyam that is working on your local machine. You can easily set one up by &lt;a href="http://ewinnington.github.io/posts/Switching-to-wyam"&gt;following these steps&lt;/a&gt;. You can always have a look at my &lt;a href="https://github.com/ewinnington/ewinnington.github.io"&gt;https://github.com/ewinnington/ewinnington.github.io&lt;/a&gt; repository to see what I have configured in my config.wyam.&lt;/p&gt;
 &lt;h2 id="personal-page"&gt;Personal page&lt;/h2&gt;
 &lt;p&gt;First you must have a &lt;a href="https://pages.github.com/"&gt;Personal Page&lt;/a&gt; setup in github. This is done by creating a public repository &lt;em&gt;username&lt;/em&gt;.github.io.&lt;/p&gt;
-&lt;p&gt;&lt;img src="posts/images/github-actions-wyam/CreateRepo.png" class="img-fluid" alt="RepoCreation" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src="images/github-actions-wyam/CreateRepo.png" class="img-fluid" alt="RepoCreation" /&gt;&lt;/p&gt;
 &lt;h3 id="create-the-correct-branches"&gt;Create the correct branches&lt;/h3&gt;
 &lt;p&gt;Inside that repository, you will want to create a second branch next to the master: source. This can be done by typing a new branch name in the Switch branches/tags text box.&lt;/p&gt;
-&lt;p&gt;&lt;img src="posts/images/github-actions-wyam/SourceBranch.png" class="img-fluid" alt="SourceBranch" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src="images/github-actions-wyam/SourceBranch.png" class="img-fluid" alt="SourceBranch" /&gt;&lt;/p&gt;
 &lt;p&gt;Next step is to make this branch the default when we push commits to the repository. This is because the &lt;em&gt;master&lt;/em&gt; branch of the username.gitub.io is what is hosted on github's personal pages. Therefore the source of the wyam site has to be stored on another branch. To set the branch as default, Go to &lt;em&gt;Settings&lt;/em&gt;, then &lt;em&gt;Branches&lt;/em&gt; and select &lt;strong&gt;source&lt;/strong&gt; in the dropdown box. Confirm with update.&lt;/p&gt;
-&lt;p&gt;&lt;img src="posts/images/github-actions-wyam/SettingsBranches.png" class="img-fluid" alt="SettingsBranches" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src="images/github-actions-wyam/SettingsBranches.png" class="img-fluid" alt="SettingsBranches" /&gt;&lt;/p&gt;
 &lt;h3 id="prepare-keys-and-install-them"&gt;Prepare keys and install them&lt;/h3&gt;
 &lt;p&gt;We will be doing automated pushes from the &lt;strong&gt;source&lt;/strong&gt; branch to the &lt;strong&gt;master&lt;/strong&gt; branch, this means that we need to setup deploy keys and the associated secrets so that github allows us to update in an automated manner.&lt;/p&gt;
 &lt;p&gt;First, you need to generate your keys locally on your own machine with &lt;code&gt;ssh-keygen -t rsa -b 4096 -C &amp;quot;Github-user-email&amp;#64;example.com&amp;quot; -f gh-pages -N &amp;quot;&amp;quot;&lt;/code&gt;. You will need to replace &lt;em&gt;Github-user-email&amp;#64;example.com&lt;/em&gt; with your own, of course.&lt;/p&gt;
@@ -80,8 +80,8 @@ dim(y) &amp;lt;- c(51, 50, 50, 15, 13)
 &lt;li&gt;gh-pages.pub : the public key file, this will go to the deploy tab on github. I named my deploy key &lt;strong&gt;public ACTIONS_DEPLOY_KEY&lt;/strong&gt; on&lt;/li&gt;
 &lt;/ul&gt;
 &lt;p&gt;Once installed, they should be like this in the github user interface of the repository:&lt;/p&gt;
-&lt;p&gt;&lt;img src="posts/images/github-actions-wyam/SecretsKey.png" class="img-fluid" alt="Secrets" /&gt;
-&lt;img src="posts/images/github-actions-wyam/DeployKey.png" class="img-fluid" alt="Deploy" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src="images/github-actions-wyam/SecretsKey.png" class="img-fluid" alt="Secrets" /&gt;
+&lt;img src="images/github-actions-wyam/DeployKey.png" class="img-fluid" alt="Deploy" /&gt;&lt;/p&gt;
 &lt;h2 id="clone-the-repository-or-import-an-existing-git-repo"&gt;Clone the repository (or import an existing git repo)&lt;/h2&gt;
 &lt;p&gt;If you have nothing yet in the repository, I suppose you can now directly clone it from github using &lt;code&gt;git clone https://github.com/username/username.github.io&lt;/code&gt; and it should come out all pre-prepared for you. Check something in and push.&lt;/p&gt;
 &lt;h3 id="existing-repository"&gt;Existing repository&lt;/h3&gt;
@@ -103,11 +103,11 @@ output
 &lt;/code&gt;&lt;/pre&gt;
 &lt;h2 id="setting-up-the-github-actions"&gt;Setting up the github actions&lt;/h2&gt;
 &lt;p&gt;First you will want to check that you are allowing external workflow scripts to be launched on your repository, since I will be relying on a few steps from pre-existing scripts.&lt;/p&gt;
-&lt;p&gt;&lt;img src="posts/images/github-actions-wyam/SetupActions.png" class="img-fluid" alt="SetupActions.png" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src="images/github-actions-wyam/SetupActions.png" class="img-fluid" alt="SetupActions.png" /&gt;&lt;/p&gt;
 &lt;p&gt;Here the first mistake I made while configuring actions was not going through the Github user interface and instead creating the folders manually in my github repository. I created &lt;em&gt;.github/workflow&lt;/em&gt; instead of &lt;strong&gt;.github/workflows&lt;/strong&gt; which meant that my actions were never kicking off. So don't make my mistake, use the github UI to set up the action and they will create the correct folder structure in your project.&lt;/p&gt;
-&lt;p&gt;&lt;img src="posts/images/github-actions-wyam/SetUpActionsWorkflow.png" class="img-fluid" alt="Actions workflow" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src="images/github-actions-wyam/SetUpActionsWorkflow.png" class="img-fluid" alt="Actions workflow" /&gt;&lt;/p&gt;
 &lt;p&gt;I setup a yaml file name &lt;a href="https://github.com/ewinnington/ewinnington.github.io/blob/source/.github/workflows/wyam.yml"&gt;wyam.yml&lt;/a&gt;. You can see what it looks like here below (I have included the code below on the page for you to copy and paste if you want. Let's go through this line by line.&lt;/p&gt;
-&lt;p&gt;&lt;img src="posts/images/github-actions-wyam/wyam-yaml.png" class="img-fluid" alt="Wyam Yaml" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src="images/github-actions-wyam/wyam-yaml.png" class="img-fluid" alt="Wyam Yaml" /&gt;&lt;/p&gt;
 &lt;p&gt;Line 1: Name of the action that will appear in the action tab&lt;/p&gt;
 &lt;p&gt;Line 3-6: Triggers of the action. Here we trigger the action &lt;strong&gt;on push&lt;/strong&gt; of &lt;strong&gt;branch source&lt;/strong&gt;.&lt;/p&gt;
 &lt;p&gt;Line 8: List of jobs to run.
@@ -151,9 +151,9 @@ jobs:
 &lt;/code&gt;&lt;/pre&gt;
 &lt;h2 id="running-the-workflow"&gt;Running the workflow&lt;/h2&gt;
 &lt;p&gt;Once you have setup this file, you can commit it and it should start off the build action. You can follow the progress of the action workflow on the github action page.&lt;/p&gt;
-&lt;p&gt;&lt;img src="posts/images/github-actions-wyam/ActionOverview.png" class="img-fluid" alt="Action Overview" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src="images/github-actions-wyam/ActionOverview.png" class="img-fluid" alt="Action Overview" /&gt;&lt;/p&gt;
 &lt;p&gt;You can drill down into the details of the actions in case you had any failures. This is where I had the most trouble, but with these instructions, you should be fine.&lt;/p&gt;
-&lt;p&gt;&lt;img src="posts/images/github-actions-wyam/ActionDetail.png" class="img-fluid" alt="Action Detail" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src="images/github-actions-wyam/ActionDetail.png" class="img-fluid" alt="Action Detail" /&gt;&lt;/p&gt;
 &lt;h1 id="closing"&gt;Closing&lt;/h1&gt;
 &lt;p&gt;If all went well, you should now have your personal wyam generated site up and running at &lt;a href="http://username.github.io"&gt;http://username.github.io&lt;/a&gt; .&lt;/p&gt;
 &lt;p&gt;Please feel free to look around both branches &lt;em&gt;source&lt;/em&gt; and &lt;em&gt;master&lt;/em&gt; on &lt;a href="https://github.com/ewinnington/ewinnington.github.io"&gt;my github repo&lt;/a&gt; to understand how my blog is setup.&lt;/p&gt;
