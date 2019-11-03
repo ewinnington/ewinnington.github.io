@@ -1,4 +1,4 @@
-name: Wyam-build-deploy
+name: Wyam
 
 on:
   push:
