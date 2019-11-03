@@ -1,65 +1,103 @@
 ﻿
-
-<!DOCTYPE HTML>
+<!DOCTYPE html>
 <!--
-	Solid State by HTML5 UP
+	Phantom by HTML5 UP
 	html5up.net | @ajlkn
 	Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
 -->
-<html>
+<html lang="en">
+
 	<head>
 		<title>Eric&#x27;s personal page</title>
-		<meta charset="utf-8" />
-		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1" />		
+        <link href="/assets/css/highlight.css" rel="stylesheet">
 		<!--[if lte IE 8]><script src="/assets/js/ie/html5shiv.js"></script><![endif]-->
-		<link rel="stylesheet" href="/assets/sass/main.css" />
-		<!--[if lte IE 9]><link rel="stylesheet" href="/assets/sass/ie9.css" /><![endif]-->
-		<!--[if lte IE 8]><link rel="stylesheet" href="/assets/sass/ie8.css" /><![endif]-->
+		<link rel="stylesheet" href="/assets/css/main.css" />
+		<!--[if lte IE 9]><link rel="stylesheet" href="/assets/css/ie9.css" /><![endif]-->
+		<!--[if lte IE 8]><link rel="stylesheet" href="/assets/css/ie8.css" /><![endif]-->
+        <link href="/assets/css/override.css" rel="stylesheet" />
+
+		<meta name="description" content="You will find here a collection of my thoughts, snippets and articles." />
+		<link type="application/rss+xml" rel="alternate" title="Eric&#x27;s personal page" href="/feed.rss" />
+				<link type="application/atom+xml" rel="alternate" title="Eric&#x27;s personal page" href="/feed.atom" />
+		<link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+		<link rel="icon" href="/favicon.ico" type="image/x-icon">
+
+		<meta name="application-name" content="Eric&#x27;s personal page" />
+		<meta name="msapplication-tooltip" content="Eric&#x27;s personal page" />
+		<meta name="msapplication-starturl" content="/" />
+
+		<meta property="og:title" content="Eric&#x27;s personal page" /> 
+		<meta property="og:type" content="website" />
+		<meta property="og:url" content="http://ewinnington.github.io//" />
+		<!-- TODO: More social graph meta tags -->
+
+        <script src="/assets/js/highlight.pack.js"></script>   
+		
         
 
+		
 	</head>
+
 	<body>
+		<!-- Wrapper -->
+		<div id="wrapper">
 
-		<!-- Page Wrapper -->
-			<div id="page-wrapper">
-				
-				<!-- Header -->
-				<header id="header">
-					<h1><a href="/">Eric&#x27;s personal page</a></h1>
+			<!-- Header -->
+			<header id="header">
+				<div class="inner">
+
+					<!-- Logo -->
+					<a href="/" class="logo">
+						<span class="title">Eric&#x27;s personal page</span>
+					</a>
+
+					<!-- Nav -->
 					<nav>
-						<a href="#menu">Menu</a>
+						<ul>
+							<li><a href="#menu">Menu</a></li>
+						</ul>
 					</nav>
-				</header>
 
-				<!-- Menu -->
-				<nav id="menu">
-					<div class="inner">
-						<h2>Menu</h2>
-						<ul class="links">
-							        <li><a href="/posts">Archive</a></li>
+				</div>
+			</header>
+
+			<!-- Menu -->
+			<nav id="menu">
+				<h2>Menu</h2>
+				<ul>
+					        <li><a href="/posts">Archive</a></li>
         <li><a href="/tags">Tags</a></li>
         <li><a href="/about">About Me</a></li>
 
-						</ul>
-						<a href="#" class="close">Close</a>
-					</div>
-				</nav>
+				</ul>
+			</nav>
 
+			<!-- Main -->
+			<div id="main">
+				<div class="inner">
 
-    <section id="banner">
-  <div class="inner">
-        <h2>You will find here a collection of my thoughts, snippets and articles.</h2>
-      </div>
-</section>
+    <header>
+        <h1>You will find here a collection of my thoughts, snippets and articles.</h1>
+    </header>
 
-				<!-- Main -->
-				<section id="wrapper">
-					<section class="wrapper style2">
-						<div class="inner">
-							
-        <h2>R - Reading JSON from redis</h2>
-        <hr />
-        <p><em>Posted on Monday, March 11, 2019</em></p>
+					
+					<div id="content">
+						
+<div class="row">
+    <div class="8u 12u$(medium)">
+                <div>
+                    <a href="/posts/template">
+                        <h2></h2>
+                    </a>
+                    <p>Posted on Monday, March 11, 2019</p>
+                </div>       
+                <div>
+                    <a href="/posts/R-Redis-Json">
+                        <h2>R - Reading JSON from redis</h2>
+                    </a>
+                    <p>Posted on Monday, March 11, 2019</p>
 <p>I needed to access Redis from R. Here's the code I used to connect, set a value, then deserialize a key that was in json format and publish a message. <a href="https://cran.r-project.org/web/packages/rredis/vignettes/rredis.pdf">Rredis documentation located here</a></p>
 <pre><code>library(&quot;rredis&quot;)
 library(&quot;jsonlite&quot;, lib.loc=&quot;~/R/win-library/3.2&quot;)
@@ -76,9 +114,12 @@ redisPublish(&quot;General:Active&quot;, charToRaw('Message'))
 
 redisClose()
 </code></pre>
-        <h2>R - Reading binary files</h2>
-        <hr />
-        <p><em>Posted on Monday, March 11, 2019</em></p>
+                </div>       
+                <div>
+                    <a href="/posts/R-read-binary-file">
+                        <h2>R - Reading binary files</h2>
+                    </a>
+                    <p>Posted on Monday, March 11, 2019</p>
 <p>I had to get some data out of files written by Fortran. The format was a large array of doubles.</p>
 <ul>
 <li>numeric() for doubles</li>
@@ -91,74 +132,70 @@ y &lt;- readBin (z, numeric(), 51*50*50*15*13)
 close(z)
 dim(y) &lt;- c(51, 50, 50, 15, 13)
 </code></pre>
-        <h2></h2>
-        <hr />
-        <p><em>Posted on Monday, March 11, 2019</em></p>
-        <h2>Listing the channels of the WIFI networks around you in Windows</h2>
-        <hr />
-        <p><em>Posted on Monday, November 3, 2014</em></p>
+                </div>       
+                <div>
+                    <a href="/posts/listing-the-channels-of-the-wifi-networks-around-you-in-windows">
+                        <h2>Listing the channels of the WIFI networks around you in Windows</h2>
+                    </a>
+                    <p>Posted on Monday, November 3, 2014</p>
 <p>To list the network channels in use by the various wi-fi networks, you can always use this command in an Administrator command prompt.</p>
 <pre><code>netsh wlan show all
 </code></pre>
-<ul class="actions">           
-    </ul>
+                </div>       
+        <ul class="pager">
+            <li class="previous">                
+            </li>
+            <li class="next">
+            </li>
+        </ul>
+    </div>
+    <div class="4u 12u$(medium)">
 
-
-						</div>
-					</section>
-				
-
-        <section class="wrapper alt style3">
-            <div class="inner">
-                <h5 class="major">Tags</h5>
-                <div>
-                        <a href="/tags/Migrated" role="button" class="button small"> Migrated (12)</a>
-                        <a href="/tags/Rpi" role="button" class="button small"> Rpi (2)</a>
-                        <a href="/tags/WPF" role="button" class="button small"> WPF (2)</a>
-                        <a href="/tags/R" role="button" class="button small"> R (2)</a>
-                        <a href="/tags/Awesomenote" role="button" class="button small"> Awesomenote (1)</a>
-                        <a href="/tags/OSX" role="button" class="button small"> OSX (1)</a>
-                        <a href="/tags/Chart" role="button" class="button small"> Chart (1)</a>
-                        <a href="/tags/DynamicDataDisplay" role="button" class="button small"> DynamicDataDisplay (1)</a>
-                        <a href="/tags/Evernote" role="button" class="button small"> Evernote (1)</a>
-                        <a href="/tags/Livescrive" role="button" class="button small"> Livescrive (1)</a>
-                </div>
-                <br />
-                <ul class="actions">
-                    <li>
-                        <a href="/tags" class="button">View All Tags &rarr;</a>
-                    </li>
-                </ul>
-            </div>
-        </section>
-            <section class="wrapper style1">
-            <div class="inner">
-                <h5 class="major">Older Posts</h5>
-                <ul>
-                        <li><a href="/posts/oracle-reclaiming-lob-space-after-deletion-clob-blob">Oracle - Reclaiming LOB space after deletion (CLOB, BLOB)</a></li>
-                        <li><a href="/posts/sqlfiddle-a-way-to-share-sql-snippets-so-that-they-can-be-tested-in-the-browser">SqlFiddle - A way to share SQL snippets so that they can be tested in the browser</a></li>
-                        <li><a href="/posts/updating-my-raspberry-pis-ip-address-on-a-distant-server-via-sftp">Updating my Raspberry Pi&#x27;s IP address on a distant server via SFTP</a></li>
-                        <li><a href="/posts/wpf-dynamicdatadisplay-a-chart-component-that-works">WPF - DynamicDataDisplay - A Chart component that works</a></li>
-                </ul>
-                    <ul class="actions">
-                        <li>
-                            <a href="/posts" class="button">Archive &rarr;</a>
-                        </li>
-                    </ul>
-            </div>
-        </section>
-    
-				</section>
-				
-				<!-- Footer -->
-                <footer id="footer">
-                    <div class="inner">
-    <section>
-            <h2>Feeds</h2>
-            <ul class="actions">
-                <li><a href="/feed.rss" class="button small"><i class="fa fa-rss"></i> RSS Feed</a></li>
-                                <li><a href="/feed.atom" class="button small"><i class="fa fa-rss"></i> Atom Feed</a></li>
+            <h5>Tags</h5>
+            <ul class="actions small">
+                    <li><a role="button" href="/tags/Migrated" class="button small">Migrated (12)</a></li>
+                    <li><a role="button" href="/tags/WPF" class="button small">WPF (2)</a></li>
+                    <li><a role="button" href="/tags/Rpi" class="button small">Rpi (2)</a></li>
+                    <li><a role="button" href="/tags/R" class="button small">R (2)</a></li>
+                    <li><a role="button" href="/tags/Awesomenote" class="button small">Awesomenote (1)</a></li>
+                    <li><a role="button" href="/tags/Chart" class="button small">Chart (1)</a></li>
+                    <li><a role="button" href="/tags/DynamicDataDisplay" class="button small">DynamicDataDisplay (1)</a></li>
+                    <li><a role="button" href="/tags/Google" class="button small">Google (1)</a></li>
+                    <li><a role="button" href="/tags/Livescrive" class="button small">Livescrive (1)</a></li>
+                    <li><a role="button" href="/tags/iOS" class="button small">iOS (1)</a></li>
             </ul>
+            <ul class="actions small">
+                <li><a href="/tags" class="button small">View All Tags &rarr;</a></li>
+            </ul>    
+
+            <h5>Older Posts</h5>
+            <ul>
+                    <li><a href="/posts/oracle-reclaiming-lob-space-after-deletion-clob-blob">Oracle - Reclaiming LOB space after deletion (CLOB, BLOB)</a></li>
+                    <li><a href="/posts/sqlfiddle-a-way-to-share-sql-snippets-so-that-they-can-be-tested-in-the-browser">SqlFiddle - A way to share SQL snippets so that they can be tested in the browser</a></li>
+                    <li><a href="/posts/updating-my-raspberry-pis-ip-address-on-a-distant-server-via-sftp">Updating my Raspberry Pi&#x27;s IP address on a distant server via SFTP</a></li>
+                    <li><a href="/posts/google-doesnt-need-to-worry">Google doesn&#x27;t need to worry</a></li>
+            </ul>
+                <ul class="actions small">
+                    <li><a href="/posts" class="button small">Archive &rarr;</a></li>
+                </ul>
+
+        
+    </div> 
+</div>
+
+					</div>
+				</div>
+			</div>
+
+			<!-- Footer -->
+			<footer id="footer">
+				<div class="inner">
+    <section>
+        <h2>Feeds</h2>
+        <ul class="actions small vertical">
+            <li><a href="/feed.rss" class="button small"><i class="fa fa-rss"></i> RSS Feed</a></li>
+                        <li><a href="/feed.atom" class="button small"><i class="fa fa-rss"></i> Atom Feed</a></li>
+        </ul>
     </section>
     <section>
     </section>
@@ -168,16 +205,20 @@ dim(y) &lt;- c(51, 50, 50, 15, 13)
         <li><a href="https://wyam.io">Generated by Wyam</a></li>
     </ul>
 </div>
-                </footer>
-			</div>
+
+			</footer>
+
+		</div>
+		
+		
 
 		<!-- Scripts -->
-			<script src="/assets/js/skel.min.js"></script>
-			<script src="/assets/js/jquery.min.js"></script>
-			<script src="/assets/js/jquery.scrollex.min.js"></script>
-			<script src="/assets/js/util.js"></script>
-            <!--[if lte IE 8]><script src="/assets/js/ie/respond.min.js"></script><![endif]-->
-            <script src="/assets/js/main.js"></script>
+		<script>hljs.initHighlightingOnLoad();</script>
+		<script src="/assets/js/jquery.min.js"></script>
+		<script src="/assets/js/skel.min.js"></script>
+		<script src="/assets/js/util.js"></script>
+		<!--[if lte IE 8]><script src="/assets/js/ie/respond.min.js"></script><![endif]-->
+		<script src="/assets/js/main.js"></script>
 
 	</body>
 

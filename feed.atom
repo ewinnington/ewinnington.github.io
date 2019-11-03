@@ -4,8 +4,14 @@
 	<title>Eric's personal page</title>
 	<link rel="self" href="http://ewinnington.github.io//" />
 	<rights>2019</rights>
-	<updated>2019-11-03T03:25:55Z</updated>
+	<updated>2019-11-03T03:31:55Z</updated>
 	<subtitle>You will find here a collection of my thoughts, snippets and articles.</subtitle>
+	<entry>
+		<id>http://ewinnington.github.io//posts/template</id>
+		<title />
+		<link href="http://ewinnington.github.io//posts/template" />
+		<updated>2019-03-11T00:00:00Z</updated>
+	</entry>
 	<entry>
 		<id>http://ewinnington.github.io//posts/R-Redis-Json</id>
 		<title>R - Reading JSON from redis</title>
@@ -49,12 +55,6 @@ dim(y) &amp;lt;- c(51, 50, 50, 15, 13)
 &lt;/code&gt;&lt;/pre&gt;
 </content>
 		<summary>&lt;p&gt;I had to get some data out of files written by Fortran. The format was a large array of doubles.&lt;/p&gt;</summary>
-	</entry>
-	<entry>
-		<id>http://ewinnington.github.io//posts/template</id>
-		<title />
-		<link href="http://ewinnington.github.io//posts/template" />
-		<updated>2019-03-11T00:00:00Z</updated>
 	</entry>
 	<entry>
 		<id>http://ewinnington.github.io//posts/listing-the-channels-of-the-wifi-networks-around-you-in-windows</id>
@@ -146,6 +146,16 @@ bye
 &lt;/code&gt;&lt;/pre&gt;
 </content>
 		<summary>&lt;p&gt;Now I have my external IP address, I want to collect it on a regular basis and push it to a server that accepts SFTP. Now sadly, that server doesn't allow me to use passkey files, so I have to workaround using sshpass (a great little module allowing to pass passwords to the SSH commands - install as usual with &lt;code&gt;apt-get install sshpass&lt;/code&gt; ).&lt;/p&gt;</summary>
+	</entry>
+	<entry>
+		<id>http://ewinnington.github.io//posts/google-doesnt-need-to-worry</id>
+		<title>Google doesn't need to worry</title>
+		<link href="http://ewinnington.github.io//posts/google-doesnt-need-to-worry" />
+		<updated>2012-11-02T00:00:00Z</updated>
+		<content>&lt;p&gt;There is no competition. Search engine stats from my dad's website.&lt;/p&gt;
+&lt;p&gt;[caption id=&amp;quot;attachment_86&amp;quot; align=&amp;quot;alignnone&amp;quot; width=&amp;quot;628&amp;quot; caption=&amp;quot;There's nothing else to say, just google it.&amp;quot;]&lt;a href="old/images/Image1.png"&gt;&lt;img src="old/images/Image1.png" class="img-fluid" alt="Google 95 %, Bing 3.5%, Yahoo 1.5%" title="Search Engine Stats" /&gt;&lt;/a&gt;[/caption]&lt;/p&gt;
+</content>
+		<summary>&lt;p&gt;There is no competition. Search engine stats from my dad's website.&lt;/p&gt;</summary>
 	</entry>
 	<entry>
 		<id>http://ewinnington.github.io//posts/wpf-dynamicdatadisplay-a-chart-component-that-works</id>
@@ -245,6 +255,15 @@ internal void SendToGraph() {
 		<summary>&lt;p&gt;DynamicDataDisplay is now called &lt;a href="https://github.com/Microsoft/InteractiveDataDisplay.WPF"&gt;InteractiveDataDisplay&lt;/a&gt; and hosted on github. I have not tried the code below on the new version.&lt;/p&gt;</summary>
 	</entry>
 	<entry>
+		<id>http://ewinnington.github.io//posts/wpf-avalondock-a-docking-component</id>
+		<title>WPF - AvalonDock - A Docking component</title>
+		<link href="http://ewinnington.github.io//posts/wpf-avalondock-a-docking-component" />
+		<updated>2012-11-02T00:00:00Z</updated>
+		<content>&lt;p&gt;&lt;a href="http://avalondock.codeplex.com/"&gt;AvalonDock&lt;/a&gt; is another of my tools when it comes to WPF. It allows docking, undocking and resizing of frames inside your application with no hassle what so ever. It's a couple of hours work to make something that will then be extremely valuable to users of your app.&lt;/p&gt;
+</content>
+		<summary>&lt;p&gt;&lt;a href="http://avalondock.codeplex.com/"&gt;AvalonDock&lt;/a&gt; is another of my tools when it comes to WPF. It allows docking, undocking and resizing of frames inside your application with no hassle what so ever. It's a couple of hours work to make something that will then be extremely valuable to users of your app.&lt;/p&gt;</summary>
+	</entry>
+	<entry>
 		<id>http://ewinnington.github.io//posts/getting-my-ip-on-my-raspberrypi-for-a-script</id>
 		<title>Getting my ip on my Raspberry pi for a script</title>
 		<link href="http://ewinnington.github.io//posts/getting-my-ip-on-my-raspberrypi-for-a-script" />
@@ -256,25 +275,6 @@ grep -o '\[0-9\]\\{1,3\\}\\.\[0-9\]\\{1,3\\}\\.\[0-9\]\\{1,3\\}\\.\[0-9\]\\{1,3\
 &lt;p&gt;You can then direct it to a file with the '&amp;gt; myip.txt'&lt;/p&gt;
 </content>
 		<summary>&lt;p&gt;One of those wonderful one-liners when you need your external IP address on a linux box:&lt;/p&gt;</summary>
-	</entry>
-	<entry>
-		<id>http://ewinnington.github.io//posts/google-doesnt-need-to-worry</id>
-		<title>Google doesn't need to worry</title>
-		<link href="http://ewinnington.github.io//posts/google-doesnt-need-to-worry" />
-		<updated>2012-11-02T00:00:00Z</updated>
-		<content>&lt;p&gt;There is no competition. Search engine stats from my dad's website.&lt;/p&gt;
-&lt;p&gt;[caption id=&amp;quot;attachment_86&amp;quot; align=&amp;quot;alignnone&amp;quot; width=&amp;quot;628&amp;quot; caption=&amp;quot;There's nothing else to say, just google it.&amp;quot;]&lt;a href="old/images/Image1.png"&gt;&lt;img src="old/images/Image1.png" class="img-fluid" alt="Google 95 %, Bing 3.5%, Yahoo 1.5%" title="Search Engine Stats" /&gt;&lt;/a&gt;[/caption]&lt;/p&gt;
-</content>
-		<summary>&lt;p&gt;There is no competition. Search engine stats from my dad's website.&lt;/p&gt;</summary>
-	</entry>
-	<entry>
-		<id>http://ewinnington.github.io//posts/wpf-avalondock-a-docking-component</id>
-		<title>WPF - AvalonDock - A Docking component</title>
-		<link href="http://ewinnington.github.io//posts/wpf-avalondock-a-docking-component" />
-		<updated>2012-11-02T00:00:00Z</updated>
-		<content>&lt;p&gt;&lt;a href="http://avalondock.codeplex.com/"&gt;AvalonDock&lt;/a&gt; is another of my tools when it comes to WPF. It allows docking, undocking and resizing of frames inside your application with no hassle what so ever. It's a couple of hours work to make something that will then be extremely valuable to users of your app.&lt;/p&gt;
-</content>
-		<summary>&lt;p&gt;&lt;a href="http://avalondock.codeplex.com/"&gt;AvalonDock&lt;/a&gt; is another of my tools when it comes to WPF. It allows docking, undocking and resizing of frames inside your application with no hassle what so ever. It's a couple of hours work to make something that will then be extremely valuable to users of your app.&lt;/p&gt;</summary>
 	</entry>
 	<entry>
 		<id>http://ewinnington.github.io//posts/migrating-my-mum-to-os-x-experiences</id>
