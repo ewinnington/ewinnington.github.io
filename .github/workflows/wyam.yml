@@ -17,9 +17,9 @@ jobs:
       with:
         dotnet-version: 3.0.100
     - name: Install Wyam
-      run: dotnet tool install wyam.tool
+      run: dotnet tool install --tool-path . wyam.tool
     - name: Publish blog
-      run: wyam -r blog -t SolidState
+      run: ./wyam -r blog -t SolidState
     - name: Deploy
       uses: peaceiris/actions-gh-pages@v2.5.0
       env:
