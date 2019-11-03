@@ -35,8 +35,10 @@
 
         <script src="/assets/js/highlight.pack.js"></script>   
 		
-        
-
+        <meta name="twitter:card" content="summary" />
+<meta name="twitter:site" content="@ewinnington" />
+<meta name="twitter:title" content="Eric&#x27;s personal page" />
+<meta name="twitter:description" content="You will find here a collection of my thoughts, snippets and articles." />
 		
 	</head>
 
@@ -216,24 +218,6 @@ jobs:
 <p>Please feel free to look around both branches <em>source</em> and <em>master</em> on <a href="https://github.com/ewinnington/ewinnington.github.io">my github repo</a> to understand how my blog is setup.</p>
                 </div>       
                 <div>
-                    <a href="/posts/R-read-binary-file">
-                        <h2>R - Reading binary files</h2>
-                    </a>
-                    <p>Posted on Sunday, 3 November 2019</p>
-<p>I had to get some data out of files written by Fortran. The format was a large array of doubles.</p>
-<ul>
-<li>numeric() for doubles</li>
-<li>integer() for integers</li>
-</ul>
-<p>readBin takes the input file and reads the binary data. If you want to read to the end of the file, don't give a dimension as 3rd parameter.</p>
-<pre><code class="language-R">#### Reading value field from file
-z &lt;- file(&quot;/BoundValueRemain.bin&quot;, &quot;rb&quot;)
-y &lt;- readBin (z, numeric(), 51*50*50*15*13)
-close(z)
-dim(y) &lt;- c(51, 50, 50, 15, 13)
-</code></pre>
-                </div>       
-                <div>
                     <a href="/posts/R-Redis-Json">
                         <h2>R - Reading JSON from redis</h2>
                     </a>
@@ -255,6 +239,24 @@ redisPublish(&quot;General:Active&quot;, charToRaw('Message'))
 redisClose()
 </code></pre>
                 </div>       
+                <div>
+                    <a href="/posts/R-read-binary-file">
+                        <h2>R - Reading binary files</h2>
+                    </a>
+                    <p>Posted on Sunday, 3 November 2019</p>
+<p>I had to get some data out of files written by Fortran. The format was a large array of doubles.</p>
+<ul>
+<li>numeric() for doubles</li>
+<li>integer() for integers</li>
+</ul>
+<p>readBin takes the input file and reads the binary data. If you want to read to the end of the file, don't give a dimension as 3rd parameter.</p>
+<pre><code class="language-R">#### Reading value field from file
+z &lt;- file(&quot;/BoundValueRemain.bin&quot;, &quot;rb&quot;)
+y &lt;- readBin (z, numeric(), 51*50*50*15*13)
+close(z)
+dim(y) &lt;- c(51, 50, 50, 15, 13)
+</code></pre>
+                </div>       
         <ul class="pager">
             <li class="previous">                
             </li>
@@ -269,13 +271,13 @@ redisClose()
                     <li><a role="button" href="/tags/Migrated" class="button small">Migrated (38)</a></li>
                     <li><a role="button" href="/tags/WPF" class="button small">WPF (4)</a></li>
                     <li><a role="button" href="/tags/CommandLine" class="button small">CommandLine (4)</a></li>
-                    <li><a role="button" href="/tags/Rpi" class="button small">Rpi (4)</a></li>
                     <li><a role="button" href="/tags/Oracle" class="button small">Oracle (4)</a></li>
+                    <li><a role="button" href="/tags/Rpi" class="button small">Rpi (4)</a></li>
                     <li><a role="button" href="/tags/iOS" class="button small">iOS (3)</a></li>
                     <li><a role="button" href="/tags/OSX" class="button small">OSX (3)</a></li>
-                    <li><a role="button" href="/tags/Livescribe" class="button small">Livescribe (2)</a></li>
-                    <li><a role="button" href="/tags/WinXP" class="button small">WinXP (2)</a></li>
+                    <li><a role="button" href="/tags/Google" class="button small">Google (2)</a></li>
                     <li><a role="button" href="/tags/Python" class="button small">Python (2)</a></li>
+                    <li><a role="button" href="/tags/VisualStudio" class="button small">VisualStudio (2)</a></li>
             </ul>
             <ul class="actions small">
                 <li><a href="/tags" class="button small">View All Tags &rarr;</a></li>
