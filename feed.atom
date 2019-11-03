@@ -1,0 +1,341 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+	<id>http://ewinnington.github.io//</id>
+	<title>Eric's personal page</title>
+	<link rel="self" href="http://ewinnington.github.io//" />
+	<rights>2019</rights>
+	<updated>2019-11-03T03:25:55Z</updated>
+	<subtitle>You will find here a collection of my thoughts, snippets and articles.</subtitle>
+	<entry>
+		<id>http://ewinnington.github.io//posts/R-Redis-Json</id>
+		<title>R - Reading JSON from redis</title>
+		<link href="http://ewinnington.github.io//posts/R-Redis-Json" />
+		<updated>2019-03-11T00:00:00Z</updated>
+		<content>&lt;p&gt;I needed to access Redis from R. Here's the code I used to connect, set a value, then deserialize a key that was in json format and publish a message. &lt;a href="https://cran.r-project.org/web/packages/rredis/vignettes/rredis.pdf"&gt;Rredis documentation located here&lt;/a&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;library(&amp;quot;rredis&amp;quot;)
+library(&amp;quot;jsonlite&amp;quot;, lib.loc=&amp;quot;~/R/win-library/3.2&amp;quot;)
+
+redisConnect()
+redisSet(&amp;quot;x&amp;quot;,rnorm(5))
+redisGet(&amp;quot;x&amp;quot;)
+
+x = fromJSON(redisGet(&amp;quot;ts_1&amp;quot;))
+x$t &amp;lt;-  strptime(x$t, &amp;quot;%Y-%m-%dT%H:%M:%S&amp;quot;)
+
+//https://cran.r-project.org/web/packages/rredis/vignettes/rredis.pdf
+redisPublish(&amp;quot;General:Active&amp;quot;, charToRaw('Message'))
+
+redisClose()
+&lt;/code&gt;&lt;/pre&gt;
+</content>
+		<summary>&lt;p&gt;I needed to access Redis from R. Here's the code I used to connect, set a value, then deserialize a key that was in json format and publish a message. &lt;a href="https://cran.r-project.org/web/packages/rredis/vignettes/rredis.pdf"&gt;Rredis documentation located here&lt;/a&gt;&lt;/p&gt;</summary>
+	</entry>
+	<entry>
+		<id>http://ewinnington.github.io//posts/R-read-binary-file</id>
+		<title>R - Reading binary files</title>
+		<link href="http://ewinnington.github.io//posts/R-read-binary-file" />
+		<updated>2019-03-11T00:00:00Z</updated>
+		<content>&lt;p&gt;I had to get some data out of files written by Fortran. The format was a large array of doubles.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;numeric() for doubles&lt;/li&gt;
+&lt;li&gt;integer() for integers&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;readBin takes the input file and reads the binary data. If you want to read to the end of the file, don't give a dimension as 3rd parameter.&lt;/p&gt;
+&lt;pre&gt;&lt;code class="language-R"&gt;#### Reading value field from file
+z &amp;lt;- file(&amp;quot;/BoundValueRemain.bin&amp;quot;, &amp;quot;rb&amp;quot;)
+y &amp;lt;- readBin (z, numeric(), 51*50*50*15*13)
+close(z)
+dim(y) &amp;lt;- c(51, 50, 50, 15, 13)
+&lt;/code&gt;&lt;/pre&gt;
+</content>
+		<summary>&lt;p&gt;I had to get some data out of files written by Fortran. The format was a large array of doubles.&lt;/p&gt;</summary>
+	</entry>
+	<entry>
+		<id>http://ewinnington.github.io//posts/template</id>
+		<title />
+		<link href="http://ewinnington.github.io//posts/template" />
+		<updated>2019-03-11T00:00:00Z</updated>
+	</entry>
+	<entry>
+		<id>http://ewinnington.github.io//posts/listing-the-channels-of-the-wifi-networks-around-you-in-windows</id>
+		<title>Listing the channels of the WIFI networks around you in Windows</title>
+		<link href="http://ewinnington.github.io//posts/listing-the-channels-of-the-wifi-networks-around-you-in-windows" />
+		<updated>2014-11-03T00:00:00Z</updated>
+		<content>&lt;p&gt;To list the network channels in use by the various wi-fi networks, you can always use this command in an Administrator command prompt.&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;netsh wlan show all
+&lt;/code&gt;&lt;/pre&gt;
+</content>
+		<summary>&lt;p&gt;To list the network channels in use by the various wi-fi networks, you can always use this command in an Administrator command prompt.&lt;/p&gt;</summary>
+	</entry>
+	<entry>
+		<id>http://ewinnington.github.io//posts/oracle-reclaiming-lob-space-after-deletion-clob-blob</id>
+		<title>Oracle - Reclaiming LOB space after deletion (CLOB, BLOB)</title>
+		<link href="http://ewinnington.github.io//posts/oracle-reclaiming-lob-space-after-deletion-clob-blob" />
+		<updated>2014-03-02T00:00:00Z</updated>
+		<content>&lt;p&gt;To reclaim space after a deleting LOBs, use the following commands. XXXXX is my tablename, data is my column name for the lob, in pink the size of the table.&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;Check size of the table XXXXX&lt;/li&gt;
+&lt;/ol&gt;
+&lt;pre&gt;&lt;code&gt;SELECT table_name, column_name, segment_name, a.bytes
+FROM dba_segments a JOIN dba_lobs b
+USING (owner, segment_name)
+WHERE b.table_name = 'XXXXX';
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;&amp;gt;&amp;gt; XXXXX DATA SYS_LOB0000025315C00007$$ 1073741824
+&lt;/code&gt;&lt;/pre&gt;
+&lt;ol start="2"&gt;
+&lt;li&gt;Delete, in my case, I just clean up all files in my table.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;pre&gt;&lt;code&gt;DELETE FROM XXXXX;
+COMMIT;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;&amp;gt;&amp;gt; 183 rows deleted.
+&amp;gt;&amp;gt; committed.
+&lt;/code&gt;&lt;/pre&gt;
+&lt;ol start="3"&gt;
+&lt;li&gt;Ask Oracle to shrink the tablespace used by the LOB column ‘data’. Have a coffee break.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;pre&gt;&lt;code&gt;ALTER TABLE XXXXX MODIFY LOB (data) (SHRINK SPACE);
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;&amp;gt;&amp;gt; table XXXXX altered.
+&lt;/code&gt;&lt;/pre&gt;
+&lt;ol start="4"&gt;
+&lt;li&gt;Check size again:&lt;/li&gt;
+&lt;/ol&gt;
+&lt;pre&gt;&lt;code&gt;SELECT table_name, column_name, segment_name, a.bytes
+FROM dba_segments a JOIN dba_lobs b
+USING (owner, segment_name)
+WHERE b.table_name = 'XXXXX';
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;&amp;gt;&amp;gt; XXXXX DATA SYS\_LOB0000025315C00007$$ 65536
+&lt;/code&gt;&lt;/pre&gt;
+</content>
+		<summary>&lt;p&gt;To reclaim space after a deleting LOBs, use the following commands. XXXXX is my tablename, data is my column name for the lob, in pink the size of the table.&lt;/p&gt;</summary>
+	</entry>
+	<entry>
+		<id>http://ewinnington.github.io//posts/sqlfiddle-a-way-to-share-sql-snippets-so-that-they-can-be-tested-in-the-browser</id>
+		<title>SqlFiddle - A way to share SQL snippets so that they can be tested in the browser</title>
+		<link href="http://ewinnington.github.io//posts/sqlfiddle-a-way-to-share-sql-snippets-so-that-they-can-be-tested-in-the-browser" />
+		<updated>2013-05-11T00:00:00Z</updated>
+		<content>&lt;p&gt;A couple of days ago, I stumbled upon &lt;a href="http://www.sqlfiddle.com/"&gt;SQLFiddle&lt;/a&gt;, a little magical website that allows you to upload a DBSchema and run queries on it, live in the browser. It also allows to share them with other users.&lt;/p&gt;
+&lt;p&gt;In the course of my work, I've often come across a table that has an identifier, a timestamp and a value, and these rows must be mapped to one new row containing multiple identifiers. Two typical examples of that are two identifiers defining a minimum and a maximum value timeseries that must be put into a single row entry and an entry that is built from three identified timeseries representing value, volatility and mean reversion parameters of a stochastic process.&lt;/p&gt;
+&lt;p&gt;In my earlier blog post, &lt;a href="Oracle10g-Pivoting-data.html"&gt;Oracle 10g - Pivoting data&lt;/a&gt;, I provided two different sql scripts to solve the first case min/max time series. You can find the SQLFiddles here:&lt;/p&gt;
+&lt;p&gt;&lt;a href="http://www.sqlfiddle.com/#!4/dce2d/1"&gt;Decode with subquery and max &lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href="http://www.sqlfiddle.com/#!4/dce2d/2"&gt;Decode in one query and max &lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;You can even view your query's execution plan, which is a really nice touch. I'll take the time to share some more oracle sql statements next time in an SQLFiddle.&lt;/p&gt;
+</content>
+		<summary>&lt;p&gt;A couple of days ago, I stumbled upon &lt;a href="http://www.sqlfiddle.com/"&gt;SQLFiddle&lt;/a&gt;, a little magical website that allows you to upload a DBSchema and run queries on it, live in the browser. It also allows to share them with other users.&lt;/p&gt;</summary>
+	</entry>
+	<entry>
+		<id>http://ewinnington.github.io//posts/updating-my-raspberry-pis-ip-address-on-a-distant-server-via-sftp</id>
+		<title>Updating my Raspberry Pi's IP address on a distant server via SFTP</title>
+		<link href="http://ewinnington.github.io//posts/updating-my-raspberry-pis-ip-address-on-a-distant-server-via-sftp" />
+		<updated>2013-05-07T00:00:00Z</updated>
+		<content>&lt;p&gt;Now I have my external IP address, I want to collect it on a regular basis and push it to a server that accepts SFTP. Now sadly, that server doesn't allow me to use passkey files, so I have to workaround using sshpass (a great little module allowing to pass passwords to the SSH commands - install as usual with &lt;code&gt;apt-get install sshpass&lt;/code&gt; ).&lt;/p&gt;
+&lt;p&gt;The EOF at the end of the sftp command is to ensure that I am passing the rest of the commands to the sftp command. I could also use a -b flag and a file, but it would mean one more file to deal with.&lt;/p&gt;
+&lt;pre&gt;&lt;code class="language-bash"&gt;#!/bin/bash
+wget -q -O- http://ip4.me |
+grep -o '\[0-9\]\\{1,3\\}\\.\[0-9\]\\{1,3\\}\\.\[0-9\]\\{1,3\\}\\.\[0-9\]\\{1,3\\}' &amp;gt; ip.txt
+sshpass -p XXXXX sftp -oPort=22 username&amp;#64;xxx.cloudplush.com &amp;lt;&amp;lt;-EOF
+cd /location
+put ip.txt
+bye
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Then it was a simple matter of putting that in a crontab job, running it every five minutes is enough. Calling crontab crons.txt launched the job. crontab -l lists the jobs.&lt;/p&gt;
+&lt;pre&gt;&lt;code class="language-cron"&gt;\*/5 \* \* \* \* ~/go.sh &amp;gt;/dev/null
+&lt;/code&gt;&lt;/pre&gt;
+</content>
+		<summary>&lt;p&gt;Now I have my external IP address, I want to collect it on a regular basis and push it to a server that accepts SFTP. Now sadly, that server doesn't allow me to use passkey files, so I have to workaround using sshpass (a great little module allowing to pass passwords to the SSH commands - install as usual with &lt;code&gt;apt-get install sshpass&lt;/code&gt; ).&lt;/p&gt;</summary>
+	</entry>
+	<entry>
+		<id>http://ewinnington.github.io//posts/wpf-dynamicdatadisplay-a-chart-component-that-works</id>
+		<title>WPF - DynamicDataDisplay - A Chart component that works</title>
+		<link href="http://ewinnington.github.io//posts/wpf-dynamicdatadisplay-a-chart-component-that-works" />
+		<updated>2012-11-02T00:00:00Z</updated>
+		<content>&lt;h1 id="note"&gt;2019 Note&lt;/h1&gt;
+&lt;p&gt;DynamicDataDisplay is now called &lt;a href="https://github.com/Microsoft/InteractiveDataDisplay.WPF"&gt;InteractiveDataDisplay&lt;/a&gt; and hosted on github. I have not tried the code below on the new version.&lt;/p&gt;
+&lt;h1 id="old-article"&gt;Old Article&lt;/h1&gt;
+&lt;p&gt;&lt;a href="http://dynamicdatadisplay.codeplex.com/"&gt;DynamicDataDisplay&lt;/a&gt; is really one of those components that make life easier for WPF programmers looking for a easy, free and performant chart.&lt;/p&gt;
+&lt;p&gt;&lt;a href="old/images/DDD.png"&gt;&lt;img src="old/images/DDD.png" class="img-fluid" alt="" title="Scenarios viewed in DDD" /&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;With many functionalities integrated like a fit to view, screen shots and a quick help, it has a place in any application.&lt;/p&gt;
+&lt;p&gt;I'm crossposting the code from my answer on &lt;a href="http://stackoverflow.com/questions/7090345/dynamic-line-chart-in-c-sharp-wpf-application/7092654#7092654"&gt;Stackoverflow&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;To add it in Visual Studio, on the project's References folder -&amp;gt; Add Reference. Add the DynamicDataDisplay.dll to your project.&lt;/p&gt;
+&lt;p&gt;The namespace for DDD is Namespace: &lt;strong&gt;xmlns:d3=&amp;quot;http://research.microsoft.com/DynamicDataDisplay/1.0&amp;quot;&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;XAML Used to create the graph.&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt; &amp;lt;d3:ChartPlotter Name=&amp;quot;plotter&amp;quot; Background=&amp;quot;White&amp;quot;&amp;gt;
+    &amp;lt;d3:ChartPlotter.Resources&amp;gt;
+        &amp;lt;conv:Date2AxisConverter x:Key=&amp;quot;Date2AxisConverter&amp;quot;/&amp;gt;
+    &amp;lt;/d3:ChartPlotter.Resources&amp;gt;
+    &amp;lt;d3:ChartPlotter.HorizontalAxis&amp;gt;
+        &amp;lt;d3:HorizontalDateTimeAxis Name=&amp;quot;dateAxis&amp;quot;/&amp;gt;
+    &amp;lt;/d3:ChartPlotter.HorizontalAxis&amp;gt;
+    &amp;lt;d3:Header Content=&amp;quot;{Binding PlotHeader}&amp;quot;/&amp;gt;
+    &amp;lt;d3:VerticalAxisTitle Content=&amp;quot;Value&amp;quot;/&amp;gt;
+    &amp;lt;d3:HorizontalAxisTitle Content=&amp;quot;Date&amp;quot;/&amp;gt;
+&amp;lt;/d3:ChartPlotter&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;The Date to Axis Converter I used for the Horizontal axis:&lt;/p&gt;
+&lt;pre&gt;&lt;code class="language-CSharp"&gt;public class Date2AxisConverter : IValueConverter
+{
+    #region IValueConverter Members
+    public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+    {
+        if (value is DateTime &amp;amp;&amp;amp; targetType == typeof(double))
+        {
+            return ((DateTime)value).Ticks / 10000000000.0;
+            // See constructor of class Microsoft.Research.DynamicDataDisplay.Charts.DateTimeAxis
+            // File: DynamicDataDisplay.Charts.Axes.DateTime.DateTimeAxis.cs
+
+            // alternatively, see the internal class Microsoft.Research.DynamicDataDisplay.Charts.DateTimeToDoubleConversion
+
+        }
+        return null;
+    }
+
+    public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+    {
+        // try Microsoft.Research.DynamicDataDisplay.Charts.DateTimeAxis.DoubleToDate
+        throw new NotSupportedException();
+    }
+
+    #endregion
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;C# Code: Clearing Graph and Creating line graph, Here my StockasticProcessPoint is a structure with a field &amp;quot;DateTime t&amp;quot; and a field &amp;quot;Double value&amp;quot;. Adding multiple lines gives the chart presented in the image above.&lt;/p&gt;
+&lt;pre&gt;&lt;code class="language-CSharp"&gt;using Microsoft.Research.DynamicDataDisplay;
+using System.Collections.ObjectModel;
+using Microsoft.Research.DynamicDataDisplay.DataSources;
+
+public void ClearLines()
+{
+    var lgc = new Collection&amp;lt;IPlotterElement&amp;gt;();
+    foreach (var x in plotter.Children)
+    {
+        if (x is LineGraph || x is ElementMarkerPointsGraph)
+            lgc.Add(x);
+    }
+
+    foreach (var x in lgc)
+    {
+        plotter.Children.Remove(x);
+    }
+}
+
+internal void SendToGraph() {
+
+    IPointDataSource _eds = null;
+    LineGraph line;
+
+    ClearLines();
+
+    EnumerableDataSource&amp;lt;StochasticProcessPoint&amp;gt; _edsSPP;
+    _edsSPP = new EnumerableDataSource&amp;lt;StochasticProcessPoint&amp;gt;(myListOfStochasticProcessPoints);
+    _edsSPP.SetXMapping(p =&amp;gt; dateAxis.ConvertToDouble(p.t));
+    _edsSPP.SetYMapping(p =&amp;gt; p.value);
+    _eds = _edsSPP;
+
+    line = new LineGraph(_eds);
+    line.LinePen = new Pen(Brushes.Black, 2);
+    line.Description = new PenDescription(Description);
+    plotter.Children.Add(line);
+    plotter.FitToView();
+}
+&lt;/code&gt;&lt;/pre&gt;
+</content>
+		<summary>&lt;p&gt;DynamicDataDisplay is now called &lt;a href="https://github.com/Microsoft/InteractiveDataDisplay.WPF"&gt;InteractiveDataDisplay&lt;/a&gt; and hosted on github. I have not tried the code below on the new version.&lt;/p&gt;</summary>
+	</entry>
+	<entry>
+		<id>http://ewinnington.github.io//posts/getting-my-ip-on-my-raspberrypi-for-a-script</id>
+		<title>Getting my ip on my Raspberry pi for a script</title>
+		<link href="http://ewinnington.github.io//posts/getting-my-ip-on-my-raspberrypi-for-a-script" />
+		<updated>2012-11-02T00:00:00Z</updated>
+		<content>&lt;p&gt;One of those wonderful one-liners when you need your external IP address on a linux box:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;wget -q -O- http://ip4.me | 
+grep -o '\[0-9\]\\{1,3\\}\\.\[0-9\]\\{1,3\\}\\.\[0-9\]\\{1,3\\}\\.\[0-9\]\\{1,3\\}'
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;You can then direct it to a file with the '&amp;gt; myip.txt'&lt;/p&gt;
+</content>
+		<summary>&lt;p&gt;One of those wonderful one-liners when you need your external IP address on a linux box:&lt;/p&gt;</summary>
+	</entry>
+	<entry>
+		<id>http://ewinnington.github.io//posts/google-doesnt-need-to-worry</id>
+		<title>Google doesn't need to worry</title>
+		<link href="http://ewinnington.github.io//posts/google-doesnt-need-to-worry" />
+		<updated>2012-11-02T00:00:00Z</updated>
+		<content>&lt;p&gt;There is no competition. Search engine stats from my dad's website.&lt;/p&gt;
+&lt;p&gt;[caption id=&amp;quot;attachment_86&amp;quot; align=&amp;quot;alignnone&amp;quot; width=&amp;quot;628&amp;quot; caption=&amp;quot;There's nothing else to say, just google it.&amp;quot;]&lt;a href="old/images/Image1.png"&gt;&lt;img src="old/images/Image1.png" class="img-fluid" alt="Google 95 %, Bing 3.5%, Yahoo 1.5%" title="Search Engine Stats" /&gt;&lt;/a&gt;[/caption]&lt;/p&gt;
+</content>
+		<summary>&lt;p&gt;There is no competition. Search engine stats from my dad's website.&lt;/p&gt;</summary>
+	</entry>
+	<entry>
+		<id>http://ewinnington.github.io//posts/wpf-avalondock-a-docking-component</id>
+		<title>WPF - AvalonDock - A Docking component</title>
+		<link href="http://ewinnington.github.io//posts/wpf-avalondock-a-docking-component" />
+		<updated>2012-11-02T00:00:00Z</updated>
+		<content>&lt;p&gt;&lt;a href="http://avalondock.codeplex.com/"&gt;AvalonDock&lt;/a&gt; is another of my tools when it comes to WPF. It allows docking, undocking and resizing of frames inside your application with no hassle what so ever. It's a couple of hours work to make something that will then be extremely valuable to users of your app.&lt;/p&gt;
+</content>
+		<summary>&lt;p&gt;&lt;a href="http://avalondock.codeplex.com/"&gt;AvalonDock&lt;/a&gt; is another of my tools when it comes to WPF. It allows docking, undocking and resizing of frames inside your application with no hassle what so ever. It's a couple of hours work to make something that will then be extremely valuable to users of your app.&lt;/p&gt;</summary>
+	</entry>
+	<entry>
+		<id>http://ewinnington.github.io//posts/migrating-my-mum-to-os-x-experiences</id>
+		<title>Migrating my mum to OS X - Experiences</title>
+		<link href="http://ewinnington.github.io//posts/migrating-my-mum-to-os-x-experiences" />
+		<updated>2012-10-01T00:00:00Z</updated>
+		<content>&lt;p&gt;So I spent the whole week-end migrating my mum from the old Windows XP to the new iMac.&lt;/p&gt;
+&lt;p&gt;First of all, the iMac is gorgeous. Take it out of the box, put it on the desktop, plug in the power cable and you are done. Amazing! If there was no legacy to migrate, it would of been a matter of minutes to be done, but... Now comes the hard part, migrating: The 50'000+ Emails, 1'500+ contacts sorted into groups, 60+ GB of Music, 30+ GB of data files.&lt;/p&gt;
+&lt;p&gt;The software we installed is:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Pages and Microsoft Office 2011 for Mac - For the office stuff, Pages was an addition to see if it could be used for more design oriented work (instead of Quark or InDesign). Both Purchased.&lt;/li&gt;
+&lt;li&gt;Roxio Toast 11 - The old burning program that support .nrg (Nero) file images. I tried to convert the images to ISO, but since they are binary images of Audio cds, none of the conversion tools (nrg2iso, nrg4iso, etc..) worked. Purchased&lt;/li&gt;
+&lt;li&gt;Inkscape - For the existing cd centers, previously in Corel draw (.cdr), the files were converted on the PC both to SVG and to PDF so that they could be stored and later edited on the mac. Free.&lt;/li&gt;
+&lt;li&gt;Audacity - For audio processing of aquired music. Free.&lt;/li&gt;
+&lt;li&gt;VLC - Video player supporting every format under the sun. Free.&lt;/li&gt;
+&lt;li&gt;Transmission - Torrent software. Free.&lt;/li&gt;
+&lt;li&gt;Gimp and Paintbrush - Both image editing software. Free.&lt;/li&gt;
+&lt;li&gt;Blue Griffon - WYSIWYG HTML editing. Free (with no addons).&lt;/li&gt;
+&lt;li&gt;FileZilla - FTP client for updating the websites. Free.&lt;/li&gt;
+&lt;li&gt;&lt;a href="http://www.avery.com/avery/en_us/Templates-%26-Software/Avery-DesignPro-for-Mac.htm"&gt;Avery DesignPro® for Mac®&lt;/a&gt; - For making new CD labels, it's an amazing piece of software. Just works. Free.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;For the browser, we simply used Safari.&lt;/p&gt;
+&lt;p&gt;For the mail, currently we are using the Apple Mail app, but it was not very successful so far. Maybe it will change. I hope to post more about the mail in a further blog. Both the import of the emails and the import of the address book posed substantial challenges.&lt;/p&gt;
+&lt;p&gt;For the music, we are using iTunes to manage the collection, although we disabled the &amp;quot;Auto sort the music collection&amp;quot; option of iTunes so that the music was not moved around into new folders. The music collection being extensive and mostly untagged makes iTune's management a nightmare.&lt;/p&gt;
+&lt;p&gt;Installing the printers (and accessing the multifunction scanners on top of these) was easy  as pie. By just plugging in the printers, they were detected, an apple update was downloaded and they were ready to be used. Both the HP and the Brother worked. We used Image Capture to do scanning.&lt;/p&gt;
+</content>
+		<summary>&lt;p&gt;So I spent the whole week-end migrating my mum from the old Windows XP to the new iMac.&lt;/p&gt;</summary>
+	</entry>
+	<entry>
+		<id>http://ewinnington.github.io//posts/Awesomenote-and-Evernote</id>
+		<title>Awesomenote and Evernote</title>
+		<link href="http://ewinnington.github.io//posts/Awesomenote-and-Evernote" />
+		<updated>2012-10-01T00:00:00Z</updated>
+		<content>&lt;p&gt;A fantastic feature of Awesomenote is that it synchronizes with both Evernote and Google docs. This means your notes follow you to every platform and device you can imagine or access the net with.&lt;/p&gt;
+&lt;p&gt;In Evernote, your notes appear without any of the Awesomenote backgrounds, but with a short amount of metadata at the bottom of the note.&lt;/p&gt;
+&lt;p&gt;Once sync is setup, it is one button press away. Ensuring you are always backed up and accessible.&lt;/p&gt;
+&lt;p&gt;&lt;a href="old/images/20120110-231524.jpg"&gt;&lt;img src="old/images/20120110-231524.jpg" class="img-fluid" alt="" title="20120110-231524.jpg" /&gt;&lt;/a&gt;&lt;/p&gt;
+</content>
+		<summary>&lt;p&gt;A fantastic feature of Awesomenote is that it synchronizes with both Evernote and Google docs. This means your notes follow you to every platform and device you can imagine or access the net with.&lt;/p&gt;</summary>
+	</entry>
+	<entry>
+		<id>http://ewinnington.github.io//posts/one-app-that-changes-the-iphone</id>
+		<title>AwesomeNote - One app that changes the iPhone</title>
+		<link href="http://ewinnington.github.io//posts/one-app-that-changes-the-iphone" />
+		<updated>2012-02-01T00:00:00Z</updated>
+		<content>&lt;p&gt;I have started to use &lt;a href="http://www.bridworks.com/anote/en/main/index.php"&gt;AwesomeNote&lt;/a&gt; (or aNote) and I really have to say, it is amazing. It really feels like it brings functionalities that were simply not available in the base Calendar, Note and Email applications.&lt;/p&gt;
+&lt;p&gt;I have been using it to create a personal diary, and the app makes it easy to insert pictures taken with the camera into a note and associate it with a location (restaurants, shops, ...). It would seem like an evident idea to be able to link locations with notes, but sadly the standard apps dont seem to agree.&lt;/p&gt;
+&lt;p&gt;Now even when creating an Email, I first prepare it in awesomeNote (for things like adding multiple pictures with descriptions, or maps with annotations) before using the Send by Email function which generates an HTML page and then exports it to the iPhones native mail application.&lt;/p&gt;
+&lt;p&gt;And I still havent said anything about the rest of what it can do. If you dont have it, try it.&lt;/p&gt;
+</content>
+		<summary>&lt;p&gt;I have started to use &lt;a href="http://www.bridworks.com/anote/en/main/index.php"&gt;AwesomeNote&lt;/a&gt; (or aNote) and I really have to say, it is amazing. It really feels like it brings functionalities that were simply not available in the base Calendar, Note and Email applications.&lt;/p&gt;</summary>
+	</entry>
+	<entry>
+		<id>http://ewinnington.github.io//posts/screen-and-paper-convergence</id>
+		<title>Screen and paper convergence</title>
+		<link href="http://ewinnington.github.io//posts/screen-and-paper-convergence" />
+		<updated>2012-01-01T00:00:00Z</updated>
+		<content>&lt;p&gt;The Livescribe pen is one of the devices which bridges the real and digital world. All your notes, on paper, always accessible wherever you are.&lt;/p&gt;
+&lt;p&gt;You write on the provided paper, synchronize and its done. Even for drawings, they appear identically.&lt;/p&gt;
+&lt;p&gt;&lt;a href="old/images/20120101-031738.jpg"&gt;&lt;img src="old/images/20120101-031738.jpg" class="img-fluid" alt="" title="20120102-153835.jpg" /&gt;&lt;/a&gt;&lt;/p&gt;
+</content>
+		<summary>&lt;p&gt;The Livescribe pen is one of the devices which bridges the real and digital world. All your notes, on paper, always accessible wherever you are.&lt;/p&gt;</summary>
+	</entry>
+</feed>

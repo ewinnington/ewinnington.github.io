@@ -1,0 +1,184 @@
+﻿
+
+<!DOCTYPE HTML>
+<!--
+	Solid State by HTML5 UP
+	html5up.net | @ajlkn
+	Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
+-->
+<html>
+	<head>
+		<title>Eric&#x27;s personal page</title>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<!--[if lte IE 8]><script src="/assets/js/ie/html5shiv.js"></script><![endif]-->
+		<link rel="stylesheet" href="/assets/sass/main.css" />
+		<!--[if lte IE 9]><link rel="stylesheet" href="/assets/sass/ie9.css" /><![endif]-->
+		<!--[if lte IE 8]><link rel="stylesheet" href="/assets/sass/ie8.css" /><![endif]-->
+        
+
+	</head>
+	<body>
+
+		<!-- Page Wrapper -->
+			<div id="page-wrapper">
+				
+				<!-- Header -->
+				<header id="header">
+					<h1><a href="/">Eric&#x27;s personal page</a></h1>
+					<nav>
+						<a href="#menu">Menu</a>
+					</nav>
+				</header>
+
+				<!-- Menu -->
+				<nav id="menu">
+					<div class="inner">
+						<h2>Menu</h2>
+						<ul class="links">
+							        <li><a href="/posts">Archive</a></li>
+        <li><a href="/tags">Tags</a></li>
+        <li><a href="/about">About Me</a></li>
+
+						</ul>
+						<a href="#" class="close">Close</a>
+					</div>
+				</nav>
+
+
+    <section id="banner">
+  <div class="inner">
+        <h2>You will find here a collection of my thoughts, snippets and articles.</h2>
+      </div>
+</section>
+
+				<!-- Main -->
+				<section id="wrapper">
+					<section class="wrapper style2">
+						<div class="inner">
+							
+        <h2>R - Reading JSON from redis</h2>
+        <hr />
+        <p><em>Posted on Monday, March 11, 2019</em></p>
+<p>I needed to access Redis from R. Here's the code I used to connect, set a value, then deserialize a key that was in json format and publish a message. <a href="https://cran.r-project.org/web/packages/rredis/vignettes/rredis.pdf">Rredis documentation located here</a></p>
+<pre><code>library(&quot;rredis&quot;)
+library(&quot;jsonlite&quot;, lib.loc=&quot;~/R/win-library/3.2&quot;)
+
+redisConnect()
+redisSet(&quot;x&quot;,rnorm(5))
+redisGet(&quot;x&quot;)
+
+x = fromJSON(redisGet(&quot;ts_1&quot;))
+x$t &lt;-  strptime(x$t, &quot;%Y-%m-%dT%H:%M:%S&quot;)
+
+//https://cran.r-project.org/web/packages/rredis/vignettes/rredis.pdf
+redisPublish(&quot;General:Active&quot;, charToRaw('Message'))
+
+redisClose()
+</code></pre>
+        <h2>R - Reading binary files</h2>
+        <hr />
+        <p><em>Posted on Monday, March 11, 2019</em></p>
+<p>I had to get some data out of files written by Fortran. The format was a large array of doubles.</p>
+<ul>
+<li>numeric() for doubles</li>
+<li>integer() for integers</li>
+</ul>
+<p>readBin takes the input file and reads the binary data. If you want to read to the end of the file, don't give a dimension as 3rd parameter.</p>
+<pre><code class="language-R">#### Reading value field from file
+z &lt;- file(&quot;/BoundValueRemain.bin&quot;, &quot;rb&quot;)
+y &lt;- readBin (z, numeric(), 51*50*50*15*13)
+close(z)
+dim(y) &lt;- c(51, 50, 50, 15, 13)
+</code></pre>
+        <h2></h2>
+        <hr />
+        <p><em>Posted on Monday, March 11, 2019</em></p>
+        <h2>Listing the channels of the WIFI networks around you in Windows</h2>
+        <hr />
+        <p><em>Posted on Monday, November 3, 2014</em></p>
+<p>To list the network channels in use by the various wi-fi networks, you can always use this command in an Administrator command prompt.</p>
+<pre><code>netsh wlan show all
+</code></pre>
+<ul class="actions">           
+    </ul>
+
+
+						</div>
+					</section>
+				
+
+        <section class="wrapper alt style3">
+            <div class="inner">
+                <h5 class="major">Tags</h5>
+                <div>
+                        <a href="/tags/Migrated" role="button" class="button small"> Migrated (12)</a>
+                        <a href="/tags/Rpi" role="button" class="button small"> Rpi (2)</a>
+                        <a href="/tags/WPF" role="button" class="button small"> WPF (2)</a>
+                        <a href="/tags/R" role="button" class="button small"> R (2)</a>
+                        <a href="/tags/Awesomenote" role="button" class="button small"> Awesomenote (1)</a>
+                        <a href="/tags/OSX" role="button" class="button small"> OSX (1)</a>
+                        <a href="/tags/Chart" role="button" class="button small"> Chart (1)</a>
+                        <a href="/tags/DynamicDataDisplay" role="button" class="button small"> DynamicDataDisplay (1)</a>
+                        <a href="/tags/Evernote" role="button" class="button small"> Evernote (1)</a>
+                        <a href="/tags/Livescrive" role="button" class="button small"> Livescrive (1)</a>
+                </div>
+                <br />
+                <ul class="actions">
+                    <li>
+                        <a href="/tags" class="button">View All Tags &rarr;</a>
+                    </li>
+                </ul>
+            </div>
+        </section>
+            <section class="wrapper style1">
+            <div class="inner">
+                <h5 class="major">Older Posts</h5>
+                <ul>
+                        <li><a href="/posts/oracle-reclaiming-lob-space-after-deletion-clob-blob">Oracle - Reclaiming LOB space after deletion (CLOB, BLOB)</a></li>
+                        <li><a href="/posts/sqlfiddle-a-way-to-share-sql-snippets-so-that-they-can-be-tested-in-the-browser">SqlFiddle - A way to share SQL snippets so that they can be tested in the browser</a></li>
+                        <li><a href="/posts/updating-my-raspberry-pis-ip-address-on-a-distant-server-via-sftp">Updating my Raspberry Pi&#x27;s IP address on a distant server via SFTP</a></li>
+                        <li><a href="/posts/wpf-dynamicdatadisplay-a-chart-component-that-works">WPF - DynamicDataDisplay - A Chart component that works</a></li>
+                </ul>
+                    <ul class="actions">
+                        <li>
+                            <a href="/posts" class="button">Archive &rarr;</a>
+                        </li>
+                    </ul>
+            </div>
+        </section>
+    
+				</section>
+				
+				<!-- Footer -->
+                <footer id="footer">
+                    <div class="inner">
+    <section>
+            <h2>Feeds</h2>
+            <ul class="actions">
+                <li><a href="/feed.rss" class="button small"><i class="fa fa-rss"></i> RSS Feed</a></li>
+                                <li><a href="/feed.atom" class="button small"><i class="fa fa-rss"></i> Atom Feed</a></li>
+            </ul>
+    </section>
+    <section>
+    </section>
+    <ul class="copyright">
+        <li>Copyright © 2019</li>
+        <li>Design: <a href="http://html5up.net">HTML5 UP</a></li>
+        <li><a href="https://wyam.io">Generated by Wyam</a></li>
+    </ul>
+</div>
+                </footer>
+			</div>
+
+		<!-- Scripts -->
+			<script src="/assets/js/skel.min.js"></script>
+			<script src="/assets/js/jquery.min.js"></script>
+			<script src="/assets/js/jquery.scrollex.min.js"></script>
+			<script src="/assets/js/util.js"></script>
+            <!--[if lte IE 8]><script src="/assets/js/ie/respond.min.js"></script><![endif]-->
+            <script src="/assets/js/main.js"></script>
+
+	</body>
+
+</html>
