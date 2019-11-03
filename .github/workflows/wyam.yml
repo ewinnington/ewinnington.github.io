@@ -17,7 +17,7 @@ jobs:
       with:
         dotnet-version: 3.0.100
     - name: Install Wyam
-      run: dotnet tool install -g wyam.tool
+      run: dotnet tool install wyam.tool
     - name: Publish blog
       run: wyam -r blog -t SolidState
     - name: Deploy
