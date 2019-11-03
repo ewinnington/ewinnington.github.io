@@ -1,5 +1,5 @@
 Title: Reflections on Webassembly - May/Nov 19
-Published: 03/11/2019 18:00 
+Published: 03/11/2019 17:00 
 Tags: [Webassembly, Thoughts] 
 ---
 
