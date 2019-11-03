@@ -4,19 +4,13 @@
 	<title>Eric's personal page</title>
 	<link rel="self" href="http://ewinnington.github.io//" />
 	<rights>2019</rights>
-	<updated>2019-11-03T03:31:55Z</updated>
+	<updated>2019-11-03T03:42:02Z</updated>
 	<subtitle>You will find here a collection of my thoughts, snippets and articles.</subtitle>
-	<entry>
-		<id>http://ewinnington.github.io//posts/template</id>
-		<title />
-		<link href="http://ewinnington.github.io//posts/template" />
-		<updated>2019-03-11T00:00:00Z</updated>
-	</entry>
 	<entry>
 		<id>http://ewinnington.github.io//posts/R-Redis-Json</id>
 		<title>R - Reading JSON from redis</title>
 		<link href="http://ewinnington.github.io//posts/R-Redis-Json" />
-		<updated>2019-03-11T00:00:00Z</updated>
+		<updated>2019-11-03T00:00:00Z</updated>
 		<content>&lt;p&gt;I needed to access Redis from R. Here's the code I used to connect, set a value, then deserialize a key that was in json format and publish a message. &lt;a href="https://cran.r-project.org/web/packages/rredis/vignettes/rredis.pdf"&gt;Rredis documentation located here&lt;/a&gt;&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;library(&amp;quot;rredis&amp;quot;)
 library(&amp;quot;jsonlite&amp;quot;, lib.loc=&amp;quot;~/R/win-library/3.2&amp;quot;)
@@ -40,7 +34,7 @@ redisClose()
 		<id>http://ewinnington.github.io//posts/R-read-binary-file</id>
 		<title>R - Reading binary files</title>
 		<link href="http://ewinnington.github.io//posts/R-read-binary-file" />
-		<updated>2019-03-11T00:00:00Z</updated>
+		<updated>2019-11-03T00:00:00Z</updated>
 		<content>&lt;p&gt;I had to get some data out of files written by Fortran. The format was a large array of doubles.&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;numeric() for doubles&lt;/li&gt;
@@ -57,10 +51,157 @@ dim(y) &amp;lt;- c(51, 50, 50, 15, 13)
 		<summary>&lt;p&gt;I had to get some data out of files written by Fortran. The format was a large array of doubles.&lt;/p&gt;</summary>
 	</entry>
 	<entry>
+		<id>http://ewinnington.github.io//posts/template</id>
+		<title />
+		<link href="http://ewinnington.github.io//posts/template" />
+		<updated>2019-11-03T00:00:00Z</updated>
+	</entry>
+	<entry>
+		<id>http://ewinnington.github.io//posts/Switching-to-wyam</id>
+		<title>Switching to Wyam</title>
+		<link href="http://ewinnington.github.io//posts/Switching-to-wyam" />
+		<updated>2019-10-23T00:00:00Z</updated>
+		<content>&lt;p&gt;After many years with a half abandoned Wordpress blog, I'm switching to &lt;a href="https://wyam.io/"&gt;Wyam&lt;/a&gt; for a static site generator.&lt;/p&gt;
+&lt;p&gt;This blog was generated as follows:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;dotnet tool install -g wyam.tool
+wyam new -r blog
+wyam -r blog -t Phantom -p -w
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;The last command makes wyam host the blog using the recipe blog, the theme Phantom (-t), in preview mode (-p) so that you can access it locally and in Watch mode (-w), so that you can see changes without having to re-run the build line.&lt;/p&gt;
+&lt;p&gt;I also exported the previous posts from Wordpress and will be adding those that are not too outdated back here.&lt;/p&gt;
+</content>
+		<summary>&lt;p&gt;After many years with a half abandoned Wordpress blog, I'm switching to &lt;a href="https://wyam.io/"&gt;Wyam&lt;/a&gt; for a static site generator.&lt;/p&gt;</summary>
+	</entry>
+	<entry>
+		<id>http://ewinnington.github.io//posts/append-files-together-using-windows-command-line</id>
+		<title>Append files together using windows command line</title>
+		<link href="http://ewinnington.github.io//posts/append-files-together-using-windows-command-line" />
+		<updated>2015-06-26T00:00:00Z</updated>
+		<content>&lt;p&gt;In the command prompt, an easy way to append files together is to use the &amp;quot;type&amp;quot; command and pipe it to an output file.&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;type Results\_\* &amp;gt; Results\_combined.txt&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;To call this from a piece of C# code, I have been using the command line with the /c parameter, which makes it execute the attached command.&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;cmd /c type Results\_\* &amp;gt; Results\_combined.txt&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;C# Example usage:&lt;/p&gt;
+&lt;pre&gt;&lt;code class="language-CSharp"&gt;using (Process RunProc = new Process()) {
+    string s = &amp;quot;cmd.exe&amp;quot;;  
+    string p = &amp;quot;/c type Results\_\* &amp;gt; Results\_combined.txt&amp;quot;;
+    RunProc.StartInfo = new ProcessStartInfo(s, p);
+    RunProc.Start();    
+    RunProc.WaitForExit();
+}
+&lt;/code&gt;&lt;/pre&gt;
+</content>
+		<summary>&lt;p&gt;In the command prompt, an easy way to append files together is to use the "type" command and pipe it to an output file.&lt;/p&gt;</summary>
+	</entry>
+	<entry>
+		<id>http://ewinnington.github.io//posts/tail-command-with-powershell</id>
+		<title>Tail command with powershell</title>
+		<link href="http://ewinnington.github.io//posts/tail-command-with-powershell" />
+		<updated>2015-02-19T00:00:00Z</updated>
+		<content>&lt;p&gt;Powershell has now got a command to see the last lines of a file. The syntax is for the last 10 lines:&lt;/p&gt;
+&lt;pre&gt;&lt;code class="language-powershell"&gt;Get-Content _filename _\-Tail 10
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;It also has a -wait command that blocks and shows new entries as they arrive.&lt;/p&gt;
+</content>
+		<summary>&lt;p&gt;Powershell has now got a command to see the last lines of a file. The syntax is for the last 10 lines:&lt;/p&gt;</summary>
+	</entry>
+	<entry>
+		<id>http://ewinnington.github.io//posts/oracle-getting-a-list-of-all-columns-data-types-lengths-of-column-for-every-table-in-your-schema</id>
+		<title>Oracle Getting a list of all columns, data types, lengths of column for every table in your schema</title>
+		<link href="http://ewinnington.github.io//posts/oracle-getting-a-list-of-all-columns-data-types-lengths-of-column-for-every-table-in-your-schema" />
+		<updated>2014-09-16T00:00:00Z</updated>
+		<content>&lt;p&gt;To get all the columns in the schema of an oracle DB, with the appropriate datatype and column length you can use:&lt;/p&gt;
+&lt;pre&gt;&lt;code class="language-sql"&gt;select column_name, data_type, data_length, table_name 
+from all_tab_columns where table_name in 
+(select TABLE_NAME from user_tables);
+&lt;/code&gt;&lt;/pre&gt;
+</content>
+		<summary>&lt;p&gt;To get all the columns in the schema of an oracle DB, with the appropriate datatype and column length you can use:&lt;/p&gt;</summary>
+	</entry>
+	<entry>
+		<id>http://ewinnington.github.io//posts/getting-autoincremented-version-numbers-in-visual-studio</id>
+		<title>Getting autoincremented version numbers in Visual Studio</title>
+		<link href="http://ewinnington.github.io//posts/getting-autoincremented-version-numbers-in-visual-studio" />
+		<updated>2014-08-25T00:00:00Z</updated>
+		<content>&lt;p&gt;On C# projects, in the &amp;quot;AssemblyInfo.cs&amp;quot; file, you can set the Assembly Version to contain *, which sets the version automatically to the build date and time.&lt;/p&gt;
+&lt;p&gt;If you comment out the AssemblyFileVersion, then you can see it in the Windows explorer. If you don't then Windows Explorer will always report the AssemblyFileVersion which does not support the * notation.&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;\[assembly: AssemblyVersion(&amp;quot;1.0.\*&amp;quot;)\]
+&lt;/code&gt;&lt;/pre&gt;
+</content>
+		<summary>&lt;p&gt;On C# projects, in the "AssemblyInfo.cs" file, you can set the Assembly Version to contain *, which sets the version automatically to the build date and time.&lt;/p&gt;</summary>
+	</entry>
+	<entry>
+		<id>http://ewinnington.github.io//posts/using-svg-images-on-azure-websites</id>
+		<title>Using SVG images on Azure Websites</title>
+		<link href="http://ewinnington.github.io//posts/using-svg-images-on-azure-websites" />
+		<updated>2014-08-23T00:00:00Z</updated>
+		<content>&lt;p&gt;I've been using &lt;a href="https://useiconic.com/"&gt;Iconic's icon set&lt;/a&gt; for the development of a dashboard for one of my projects. While publishing it to &lt;a href="http://azure.microsoft.com/en-us/"&gt;Azure&lt;/a&gt; to test it out, none of the SVGs images or icons were being served.&lt;/p&gt;
+&lt;p&gt;It required a little bit of configuration to get it all running:&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;p&gt;Make sure the svg files are included in the visual studio project and are set to &amp;quot;Copy Always&amp;quot; or &amp;quot;Copy If Newer&amp;quot;.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;Configure the web.config of your project to contain the following code to make azure serve the SVGs.&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;pre&gt;&lt;code&gt; &amp;lt;system.webServer&amp;gt;
+   &amp;lt;staticContent&amp;gt;
+     &amp;lt;remove fileExtension=&amp;quot;.svg&amp;quot;/&amp;gt;
+     &amp;lt;mimeMap fileExtension=&amp;quot;.svg&amp;quot; mimeType=&amp;quot;image/svg+xml&amp;quot; /&amp;gt;
+   &amp;lt;/staticContent&amp;gt;
+ &amp;lt;/system.webServer&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;This give the correct mimeType to Azure. For some strange reason, it doesn't have it by default in its configuration, and you'll get errors when trying to serve the content (404). With these steps done, Azure should be able to serve you static SVG images when you use the correct path (I use /img/ ).&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;img src=&amp;quot;~/img/database.svg&amp;quot; alt=&amp;quot;database&amp;quot;&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;This should get you a black and white database icon.&lt;/p&gt;
+&lt;ol start="3"&gt;
+&lt;li&gt;&lt;p&gt; To use Iconic's features like CSS styling of the icons, you need to include in your script bundle the iconic.js (or iconic.min.js).&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;Use the data-src attribute in the &lt;img&gt; tag to indicate the Iconic that it must inject the SVG into the document.&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;img data-src=&amp;quot;~/img/database.svg&amp;quot; class=&amp;quot;iconic iconic-md ok&amp;quot; alt=&amp;quot;database&amp;quot;&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;ol start="5"&gt;
+&lt;li&gt;Create custom CSS markings like the &amp;quot;ok&amp;quot; class to style the icon. I added these in a site-iconic.css file that I include in the bundles.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;.ok {
+fill: green;
+}
+.nok {
+fill: red;
+}&lt;/p&gt;
+&lt;p&gt;This &amp;quot;ok&amp;quot; class changes the icon fill to green, I have similarly an &amp;quot;nok&amp;quot; class changing the icon to red.&lt;/p&gt;
+&lt;ol start="6"&gt;
+&lt;li&gt;If you are using the Razor engine to generate your pages, you can directly assign class names based on the object's properties. Here I have an object DbServer which has a boolean property isAvailable to show its status.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;pre&gt;&lt;code&gt;&amp;#64;{
+string status = (DbServer.isAvailable ? &amp;quot;ok&amp;quot; : &amp;quot;nok&amp;quot;);
+&amp;lt;img data-src=&amp;quot;~/img/database.svg&amp;quot; class=&amp;quot;iconic iconic-md &amp;#64;status&amp;quot; alt=&amp;quot;database&amp;quot;&amp;gt;
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Now, every time the page is refreshed, the status of the DB is indicated by the colour of the Database icon.&lt;/p&gt;
+&lt;p&gt;&lt;a href="old/images/Dashboard-e1408819237573.png"&gt;&lt;img src="old/images/Dashboard-e1408819237573.png" class="img-fluid" alt="Dashboard" /&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Now you can really use Iconic's icon set potential.&lt;/p&gt;
+&lt;p&gt;Of course, if you are using &lt;a href="http://signalr.net/"&gt;SignalR&lt;/a&gt;, you can also wire up the whole setup to dynamically adjust the icons with javascript, but that's for another post.&lt;/p&gt;
+</content>
+		<summary>&lt;p&gt;I've been using &lt;a href="https://useiconic.com/"&gt;Iconic's icon&amp;nbsp;set&lt;/a&gt; for the development of a dashboard for one of my projects. While publishing&amp;nbsp;it to &lt;a href="http://azure.microsoft.com/en-us/"&gt;Azure&lt;/a&gt; to test it out, none of the SVGs images or icons were being served.&lt;/p&gt;</summary>
+	</entry>
+	<entry>
+		<id>http://ewinnington.github.io//posts/diff-compare-two-files-in-visual-studio</id>
+		<title>Diff / Compare two files in Visual Studio</title>
+		<link href="http://ewinnington.github.io//posts/diff-compare-two-files-in-visual-studio" />
+		<updated>2014-03-23T00:00:00Z</updated>
+		<content>&lt;p&gt;In visual studio, you can use the integrated command line to diff two files by using the command &lt;em&gt;Tools.DiffFiles file1 file2&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;Thanks to my work colleagues for that trick!&lt;/p&gt;
+</content>
+		<summary>&lt;p&gt;In visual studio, you can use the integrated command line to diff two files by using the command &lt;em&gt;Tools.DiffFiles file1 file2&lt;/em&gt;&lt;/p&gt;</summary>
+	</entry>
+	<entry>
 		<id>http://ewinnington.github.io//posts/listing-the-channels-of-the-wifi-networks-around-you-in-windows</id>
 		<title>Listing the channels of the WIFI networks around you in Windows</title>
 		<link href="http://ewinnington.github.io//posts/listing-the-channels-of-the-wifi-networks-around-you-in-windows" />
-		<updated>2014-11-03T00:00:00Z</updated>
+		<updated>2014-03-11T00:00:00Z</updated>
 		<content>&lt;p&gt;To list the network channels in use by the various wi-fi networks, you can always use this command in an Administrator command prompt.&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;netsh wlan show all
 &lt;/code&gt;&lt;/pre&gt;
@@ -71,7 +212,7 @@ dim(y) &amp;lt;- c(51, 50, 50, 15, 13)
 		<id>http://ewinnington.github.io//posts/oracle-reclaiming-lob-space-after-deletion-clob-blob</id>
 		<title>Oracle - Reclaiming LOB space after deletion (CLOB, BLOB)</title>
 		<link href="http://ewinnington.github.io//posts/oracle-reclaiming-lob-space-after-deletion-clob-blob" />
-		<updated>2014-03-02T00:00:00Z</updated>
+		<updated>2014-02-03T00:00:00Z</updated>
 		<content>&lt;p&gt;To reclaim space after a deleting LOBs, use the following commands. XXXXX is my tablename, data is my column name for the lob, in pink the size of the table.&lt;/p&gt;
 &lt;ol&gt;
 &lt;li&gt;Check size of the table XXXXX&lt;/li&gt;
@@ -113,10 +254,21 @@ WHERE b.table_name = 'XXXXX';
 		<summary>&lt;p&gt;To reclaim space after a deleting LOBs, use the following commands. XXXXX is my tablename, data is my column name for the lob, in pink the size of the table.&lt;/p&gt;</summary>
 	</entry>
 	<entry>
+		<id>http://ewinnington.github.io//posts/oracle-sql-developer-set-nls-to-give-you-full-date-and-time</id>
+		<title>Oracle SQL Developer - Set NLS to give you full date and time</title>
+		<link href="http://ewinnington.github.io//posts/oracle-sql-developer-set-nls-to-give-you-full-date-and-time" />
+		<updated>2014-01-31T00:00:00Z</updated>
+		<content>&lt;p&gt;In the SQL sheet for the database, use the following SQL:&lt;/p&gt;
+&lt;pre&gt;&lt;code class="language-sql"&gt;alter session set NLS_DATE_FORMAT = &amp;quot;dd.mm.yyyy hh24:mi:ss&amp;quot;;
+&lt;/code&gt;&lt;/pre&gt;
+</content>
+		<summary>&lt;p&gt;In the SQL sheet for the database, use the following SQL:&lt;/p&gt;</summary>
+	</entry>
+	<entry>
 		<id>http://ewinnington.github.io//posts/sqlfiddle-a-way-to-share-sql-snippets-so-that-they-can-be-tested-in-the-browser</id>
 		<title>SqlFiddle - A way to share SQL snippets so that they can be tested in the browser</title>
 		<link href="http://ewinnington.github.io//posts/sqlfiddle-a-way-to-share-sql-snippets-so-that-they-can-be-tested-in-the-browser" />
-		<updated>2013-05-11T00:00:00Z</updated>
+		<updated>2013-11-05T00:00:00Z</updated>
 		<content>&lt;p&gt;A couple of days ago, I stumbled upon &lt;a href="http://www.sqlfiddle.com/"&gt;SQLFiddle&lt;/a&gt;, a little magical website that allows you to upload a DBSchema and run queries on it, live in the browser. It also allows to share them with other users.&lt;/p&gt;
 &lt;p&gt;In the course of my work, I've often come across a table that has an identifier, a timestamp and a value, and these rows must be mapped to one new row containing multiple identifiers. Two typical examples of that are two identifiers defining a minimum and a maximum value timeseries that must be put into a single row entry and an entry that is built from three identified timeseries representing value, volatility and mean reversion parameters of a stochastic process.&lt;/p&gt;
 &lt;p&gt;In my earlier blog post, &lt;a href="Oracle10g-Pivoting-data.html"&gt;Oracle 10g - Pivoting data&lt;/a&gt;, I provided two different sql scripts to solve the first case min/max time series. You can find the SQLFiddles here:&lt;/p&gt;
@@ -127,10 +279,51 @@ WHERE b.table_name = 'XXXXX';
 		<summary>&lt;p&gt;A couple of days ago, I stumbled upon &lt;a href="http://www.sqlfiddle.com/"&gt;SQLFiddle&lt;/a&gt;, a little magical website that allows you to upload a DBSchema and run queries on it, live in the browser. It also allows to share them with other users.&lt;/p&gt;</summary>
 	</entry>
 	<entry>
+		<id>http://ewinnington.github.io//posts/raspberry-pi-update-arkos</id>
+		<title>Raspberry Pi update Arkos</title>
+		<link href="http://ewinnington.github.io//posts/raspberry-pi-update-arkos" />
+		<updated>2013-10-31T00:00:00Z</updated>
+		<content>&lt;p&gt;Since I haven't talked much about what I've been doing with my Pi, here's the latest:&lt;/p&gt;
+&lt;p&gt;I've installed a distribution called &lt;a href="https://arkos.io/"&gt;ArkOS&lt;/a&gt;, which exposes a web interface allowing the easy configuration of many network accessible services, including a blog and an &lt;a href="http://owncloud.org/"&gt;owncloud&lt;/a&gt; instance.&lt;/p&gt;
+&lt;p&gt;I use owncloud as my private, unlimited, Dropbox. The first time I set it up, on a nginx server, it took a lot of configuration to get just right. ArkOS does it all out of the box.&lt;/p&gt;
+&lt;p&gt;For dynamic DNS, instead of my previous self-hosted &amp;quot;poor man's&amp;quot; link, I am now using &lt;a href="http://duckdns.org/"&gt;DuckDNS&lt;/a&gt; which promises free dynamic DNS and is really easy to use.&lt;/p&gt;
+</content>
+		<summary>&lt;p&gt;Since I haven't talked much about what I've been doing with my Pi, here's the latest:&lt;/p&gt;</summary>
+	</entry>
+	<entry>
+		<id>http://ewinnington.github.io//posts/debugging-tips</id>
+		<title>Debugging tips</title>
+		<link href="http://ewinnington.github.io//posts/debugging-tips" />
+		<updated>2013-10-31T00:00:00Z</updated>
+		<content>&lt;p&gt;If you get a bug in a loop, remember that the bug could be caused by the previous execution of the loop and thus be below the code point that fails.&lt;/p&gt;
+</content>
+		<summary>&lt;p&gt;If you get a bug in a loop, remember that the bug could be caused by the previous execution of the loop and thus be below the code point that fails.&lt;/p&gt;</summary>
+	</entry>
+	<entry>
+		<id>http://ewinnington.github.io//posts/commenting-and-uncommenting-in-vi</id>
+		<title>Commenting and Uncommenting in vi</title>
+		<link href="http://ewinnington.github.io//posts/commenting-and-uncommenting-in-vi" />
+		<updated>2013-07-23T00:00:00Z</updated>
+		<content>&lt;p&gt;Sometimes I have to edit large config files in vi. Typically I have to comment out a block or even the whole file. Here's the command to insert a # before every line in the file:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;:%s/^/# /
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;To comment the next 4 lines (. is current line , . + 3 lines more)&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;:.,.+3s/^/# /
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;And to uncomment the first character from every line:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;:%s/^#  
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Or uncomment a section:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;:.,.+3s/^#
+&lt;/code&gt;&lt;/pre&gt;
+</content>
+		<summary>&lt;p&gt;Sometimes I have to edit large config files in vi. Typically I have to comment out a block or even the whole file. Here's the command to insert a # before every line in the file:&lt;/p&gt;</summary>
+	</entry>
+	<entry>
 		<id>http://ewinnington.github.io//posts/updating-my-raspberry-pis-ip-address-on-a-distant-server-via-sftp</id>
 		<title>Updating my Raspberry Pi's IP address on a distant server via SFTP</title>
 		<link href="http://ewinnington.github.io//posts/updating-my-raspberry-pis-ip-address-on-a-distant-server-via-sftp" />
-		<updated>2013-05-07T00:00:00Z</updated>
+		<updated>2013-07-05T00:00:00Z</updated>
 		<content>&lt;p&gt;Now I have my external IP address, I want to collect it on a regular basis and push it to a server that accepts SFTP. Now sadly, that server doesn't allow me to use passkey files, so I have to workaround using sshpass (a great little module allowing to pass passwords to the SSH commands - install as usual with &lt;code&gt;apt-get install sshpass&lt;/code&gt; ).&lt;/p&gt;
 &lt;p&gt;The EOF at the end of the sftp command is to ensure that I am passing the rest of the commands to the sftp command. I could also use a -b flag and a file, but it would mean one more file to deal with.&lt;/p&gt;
 &lt;pre&gt;&lt;code class="language-bash"&gt;#!/bin/bash
@@ -148,194 +341,70 @@ bye
 		<summary>&lt;p&gt;Now I have my external IP address, I want to collect it on a regular basis and push it to a server that accepts SFTP. Now sadly, that server doesn't allow me to use passkey files, so I have to workaround using sshpass (a great little module allowing to pass passwords to the SSH commands - install as usual with &lt;code&gt;apt-get install sshpass&lt;/code&gt; ).&lt;/p&gt;</summary>
 	</entry>
 	<entry>
-		<id>http://ewinnington.github.io//posts/google-doesnt-need-to-worry</id>
-		<title>Google doesn't need to worry</title>
-		<link href="http://ewinnington.github.io//posts/google-doesnt-need-to-worry" />
-		<updated>2012-11-02T00:00:00Z</updated>
-		<content>&lt;p&gt;There is no competition. Search engine stats from my dad's website.&lt;/p&gt;
-&lt;p&gt;[caption id=&amp;quot;attachment_86&amp;quot; align=&amp;quot;alignnone&amp;quot; width=&amp;quot;628&amp;quot; caption=&amp;quot;There's nothing else to say, just google it.&amp;quot;]&lt;a href="old/images/Image1.png"&gt;&lt;img src="old/images/Image1.png" class="img-fluid" alt="Google 95 %, Bing 3.5%, Yahoo 1.5%" title="Search Engine Stats" /&gt;&lt;/a&gt;[/caption]&lt;/p&gt;
+		<id>http://ewinnington.github.io//posts/raspberry-pi</id>
+		<title>Raspberry pi</title>
+		<link href="http://ewinnington.github.io//posts/raspberry-pi" />
+		<updated>2013-01-23T00:00:00Z</updated>
+		<content>&lt;p&gt;Since I've finally had time to do something with my &lt;a href="http://www.raspberrypi.org/"&gt;Raspberry Pi&lt;/a&gt;, I've set it up as a file server for macs and iTunes server for the house. I'm using a 7 port USB hub, powered, that uses 2 4-port hubs inside. As a drive, I used a Toshiba 500 gig USB powered HDD that supports USB3. The Raspberry is powered directly from the USB hub, so there is only one power supply for the setup with 3 USB cables (1 hub to pi for power supply, 1 pi to hub data, 1 hub to hdd data cable) and 1 ethernet cat5 cable.&lt;/p&gt;
+&lt;p&gt;The distribution is a standard Raspbian that I keep up to date using &lt;em&gt;sudo apt-get update&lt;/em&gt; and &lt;em&gt;sudo apt-get upgrade&lt;/em&gt;. (&lt;em&gt;Linux raspberrypi 3.2.27+ #250 PREEMPT Thu Oct 18 19:03:02 BST 2012 armv6l&lt;/em&gt;)&lt;/p&gt;
+&lt;p&gt;To mount the Toshiba HDD, I first used &lt;strong&gt;dmesg&lt;/strong&gt; to watch for where the USB drive appeared when connected to the USB hub. For me it was sda : sda1. So I mounted it using &lt;strong&gt;mount&lt;/strong&gt; and after verifying it worked, edited the_ /etc/fstab_ to make the drive auto mount on boot. I added the line: &lt;em&gt;/dev/sda1 /srv/toshiba auto defaults 0 0&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;To act as a file server for mac, I used the software &lt;a href="http://netatalk.sourceforge.net/"&gt;&lt;strong&gt;netatalk&lt;/strong&gt;&lt;/a&gt;. It's quick to install and requires practically no configuration and it worked out of the box. My raspberry appeared on the mac within seconds with the home drive shared, then it was a simple share of the extra folders.&lt;/p&gt;
+&lt;p&gt;To Install: &lt;em&gt;apt-get install netatalk&lt;/em&gt; To configure which folders are shared: &lt;em&gt;vi /etc/netatalk/AppleVolumes.default&lt;/em&gt; (remember to check the rights on these folders if you have a problem) To start/stop/restart the service: &lt;em&gt;sudo /etc/init.d/netatalk start&lt;/em&gt; (or &lt;em&gt;stop&lt;/em&gt; or &lt;em&gt;restart&lt;/em&gt;)&lt;/p&gt;
+&lt;p&gt;To act as an &lt;a href="http://elinux.org/RPiForked-Daapd"&gt;iTunes server&lt;/a&gt;, I used &lt;strong&gt;&lt;a href="https://github.com/jasonmc/forked-daapd"&gt;forked-daapd&lt;/a&gt;&lt;/strong&gt;. Again, worked out of the box with just a touch of configuration. The config file is very easy. I didn't used the remote function of daapd yet, using the box only as a server, not as a playback device.&lt;/p&gt;
+&lt;p&gt;To install: &lt;em&gt;apt-get install forked-daapd&lt;/em&gt; To configure where the music is at: &lt;em&gt;sudo vi /etc/forked-daapd.conf&lt;/em&gt; To start/stop the service: &lt;em&gt;sudo /etc/init.d/forked-daapd start&lt;/em&gt; (or &lt;em&gt;stop&lt;/em&gt;)&lt;/p&gt;
+&lt;p&gt;With that installed, I had &amp;quot;Music on Raspberry pi&amp;quot; showing up in my iTunes side panel. It just worked.&lt;/p&gt;
+&lt;p&gt;The only problem I was getting was that the playback of certain songs was getting interrupted in midstream and when I changed songs in iTunes, there was a very long &amp;quot;Opening URL&amp;quot; message box coming up. The Toshiba hard drive where the music is located was running really slow and any access loaded the CPU to 100% for far too long. &lt;a href="http://www.raspberrypi.org/phpBB3/viewtopic.php?f=28&amp;amp;t=10355"&gt;Similar problems had been reported on the raspberry pi forum&lt;/a&gt;. To diagnose what was the issue, I used &lt;strong&gt;hdparm&lt;/strong&gt; to check the performance of the HDD and **lsusb **to find out the tree structure of the USB hub.&lt;/p&gt;
+&lt;p&gt;Run a performance test of drive sda: &lt;em&gt;hdparm -tT /dev/sda&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;My first test gave me a speed of ~280 KB/s. Abysmal performance. After checking the logs with &lt;strong&gt;dmesg&lt;/strong&gt;, I saw many USB reset messages with respect to the USB drive. With &lt;strong&gt;lsusb&lt;/strong&gt;, I confirmed the HDD was connected to the second internal usb hub of my powered hub, so I changed port until I found one that is connected to the first hub. The performance difference was instantaneous: 26 MB/s. Connecting it directly to the raspberry pi proved to be too much of a power drain for the pi's usb port.&lt;/p&gt;
+&lt;p&gt;List the tree of USB hubs and devices connected: &lt;em&gt;sudo lsusb -t&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;A couple more things remained before I could leave my pi headless in the closet next to the router: I changed the default password (&lt;em&gt;raspberry&lt;/em&gt;) to another one using the command &lt;strong&gt;passwd&lt;/strong&gt;.&lt;/p&gt;
+&lt;p&gt;Then I installed &lt;a href="http://www.tightvnc.com/"&gt;&lt;strong&gt;tightvncserver&lt;/strong&gt;&lt;/a&gt; on the pi to &lt;a href="http://elinux.org/RPi_VNC_Server"&gt;serve the desktop over the network&lt;/a&gt; to a mac or a windows computer. I don't launch it automatically on logging in, I only launch a graphical environment occasionally, so it can live on the command line for the time being.&lt;/p&gt;
+&lt;p&gt;To install: &lt;em&gt;sudo apt-get install tightvncserver&lt;/em&gt; To launch: &lt;em&gt;tightvncserver&lt;/em&gt; To create a display on port 0 with a 1024x768 resolution and 24 bit colour depth: &lt;em&gt;vncserver :0 -geometry 1024x768 -depth 24&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;Over the network I could now SSH into the pi (On windows I use &lt;a href="http://www.chiark.greenend.org.uk/%7Esgtatham/putty/"&gt;&lt;strong&gt;Putty&lt;/strong&gt;&lt;/a&gt;, on mac I just use SSH from the command shell) and launch the GUI on another computer.&lt;/p&gt;
+&lt;p&gt;Finally, I connected to my home network and forwarded the SSH (port 22) service to my raspberry pi.&lt;/p&gt;
+&lt;p&gt;Next time, I want to set-up a dynamic dns for the Pi, so that I can always gain access to it, even if my home router reboots and changes ip. I would like it to use a subdomain of my cloudplush address, but I don't know if my hosting provider iPower supports that. Another option would be to email or tweet the ip address of my home router every time it changes.&lt;/p&gt;
+&lt;p&gt;I also saw an interesting &lt;a href="http://jordanburgess.com/post/38986434391/raspberry-pi-airplay"&gt;AirPi project&lt;/a&gt; online, where the pi works as an airplay receiver, this would be an interesting addition to my pi. For this, I need to get a wireless adapter.&lt;/p&gt;
+&lt;p&gt;I want to investigate using the pi with a LAMP stack on it and &lt;a href="https://owncloud.com/"&gt;&lt;strong&gt;OwnCloud&lt;/strong&gt;&lt;/a&gt; to serve as a private owned dropbox.&lt;/p&gt;
+&lt;p&gt;Finally, I really should stop relying on passwords with my SSH connection and start using an SSH keyfile, Especially if it will be more and more internet facing.&lt;/p&gt;
+&lt;p&gt;The command &lt;strong&gt;history&lt;/strong&gt; to helped me remember all the things I did.&lt;/p&gt;
 </content>
-		<summary>&lt;p&gt;There is no competition. Search engine stats from my dad's website.&lt;/p&gt;</summary>
+		<summary>&lt;p&gt;Since I've finally had time to do something with my &lt;a href="http://www.raspberrypi.org/"&gt;Raspberry Pi&lt;/a&gt;, I've set it up&amp;nbsp;as a file server for macs and iTunes server for the house. I'm using a 7 port USB hub, powered, that uses 2 4-port hubs inside. As a drive, I used a Toshiba 500 gig USB powered HDD that supports USB3. The Raspberry is powered directly from the USB hub, so there is only one power supply for the setup with 3 USB cables (1 hub to pi for power supply, 1 pi to hub data, 1 hub to hdd data cable) and 1 ethernet cat5 cable.&lt;/p&gt;</summary>
 	</entry>
 	<entry>
-		<id>http://ewinnington.github.io//posts/wpf-dynamicdatadisplay-a-chart-component-that-works</id>
-		<title>WPF - DynamicDataDisplay - A Chart component that works</title>
-		<link href="http://ewinnington.github.io//posts/wpf-dynamicdatadisplay-a-chart-component-that-works" />
-		<updated>2012-11-02T00:00:00Z</updated>
-		<content>&lt;h1 id="note"&gt;2019 Note&lt;/h1&gt;
-&lt;p&gt;DynamicDataDisplay is now called &lt;a href="https://github.com/Microsoft/InteractiveDataDisplay.WPF"&gt;InteractiveDataDisplay&lt;/a&gt; and hosted on github. I have not tried the code below on the new version.&lt;/p&gt;
-&lt;h1 id="old-article"&gt;Old Article&lt;/h1&gt;
-&lt;p&gt;&lt;a href="http://dynamicdatadisplay.codeplex.com/"&gt;DynamicDataDisplay&lt;/a&gt; is really one of those components that make life easier for WPF programmers looking for a easy, free and performant chart.&lt;/p&gt;
-&lt;p&gt;&lt;a href="old/images/DDD.png"&gt;&lt;img src="old/images/DDD.png" class="img-fluid" alt="" title="Scenarios viewed in DDD" /&gt;&lt;/a&gt;&lt;/p&gt;
-&lt;p&gt;With many functionalities integrated like a fit to view, screen shots and a quick help, it has a place in any application.&lt;/p&gt;
-&lt;p&gt;I'm crossposting the code from my answer on &lt;a href="http://stackoverflow.com/questions/7090345/dynamic-line-chart-in-c-sharp-wpf-application/7092654#7092654"&gt;Stackoverflow&lt;/a&gt;.&lt;/p&gt;
-&lt;p&gt;To add it in Visual Studio, on the project's References folder -&amp;gt; Add Reference. Add the DynamicDataDisplay.dll to your project.&lt;/p&gt;
-&lt;p&gt;The namespace for DDD is Namespace: &lt;strong&gt;xmlns:d3=&amp;quot;http://research.microsoft.com/DynamicDataDisplay/1.0&amp;quot;&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;XAML Used to create the graph.&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt; &amp;lt;d3:ChartPlotter Name=&amp;quot;plotter&amp;quot; Background=&amp;quot;White&amp;quot;&amp;gt;
-    &amp;lt;d3:ChartPlotter.Resources&amp;gt;
-        &amp;lt;conv:Date2AxisConverter x:Key=&amp;quot;Date2AxisConverter&amp;quot;/&amp;gt;
-    &amp;lt;/d3:ChartPlotter.Resources&amp;gt;
-    &amp;lt;d3:ChartPlotter.HorizontalAxis&amp;gt;
-        &amp;lt;d3:HorizontalDateTimeAxis Name=&amp;quot;dateAxis&amp;quot;/&amp;gt;
-    &amp;lt;/d3:ChartPlotter.HorizontalAxis&amp;gt;
-    &amp;lt;d3:Header Content=&amp;quot;{Binding PlotHeader}&amp;quot;/&amp;gt;
-    &amp;lt;d3:VerticalAxisTitle Content=&amp;quot;Value&amp;quot;/&amp;gt;
-    &amp;lt;d3:HorizontalAxisTitle Content=&amp;quot;Date&amp;quot;/&amp;gt;
-&amp;lt;/d3:ChartPlotter&amp;gt;
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;The Date to Axis Converter I used for the Horizontal axis:&lt;/p&gt;
-&lt;pre&gt;&lt;code class="language-CSharp"&gt;public class Date2AxisConverter : IValueConverter
-{
-    #region IValueConverter Members
-    public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
-    {
-        if (value is DateTime &amp;amp;&amp;amp; targetType == typeof(double))
-        {
-            return ((DateTime)value).Ticks / 10000000000.0;
-            // See constructor of class Microsoft.Research.DynamicDataDisplay.Charts.DateTimeAxis
-            // File: DynamicDataDisplay.Charts.Axes.DateTime.DateTimeAxis.cs
-
-            // alternatively, see the internal class Microsoft.Research.DynamicDataDisplay.Charts.DateTimeToDoubleConversion
-
-        }
-        return null;
-    }
-
-    public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
-    {
-        // try Microsoft.Research.DynamicDataDisplay.Charts.DateTimeAxis.DoubleToDate
-        throw new NotSupportedException();
-    }
-
-    #endregion
-}
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;C# Code: Clearing Graph and Creating line graph, Here my StockasticProcessPoint is a structure with a field &amp;quot;DateTime t&amp;quot; and a field &amp;quot;Double value&amp;quot;. Adding multiple lines gives the chart presented in the image above.&lt;/p&gt;
-&lt;pre&gt;&lt;code class="language-CSharp"&gt;using Microsoft.Research.DynamicDataDisplay;
-using System.Collections.ObjectModel;
-using Microsoft.Research.DynamicDataDisplay.DataSources;
-
-public void ClearLines()
-{
-    var lgc = new Collection&amp;lt;IPlotterElement&amp;gt;();
-    foreach (var x in plotter.Children)
-    {
-        if (x is LineGraph || x is ElementMarkerPointsGraph)
-            lgc.Add(x);
-    }
-
-    foreach (var x in lgc)
-    {
-        plotter.Children.Remove(x);
-    }
-}
-
-internal void SendToGraph() {
-
-    IPointDataSource _eds = null;
-    LineGraph line;
-
-    ClearLines();
-
-    EnumerableDataSource&amp;lt;StochasticProcessPoint&amp;gt; _edsSPP;
-    _edsSPP = new EnumerableDataSource&amp;lt;StochasticProcessPoint&amp;gt;(myListOfStochasticProcessPoints);
-    _edsSPP.SetXMapping(p =&amp;gt; dateAxis.ConvertToDouble(p.t));
-    _edsSPP.SetYMapping(p =&amp;gt; p.value);
-    _eds = _edsSPP;
-
-    line = new LineGraph(_eds);
-    line.LinePen = new Pen(Brushes.Black, 2);
-    line.Description = new PenDescription(Description);
-    plotter.Children.Add(line);
-    plotter.FitToView();
-}
-&lt;/code&gt;&lt;/pre&gt;
-</content>
-		<summary>&lt;p&gt;DynamicDataDisplay is now called &lt;a href="https://github.com/Microsoft/InteractiveDataDisplay.WPF"&gt;InteractiveDataDisplay&lt;/a&gt; and hosted on github. I have not tried the code below on the new version.&lt;/p&gt;</summary>
-	</entry>
-	<entry>
-		<id>http://ewinnington.github.io//posts/wpf-avalondock-a-docking-component</id>
-		<title>WPF - AvalonDock - A Docking component</title>
-		<link href="http://ewinnington.github.io//posts/wpf-avalondock-a-docking-component" />
-		<updated>2012-11-02T00:00:00Z</updated>
-		<content>&lt;p&gt;&lt;a href="http://avalondock.codeplex.com/"&gt;AvalonDock&lt;/a&gt; is another of my tools when it comes to WPF. It allows docking, undocking and resizing of frames inside your application with no hassle what so ever. It's a couple of hours work to make something that will then be extremely valuable to users of your app.&lt;/p&gt;
-</content>
-		<summary>&lt;p&gt;&lt;a href="http://avalondock.codeplex.com/"&gt;AvalonDock&lt;/a&gt; is another of my tools when it comes to WPF. It allows docking, undocking and resizing of frames inside your application with no hassle what so ever. It's a couple of hours work to make something that will then be extremely valuable to users of your app.&lt;/p&gt;</summary>
-	</entry>
-	<entry>
-		<id>http://ewinnington.github.io//posts/getting-my-ip-on-my-raspberrypi-for-a-script</id>
-		<title>Getting my ip on my Raspberry pi for a script</title>
-		<link href="http://ewinnington.github.io//posts/getting-my-ip-on-my-raspberrypi-for-a-script" />
-		<updated>2012-11-02T00:00:00Z</updated>
-		<content>&lt;p&gt;One of those wonderful one-liners when you need your external IP address on a linux box:&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;wget -q -O- http://ip4.me | 
-grep -o '\[0-9\]\\{1,3\\}\\.\[0-9\]\\{1,3\\}\\.\[0-9\]\\{1,3\\}\\.\[0-9\]\\{1,3\\}'
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;You can then direct it to a file with the '&amp;gt; myip.txt'&lt;/p&gt;
-</content>
-		<summary>&lt;p&gt;One of those wonderful one-liners when you need your external IP address on a linux box:&lt;/p&gt;</summary>
-	</entry>
-	<entry>
-		<id>http://ewinnington.github.io//posts/migrating-my-mum-to-os-x-experiences</id>
-		<title>Migrating my mum to OS X - Experiences</title>
-		<link href="http://ewinnington.github.io//posts/migrating-my-mum-to-os-x-experiences" />
-		<updated>2012-10-01T00:00:00Z</updated>
-		<content>&lt;p&gt;So I spent the whole week-end migrating my mum from the old Windows XP to the new iMac.&lt;/p&gt;
-&lt;p&gt;First of all, the iMac is gorgeous. Take it out of the box, put it on the desktop, plug in the power cable and you are done. Amazing! If there was no legacy to migrate, it would of been a matter of minutes to be done, but... Now comes the hard part, migrating: The 50'000+ Emails, 1'500+ contacts sorted into groups, 60+ GB of Music, 30+ GB of data files.&lt;/p&gt;
-&lt;p&gt;The software we installed is:&lt;/p&gt;
+		<id>http://ewinnington.github.io//posts/making-fortran-dlls-to-interface-with-vba-in-excel</id>
+		<title>Making Fortran DLLs to interface with VBA in Excel</title>
+		<link href="http://ewinnington.github.io//posts/making-fortran-dlls-to-interface-with-vba-in-excel" />
+		<updated>2012-05-24T00:00:00Z</updated>
+		<content>&lt;p&gt;Note to self, Remember:&lt;/p&gt;
 &lt;ul&gt;
-&lt;li&gt;Pages and Microsoft Office 2011 for Mac - For the office stuff, Pages was an addition to see if it could be used for more design oriented work (instead of Quark or InDesign). Both Purchased.&lt;/li&gt;
-&lt;li&gt;Roxio Toast 11 - The old burning program that support .nrg (Nero) file images. I tried to convert the images to ISO, but since they are binary images of Audio cds, none of the conversion tools (nrg2iso, nrg4iso, etc..) worked. Purchased&lt;/li&gt;
-&lt;li&gt;Inkscape - For the existing cd centers, previously in Corel draw (.cdr), the files were converted on the PC both to SVG and to PDF so that they could be stored and later edited on the mac. Free.&lt;/li&gt;
-&lt;li&gt;Audacity - For audio processing of aquired music. Free.&lt;/li&gt;
-&lt;li&gt;VLC - Video player supporting every format under the sun. Free.&lt;/li&gt;
-&lt;li&gt;Transmission - Torrent software. Free.&lt;/li&gt;
-&lt;li&gt;Gimp and Paintbrush - Both image editing software. Free.&lt;/li&gt;
-&lt;li&gt;Blue Griffon - WYSIWYG HTML editing. Free (with no addons).&lt;/li&gt;
-&lt;li&gt;FileZilla - FTP client for updating the websites. Free.&lt;/li&gt;
-&lt;li&gt;&lt;a href="http://www.avery.com/avery/en_us/Templates-%26-Software/Avery-DesignPro-for-Mac.htm"&gt;Avery DesignPro® for Mac®&lt;/a&gt; - For making new CD labels, it's an amazing piece of software. Just works. Free.&lt;/li&gt;
+&lt;li&gt;When working with Intel visual fortran, always perform a static link (/MT) in the command line options so that you don't dependent on a DLL being present on the target machine.&lt;/li&gt;
+&lt;li&gt;DLLs need Kernel32.lib to be added to the dependencies&lt;/li&gt;
+&lt;li&gt;ByVal in VBA doesn't always mean ByVal, when calling a DLL it means &amp;quot;Copy then give a Ref&amp;quot;, so on the Fortran side, get the address by reference.&lt;/li&gt;
 &lt;/ul&gt;
-&lt;p&gt;For the browser, we simply used Safari.&lt;/p&gt;
-&lt;p&gt;For the mail, currently we are using the Apple Mail app, but it was not very successful so far. Maybe it will change. I hope to post more about the mail in a further blog. Both the import of the emails and the import of the address book posed substantial challenges.&lt;/p&gt;
-&lt;p&gt;For the music, we are using iTunes to manage the collection, although we disabled the &amp;quot;Auto sort the music collection&amp;quot; option of iTunes so that the music was not moved around into new folders. The music collection being extensive and mostly untagged makes iTune's management a nightmare.&lt;/p&gt;
-&lt;p&gt;Installing the printers (and accessing the multifunction scanners on top of these) was easy  as pie. By just plugging in the printers, they were detected, an apple update was downloaded and they were ready to be used. Both the HP and the Brother worked. We used Image Capture to do scanning.&lt;/p&gt;
+&lt;p&gt;On the VB side, the string gets declared as &amp;quot;ByVal stringname as string&amp;quot;. You also need to add the string length to the end of the argument list as &amp;quot;ByVal stringlen as Integer&amp;quot;. I also changed the numeric args to ByRef, especially as one of them is written. For example:&lt;/p&gt;
+&lt;pre&gt;&lt;code class="language-VBA"&gt;Module Module1
+    Declare Sub TestSSdll _
+        Lib &amp;quot;C:\Documents and Settings\ . . . \TestSSdll.dll&amp;quot; _
+        (ByRef Phi0 As Double, ByRef RLambda0 As Double, _
+        ByRef NWinTimStps As Long, ByVal gridfile As String, _
+        ByVal len_gridfile As Integer)
+End Module
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;You will need to pass the length of the string explicitly using this arrangement.&lt;/p&gt;
+&lt;p&gt;On the Fortran side, the routine needs to have the STDCALL and REFERENCE attributes, the string argument should not have the REFERENCE attribute, assuming you want the length passed. For example:&lt;/p&gt;
+&lt;pre&gt;&lt;code class="language-Fortran"&gt;subroutine TestSSdll (phi0, rlambda0, lgridfile, nWinTimStps, &amp;amp;
+    gridfile)
+implicit none
+
+!DEC$ ATTRIBUTES DLLEXPORT, STDCALL, REFERENCE :: TestSSdll
+!DEC$ ATTRIBUTES ALIAS: &amp;quot;TestSSdll&amp;quot; :: TestSSdll
+
+    real(8), intent(in) :: phi0, rlambda0
+    integer(8) :: nWinTimStps
+    character(*), intent(in) :: gridfile
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Note that the string length is not explicitly specified in the Fortran, as the compiler will look for it, passed by value.&lt;/p&gt;
 </content>
-		<summary>&lt;p&gt;So I spent the whole week-end migrating my mum from the old Windows XP to the new iMac.&lt;/p&gt;</summary>
-	</entry>
-	<entry>
-		<id>http://ewinnington.github.io//posts/Awesomenote-and-Evernote</id>
-		<title>Awesomenote and Evernote</title>
-		<link href="http://ewinnington.github.io//posts/Awesomenote-and-Evernote" />
-		<updated>2012-10-01T00:00:00Z</updated>
-		<content>&lt;p&gt;A fantastic feature of Awesomenote is that it synchronizes with both Evernote and Google docs. This means your notes follow you to every platform and device you can imagine or access the net with.&lt;/p&gt;
-&lt;p&gt;In Evernote, your notes appear without any of the Awesomenote backgrounds, but with a short amount of metadata at the bottom of the note.&lt;/p&gt;
-&lt;p&gt;Once sync is setup, it is one button press away. Ensuring you are always backed up and accessible.&lt;/p&gt;
-&lt;p&gt;&lt;a href="old/images/20120110-231524.jpg"&gt;&lt;img src="old/images/20120110-231524.jpg" class="img-fluid" alt="" title="20120110-231524.jpg" /&gt;&lt;/a&gt;&lt;/p&gt;
-</content>
-		<summary>&lt;p&gt;A fantastic feature of Awesomenote is that it synchronizes with both Evernote and Google docs. This means your notes follow you to every platform and device you can imagine or access the net with.&lt;/p&gt;</summary>
-	</entry>
-	<entry>
-		<id>http://ewinnington.github.io//posts/one-app-that-changes-the-iphone</id>
-		<title>AwesomeNote - One app that changes the iPhone</title>
-		<link href="http://ewinnington.github.io//posts/one-app-that-changes-the-iphone" />
-		<updated>2012-02-01T00:00:00Z</updated>
-		<content>&lt;p&gt;I have started to use &lt;a href="http://www.bridworks.com/anote/en/main/index.php"&gt;AwesomeNote&lt;/a&gt; (or aNote) and I really have to say, it is amazing. It really feels like it brings functionalities that were simply not available in the base Calendar, Note and Email applications.&lt;/p&gt;
-&lt;p&gt;I have been using it to create a personal diary, and the app makes it easy to insert pictures taken with the camera into a note and associate it with a location (restaurants, shops, ...). It would seem like an evident idea to be able to link locations with notes, but sadly the standard apps dont seem to agree.&lt;/p&gt;
-&lt;p&gt;Now even when creating an Email, I first prepare it in awesomeNote (for things like adding multiple pictures with descriptions, or maps with annotations) before using the Send by Email function which generates an HTML page and then exports it to the iPhones native mail application.&lt;/p&gt;
-&lt;p&gt;And I still havent said anything about the rest of what it can do. If you dont have it, try it.&lt;/p&gt;
-</content>
-		<summary>&lt;p&gt;I have started to use &lt;a href="http://www.bridworks.com/anote/en/main/index.php"&gt;AwesomeNote&lt;/a&gt; (or aNote) and I really have to say, it is amazing. It really feels like it brings functionalities that were simply not available in the base Calendar, Note and Email applications.&lt;/p&gt;</summary>
-	</entry>
-	<entry>
-		<id>http://ewinnington.github.io//posts/screen-and-paper-convergence</id>
-		<title>Screen and paper convergence</title>
-		<link href="http://ewinnington.github.io//posts/screen-and-paper-convergence" />
-		<updated>2012-01-01T00:00:00Z</updated>
-		<content>&lt;p&gt;The Livescribe pen is one of the devices which bridges the real and digital world. All your notes, on paper, always accessible wherever you are.&lt;/p&gt;
-&lt;p&gt;You write on the provided paper, synchronize and its done. Even for drawings, they appear identically.&lt;/p&gt;
-&lt;p&gt;&lt;a href="old/images/20120101-031738.jpg"&gt;&lt;img src="old/images/20120101-031738.jpg" class="img-fluid" alt="" title="20120102-153835.jpg" /&gt;&lt;/a&gt;&lt;/p&gt;
-</content>
-		<summary>&lt;p&gt;The Livescribe pen is one of the devices which bridges the real and digital world. All your notes, on paper, always accessible wherever you are.&lt;/p&gt;</summary>
+		<summary>&lt;p&gt;Note to self, Remember:&lt;/p&gt;</summary>
 	</entry>
 </feed>

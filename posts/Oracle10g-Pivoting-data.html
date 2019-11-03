@@ -1,0 +1,169 @@
+﻿
+<!DOCTYPE html>
+<!--
+	Phantom by HTML5 UP
+	html5up.net | @ajlkn
+	Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
+-->
+<html lang="en">
+
+	<head>
+		<title>Eric&#x27;s personal page - Oracle 10g - Pivoting data</title>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1" />		
+        <link href="/assets/css/highlight.css" rel="stylesheet">
+		<!--[if lte IE 8]><script src="/assets/js/ie/html5shiv.js"></script><![endif]-->
+		<link rel="stylesheet" href="/assets/css/main.css" />
+		<!--[if lte IE 9]><link rel="stylesheet" href="/assets/css/ie9.css" /><![endif]-->
+		<!--[if lte IE 8]><link rel="stylesheet" href="/assets/css/ie8.css" /><![endif]-->
+        <link href="/assets/css/override.css" rel="stylesheet" />
+
+		<meta name="description" content="You will find here a collection of my thoughts, snippets and articles." />
+		<link type="application/rss+xml" rel="alternate" title="Eric&#x27;s personal page" href="/feed.rss" />
+				<link type="application/atom+xml" rel="alternate" title="Eric&#x27;s personal page" href="/feed.atom" />
+		<link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+		<link rel="icon" href="/favicon.ico" type="image/x-icon">
+
+		<meta name="application-name" content="Eric&#x27;s personal page" />
+		<meta name="msapplication-tooltip" content="Eric&#x27;s personal page" />
+		<meta name="msapplication-starturl" content="/" />
+
+		<meta property="og:title" content="Eric&#x27;s personal page - Oracle 10g - Pivoting data" /> 
+		<meta property="og:type" content="website" />
+		<meta property="og:url" content="http://ewinnington.github.io//posts/Oracle10g-Pivoting-data" />
+		<!-- TODO: More social graph meta tags -->
+
+        <script src="/assets/js/highlight.pack.js"></script>   
+		
+        
+
+		
+	</head>
+
+	<body>
+		<!-- Wrapper -->
+		<div id="wrapper">
+
+			<!-- Header -->
+			<header id="header">
+				<div class="inner">
+
+					<!-- Logo -->
+					<a href="/" class="logo">
+						<span class="title">Eric&#x27;s personal page</span>
+					</a>
+
+					<!-- Nav -->
+					<nav>
+						<ul>
+							<li><a href="#menu">Menu</a></li>
+						</ul>
+					</nav>
+
+				</div>
+			</header>
+
+			<!-- Menu -->
+			<nav id="menu">
+				<h2>Menu</h2>
+				<ul>
+					        <li><a href="/posts">Archive</a></li>
+        <li><a href="/tags">Tags</a></li>
+        <li><a href="/about">About Me</a></li>
+
+				</ul>
+			</nav>
+
+			<!-- Main -->
+			<div id="main">
+				<div class="inner">
+
+    
+<header>
+    <h1>Oracle 10g - Pivoting data</h1>
+            <p><em>Published on Friday, 27 January 2012</em></p>
+            <ul class="actions small">
+                    <li><a role="button" href="/tags/Migrated" class="button small">Migrated</a></li>
+                    <li><a role="button" href="/tags/Oracle" class="button small">Oracle</a></li>
+                    <li><a role="button" href="/tags/SQL" class="button small">SQL</a></li>
+        </ul>     
+</header>
+
+					
+					<div id="content">
+						
+
+<p>Oracle 10g doesn't have the Pivot function. To convert a common type a data (Date, Id, Value) into a list of (Date, Value of Id1, Value of Id2, ...), if you know the number of columns (and their names), you can a decode function (basically a SQL IF or CASE) function to do it.</p>
+<p>Demonstration below with the code to build the table and test it.</p>
+<pre><code class="language-SQL">CREATE TABLE &quot;TESTTABLE&quot;(&quot;DATETIME&quot; DATE,
+&quot;SCENARIOI&quot; NUMBER,
+&quot;MYVALUE&quot; NUMBER);
+
+ REM INSERTING into TESTTABLE
+Insert into TESTTABLE (DATETIME,SCENARIOI,MYVALUE) values (to_date('01.10.12 00:00','DD.MM.RR HH24:MI'),1,10);
+Insert into TESTTABLE (DATETIME,SCENARIOI,MYVALUE) values (to_date('01.10.12 00:00','DD.MM.RR HH24:MI'),2,20);
+Insert into TESTTABLE (DATETIME,SCENARIOI,MYVALUE) values (to_date('01.10.12 01:00','DD.MM.RR HH24:MI'),1,15);
+Insert into TESTTABLE (DATETIME,SCENARIOI,MYVALUE) values (to_date('01.10.12 01:00','DD.MM.RR HH24:MI'),2,20);
+</code></pre>
+<p>The created and populated table: <a href="old/images/Table.jpg"><img src="old/images/Table.jpg" class="img-fluid" alt="" title="Table" /></a></p>
+<p>To extract the data in a matrix format, with one column per scenario, we can use either of the queries below:</p>
+<pre><code class="language-SQL">select datetime,
+ max(decode(scenarioi,1, MyValue)),
+ max(decode(scenarioi,2, MyValue)) from testtable
+group by datetime
+order by 1;
+</code></pre>
+<pre><code class="language-SQL">SELECT DateTime, MAX(One) as Sc1, MAX(Two) as Sc2
+ FROM (SELECT datetime,
+ decode(scenarioi, 1, MyValue) as One,
+ decode(scenarioi, 2, MyValue) as Two
+ FROM testtable
+ )
+GROUP BY DateTime
+ORDER BY 1;
+</code></pre>
+<p>An example output of the query: <a href="old/images/FinalCapture.jpg"><img src="old/images/FinalCapture.jpg" class="img-fluid" alt="" title="FinalCapture" /></a></p>
+<p>It would be nice to have a query that could automatically select a number of columns and convert them, it seems that requires some PLSQL, but sadly I've not been able to figure it out yet. If anyone has such an example, just leave a comment.</p>
+
+
+
+					</div>
+				</div>
+			</div>
+
+			<!-- Footer -->
+			<footer id="footer">
+				<div class="inner">
+    <section>
+        <h2>Feeds</h2>
+        <ul class="actions small vertical">
+            <li><a href="/feed.rss" class="button small"><i class="fa fa-rss"></i> RSS Feed</a></li>
+                        <li><a href="/feed.atom" class="button small"><i class="fa fa-rss"></i> Atom Feed</a></li>
+        </ul>
+    </section>
+    <section>
+    </section>
+    <ul class="copyright">
+        <li>Copyright © 2019</li>
+        <li>Design: <a href="http://html5up.net">HTML5 UP</a></li>
+        <li><a href="https://wyam.io">Generated by Wyam</a></li>
+    </ul>
+</div>
+
+			</footer>
+
+		</div>
+		
+		
+
+		<!-- Scripts -->
+		<script>hljs.initHighlightingOnLoad();</script>
+		<script src="/assets/js/jquery.min.js"></script>
+		<script src="/assets/js/skel.min.js"></script>
+		<script src="/assets/js/util.js"></script>
+		<!--[if lte IE 8]><script src="/assets/js/ie/respond.min.js"></script><![endif]-->
+		<script src="/assets/js/main.js"></script>
+
+	</body>
+
+</html>

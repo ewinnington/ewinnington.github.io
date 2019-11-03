@@ -1,0 +1,183 @@
+﻿
+<!DOCTYPE html>
+<!--
+	Phantom by HTML5 UP
+	html5up.net | @ajlkn
+	Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
+-->
+<html lang="en">
+
+	<head>
+		<title>Eric&#x27;s personal page - Styling a ListView with a Horizontal ItemsPanel and a Header</title>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1" />		
+        <link href="/assets/css/highlight.css" rel="stylesheet">
+		<!--[if lte IE 8]><script src="/assets/js/ie/html5shiv.js"></script><![endif]-->
+		<link rel="stylesheet" href="/assets/css/main.css" />
+		<!--[if lte IE 9]><link rel="stylesheet" href="/assets/css/ie9.css" /><![endif]-->
+		<!--[if lte IE 8]><link rel="stylesheet" href="/assets/css/ie8.css" /><![endif]-->
+        <link href="/assets/css/override.css" rel="stylesheet" />
+
+		<meta name="description" content="You will find here a collection of my thoughts, snippets and articles." />
+		<link type="application/rss+xml" rel="alternate" title="Eric&#x27;s personal page" href="/feed.rss" />
+				<link type="application/atom+xml" rel="alternate" title="Eric&#x27;s personal page" href="/feed.atom" />
+		<link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+		<link rel="icon" href="/favicon.ico" type="image/x-icon">
+
+		<meta name="application-name" content="Eric&#x27;s personal page" />
+		<meta name="msapplication-tooltip" content="Eric&#x27;s personal page" />
+		<meta name="msapplication-starturl" content="/" />
+
+		<meta property="og:title" content="Eric&#x27;s personal page - Styling a ListView with a Horizontal ItemsPanel and a Header" /> 
+		<meta property="og:type" content="website" />
+		<meta property="og:url" content="http://ewinnington.github.io//posts/styling-a-listview-with-a-horizontal-itemspanel-and-a-header" />
+		<!-- TODO: More social graph meta tags -->
+
+        <script src="/assets/js/highlight.pack.js"></script>   
+		
+        
+
+		
+	</head>
+
+	<body>
+		<!-- Wrapper -->
+		<div id="wrapper">
+
+			<!-- Header -->
+			<header id="header">
+				<div class="inner">
+
+					<!-- Logo -->
+					<a href="/" class="logo">
+						<span class="title">Eric&#x27;s personal page</span>
+					</a>
+
+					<!-- Nav -->
+					<nav>
+						<ul>
+							<li><a href="#menu">Menu</a></li>
+						</ul>
+					</nav>
+
+				</div>
+			</header>
+
+			<!-- Menu -->
+			<nav id="menu">
+				<h2>Menu</h2>
+				<ul>
+					        <li><a href="/posts">Archive</a></li>
+        <li><a href="/tags">Tags</a></li>
+        <li><a href="/about">About Me</a></li>
+
+				</ul>
+			</nav>
+
+			<!-- Main -->
+			<div id="main">
+				<div class="inner">
+
+    
+<header>
+    <h1>Styling a ListView with a Horizontal ItemsPanel and a Header</h1>
+            <p><em>Published on Wednesday, 23 May 2012</em></p>
+            <ul class="actions small">
+                    <li><a role="button" href="/tags/Migrated" class="button small">Migrated</a></li>
+                    <li><a role="button" href="/tags/WPF" class="button small">WPF</a></li>
+        </ul>     
+</header>
+
+					
+					<div id="content">
+						
+
+<p>I had to create a specific ListView for my WPF project. A Horizontal alignment of items, with a header column, containing a templated item with a templated checkbox. The final effect looks like this:</p>
+<p><a href="old/images/HorizontalListView.png"><img src="old/images/HorizontalListView.png" class="img-fluid" alt="" title="HorizontalListView" /></a></p>
+<p>If we decompose the panel, here are the elements:</p>
+<ul>
+<li>Black box: ListView with Template containing a Grid with 2 columns</li>
+<li>Red box: The Header column in the ListView template on Grid.Column=&quot;0&quot;</li>
+<li>Yellow box: The ListView item panel (ItemsPresenter) located on Grid.Column=&quot;1&quot; containing an templates ItemsPanelTemplate which is a StackPanel with an Orientation=&quot;Horizontal&quot;.</li>
+<li>Green box: The ListView's ItemTemplate which is a StackPanel with an Orientation=&quot;Vertical&quot; containing a TextBlock with a RotateTransform LayoutTransform and a Templated Checkbox which uses an Ellipse as it's main shape.</li>
+</ul>
+<p><a href="old/images/HorizontalListViewDetails.png"><img src="old/images/HorizontalListViewDetails.png" class="img-fluid" alt="" title="HorizontalListViewDetails" /></a></p>
+<pre><code class="language-XAML">&lt;ListView ItemsSource=&quot;{Binding OpUnitList}&quot; Grid.Row=&quot;1&quot; Name=&quot;FilterListBox&quot;&gt;
+ &lt;ListView.ItemsPanel&gt;
+   &lt;ItemsPanelTemplate&gt;
+     &lt;StackPanel Orientation=&quot;Horizontal&quot; IsItemsHost=&quot;True&quot;&gt;
+     &lt;/StackPanel&gt;
+   &lt;/ItemsPanelTemplate&gt;
+ &lt;/ListView.ItemsPanel&gt;
+ &lt;ListView.ItemTemplate&gt;
+   &lt;DataTemplate&gt;
+     &lt;StackPanel Orientation=&quot;Vertical&quot;&gt;
+       &lt;TextBlock Text=&quot;{Binding OpUnitName}&quot; Width=&quot;60&quot; Margin=&quot;2&quot;&gt;
+         &lt;TextBlock.LayoutTransform&gt;
+           &lt;RotateTransform Angle=&quot;-90&quot;/&gt;
+         &lt;/TextBlock.LayoutTransform&gt;
+       &lt;/TextBlock&gt;
+       &lt;CheckBox IsChecked=&quot;{Binding FilterValue}&quot; Name=&quot;RgDot&quot; IsThreeState=&quot;True&quot; Style=&quot;{StaticResource EllipseCheckBoxStyle}&quot;/&gt;
+     &lt;/StackPanel&gt;
+   &lt;/DataTemplate&gt;
+ &lt;/ListView.ItemTemplate&gt;
+ &lt;ListView.Template&gt;
+   &lt;ControlTemplate&gt;
+     &lt;Grid HorizontalAlignment=&quot;Left&quot;&gt; 
+       &lt;Grid.ColumnDefinitions&gt;
+         &lt;ColumnDefinition Width=&quot;Auto&quot;&gt;&lt;/ColumnDefinition&gt;
+         &lt;ColumnDefinition Width=&quot;\*&quot;&gt;&lt;/ColumnDefinition&gt;
+       &lt;/Grid.ColumnDefinitions&gt;
+       &lt;StackPanel Orientation=&quot;Vertical&quot; Grid.Column=&quot;0&quot;&gt;
+         &lt;TextBlock Margin=&quot;2&quot; Height=&quot;60&quot;&gt;OpUnit Name&lt;/TextBlock&gt;
+         &lt;TextBlock Margin=&quot;2&quot;&gt;Filter&lt;/TextBlock&gt;
+       &lt;/StackPanel&gt;
+       &lt;ItemsPresenter Grid.Column=&quot;1&quot;&gt;&lt;/ItemsPresenter&gt;
+     &lt;/Grid&gt;
+   &lt;/ControlTemplate&gt;
+ &lt;/ListView.Template&gt;
+&lt;/ListView&gt;
+</code></pre>
+
+
+
+					</div>
+				</div>
+			</div>
+
+			<!-- Footer -->
+			<footer id="footer">
+				<div class="inner">
+    <section>
+        <h2>Feeds</h2>
+        <ul class="actions small vertical">
+            <li><a href="/feed.rss" class="button small"><i class="fa fa-rss"></i> RSS Feed</a></li>
+                        <li><a href="/feed.atom" class="button small"><i class="fa fa-rss"></i> Atom Feed</a></li>
+        </ul>
+    </section>
+    <section>
+    </section>
+    <ul class="copyright">
+        <li>Copyright © 2019</li>
+        <li>Design: <a href="http://html5up.net">HTML5 UP</a></li>
+        <li><a href="https://wyam.io">Generated by Wyam</a></li>
+    </ul>
+</div>
+
+			</footer>
+
+		</div>
+		
+		
+
+		<!-- Scripts -->
+		<script>hljs.initHighlightingOnLoad();</script>
+		<script src="/assets/js/jquery.min.js"></script>
+		<script src="/assets/js/skel.min.js"></script>
+		<script src="/assets/js/util.js"></script>
+		<!--[if lte IE 8]><script src="/assets/js/ie/respond.min.js"></script><![endif]-->
+		<script src="/assets/js/main.js"></script>
+
+	</body>
+
+</html>

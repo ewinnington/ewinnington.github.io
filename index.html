@@ -88,16 +88,10 @@
 <div class="row">
     <div class="8u 12u$(medium)">
                 <div>
-                    <a href="/posts/template">
-                        <h2></h2>
-                    </a>
-                    <p>Posted on Monday, March 11, 2019</p>
-                </div>       
-                <div>
                     <a href="/posts/R-Redis-Json">
                         <h2>R - Reading JSON from redis</h2>
                     </a>
-                    <p>Posted on Monday, March 11, 2019</p>
+                    <p>Posted on Sunday, 3 November 2019</p>
 <p>I needed to access Redis from R. Here's the code I used to connect, set a value, then deserialize a key that was in json format and publish a message. <a href="https://cran.r-project.org/web/packages/rredis/vignettes/rredis.pdf">Rredis documentation located here</a></p>
 <pre><code>library(&quot;rredis&quot;)
 library(&quot;jsonlite&quot;, lib.loc=&quot;~/R/win-library/3.2&quot;)
@@ -119,7 +113,7 @@ redisClose()
                     <a href="/posts/R-read-binary-file">
                         <h2>R - Reading binary files</h2>
                     </a>
-                    <p>Posted on Monday, March 11, 2019</p>
+                    <p>Posted on Sunday, 3 November 2019</p>
 <p>I had to get some data out of files written by Fortran. The format was a large array of doubles.</p>
 <ul>
 <li>numeric() for doubles</li>
@@ -134,13 +128,24 @@ dim(y) &lt;- c(51, 50, 50, 15, 13)
 </code></pre>
                 </div>       
                 <div>
-                    <a href="/posts/listing-the-channels-of-the-wifi-networks-around-you-in-windows">
-                        <h2>Listing the channels of the WIFI networks around you in Windows</h2>
+                    <a href="/posts/template">
+                        <h2></h2>
                     </a>
-                    <p>Posted on Monday, November 3, 2014</p>
-<p>To list the network channels in use by the various wi-fi networks, you can always use this command in an Administrator command prompt.</p>
-<pre><code>netsh wlan show all
+                    <p>Posted on Sunday, 3 November 2019</p>
+                </div>       
+                <div>
+                    <a href="/posts/Switching-to-wyam">
+                        <h2>Switching to Wyam</h2>
+                    </a>
+                    <p>Posted on Wednesday, 23 October 2019</p>
+<p>After many years with a half abandoned Wordpress blog, I'm switching to <a href="https://wyam.io/">Wyam</a> for a static site generator.</p>
+<p>This blog was generated as follows:</p>
+<pre><code>dotnet tool install -g wyam.tool
+wyam new -r blog
+wyam -r blog -t Phantom -p -w
 </code></pre>
+<p>The last command makes wyam host the blog using the recipe blog, the theme Phantom (-t), in preview mode (-p) so that you can access it locally and in Watch mode (-w), so that you can see changes without having to re-run the build line.</p>
+<p>I also exported the previous posts from Wordpress and will be adding those that are not too outdated back here.</p>
                 </div>       
         <ul class="pager">
             <li class="previous">                
@@ -153,16 +158,16 @@ dim(y) &lt;- c(51, 50, 50, 15, 13)
 
             <h5>Tags</h5>
             <ul class="actions small">
-                    <li><a role="button" href="/tags/Migrated" class="button small">Migrated (12)</a></li>
-                    <li><a role="button" href="/tags/WPF" class="button small">WPF (2)</a></li>
-                    <li><a role="button" href="/tags/Rpi" class="button small">Rpi (2)</a></li>
+                    <li><a role="button" href="/tags/Migrated" class="button small">Migrated (38)</a></li>
+                    <li><a role="button" href="/tags/Oracle" class="button small">Oracle (4)</a></li>
+                    <li><a role="button" href="/tags/CommandLine" class="button small">CommandLine (4)</a></li>
+                    <li><a role="button" href="/tags/Rpi" class="button small">Rpi (4)</a></li>
+                    <li><a role="button" href="/tags/WPF" class="button small">WPF (4)</a></li>
+                    <li><a role="button" href="/tags/OSX" class="button small">OSX (3)</a></li>
+                    <li><a role="button" href="/tags/iOS" class="button small">iOS (3)</a></li>
+                    <li><a role="button" href="/tags/VisualStudio" class="button small">VisualStudio (2)</a></li>
                     <li><a role="button" href="/tags/R" class="button small">R (2)</a></li>
-                    <li><a role="button" href="/tags/Awesomenote" class="button small">Awesomenote (1)</a></li>
-                    <li><a role="button" href="/tags/Chart" class="button small">Chart (1)</a></li>
-                    <li><a role="button" href="/tags/DynamicDataDisplay" class="button small">DynamicDataDisplay (1)</a></li>
-                    <li><a role="button" href="/tags/Google" class="button small">Google (1)</a></li>
-                    <li><a role="button" href="/tags/Livescrive" class="button small">Livescrive (1)</a></li>
-                    <li><a role="button" href="/tags/iOS" class="button small">iOS (1)</a></li>
+                    <li><a role="button" href="/tags/SQL" class="button small">SQL (2)</a></li>
             </ul>
             <ul class="actions small">
                 <li><a href="/tags" class="button small">View All Tags &rarr;</a></li>
@@ -170,10 +175,10 @@ dim(y) &lt;- c(51, 50, 50, 15, 13)
 
             <h5>Older Posts</h5>
             <ul>
-                    <li><a href="/posts/oracle-reclaiming-lob-space-after-deletion-clob-blob">Oracle - Reclaiming LOB space after deletion (CLOB, BLOB)</a></li>
-                    <li><a href="/posts/sqlfiddle-a-way-to-share-sql-snippets-so-that-they-can-be-tested-in-the-browser">SqlFiddle - A way to share SQL snippets so that they can be tested in the browser</a></li>
-                    <li><a href="/posts/updating-my-raspberry-pis-ip-address-on-a-distant-server-via-sftp">Updating my Raspberry Pi&#x27;s IP address on a distant server via SFTP</a></li>
-                    <li><a href="/posts/google-doesnt-need-to-worry">Google doesn&#x27;t need to worry</a></li>
+                    <li><a href="/posts/append-files-together-using-windows-command-line">Append files together using windows command line</a></li>
+                    <li><a href="/posts/tail-command-with-powershell">Tail command with powershell</a></li>
+                    <li><a href="/posts/oracle-getting-a-list-of-all-columns-data-types-lengths-of-column-for-every-table-in-your-schema">Oracle Getting a list of all columns, data types, lengths of column for every table in your schema</a></li>
+                    <li><a href="/posts/getting-autoincremented-version-numbers-in-visual-studio">Getting autoincremented version numbers in Visual Studio</a></li>
             </ul>
                 <ul class="actions small">
                     <li><a href="/posts" class="button small">Archive &rarr;</a></li>

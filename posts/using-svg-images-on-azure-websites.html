@@ -1,0 +1,188 @@
+﻿
+<!DOCTYPE html>
+<!--
+	Phantom by HTML5 UP
+	html5up.net | @ajlkn
+	Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
+-->
+<html lang="en">
+
+	<head>
+		<title>Eric&#x27;s personal page - Using SVG images on Azure Websites</title>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1" />		
+        <link href="/assets/css/highlight.css" rel="stylesheet">
+		<!--[if lte IE 8]><script src="/assets/js/ie/html5shiv.js"></script><![endif]-->
+		<link rel="stylesheet" href="/assets/css/main.css" />
+		<!--[if lte IE 9]><link rel="stylesheet" href="/assets/css/ie9.css" /><![endif]-->
+		<!--[if lte IE 8]><link rel="stylesheet" href="/assets/css/ie8.css" /><![endif]-->
+        <link href="/assets/css/override.css" rel="stylesheet" />
+
+		<meta name="description" content="You will find here a collection of my thoughts, snippets and articles." />
+		<link type="application/rss+xml" rel="alternate" title="Eric&#x27;s personal page" href="/feed.rss" />
+				<link type="application/atom+xml" rel="alternate" title="Eric&#x27;s personal page" href="/feed.atom" />
+		<link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+		<link rel="icon" href="/favicon.ico" type="image/x-icon">
+
+		<meta name="application-name" content="Eric&#x27;s personal page" />
+		<meta name="msapplication-tooltip" content="Eric&#x27;s personal page" />
+		<meta name="msapplication-starturl" content="/" />
+
+		<meta property="og:title" content="Eric&#x27;s personal page - Using SVG images on Azure Websites" /> 
+		<meta property="og:type" content="website" />
+		<meta property="og:url" content="http://ewinnington.github.io//posts/using-svg-images-on-azure-websites" />
+		<!-- TODO: More social graph meta tags -->
+
+        <script src="/assets/js/highlight.pack.js"></script>   
+		
+        
+
+		
+	</head>
+
+	<body>
+		<!-- Wrapper -->
+		<div id="wrapper">
+
+			<!-- Header -->
+			<header id="header">
+				<div class="inner">
+
+					<!-- Logo -->
+					<a href="/" class="logo">
+						<span class="title">Eric&#x27;s personal page</span>
+					</a>
+
+					<!-- Nav -->
+					<nav>
+						<ul>
+							<li><a href="#menu">Menu</a></li>
+						</ul>
+					</nav>
+
+				</div>
+			</header>
+
+			<!-- Menu -->
+			<nav id="menu">
+				<h2>Menu</h2>
+				<ul>
+					        <li><a href="/posts">Archive</a></li>
+        <li><a href="/tags">Tags</a></li>
+        <li><a href="/about">About Me</a></li>
+
+				</ul>
+			</nav>
+
+			<!-- Main -->
+			<div id="main">
+				<div class="inner">
+
+    
+<header>
+    <h1>Using SVG images on Azure Websites</h1>
+            <p><em>Published on Saturday, 23 August 2014</em></p>
+            <ul class="actions small">
+                    <li><a role="button" href="/tags/Azure" class="button small">Azure</a></li>
+                    <li><a role="button" href="/tags/Migrated" class="button small">Migrated</a></li>
+                    <li><a role="button" href="/tags/SVG" class="button small">SVG</a></li>
+                    <li><a role="button" href="/tags/Websites" class="button small">Websites</a></li>
+        </ul>     
+</header>
+
+					
+					<div id="content">
+						
+
+<p>I've been using <a href="https://useiconic.com/">Iconic's icon set</a> for the development of a dashboard for one of my projects. While publishing it to <a href="http://azure.microsoft.com/en-us/">Azure</a> to test it out, none of the SVGs images or icons were being served.</p>
+<p>It required a little bit of configuration to get it all running:</p>
+<ol>
+<li><p>Make sure the svg files are included in the visual studio project and are set to &quot;Copy Always&quot; or &quot;Copy If Newer&quot;.</p>
+</li>
+<li><p>Configure the web.config of your project to contain the following code to make azure serve the SVGs.</p>
+</li>
+</ol>
+<pre><code> &lt;system.webServer&gt;
+   &lt;staticContent&gt;
+     &lt;remove fileExtension=&quot;.svg&quot;/&gt;
+     &lt;mimeMap fileExtension=&quot;.svg&quot; mimeType=&quot;image/svg+xml&quot; /&gt;
+   &lt;/staticContent&gt;
+ &lt;/system.webServer&gt;
+</code></pre>
+<p>This give the correct mimeType to Azure. For some strange reason, it doesn't have it by default in its configuration, and you'll get errors when trying to serve the content (404). With these steps done, Azure should be able to serve you static SVG images when you use the correct path (I use /img/ ).</p>
+<pre><code>&lt;img src=&quot;~/img/database.svg&quot; alt=&quot;database&quot;&gt;
+</code></pre>
+<p>This should get you a black and white database icon.</p>
+<ol start="3">
+<li><p> To use Iconic's features like CSS styling of the icons, you need to include in your script bundle the iconic.js (or iconic.min.js).</p>
+</li>
+<li><p>Use the data-src attribute in the <img> tag to indicate the Iconic that it must inject the SVG into the document.</p>
+</li>
+</ol>
+<pre><code>&lt;img data-src=&quot;~/img/database.svg&quot; class=&quot;iconic iconic-md ok&quot; alt=&quot;database&quot;&gt;
+</code></pre>
+<ol start="5">
+<li>Create custom CSS markings like the &quot;ok&quot; class to style the icon. I added these in a site-iconic.css file that I include in the bundles.</li>
+</ol>
+<p>.ok {
+fill: green;
+}
+.nok {
+fill: red;
+}</p>
+<p>This &quot;ok&quot; class changes the icon fill to green, I have similarly an &quot;nok&quot; class changing the icon to red.</p>
+<ol start="6">
+<li>If you are using the Razor engine to generate your pages, you can directly assign class names based on the object's properties. Here I have an object DbServer which has a boolean property isAvailable to show its status.</li>
+</ol>
+<pre><code>&#64;{
+string status = (DbServer.isAvailable ? &quot;ok&quot; : &quot;nok&quot;);
+&lt;img data-src=&quot;~/img/database.svg&quot; class=&quot;iconic iconic-md &#64;status&quot; alt=&quot;database&quot;&gt;
+}
+</code></pre>
+<p>Now, every time the page is refreshed, the status of the DB is indicated by the colour of the Database icon.</p>
+<p><a href="old/images/Dashboard-e1408819237573.png"><img src="old/images/Dashboard-e1408819237573.png" class="img-fluid" alt="Dashboard" /></a></p>
+<p>Now you can really use Iconic's icon set potential.</p>
+<p>Of course, if you are using <a href="http://signalr.net/">SignalR</a>, you can also wire up the whole setup to dynamically adjust the icons with javascript, but that's for another post.</p>
+
+
+
+					</div>
+				</div>
+			</div>
+
+			<!-- Footer -->
+			<footer id="footer">
+				<div class="inner">
+    <section>
+        <h2>Feeds</h2>
+        <ul class="actions small vertical">
+            <li><a href="/feed.rss" class="button small"><i class="fa fa-rss"></i> RSS Feed</a></li>
+                        <li><a href="/feed.atom" class="button small"><i class="fa fa-rss"></i> Atom Feed</a></li>
+        </ul>
+    </section>
+    <section>
+    </section>
+    <ul class="copyright">
+        <li>Copyright © 2019</li>
+        <li>Design: <a href="http://html5up.net">HTML5 UP</a></li>
+        <li><a href="https://wyam.io">Generated by Wyam</a></li>
+    </ul>
+</div>
+
+			</footer>
+
+		</div>
+		
+		
+
+		<!-- Scripts -->
+		<script>hljs.initHighlightingOnLoad();</script>
+		<script src="/assets/js/jquery.min.js"></script>
+		<script src="/assets/js/skel.min.js"></script>
+		<script src="/assets/js/util.js"></script>
+		<!--[if lte IE 8]><script src="/assets/js/ie/respond.min.js"></script><![endif]-->
+		<script src="/assets/js/main.js"></script>
+
+	</body>
+
+</html>

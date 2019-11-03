@@ -1,0 +1,148 @@
+﻿
+<!DOCTYPE html>
+<!--
+	Phantom by HTML5 UP
+	html5up.net | @ajlkn
+	Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
+-->
+<html lang="en">
+
+	<head>
+		<title>Eric&#x27;s personal page - Migrating my mum to OS X - Adressbook and applescript</title>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1" />		
+        <link href="/assets/css/highlight.css" rel="stylesheet">
+		<!--[if lte IE 8]><script src="/assets/js/ie/html5shiv.js"></script><![endif]-->
+		<link rel="stylesheet" href="/assets/css/main.css" />
+		<!--[if lte IE 9]><link rel="stylesheet" href="/assets/css/ie9.css" /><![endif]-->
+		<!--[if lte IE 8]><link rel="stylesheet" href="/assets/css/ie8.css" /><![endif]-->
+        <link href="/assets/css/override.css" rel="stylesheet" />
+
+		<meta name="description" content="You will find here a collection of my thoughts, snippets and articles." />
+		<link type="application/rss+xml" rel="alternate" title="Eric&#x27;s personal page" href="/feed.rss" />
+				<link type="application/atom+xml" rel="alternate" title="Eric&#x27;s personal page" href="/feed.atom" />
+		<link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+		<link rel="icon" href="/favicon.ico" type="image/x-icon">
+
+		<meta name="application-name" content="Eric&#x27;s personal page" />
+		<meta name="msapplication-tooltip" content="Eric&#x27;s personal page" />
+		<meta name="msapplication-starturl" content="/" />
+
+		<meta property="og:title" content="Eric&#x27;s personal page - Migrating my mum to OS X - Adressbook and applescript" /> 
+		<meta property="og:type" content="website" />
+		<meta property="og:url" content="http://ewinnington.github.io//posts/migrating-my-mum-to-osx-adressbook-and-applescript" />
+		<!-- TODO: More social graph meta tags -->
+
+        <script src="/assets/js/highlight.pack.js"></script>   
+		
+        
+
+		
+	</head>
+
+	<body>
+		<!-- Wrapper -->
+		<div id="wrapper">
+
+			<!-- Header -->
+			<header id="header">
+				<div class="inner">
+
+					<!-- Logo -->
+					<a href="/" class="logo">
+						<span class="title">Eric&#x27;s personal page</span>
+					</a>
+
+					<!-- Nav -->
+					<nav>
+						<ul>
+							<li><a href="#menu">Menu</a></li>
+						</ul>
+					</nav>
+
+				</div>
+			</header>
+
+			<!-- Menu -->
+			<nav id="menu">
+				<h2>Menu</h2>
+				<ul>
+					        <li><a href="/posts">Archive</a></li>
+        <li><a href="/tags">Tags</a></li>
+        <li><a href="/about">About Me</a></li>
+
+				</ul>
+			</nav>
+
+			<!-- Main -->
+			<div id="main">
+				<div class="inner">
+
+    
+<header>
+    <h1>Migrating my mum to OS X - Adressbook and applescript</h1>
+            <p><em>Published on Tuesday, 24 January 2012</em></p>
+            <ul class="actions small">
+                    <li><a role="button" href="/tags/Migrated" class="button small">Migrated</a></li>
+                    <li><a role="button" href="/tags/OSX" class="button small">OSX</a></li>
+        </ul>     
+</header>
+
+					
+					<div id="content">
+						
+
+<p>One potentially show-stopping problem for migrating my mum was that she had over 1500 contacts in Windows Live Mail (WLM). These were sorted into many groups, which had to be recreated in the mac's address book application. The main problem was that Microsoft's tool does not give any option to export the groups a contact is associated with, either through hotmail, through the app or any other method I tried until I found this solution:</p>
+<p>First, you should export the complete contact list from Windows Live Mail, this can be done from the edge of the address book tool bar. I used .vcf format, which creates 1 card per contact. You should also be able to find this option in File -&gt; Export.</p>
+<p><img src="http://www.freeemailtutorials.com/i/img145.jpg" class="img-fluid" alt="Exporting contacts from Windows Live Mail" /></p>
+<p>On the Windows PC, in the address book for WLM, you have the split screen view of the groups on the right and the people assigned to them on the left. If you double click on a group name, that group opens in a detail window. In the bottom part of that window is a <em><strong>selectable</strong></em> list of all the contacts belonging to that group. Copy the whole text area with CTRL-C and paste that in Excel with CTRL-V. Then you'll need to split that input into separate lines since that are comma separated. Save each group as an individual text file (usually named the same as the group) with the people belonging to group.</p>
+<p>The next step is to move these files to the mac. First of all import all the contacts into the mac's address book. This can be done by dragging all the contacts .VCF cards to the address book window.</p>
+<p>Now comes the reassigning the contacts to the groups. What I did was create the group in the address book, then edit my following applescript to set the group I wanted to import to &quot;MyDesiredGroupName&quot;, then run the following script:</p>
+<p><strong>tell</strong> <strong>me</strong> <strong>to</strong> <strong>set</strong> <strong>the</strong> text item delimiters <strong>to</strong> (<strong>ASCII character</strong> 13) <strong>tell</strong> <em>application</em> &quot;Finder&quot; **  set** Names <strong>to</strong> <em>paragraphs</em> <strong>of</strong> (<strong>read</strong> (<strong>choose file</strong> with prompt &quot;Pick text file containing names to go in group&quot;)) **  repeat** <strong>with</strong> nextLine <strong>in</strong> Names **    if** length <strong>of</strong> nextLine <strong>is</strong> <strong>greater than</strong> 0 <strong>then</strong> **      tell** <em>application</em> &quot;Address Book&quot; **        set** thePeople <strong>to</strong> (<strong>every</strong> <em>person</em> <strong>whose</strong> name = nextLine) **        set** theGroup <strong>to</strong> &quot;MyDesiredGroupName&quot; **        repeat** <strong>with</strong> thisPerson <strong>in</strong> thePeople **          add** thisPerson to <em>group</em> theGroup **        end** <strong>repeat</strong> **        save** <em>application</em> &quot;Address Book&quot; **      end** <strong>tell</strong> **    end** <strong>if</strong> **  end** <strong>repeat</strong> <strong>end</strong> <strong>tell</strong></p>
+<p>By setting the MyDesiredGroupName, you should be able to get most of your contacts imported into the correct group. I had a slight issue with about 1-2% of the contacts not being selected or found properly, especially those that had accents in their names (é, è, ö, ü, ...). If you look in the output log of the script, it is fairly easy to find those that were not selected correctly by the line &quot;<strong>set</strong> thePeople <strong>to</strong> (<strong>every</strong> <em>person</em> <strong>whose</strong> name = nextLine)&quot; since they appear with a  empty selection in the output log. </p>
+<p>In fact, I took the output log and passed it into a text editor searching for  to find the few people that were not correctly imported. That allowed me to make sure the groups were correctly populated.</p>
+<p>Remember to check the number of people belonging to the group at the end of the import.</p>
+<p>That's it. I hope this helps someone else make the switch from WLM to apple's address book.</p>
+
+
+
+					</div>
+				</div>
+			</div>
+
+			<!-- Footer -->
+			<footer id="footer">
+				<div class="inner">
+    <section>
+        <h2>Feeds</h2>
+        <ul class="actions small vertical">
+            <li><a href="/feed.rss" class="button small"><i class="fa fa-rss"></i> RSS Feed</a></li>
+                        <li><a href="/feed.atom" class="button small"><i class="fa fa-rss"></i> Atom Feed</a></li>
+        </ul>
+    </section>
+    <section>
+    </section>
+    <ul class="copyright">
+        <li>Copyright © 2019</li>
+        <li>Design: <a href="http://html5up.net">HTML5 UP</a></li>
+        <li><a href="https://wyam.io">Generated by Wyam</a></li>
+    </ul>
+</div>
+
+			</footer>
+
+		</div>
+		
+		
+
+		<!-- Scripts -->
+		<script>hljs.initHighlightingOnLoad();</script>
+		<script src="/assets/js/jquery.min.js"></script>
+		<script src="/assets/js/skel.min.js"></script>
+		<script src="/assets/js/util.js"></script>
+		<!--[if lte IE 8]><script src="/assets/js/ie/respond.min.js"></script><![endif]-->
+		<script src="/assets/js/main.js"></script>
+
+	</body>
+
+</html>
