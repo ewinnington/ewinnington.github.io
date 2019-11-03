@@ -5,8 +5,8 @@
 		<link>http://ewinnington.github.io/</link>
 		<description>You will find here a collection of my thoughts, snippets and articles.</description>
 		<copyright>2019</copyright>
-		<pubDate>Sun, 03 Nov 2019 06:08:34 GMT</pubDate>
-		<lastBuildDate>Sun, 03 Nov 2019 06:08:34 GMT</lastBuildDate>
+		<pubDate>Sun, 03 Nov 2019 06:20:24 GMT</pubDate>
+		<lastBuildDate>Sun, 03 Nov 2019 06:20:24 GMT</lastBuildDate>
 		<item>
 			<title>Using Github actions to build Wyam and publish to github pages</title>
 			<link>http://ewinnington.github.io/posts/wyam-github-actions</link>
