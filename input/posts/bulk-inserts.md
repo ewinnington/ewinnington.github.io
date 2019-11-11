@@ -9,7 +9,7 @@ For the examples, it is assumed that there exists an object Timeseries ts with a
 
 ## Datatable to Database
 We setup a DataTable in memory and fill it with the data we need to insert. 
-
+ 
 ```CSharp
 DataTable dt = new DataTable();
 dt.Columns.Add("IDTIMESERIES", typeof(int));
@@ -167,3 +167,7 @@ if (nRowsCount > 0)
 	cmdTimeDump.ExecuteNonQuery();
 }
 ```
+
+# Links
+
+An excellent overview of connections to databases in .net core was published on the [Microsoft devblogs]( https://devblogs.microsoft.com/dotnet/net-core-data-access/). 
