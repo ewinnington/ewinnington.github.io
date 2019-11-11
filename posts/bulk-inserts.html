@@ -1,0 +1,289 @@
+﻿
+<!DOCTYPE html>
+<!--
+	Phantom by HTML5 UP
+	html5up.net | @ajlkn
+	Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
+-->
+<html lang="en">
+
+	<head>
+		<title>Eric Winnington - Using bulk inserts on databases</title>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1" />		
+        <link href="/assets/css/highlight.css" rel="stylesheet">
+		<!--[if lte IE 8]><script src="/assets/js/ie/html5shiv.js"></script><![endif]-->
+		<link rel="stylesheet" href="/assets/css/main.css" />
+		<!--[if lte IE 9]><link rel="stylesheet" href="/assets/css/ie9.css" /><![endif]-->
+		<!--[if lte IE 8]><link rel="stylesheet" href="/assets/css/ie8.css" /><![endif]-->
+        <link href="/assets/css/override.css" rel="stylesheet" />
+
+		<meta name="description" content="A collection of thoughts, code and snippets." />
+		<link type="application/rss+xml" rel="alternate" title="Eric Winnington" href="/feed.rss" />
+				<link type="application/atom+xml" rel="alternate" title="Eric Winnington" href="/feed.atom" />
+		<link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+		<link rel="icon" href="/favicon.ico" type="image/x-icon">
+
+		<meta name="application-name" content="Eric Winnington" />
+		<meta name="msapplication-tooltip" content="Eric Winnington" />
+		<meta name="msapplication-starturl" content="/" />
+
+		<meta property="og:title" content="Eric Winnington - Using bulk inserts on databases" /> 
+		<meta property="og:type" content="website" />
+		<meta property="og:url" content="http://ewinnington.github.io/posts/bulk-inserts" />
+		<!-- TODO: More social graph meta tags -->
+
+        <script src="/assets/js/highlight.pack.js"></script>   
+		
+        <meta name="twitter:card" content="summary" />
+<meta name="twitter:site" content="@ewinnington" />
+<meta name="twitter:title" content="Eric Winnington - Using bulk inserts on databases" />
+<meta name="twitter:description" content="A collection of thoughts, code and snippets." />
+		
+	</head>
+
+	<body>
+		<!-- Wrapper -->
+		<div id="wrapper">
+
+			<!-- Header -->
+			<header id="header">
+				<div class="inner">
+
+					<!-- Logo -->
+					<a href="/" class="logo">
+						<span class="title">Eric Winnington</span>
+					</a>
+
+					<!-- Nav -->
+					<nav>
+						<ul>
+							<li><a href="#menu">Menu</a></li>
+						</ul>
+					</nav>
+
+				</div>
+			</header>
+
+			<!-- Menu -->
+			<nav id="menu">
+				<h2>Menu</h2>
+				<ul>
+					        <li><a href="/posts">Archive</a></li>
+        <li><a href="/tags">Tags</a></li>
+        <li><a href="/about">About Me</a></li>
+        <li><a href="/videos">Videos on programming</a></li>
+
+				</ul>
+			</nav>
+
+			<!-- Main -->
+			<div id="main">
+				<div class="inner">
+
+    
+<header>
+    <h1>Using bulk inserts on databases</h1>
+            <p><em>Published on Monday, 11 November 2019</em></p>
+            <ul class="actions small">
+                    <li><a role="button" href="/tags/BulkInserts" class="button small">BulkInserts</a></li>
+                    <li><a role="button" href="/tags/CSharp" class="button small">CSharp</a></li>
+                    <li><a role="button" href="/tags/MsSql" class="button small">MsSql</a></li>
+                    <li><a role="button" href="/tags/OracleDb" class="button small">OracleDb</a></li>
+                    <li><a role="button" href="/tags/Postgres" class="button small">Postgres</a></li>
+        </ul>     
+</header>
+
+					
+					<div id="content">
+						
+
+<p>When inserting large amounts of data into databases, you should consider using the bulk functions instead of running single row INSERT commands. Single row INSERT command will usually lead to poor performance. There exists two main techniques for mutiple row insertions in databases from code and several more if you use the loader tools that accompany the database. Here I'll detail the two main methods: BulkInserts and VectorInserts.</p>
+<h1 id="bulk-inserts-for-oracle-mssql-postgresql">Bulk Inserts for Oracle, MSSQL, Postgresql</h1>
+<p>For the examples, it is assumed that there exists an object Timeseries ts with a field IEnumerable TimeseriesData that contains Datapoints. A Datapoint has a DateTime field named t and a Decimal field named value.</p>
+<h2 id="datatable-to-database">Datatable to Database</h2>
+<p>We setup a DataTable in memory and fill it with the data we need to insert.</p>
+<pre><code class="language-CSharp">DataTable dt = new DataTable();
+dt.Columns.Add(&quot;IDTIMESERIES&quot;, typeof(int));
+dt.Columns.Add(&quot;TIMEPOINT&quot;, typeof(DateTime));
+dt.Columns.Add(&quot;VALUE1&quot;, typeof(decimal));
+
+int nRowsMaxDt = 0;
+//ts being a timeseries object that contains a IEnumberable TimeSeriesData of sp (single points) 
+foreach (var sp in ts.TimeSeriesData)
+{
+	object[] oRowDt = new object[3];
+	oRowDt[0] = ts.Id; oRowDt[1] = sp.t; oRowDt[2] = (decimal)sp.value; 
+	dt.Rows.Add(oRowDt); nRowsMaxDt = nRowsMaxDt + 1;
+}
+DumpDataTableToDB(&quot;DATATIMESERIES&quot;, dt, nRowsMaxDt);
+</code></pre>
+<p>The DumpDataTableToDB function is then written on a per database basis. Below you will find my examples for OracleDb, MSSQL and Postgres.</p>
+<h3 id="oracle">Oracle:</h3>
+<p>Oracle has two sets of drivers, the Unmanaged and the Managed drivers. Your usings will be different per package.</p>
+<p>With ODP.NET Unmanaged (Drivers installed seperately - you will need to add the references manually)</p>
+<pre><code class="language-CSharp">using Oracle.DataAccess.Client;
+using Oracle.DataAccess.Types;
+</code></pre>
+<p>With ODP.NET Managed (Nuget Installed <a href="https://www.nuget.org/packages/Oracle.ManagedDataAccess/">https://www.nuget.org/packages/Oracle.ManagedDataAccess/</a> )</p>
+<pre><code class="language-CSharp">using Oracle.ManagedDataAccess.Client;
+using Oracle.ManagedDataAccess.Types;
+</code></pre>
+<p>Use the OracleBulkCopy function with Con being an open connection to the database (OracleConnection).</p>
+<pre><code class="language-CSharp">public void DumpDataTableToDB(string TableName, DataTable dt, int nCount)
+{
+	using (OracleBulkCopy obc = new OracleBulkCopy(Con))
+	{
+		obc.BatchSize = nCount;
+		obc.DestinationTableName = TableName;
+		obc.WriteToServer(dt);
+		obc.Close();
+	}
+}
+</code></pre>
+<p>This method works, but I had issues with Oracle DataGuard. So for Oracle, I do recommend using the Vectorized data insert presented below with Oracle ArrayBind.</p>
+<h3 id="ms-sql-server">MS SQL Server</h3>
+<p>The Microsoft SQL server uses SqlBulkCopy to connect and import the data. Again here the Con represents an open connection to the database.</p>
+<pre><code class="language-CSharp">using System.Data;
+using System.Data.Common;
+using System.Data.SqlClient;
+
+public void DumpDataTableToDB(string TableName, DataTable dt, int nCount)
+{
+using (SqlBulkCopy bulkCopy = new SqlBulkCopy(((SqlConnection)Con).ConnectionString, SqlBulkCopyOptions.KeepNulls))
+            {
+                foreach (System.Data.DataColumn col in dt.Columns)
+                {
+                    bulkCopy.ColumnMappings.Add(col.ColumnName, col.ColumnName);
+                }
+                bulkCopy.DestinationTableName = TableName;
+                bulkCopy.WriteToServer(dt);
+            }
+}
+</code></pre>
+<h3 id="postgresql">Postgresql</h3>
+<p>In Postgresql, the important part to note is the COPY ... FROM command. This allows you to provide either a file located on the DB Server or data from STDIN, passed from the client. The Format specifier allows for binary, which we are using here or text and csv. Note, the csv format is very picky, try the text format first if you are doing imports.</p>
+<p>As usualm the Con represents an open database connection.</p>
+<pre><code class="language-CSharp">using Npgsql; // Nuget https://www.nuget.org/packages/Npgsql 
+
+public void DumpDataTableToDB(string TableName, DataTable dt, int nCount)
+{
+Dictionary&lt;Type, NpgsqlTypes.NpgsqlDbType&gt; TypeDict = new Dictionary&lt;Type, NpgsqlTypes.NpgsqlDbType&gt;();
+
+            TypeDict.Add(typeof(int), NpgsqlTypes.NpgsqlDbType.Integer);
+            TypeDict.Add(typeof(double), NpgsqlTypes.NpgsqlDbType.Double);
+            TypeDict.Add(typeof(decimal), NpgsqlTypes.NpgsqlDbType.Numeric);
+            TypeDict.Add(typeof(string), NpgsqlTypes.NpgsqlDbType.Varchar);
+            TypeDict.Add(typeof(DateTime), NpgsqlTypes.NpgsqlDbType.Timestamp);
+            TypeDict.Add(typeof(char[]), NpgsqlTypes.NpgsqlDbType.Varchar);
+            TypeDict.Add(typeof(Guid), NpgsqlTypes.NpgsqlDbType.Uuid);
+
+
+            string sql = &quot;COPY &quot; + TableName + &quot; ( &quot;;
+            foreach (System.Data.DataColumn col in dt.Columns)
+            {
+                sql += (col.ColumnName.ToLower() + &quot;,&quot;);
+            }
+            sql = sql.TrimEnd(',') + &quot;) FROM STDIN (FORMAT BINARY)&quot;;
+            int nRows = dt.Rows.Count;
+            using (var BulkWrite = ((Npgsql.NpgsqlConnection)Con).BeginBinaryImport(sql))
+            {
+                for (int idRow = 0; idRow &lt; nRows; idRow++)
+                {
+                    BulkWrite.StartRow();
+                    foreach (System.Data.DataColumn col in dt.Columns)
+                    {
+                        if (dt.Rows[idRow].IsNull(col))
+                        {
+                            BulkWrite.WriteNull();
+                        }
+                        else
+                        {
+                            if (col.DataType == typeof(string) &amp;&amp; string.IsNullOrEmpty(dt.Rows[idRow].Field&lt;string&gt;(col)))
+                            {
+                                BulkWrite.WriteNull();
+                            }
+                            else
+                            {
+                                BulkWrite.Write(dt.Rows[idRow][col.Ordinal], TypeDict[col.DataType]);
+                            }
+                        }
+                    }
+                    
+                }
+                BulkWrite.Complete();
+            }
+        }
+    }
+</code></pre>
+<h2 id="alternative-method-for-oracle-array-bind-for-vector-insertion">Alternative Method for Oracle Array Bind, for Vector Insertion</h2>
+<p>This is a better method for insertions on Oracle that does not cause issues with dataguard, using arrays of data. The single INSERT command is fed with an array of data.</p>
+<pre><code class="language-CSharp">int nRowsCount = ts.Count(); 
+int[] IDTIMESERIES = new int[nRowsCount];
+DateTime[] TIMEPOINT = new DateTime[nRowsCount];
+decimal[] VALUE1 = new decimal[nRowsCount];
+
+// loading the arrays with data 
+int i = 0;
+foreach (var sp in ts.TimeSeriesData)
+{
+	IDTIMESERIES[i] = ts.Id; TIMEPOINT[i] = sp.t; VALUE1[i] = sp.value;
+	i++;
+}
+
+if (nRowsCount &gt; 0)
+{
+	OracleCommand cmdTimeDump = new OracleCommand(&quot;Insert into DATATIMESERIES (IDTIMESERIES, TIMEPOINT, VALUE1) VALUES (:1, :2, :3)&quot;, OraCon);
+	cmdTimeDump.ArrayBindCount = nRowsCount;
+	cmdTimeDump.Parameters.Add(new OracleParameter() { OracleDbType = OracleDbType.Int32, Value = IDTIMESERIES });
+	cmdTimeDump.Parameters.Add(new OracleParameter() { OracleDbType = OracleDbType.Date, Value = TIMEPOINT });
+	cmdTimeDump.Parameters.Add(new OracleParameter() { OracleDbType = OracleDbType.Decimal, Value = VALUE1 });
+  
+	cmdTimeDump.ExecuteNonQuery();
+}
+</code></pre>
+<h1 id="links">Links</h1>
+<p>An excellent overview of connections to databases in .net core was published on the <a href="https://devblogs.microsoft.com/dotnet/net-core-data-access/">Microsoft devblogs</a>.</p>
+
+
+
+					</div>
+				</div>
+			</div>
+
+			<!-- Footer -->
+			<footer id="footer">
+				<div class="inner">
+    <section>
+        <h2>Feeds</h2>
+        <ul class="actions small vertical">
+            <li><a href="/feed.rss" class="button small"><i class="fa fa-rss"></i> RSS Feed</a></li>
+                        <li><a href="/feed.atom" class="button small"><i class="fa fa-rss"></i> Atom Feed</a></li>
+        </ul>
+    </section>
+    <section>
+    </section>
+    <ul class="copyright">
+        <li>Copyright © 2019</li>
+        <li>Design: <a href="http://html5up.net">HTML5 UP</a></li>
+        <li><a href="https://wyam.io">Generated by Wyam</a></li>
+    </ul>
+</div>
+
+			</footer>
+
+		</div>
+		
+		
+
+		<!-- Scripts -->
+		<script>hljs.initHighlightingOnLoad();</script>
+		<script src="/assets/js/jquery.min.js"></script>
+		<script src="/assets/js/skel.min.js"></script>
+		<script src="/assets/js/util.js"></script>
+		<!--[if lte IE 8]><script src="/assets/js/ie/respond.min.js"></script><![endif]-->
+		<script src="/assets/js/main.js"></script>
+
+	</body>
+
+</html>

@@ -5,8 +5,162 @@
 		<link>http://ewinnington.github.io/</link>
 		<description>A collection of thoughts, code and snippets.</description>
 		<copyright>2019</copyright>
-		<pubDate>Sun, 10 Nov 2019 23:50:06 GMT</pubDate>
-		<lastBuildDate>Sun, 10 Nov 2019 23:50:06 GMT</lastBuildDate>
+		<pubDate>Mon, 11 Nov 2019 00:08:48 GMT</pubDate>
+		<lastBuildDate>Mon, 11 Nov 2019 00:08:48 GMT</lastBuildDate>
+		<item>
+			<title>Using bulk inserts on databases</title>
+			<link>http://ewinnington.github.io/posts/bulk-inserts</link>
+			<description>&lt;p&gt;When inserting large amounts of data into databases, you should consider using the bulk functions instead of running single row INSERT commands. Single row INSERT command will usually lead to poor performance. There exists two main techniques for mutiple row insertions in databases from code and several more if you use the loader tools that accompany the database. Here I'll detail the two main methods: BulkInserts and VectorInserts.&lt;/p&gt;</description>
+			<guid>http://ewinnington.github.io/posts/bulk-inserts</guid>
+			<pubDate>Mon, 11 Nov 2019 00:00:00 GMT</pubDate>
+			<content:encoded>&lt;p&gt;When inserting large amounts of data into databases, you should consider using the bulk functions instead of running single row INSERT commands. Single row INSERT command will usually lead to poor performance. There exists two main techniques for mutiple row insertions in databases from code and several more if you use the loader tools that accompany the database. Here I'll detail the two main methods: BulkInserts and VectorInserts.&lt;/p&gt;
+&lt;h1 id="bulk-inserts-for-oracle-mssql-postgresql"&gt;Bulk Inserts for Oracle, MSSQL, Postgresql&lt;/h1&gt;
+&lt;p&gt;For the examples, it is assumed that there exists an object Timeseries ts with a field IEnumerable TimeseriesData that contains Datapoints. A Datapoint has a DateTime field named t and a Decimal field named value.&lt;/p&gt;
+&lt;h2 id="datatable-to-database"&gt;Datatable to Database&lt;/h2&gt;
+&lt;p&gt;We setup a DataTable in memory and fill it with the data we need to insert.&lt;/p&gt;
+&lt;pre&gt;&lt;code class="language-CSharp"&gt;DataTable dt = new DataTable();
+dt.Columns.Add(&amp;quot;IDTIMESERIES&amp;quot;, typeof(int));
+dt.Columns.Add(&amp;quot;TIMEPOINT&amp;quot;, typeof(DateTime));
+dt.Columns.Add(&amp;quot;VALUE1&amp;quot;, typeof(decimal));
+
+int nRowsMaxDt = 0;
+//ts being a timeseries object that contains a IEnumberable TimeSeriesData of sp (single points) 
+foreach (var sp in ts.TimeSeriesData)
+{
+	object[] oRowDt = new object[3];
+	oRowDt[0] = ts.Id; oRowDt[1] = sp.t; oRowDt[2] = (decimal)sp.value; 
+	dt.Rows.Add(oRowDt); nRowsMaxDt = nRowsMaxDt + 1;
+}
+DumpDataTableToDB(&amp;quot;DATATIMESERIES&amp;quot;, dt, nRowsMaxDt);
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;The DumpDataTableToDB function is then written on a per database basis. Below you will find my examples for OracleDb, MSSQL and Postgres.&lt;/p&gt;
+&lt;h3 id="oracle"&gt;Oracle:&lt;/h3&gt;
+&lt;p&gt;Oracle has two sets of drivers, the Unmanaged and the Managed drivers. Your usings will be different per package.&lt;/p&gt;
+&lt;p&gt;With ODP.NET Unmanaged (Drivers installed seperately - you will need to add the references manually)&lt;/p&gt;
+&lt;pre&gt;&lt;code class="language-CSharp"&gt;using Oracle.DataAccess.Client;
+using Oracle.DataAccess.Types;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;With ODP.NET Managed (Nuget Installed &lt;a href="https://www.nuget.org/packages/Oracle.ManagedDataAccess/"&gt;https://www.nuget.org/packages/Oracle.ManagedDataAccess/&lt;/a&gt; )&lt;/p&gt;
+&lt;pre&gt;&lt;code class="language-CSharp"&gt;using Oracle.ManagedDataAccess.Client;
+using Oracle.ManagedDataAccess.Types;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Use the OracleBulkCopy function with Con being an open connection to the database (OracleConnection).&lt;/p&gt;
+&lt;pre&gt;&lt;code class="language-CSharp"&gt;public void DumpDataTableToDB(string TableName, DataTable dt, int nCount)
+{
+	using (OracleBulkCopy obc = new OracleBulkCopy(Con))
+	{
+		obc.BatchSize = nCount;
+		obc.DestinationTableName = TableName;
+		obc.WriteToServer(dt);
+		obc.Close();
+	}
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;This method works, but I had issues with Oracle DataGuard. So for Oracle, I do recommend using the Vectorized data insert presented below with Oracle ArrayBind.&lt;/p&gt;
+&lt;h3 id="ms-sql-server"&gt;MS SQL Server&lt;/h3&gt;
+&lt;p&gt;The Microsoft SQL server uses SqlBulkCopy to connect and import the data. Again here the Con represents an open connection to the database.&lt;/p&gt;
+&lt;pre&gt;&lt;code class="language-CSharp"&gt;using System.Data;
+using System.Data.Common;
+using System.Data.SqlClient;
+
+public void DumpDataTableToDB(string TableName, DataTable dt, int nCount)
+{
+using (SqlBulkCopy bulkCopy = new SqlBulkCopy(((SqlConnection)Con).ConnectionString, SqlBulkCopyOptions.KeepNulls))
+            {
+                foreach (System.Data.DataColumn col in dt.Columns)
+                {
+                    bulkCopy.ColumnMappings.Add(col.ColumnName, col.ColumnName);
+                }
+                bulkCopy.DestinationTableName = TableName;
+                bulkCopy.WriteToServer(dt);
+            }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3 id="postgresql"&gt;Postgresql&lt;/h3&gt;
+&lt;p&gt;In Postgresql, the important part to note is the COPY ... FROM command. This allows you to provide either a file located on the DB Server or data from STDIN, passed from the client. The Format specifier allows for binary, which we are using here or text and csv. Note, the csv format is very picky, try the text format first if you are doing imports.&lt;/p&gt;
+&lt;p&gt;As usualm the Con represents an open database connection.&lt;/p&gt;
+&lt;pre&gt;&lt;code class="language-CSharp"&gt;using Npgsql; // Nuget https://www.nuget.org/packages/Npgsql 
+
+public void DumpDataTableToDB(string TableName, DataTable dt, int nCount)
+{
+Dictionary&amp;lt;Type, NpgsqlTypes.NpgsqlDbType&amp;gt; TypeDict = new Dictionary&amp;lt;Type, NpgsqlTypes.NpgsqlDbType&amp;gt;();
+
+            TypeDict.Add(typeof(int), NpgsqlTypes.NpgsqlDbType.Integer);
+            TypeDict.Add(typeof(double), NpgsqlTypes.NpgsqlDbType.Double);
+            TypeDict.Add(typeof(decimal), NpgsqlTypes.NpgsqlDbType.Numeric);
+            TypeDict.Add(typeof(string), NpgsqlTypes.NpgsqlDbType.Varchar);
+            TypeDict.Add(typeof(DateTime), NpgsqlTypes.NpgsqlDbType.Timestamp);
+            TypeDict.Add(typeof(char[]), NpgsqlTypes.NpgsqlDbType.Varchar);
+            TypeDict.Add(typeof(Guid), NpgsqlTypes.NpgsqlDbType.Uuid);
+
+
+            string sql = &amp;quot;COPY &amp;quot; + TableName + &amp;quot; ( &amp;quot;;
+            foreach (System.Data.DataColumn col in dt.Columns)
+            {
+                sql += (col.ColumnName.ToLower() + &amp;quot;,&amp;quot;);
+            }
+            sql = sql.TrimEnd(',') + &amp;quot;) FROM STDIN (FORMAT BINARY)&amp;quot;;
+            int nRows = dt.Rows.Count;
+            using (var BulkWrite = ((Npgsql.NpgsqlConnection)Con).BeginBinaryImport(sql))
+            {
+                for (int idRow = 0; idRow &amp;lt; nRows; idRow++)
+                {
+                    BulkWrite.StartRow();
+                    foreach (System.Data.DataColumn col in dt.Columns)
+                    {
+                        if (dt.Rows[idRow].IsNull(col))
+                        {
+                            BulkWrite.WriteNull();
+                        }
+                        else
+                        {
+                            if (col.DataType == typeof(string) &amp;amp;&amp;amp; string.IsNullOrEmpty(dt.Rows[idRow].Field&amp;lt;string&amp;gt;(col)))
+                            {
+                                BulkWrite.WriteNull();
+                            }
+                            else
+                            {
+                                BulkWrite.Write(dt.Rows[idRow][col.Ordinal], TypeDict[col.DataType]);
+                            }
+                        }
+                    }
+                    
+                }
+                BulkWrite.Complete();
+            }
+        }
+    }
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2 id="alternative-method-for-oracle-array-bind-for-vector-insertion"&gt;Alternative Method for Oracle Array Bind, for Vector Insertion&lt;/h2&gt;
+&lt;p&gt;This is a better method for insertions on Oracle that does not cause issues with dataguard, using arrays of data. The single INSERT command is fed with an array of data.&lt;/p&gt;
+&lt;pre&gt;&lt;code class="language-CSharp"&gt;int nRowsCount = ts.Count(); 
+int[] IDTIMESERIES = new int[nRowsCount];
+DateTime[] TIMEPOINT = new DateTime[nRowsCount];
+decimal[] VALUE1 = new decimal[nRowsCount];
+
+// loading the arrays with data 
+int i = 0;
+foreach (var sp in ts.TimeSeriesData)
+{
+	IDTIMESERIES[i] = ts.Id; TIMEPOINT[i] = sp.t; VALUE1[i] = sp.value;
+	i++;
+}
+
+if (nRowsCount &amp;gt; 0)
+{
+	OracleCommand cmdTimeDump = new OracleCommand(&amp;quot;Insert into DATATIMESERIES (IDTIMESERIES, TIMEPOINT, VALUE1) VALUES (:1, :2, :3)&amp;quot;, OraCon);
+	cmdTimeDump.ArrayBindCount = nRowsCount;
+	cmdTimeDump.Parameters.Add(new OracleParameter() { OracleDbType = OracleDbType.Int32, Value = IDTIMESERIES });
+	cmdTimeDump.Parameters.Add(new OracleParameter() { OracleDbType = OracleDbType.Date, Value = TIMEPOINT });
+	cmdTimeDump.Parameters.Add(new OracleParameter() { OracleDbType = OracleDbType.Decimal, Value = VALUE1 });
+  
+	cmdTimeDump.ExecuteNonQuery();
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h1 id="links"&gt;Links&lt;/h1&gt;
+&lt;p&gt;An excellent overview of connections to databases in .net core was published on the &lt;a href="https://devblogs.microsoft.com/dotnet/net-core-data-access/"&gt;Microsoft devblogs&lt;/a&gt;.&lt;/p&gt;
+</content:encoded>
+		</item>
 		<item>
 			<title>Reflections on Webassembly - May/Nov 19</title>
 			<link>http://ewinnington.github.io/posts/webassembly-thoughts</link>
@@ -28,26 +182,6 @@
 &lt;?# YouTube 3yVc5t-g-VU /?&gt;
 &lt;p&gt;As I noted on twitter, as I read, watch and learn about webassembly, I'm getting the feeling this is going to be a titanic shift in the way we reason about programs, languages, frameworks and software design in general.&lt;/p&gt;
 &lt;p&gt;&amp;quot;The avalanche has already started, it is too late for the pebbles to vote&amp;quot; - Ambassador Kosh, Babylon 5.&lt;/p&gt;
-</content:encoded>
-		</item>
-		<item>
-			<title>R - Reading binary files</title>
-			<link>http://ewinnington.github.io/posts/R-read-binary-file</link>
-			<description>&lt;p&gt;I had to get some data out of files written by Fortran. The format was a large array of doubles.&lt;/p&gt;</description>
-			<guid>http://ewinnington.github.io/posts/R-read-binary-file</guid>
-			<pubDate>Sun, 03 Nov 2019 00:00:00 GMT</pubDate>
-			<content:encoded>&lt;p&gt;I had to get some data out of files written by Fortran. The format was a large array of doubles.&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;numeric() for doubles&lt;/li&gt;
-&lt;li&gt;integer() for integers&lt;/li&gt;
-&lt;/ul&gt;
-&lt;p&gt;readBin takes the input file and reads the binary data. If you want to read to the end of the file, don't give a dimension as 3rd parameter.&lt;/p&gt;
-&lt;pre&gt;&lt;code class="language-R"&gt;#### Reading value field from file
-z &amp;lt;- file(&amp;quot;/BoundValueRemain.bin&amp;quot;, &amp;quot;rb&amp;quot;)
-y &amp;lt;- readBin (z, numeric(), 51*50*50*15*13)
-close(z)
-dim(y) &amp;lt;- c(51, 50, 50, 15, 13)
-&lt;/code&gt;&lt;/pre&gt;
 </content:encoded>
 		</item>
 		<item>
@@ -180,6 +314,26 @@ jobs:
 &lt;h1 id="closing"&gt;Closing&lt;/h1&gt;
 &lt;p&gt;If all went well, you should now have your personal wyam generated site up and running at &lt;a href="http://username.github.io"&gt;http://username.github.io&lt;/a&gt; .&lt;/p&gt;
 &lt;p&gt;Please feel free to look around both branches &lt;em&gt;source&lt;/em&gt; and &lt;em&gt;master&lt;/em&gt; on &lt;a href="https://github.com/ewinnington/ewinnington.github.io"&gt;my github repo&lt;/a&gt; to understand how my blog is setup.&lt;/p&gt;
+</content:encoded>
+		</item>
+		<item>
+			<title>R - Reading binary files</title>
+			<link>http://ewinnington.github.io/posts/R-read-binary-file</link>
+			<description>&lt;p&gt;I had to get some data out of files written by Fortran. The format was a large array of doubles.&lt;/p&gt;</description>
+			<guid>http://ewinnington.github.io/posts/R-read-binary-file</guid>
+			<pubDate>Sun, 03 Nov 2019 00:00:00 GMT</pubDate>
+			<content:encoded>&lt;p&gt;I had to get some data out of files written by Fortran. The format was a large array of doubles.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;numeric() for doubles&lt;/li&gt;
+&lt;li&gt;integer() for integers&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;readBin takes the input file and reads the binary data. If you want to read to the end of the file, don't give a dimension as 3rd parameter.&lt;/p&gt;
+&lt;pre&gt;&lt;code class="language-R"&gt;#### Reading value field from file
+z &amp;lt;- file(&amp;quot;/BoundValueRemain.bin&amp;quot;, &amp;quot;rb&amp;quot;)
+y &amp;lt;- readBin (z, numeric(), 51*50*50*15*13)
+close(z)
+dim(y) &amp;lt;- c(51, 50, 50, 15, 13)
+&lt;/code&gt;&lt;/pre&gt;
 </content:encoded>
 		</item>
 		<item>
@@ -464,36 +618,6 @@ bye
 &lt;p&gt;Then it was a simple matter of putting that in a crontab job, running it every five minutes is enough. Calling crontab crons.txt launched the job. crontab -l lists the jobs.&lt;/p&gt;
 &lt;pre&gt;&lt;code class="language-cron"&gt;\*/5 \* \* \* \* ~/go.sh &amp;gt;/dev/null
 &lt;/code&gt;&lt;/pre&gt;
-</content:encoded>
-		</item>
-		<item>
-			<title>Raspberry pi</title>
-			<link>http://ewinnington.github.io/posts/raspberry-pi</link>
-			<description>&lt;p&gt;Since I've finally had time to do something with my &lt;a href="http://www.raspberrypi.org/"&gt;Raspberry Pi&lt;/a&gt;, I've set it up&amp;nbsp;as a file server for macs and iTunes server for the house. I'm using a 7 port USB hub, powered, that uses 2 4-port hubs inside. As a drive, I used a Toshiba 500 gig USB powered HDD that supports USB3. The Raspberry is powered directly from the USB hub, so there is only one power supply for the setup with 3 USB cables (1 hub to pi for power supply, 1 pi to hub data, 1 hub to hdd data cable) and 1 ethernet cat5 cable.&lt;/p&gt;</description>
-			<guid>http://ewinnington.github.io/posts/raspberry-pi</guid>
-			<pubDate>Wed, 23 Jan 2013 00:00:00 GMT</pubDate>
-			<content:encoded>&lt;p&gt;Since I've finally had time to do something with my &lt;a href="http://www.raspberrypi.org/"&gt;Raspberry Pi&lt;/a&gt;, I've set it up as a file server for macs and iTunes server for the house. I'm using a 7 port USB hub, powered, that uses 2 4-port hubs inside. As a drive, I used a Toshiba 500 gig USB powered HDD that supports USB3. The Raspberry is powered directly from the USB hub, so there is only one power supply for the setup with 3 USB cables (1 hub to pi for power supply, 1 pi to hub data, 1 hub to hdd data cable) and 1 ethernet cat5 cable.&lt;/p&gt;
-&lt;p&gt;The distribution is a standard Raspbian that I keep up to date using &lt;em&gt;sudo apt-get update&lt;/em&gt; and &lt;em&gt;sudo apt-get upgrade&lt;/em&gt;. (&lt;em&gt;Linux raspberrypi 3.2.27+ #250 PREEMPT Thu Oct 18 19:03:02 BST 2012 armv6l&lt;/em&gt;)&lt;/p&gt;
-&lt;p&gt;To mount the Toshiba HDD, I first used &lt;strong&gt;dmesg&lt;/strong&gt; to watch for where the USB drive appeared when connected to the USB hub. For me it was sda : sda1. So I mounted it using &lt;strong&gt;mount&lt;/strong&gt; and after verifying it worked, edited the_ /etc/fstab_ to make the drive auto mount on boot. I added the line: &lt;em&gt;/dev/sda1 /srv/toshiba auto defaults 0 0&lt;/em&gt;&lt;/p&gt;
-&lt;p&gt;To act as a file server for mac, I used the software &lt;a href="http://netatalk.sourceforge.net/"&gt;&lt;strong&gt;netatalk&lt;/strong&gt;&lt;/a&gt;. It's quick to install and requires practically no configuration and it worked out of the box. My raspberry appeared on the mac within seconds with the home drive shared, then it was a simple share of the extra folders.&lt;/p&gt;
-&lt;p&gt;To Install: &lt;em&gt;apt-get install netatalk&lt;/em&gt; To configure which folders are shared: &lt;em&gt;vi /etc/netatalk/AppleVolumes.default&lt;/em&gt; (remember to check the rights on these folders if you have a problem) To start/stop/restart the service: &lt;em&gt;sudo /etc/init.d/netatalk start&lt;/em&gt; (or &lt;em&gt;stop&lt;/em&gt; or &lt;em&gt;restart&lt;/em&gt;)&lt;/p&gt;
-&lt;p&gt;To act as an &lt;a href="http://elinux.org/RPiForked-Daapd"&gt;iTunes server&lt;/a&gt;, I used &lt;strong&gt;&lt;a href="https://github.com/jasonmc/forked-daapd"&gt;forked-daapd&lt;/a&gt;&lt;/strong&gt;. Again, worked out of the box with just a touch of configuration. The config file is very easy. I didn't used the remote function of daapd yet, using the box only as a server, not as a playback device.&lt;/p&gt;
-&lt;p&gt;To install: &lt;em&gt;apt-get install forked-daapd&lt;/em&gt; To configure where the music is at: &lt;em&gt;sudo vi /etc/forked-daapd.conf&lt;/em&gt; To start/stop the service: &lt;em&gt;sudo /etc/init.d/forked-daapd start&lt;/em&gt; (or &lt;em&gt;stop&lt;/em&gt;)&lt;/p&gt;
-&lt;p&gt;With that installed, I had &amp;quot;Music on Raspberry pi&amp;quot; showing up in my iTunes side panel. It just worked.&lt;/p&gt;
-&lt;p&gt;The only problem I was getting was that the playback of certain songs was getting interrupted in midstream and when I changed songs in iTunes, there was a very long &amp;quot;Opening URL&amp;quot; message box coming up. The Toshiba hard drive where the music is located was running really slow and any access loaded the CPU to 100% for far too long. &lt;a href="http://www.raspberrypi.org/phpBB3/viewtopic.php?f=28&amp;amp;t=10355"&gt;Similar problems had been reported on the raspberry pi forum&lt;/a&gt;. To diagnose what was the issue, I used &lt;strong&gt;hdparm&lt;/strong&gt; to check the performance of the HDD and **lsusb **to find out the tree structure of the USB hub.&lt;/p&gt;
-&lt;p&gt;Run a performance test of drive sda: &lt;em&gt;hdparm -tT /dev/sda&lt;/em&gt;&lt;/p&gt;
-&lt;p&gt;My first test gave me a speed of ~280 KB/s. Abysmal performance. After checking the logs with &lt;strong&gt;dmesg&lt;/strong&gt;, I saw many USB reset messages with respect to the USB drive. With &lt;strong&gt;lsusb&lt;/strong&gt;, I confirmed the HDD was connected to the second internal usb hub of my powered hub, so I changed port until I found one that is connected to the first hub. The performance difference was instantaneous: 26 MB/s. Connecting it directly to the raspberry pi proved to be too much of a power drain for the pi's usb port.&lt;/p&gt;
-&lt;p&gt;List the tree of USB hubs and devices connected: &lt;em&gt;sudo lsusb -t&lt;/em&gt;&lt;/p&gt;
-&lt;p&gt;A couple more things remained before I could leave my pi headless in the closet next to the router: I changed the default password (&lt;em&gt;raspberry&lt;/em&gt;) to another one using the command &lt;strong&gt;passwd&lt;/strong&gt;.&lt;/p&gt;
-&lt;p&gt;Then I installed &lt;a href="http://www.tightvnc.com/"&gt;&lt;strong&gt;tightvncserver&lt;/strong&gt;&lt;/a&gt; on the pi to &lt;a href="http://elinux.org/RPi_VNC_Server"&gt;serve the desktop over the network&lt;/a&gt; to a mac or a windows computer. I don't launch it automatically on logging in, I only launch a graphical environment occasionally, so it can live on the command line for the time being.&lt;/p&gt;
-&lt;p&gt;To install: &lt;em&gt;sudo apt-get install tightvncserver&lt;/em&gt; To launch: &lt;em&gt;tightvncserver&lt;/em&gt; To create a display on port 0 with a 1024x768 resolution and 24 bit colour depth: &lt;em&gt;vncserver :0 -geometry 1024x768 -depth 24&lt;/em&gt;&lt;/p&gt;
-&lt;p&gt;Over the network I could now SSH into the pi (On windows I use &lt;a href="http://www.chiark.greenend.org.uk/%7Esgtatham/putty/"&gt;&lt;strong&gt;Putty&lt;/strong&gt;&lt;/a&gt;, on mac I just use SSH from the command shell) and launch the GUI on another computer.&lt;/p&gt;
-&lt;p&gt;Finally, I connected to my home network and forwarded the SSH (port 22) service to my raspberry pi.&lt;/p&gt;
-&lt;p&gt;Next time, I want to set-up a dynamic dns for the Pi, so that I can always gain access to it, even if my home router reboots and changes ip. I would like it to use a subdomain of my cloudplush address, but I don't know if my hosting provider iPower supports that. Another option would be to email or tweet the ip address of my home router every time it changes.&lt;/p&gt;
-&lt;p&gt;I also saw an interesting &lt;a href="http://jordanburgess.com/post/38986434391/raspberry-pi-airplay"&gt;AirPi project&lt;/a&gt; online, where the pi works as an airplay receiver, this would be an interesting addition to my pi. For this, I need to get a wireless adapter.&lt;/p&gt;
-&lt;p&gt;I want to investigate using the pi with a LAMP stack on it and &lt;a href="https://owncloud.com/"&gt;&lt;strong&gt;OwnCloud&lt;/strong&gt;&lt;/a&gt; to serve as a private owned dropbox.&lt;/p&gt;
-&lt;p&gt;Finally, I really should stop relying on passwords with my SSH connection and start using an SSH keyfile, Especially if it will be more and more internet facing.&lt;/p&gt;
-&lt;p&gt;The command &lt;strong&gt;history&lt;/strong&gt; to helped me remember all the things I did.&lt;/p&gt;
 </content:encoded>
 		</item>
 	</channel>
