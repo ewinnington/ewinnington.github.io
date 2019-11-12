@@ -5,7 +5,7 @@ Tags: [CSharp, SQLite, Dotnet try, Jupyter notebook]
 
 Now that we have [Jupyter Notebooks with C# installed](/posts/jupyter-notebook-csharp-r), using it as an environment to play with SQLite is very easy. [SQLite](https://www.sqlite.org/index.html) is a relational database that is small in footprint and self-contained. It also has a great in-memory mode which is perfect for playing around in a Jupyter notebook. 
 
-You can access my [SQLite example notebook here](https://github.com/ewinnington/noteb/blob/master/SqliteInteraction.ipynb). 
+You can access my [SQLite example notebook here](https://github.com/ewinnington/noteb/blob/master/SqliteInteraction.ipynb). (*Note, if you can tell me how to host them online to make them executable, drop me a line on [twitter](https://twitter.com/ThrowATwit)*) 
 
 You can create a C# Notebook from the file menu of Jupyter. 
 
