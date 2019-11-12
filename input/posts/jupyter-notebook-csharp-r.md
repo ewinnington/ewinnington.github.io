@@ -2,6 +2,8 @@ Title: Jupyter notebook with C# and R
 Published: 12/11/2019
 Tags: [CSharp, R, Dotnet try, Jupyter notebook] 
 ---
+Following the release of the [updated dotnet try tool](https://devblogs.microsoft.com/dotnet/net-core-with-juypter-notebooks-is-here-preview-1/), here are my instructions for getting started. 
+
 # Installing jupyter notebook with a c# kernel 
 
 - Check if you installed python with visual studio. 
