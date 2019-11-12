@@ -5,8 +5,8 @@
 		<link>http://ewinnington.github.io/</link>
 		<description>A collection of thoughts, code and snippets.</description>
 		<copyright>2019</copyright>
-		<pubDate>Tue, 12 Nov 2019 20:41:16 GMT</pubDate>
-		<lastBuildDate>Tue, 12 Nov 2019 20:41:16 GMT</lastBuildDate>
+		<pubDate>Tue, 12 Nov 2019 20:46:04 GMT</pubDate>
+		<lastBuildDate>Tue, 12 Nov 2019 20:46:04 GMT</lastBuildDate>
 		<item>
 			<title>Testing SQLite in C# Jupyter notebook</title>
 			<link>http://ewinnington.github.io/posts/jupyter-sqlite-csharp</link>
@@ -14,7 +14,7 @@
 			<guid>http://ewinnington.github.io/posts/jupyter-sqlite-csharp</guid>
 			<pubDate>Tue, 12 Nov 2019 20:00:00 GMT</pubDate>
 			<content:encoded>&lt;p&gt;Now that we have &lt;a href="/posts/jupyter-notebook-csharp-r"&gt;Jupyter Notebooks with C# installed&lt;/a&gt;, using it as an environment to play with SQLite is very easy. &lt;a href="https://www.sqlite.org/index.html"&gt;SQLite&lt;/a&gt; is a relational database that is small in footprint and self-contained. It also has a great in-memory mode which is perfect for playing around in a Jupyter notebook.&lt;/p&gt;
-&lt;p&gt;You can access my &lt;a href="https://github.com/ewinnington/noteb/blob/master/SqliteInteraction.ipynb"&gt;SQLite example notebook here&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;You can access my &lt;a href="https://github.com/ewinnington/noteb/blob/master/SqliteInteraction.ipynb"&gt;SQLite example notebook here&lt;/a&gt;. (&lt;em&gt;Note, if you can tell me how to host them online to make them executable, drop me a line on &lt;a href="https://twitter.com/ThrowATwit"&gt;twitter&lt;/a&gt;&lt;/em&gt;)&lt;/p&gt;
 &lt;p&gt;You can create a C# Notebook from the file menu of Jupyter.&lt;/p&gt;
 &lt;p&gt;&lt;img src="posts/images/jupyter-notebook-csharp-r/new-notebook.png" class="img-fluid" alt="new-notebook" /&gt;&lt;/p&gt;
 &lt;p&gt;We need to pull in the nuget package &lt;code&gt;System.Data.SQLite&lt;/code&gt; to interact with the database.&lt;/p&gt;
@@ -357,30 +357,6 @@ if (nRowsCount &amp;gt; 0)
 </content:encoded>
 		</item>
 		<item>
-			<title>R - Reading JSON from redis</title>
-			<link>http://ewinnington.github.io/posts/R-Redis-Json</link>
-			<description>&lt;p&gt;I needed to access Redis from R. Here's the code I used to connect, set a value, then deserialize a key that was in json format and publish a message. &lt;a href="https://cran.r-project.org/web/packages/rredis/vignettes/rredis.pdf"&gt;Rredis documentation located here&lt;/a&gt;&lt;/p&gt;</description>
-			<guid>http://ewinnington.github.io/posts/R-Redis-Json</guid>
-			<pubDate>Sun, 03 Nov 2019 00:00:00 GMT</pubDate>
-			<content:encoded>&lt;p&gt;I needed to access Redis from R. Here's the code I used to connect, set a value, then deserialize a key that was in json format and publish a message. &lt;a href="https://cran.r-project.org/web/packages/rredis/vignettes/rredis.pdf"&gt;Rredis documentation located here&lt;/a&gt;&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;library(&amp;quot;rredis&amp;quot;)
-library(&amp;quot;jsonlite&amp;quot;, lib.loc=&amp;quot;~/R/win-library/3.2&amp;quot;)
-
-redisConnect()
-redisSet(&amp;quot;x&amp;quot;,rnorm(5))
-redisGet(&amp;quot;x&amp;quot;)
-
-x = fromJSON(redisGet(&amp;quot;ts_1&amp;quot;))
-x$t &amp;lt;-  strptime(x$t, &amp;quot;%Y-%m-%dT%H:%M:%S&amp;quot;)
-
-//https://cran.r-project.org/web/packages/rredis/vignettes/rredis.pdf
-redisPublish(&amp;quot;General:Active&amp;quot;, charToRaw('Message'))
-
-redisClose()
-&lt;/code&gt;&lt;/pre&gt;
-</content:encoded>
-		</item>
-		<item>
 			<title>Using Github actions to build Wyam and publish to github pages</title>
 			<link>http://ewinnington.github.io/posts/wyam-github-actions</link>
 			<description>&lt;p&gt;Not that I have Wyam as a static site generator, I want to use &lt;a href="https://github.com/features/actions"&gt;Github Actions&lt;/a&gt; to automatically deploy it on push. This requires a quite few steps to setup, but I did it, now so can you!&lt;/p&gt;</description>
@@ -486,6 +462,30 @@ jobs:
 &lt;h1 id="closing"&gt;Closing&lt;/h1&gt;
 &lt;p&gt;If all went well, you should now have your personal wyam generated site up and running at &lt;a href="http://username.github.io"&gt;http://username.github.io&lt;/a&gt; .&lt;/p&gt;
 &lt;p&gt;Please feel free to look around both branches &lt;em&gt;source&lt;/em&gt; and &lt;em&gt;master&lt;/em&gt; on &lt;a href="https://github.com/ewinnington/ewinnington.github.io"&gt;my github repo&lt;/a&gt; to understand how my blog is setup.&lt;/p&gt;
+</content:encoded>
+		</item>
+		<item>
+			<title>R - Reading JSON from redis</title>
+			<link>http://ewinnington.github.io/posts/R-Redis-Json</link>
+			<description>&lt;p&gt;I needed to access Redis from R. Here's the code I used to connect, set a value, then deserialize a key that was in json format and publish a message. &lt;a href="https://cran.r-project.org/web/packages/rredis/vignettes/rredis.pdf"&gt;Rredis documentation located here&lt;/a&gt;&lt;/p&gt;</description>
+			<guid>http://ewinnington.github.io/posts/R-Redis-Json</guid>
+			<pubDate>Sun, 03 Nov 2019 00:00:00 GMT</pubDate>
+			<content:encoded>&lt;p&gt;I needed to access Redis from R. Here's the code I used to connect, set a value, then deserialize a key that was in json format and publish a message. &lt;a href="https://cran.r-project.org/web/packages/rredis/vignettes/rredis.pdf"&gt;Rredis documentation located here&lt;/a&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;library(&amp;quot;rredis&amp;quot;)
+library(&amp;quot;jsonlite&amp;quot;, lib.loc=&amp;quot;~/R/win-library/3.2&amp;quot;)
+
+redisConnect()
+redisSet(&amp;quot;x&amp;quot;,rnorm(5))
+redisGet(&amp;quot;x&amp;quot;)
+
+x = fromJSON(redisGet(&amp;quot;ts_1&amp;quot;))
+x$t &amp;lt;-  strptime(x$t, &amp;quot;%Y-%m-%dT%H:%M:%S&amp;quot;)
+
+//https://cran.r-project.org/web/packages/rredis/vignettes/rredis.pdf
+redisPublish(&amp;quot;General:Active&amp;quot;, charToRaw('Message'))
+
+redisClose()
+&lt;/code&gt;&lt;/pre&gt;
 </content:encoded>
 		</item>
 		<item>
@@ -731,15 +731,6 @@ WHERE b.table_name = 'XXXXX';
 </content:encoded>
 		</item>
 		<item>
-			<title>Debugging tips</title>
-			<link>http://ewinnington.github.io/posts/debugging-tips</link>
-			<description>&lt;p&gt;If you get a bug in a loop, remember that the bug could be caused by the previous execution of the loop and thus be below the code point that fails.&lt;/p&gt;</description>
-			<guid>http://ewinnington.github.io/posts/debugging-tips</guid>
-			<pubDate>Thu, 31 Oct 2013 00:00:00 GMT</pubDate>
-			<content:encoded>&lt;p&gt;If you get a bug in a loop, remember that the bug could be caused by the previous execution of the loop and thus be below the code point that fails.&lt;/p&gt;
-</content:encoded>
-		</item>
-		<item>
 			<title>Raspberry Pi update Arkos</title>
 			<link>http://ewinnington.github.io/posts/raspberry-pi-update-arkos</link>
 			<description>&lt;p&gt;Since I haven't talked much about what I've been doing with my Pi, here's the latest:&lt;/p&gt;</description>
@@ -749,6 +740,15 @@ WHERE b.table_name = 'XXXXX';
 &lt;p&gt;I've installed a distribution called &lt;a href="https://arkos.io/"&gt;ArkOS&lt;/a&gt;, which exposes a web interface allowing the easy configuration of many network accessible services, including a blog and an &lt;a href="http://owncloud.org/"&gt;owncloud&lt;/a&gt; instance.&lt;/p&gt;
 &lt;p&gt;I use owncloud as my private, unlimited, Dropbox. The first time I set it up, on a nginx server, it took a lot of configuration to get just right. ArkOS does it all out of the box.&lt;/p&gt;
 &lt;p&gt;For dynamic DNS, instead of my previous self-hosted &amp;quot;poor man's&amp;quot; link, I am now using &lt;a href="http://duckdns.org/"&gt;DuckDNS&lt;/a&gt; which promises free dynamic DNS and is really easy to use.&lt;/p&gt;
+</content:encoded>
+		</item>
+		<item>
+			<title>Debugging tips</title>
+			<link>http://ewinnington.github.io/posts/debugging-tips</link>
+			<description>&lt;p&gt;If you get a bug in a loop, remember that the bug could be caused by the previous execution of the loop and thus be below the code point that fails.&lt;/p&gt;</description>
+			<guid>http://ewinnington.github.io/posts/debugging-tips</guid>
+			<pubDate>Thu, 31 Oct 2013 00:00:00 GMT</pubDate>
+			<content:encoded>&lt;p&gt;If you get a bug in a loop, remember that the bug could be caused by the previous execution of the loop and thus be below the code point that fails.&lt;/p&gt;
 </content:encoded>
 		</item>
 	</channel>
