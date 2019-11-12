@@ -91,6 +91,77 @@
 <div class="row">
     <div class="8u 12u$(medium)">
                 <div>
+                    <a href="/posts/jupyter-sqlite-csharp">
+                        <h2>Testing SQLite in C# Jupyter notebook</h2>
+                    </a>
+                    <p>Posted on Tuesday, 12 November 2019</p>
+<p>Now that we have <a href="/posts/jupyter-notebook-csharp-r">Jupyter Notebooks with C# installed</a>, using it as an environment to play with SQLite is very easy. <a href="https://www.sqlite.org/index.html">SQLite</a> is a relational database that is small in footprint and self-contained. It also has a great in-memory mode which is perfect for playing around in a Jupyter notebook.</p>
+<p>You can access my <a href="https://github.com/ewinnington/noteb/blob/master/SqliteInteraction.ipynb">SQLite example notebook here</a>.</p>
+<p>You can create a C# Notebook from the file menu of Jupyter.</p>
+<p><img src="posts/images/jupyter-notebook-csharp-r/new-notebook.png" class="img-fluid" alt="new-notebook" /></p>
+<p>We need to pull in the nuget package <code>System.Data.SQLite</code> to interact with the database.</p>
+<pre><code class="language-CSharp">#r &quot;nuget:System.Data.SQLite&quot;
+using System.Data.SQLite;
+</code></pre>
+<p><code>#r</code> is used to reference a dll or a nuget package. If you prefix the command with &quot;nuget:&quot; then the jupyter notebook will download the nuget and add it as a reference. Then as in usual c#, you must reference it.</p>
+<p>When you run this cell, you should see the following output:</p>
+<p><img src="posts/images/jupyter-notebook-csharp-r/sqlite01.png" class="img-fluid" alt="sqlite01" /></p>
+<p>We can then create a connection to an in-memory SQLite database.</p>
+<pre><code class="language-CSharp">SQLiteConnection conn;
+
+conn = new SQLiteConnection(&quot;Data Source=:memory:;Version=3;New=True;&quot;);
+
+try
+{
+conn.Open();
+}
+catch (Exception ex)
+{
+Console.WriteLine(ex); 
+}
+</code></pre>
+<p>Creating two identical tables <em>SampleTable</em> and <em>SampleTable1</em>.</p>
+<pre><code>using (SQLiteCommand sqlite_cmd = conn.CreateCommand()) {
+    string Createsql = &quot;CREATE TABLE SampleTable(Col1 VARCHAR(20), Col2 INT)&quot;;
+    string Createsql1 = &quot;CREATE TABLE SampleTable1(Col1 VARCHAR(20), Col2 INT)&quot;;
+    sqlite_cmd.CommandText = Createsql;
+    sqlite_cmd.ExecuteNonQuery();
+    sqlite_cmd.CommandText = Createsql1;
+    sqlite_cmd.ExecuteNonQuery();
+}
+</code></pre>
+<p>Inserting a set of data into these tables.</p>
+<pre><code>using (SQLiteCommand sqlite_cmd = conn.CreateCommand()) {
+    sqlite_cmd.CommandText = &quot;INSERT INTO SampleTable(Col1, Col2) VALUES ('Test Text ', 1);&quot;;
+    sqlite_cmd.ExecuteNonQuery();
+    sqlite_cmd.CommandText = &quot;INSERT INTO SampleTable(Col1, Col2) VALUES ('Test1 Text1 ', 2);&quot;;
+    sqlite_cmd.ExecuteNonQuery();
+    sqlite_cmd.CommandText = &quot;INSERT INTO SampleTable(Col1, Col2) VALUES ('Test2 Text2 ', 3);&quot;;
+    sqlite_cmd.ExecuteNonQuery();
+    sqlite_cmd.CommandText = &quot;INSERT INTO SampleTable1(Col1, Col2) VALUES ('Test3 Text3 ', 3);&quot;;
+    sqlite_cmd.ExecuteNonQuery();
+}
+</code></pre>
+<p>Reading from <em>SampleTable</em> to verify the insertions went through correctly.</p>
+<pre><code>using (SQLiteCommand sqlite_cmd = conn.CreateCommand()) {
+    sqlite_cmd.CommandText = &quot;SELECT * FROM SampleTable&quot;;
+
+    using(var sqlite_datareader = sqlite_cmd.ExecuteReader()){
+        while (sqlite_datareader.Read())
+        {
+        string myreader = sqlite_datareader.GetString(0);
+        Console.WriteLine(myreader);
+        }
+    }
+}
+</code></pre>
+<p>If you executed the whole workbook up to now, you should have the following output.</p>
+<p><img src="posts/images/jupyter-notebook-csharp-r/sqlite05.png" class="img-fluid" alt="sqlite05" /></p>
+<p>Closing the connection to the databse.</p>
+<pre><code>conn.Close();
+</code></pre>
+                </div>       
+                <div>
                     <a href="/posts/jupyter-notebook-csharp-r">
                         <h2>Jupyter notebook with C# and R</h2>
                     </a>
@@ -360,28 +431,6 @@ if (nRowsCount &gt; 0)
 <p>As I noted on twitter, as I read, watch and learn about webassembly, I'm getting the feeling this is going to be a titanic shift in the way we reason about programs, languages, frameworks and software design in general.</p>
 <p>&quot;The avalanche has already started, it is too late for the pebbles to vote&quot; - Ambassador Kosh, Babylon 5.</p>
                 </div>       
-                <div>
-                    <a href="/posts/R-Redis-Json">
-                        <h2>R - Reading JSON from redis</h2>
-                    </a>
-                    <p>Posted on Sunday, 3 November 2019</p>
-<p>I needed to access Redis from R. Here's the code I used to connect, set a value, then deserialize a key that was in json format and publish a message. <a href="https://cran.r-project.org/web/packages/rredis/vignettes/rredis.pdf">Rredis documentation located here</a></p>
-<pre><code>library(&quot;rredis&quot;)
-library(&quot;jsonlite&quot;, lib.loc=&quot;~/R/win-library/3.2&quot;)
-
-redisConnect()
-redisSet(&quot;x&quot;,rnorm(5))
-redisGet(&quot;x&quot;)
-
-x = fromJSON(redisGet(&quot;ts_1&quot;))
-x$t &lt;-  strptime(x$t, &quot;%Y-%m-%dT%H:%M:%S&quot;)
-
-//https://cran.r-project.org/web/packages/rredis/vignettes/rredis.pdf
-redisPublish(&quot;General:Active&quot;, charToRaw('Message'))
-
-redisClose()
-</code></pre>
-                </div>       
         <ul class="pager">
             <li class="previous">                
             </li>
@@ -394,15 +443,15 @@ redisClose()
             <h5>Tags</h5>
             <ul class="actions small">
                     <li><a role="button" href="/tags/Migrated" class="button small">Migrated (38)</a></li>
-                    <li><a role="button" href="/tags/CommandLine" class="button small">CommandLine (4)</a></li>
                     <li><a role="button" href="/tags/WPF" class="button small">WPF (4)</a></li>
-                    <li><a role="button" href="/tags/Oracle" class="button small">Oracle (4)</a></li>
                     <li><a role="button" href="/tags/Rpi" class="button small">Rpi (4)</a></li>
+                    <li><a role="button" href="/tags/Oracle" class="button small">Oracle (4)</a></li>
+                    <li><a role="button" href="/tags/CommandLine" class="button small">CommandLine (4)</a></li>
                     <li><a role="button" href="/tags/iOS" class="button small">iOS (3)</a></li>
                     <li><a role="button" href="/tags/R" class="button small">R (3)</a></li>
+                    <li><a role="button" href="/tags/CSharp" class="button small">CSharp (3)</a></li>
                     <li><a role="button" href="/tags/OSX" class="button small">OSX (3)</a></li>
-                    <li><a role="button" href="/tags/VisualStudio" class="button small">VisualStudio (2)</a></li>
-                    <li><a role="button" href="/tags/CSharp" class="button small">CSharp (2)</a></li>
+                    <li><a role="button" href="/tags/Livescribe" class="button small">Livescribe (2)</a></li>
             </ul>
             <ul class="actions small">
                 <li><a href="/tags" class="button small">View All Tags &rarr;</a></li>
@@ -410,10 +459,10 @@ redisClose()
 
             <h5>Older Posts</h5>
             <ul>
+                    <li><a href="/posts/R-Redis-Json">R - Reading JSON from redis</a></li>
                     <li><a href="/posts/wyam-github-actions">Using Github actions to build Wyam and publish to github pages</a></li>
                     <li><a href="/posts/R-read-binary-file">R - Reading binary files</a></li>
                     <li><a href="/posts/Switching-to-wyam">Switching to Wyam</a></li>
-                    <li><a href="/posts/append-files-together-using-windows-command-line">Append files together using windows command line</a></li>
             </ul>
                 <ul class="actions small">
                     <li><a href="/posts" class="button small">Archive &rarr;</a></li>

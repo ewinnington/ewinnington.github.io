@@ -5,14 +5,87 @@
 		<link>http://ewinnington.github.io/</link>
 		<description>A collection of thoughts, code and snippets.</description>
 		<copyright>2019</copyright>
-		<pubDate>Tue, 12 Nov 2019 19:55:01 GMT</pubDate>
-		<lastBuildDate>Tue, 12 Nov 2019 19:55:01 GMT</lastBuildDate>
+		<pubDate>Tue, 12 Nov 2019 20:41:16 GMT</pubDate>
+		<lastBuildDate>Tue, 12 Nov 2019 20:41:16 GMT</lastBuildDate>
+		<item>
+			<title>Testing SQLite in C# Jupyter notebook</title>
+			<link>http://ewinnington.github.io/posts/jupyter-sqlite-csharp</link>
+			<description>&lt;p&gt;Now that we have &lt;a href="/posts/jupyter-notebook-csharp-r"&gt;Jupyter Notebooks with C# installed&lt;/a&gt;, using it as an environment to play with SQLite is very easy. &lt;a href="https://www.sqlite.org/index.html"&gt;SQLite&lt;/a&gt; is a relational database that is small in footprint and self-contained. It also has a great in-memory mode which is perfect for playing around in a Jupyter notebook.&lt;/p&gt;</description>
+			<guid>http://ewinnington.github.io/posts/jupyter-sqlite-csharp</guid>
+			<pubDate>Tue, 12 Nov 2019 20:00:00 GMT</pubDate>
+			<content:encoded>&lt;p&gt;Now that we have &lt;a href="/posts/jupyter-notebook-csharp-r"&gt;Jupyter Notebooks with C# installed&lt;/a&gt;, using it as an environment to play with SQLite is very easy. &lt;a href="https://www.sqlite.org/index.html"&gt;SQLite&lt;/a&gt; is a relational database that is small in footprint and self-contained. It also has a great in-memory mode which is perfect for playing around in a Jupyter notebook.&lt;/p&gt;
+&lt;p&gt;You can access my &lt;a href="https://github.com/ewinnington/noteb/blob/master/SqliteInteraction.ipynb"&gt;SQLite example notebook here&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;You can create a C# Notebook from the file menu of Jupyter.&lt;/p&gt;
+&lt;p&gt;&lt;img src="posts/images/jupyter-notebook-csharp-r/new-notebook.png" class="img-fluid" alt="new-notebook" /&gt;&lt;/p&gt;
+&lt;p&gt;We need to pull in the nuget package &lt;code&gt;System.Data.SQLite&lt;/code&gt; to interact with the database.&lt;/p&gt;
+&lt;pre&gt;&lt;code class="language-CSharp"&gt;#r &amp;quot;nuget:System.Data.SQLite&amp;quot;
+using System.Data.SQLite;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;code&gt;#r&lt;/code&gt; is used to reference a dll or a nuget package. If you prefix the command with &amp;quot;nuget:&amp;quot; then the jupyter notebook will download the nuget and add it as a reference. Then as in usual c#, you must reference it.&lt;/p&gt;
+&lt;p&gt;When you run this cell, you should see the following output:&lt;/p&gt;
+&lt;p&gt;&lt;img src="posts/images/jupyter-notebook-csharp-r/sqlite01.png" class="img-fluid" alt="sqlite01" /&gt;&lt;/p&gt;
+&lt;p&gt;We can then create a connection to an in-memory SQLite database.&lt;/p&gt;
+&lt;pre&gt;&lt;code class="language-CSharp"&gt;SQLiteConnection conn;
+
+conn = new SQLiteConnection(&amp;quot;Data Source=:memory:;Version=3;New=True;&amp;quot;);
+
+try
+{
+conn.Open();
+}
+catch (Exception ex)
+{
+Console.WriteLine(ex); 
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Creating two identical tables &lt;em&gt;SampleTable&lt;/em&gt; and &lt;em&gt;SampleTable1&lt;/em&gt;.&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;using (SQLiteCommand sqlite_cmd = conn.CreateCommand()) {
+    string Createsql = &amp;quot;CREATE TABLE SampleTable(Col1 VARCHAR(20), Col2 INT)&amp;quot;;
+    string Createsql1 = &amp;quot;CREATE TABLE SampleTable1(Col1 VARCHAR(20), Col2 INT)&amp;quot;;
+    sqlite_cmd.CommandText = Createsql;
+    sqlite_cmd.ExecuteNonQuery();
+    sqlite_cmd.CommandText = Createsql1;
+    sqlite_cmd.ExecuteNonQuery();
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Inserting a set of data into these tables.&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;using (SQLiteCommand sqlite_cmd = conn.CreateCommand()) {
+    sqlite_cmd.CommandText = &amp;quot;INSERT INTO SampleTable(Col1, Col2) VALUES ('Test Text ', 1);&amp;quot;;
+    sqlite_cmd.ExecuteNonQuery();
+    sqlite_cmd.CommandText = &amp;quot;INSERT INTO SampleTable(Col1, Col2) VALUES ('Test1 Text1 ', 2);&amp;quot;;
+    sqlite_cmd.ExecuteNonQuery();
+    sqlite_cmd.CommandText = &amp;quot;INSERT INTO SampleTable(Col1, Col2) VALUES ('Test2 Text2 ', 3);&amp;quot;;
+    sqlite_cmd.ExecuteNonQuery();
+    sqlite_cmd.CommandText = &amp;quot;INSERT INTO SampleTable1(Col1, Col2) VALUES ('Test3 Text3 ', 3);&amp;quot;;
+    sqlite_cmd.ExecuteNonQuery();
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Reading from &lt;em&gt;SampleTable&lt;/em&gt; to verify the insertions went through correctly.&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;using (SQLiteCommand sqlite_cmd = conn.CreateCommand()) {
+    sqlite_cmd.CommandText = &amp;quot;SELECT * FROM SampleTable&amp;quot;;
+
+    using(var sqlite_datareader = sqlite_cmd.ExecuteReader()){
+        while (sqlite_datareader.Read())
+        {
+        string myreader = sqlite_datareader.GetString(0);
+        Console.WriteLine(myreader);
+        }
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;If you executed the whole workbook up to now, you should have the following output.&lt;/p&gt;
+&lt;p&gt;&lt;img src="posts/images/jupyter-notebook-csharp-r/sqlite05.png" class="img-fluid" alt="sqlite05" /&gt;&lt;/p&gt;
+&lt;p&gt;Closing the connection to the databse.&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;conn.Close();
+&lt;/code&gt;&lt;/pre&gt;
+</content:encoded>
+		</item>
 		<item>
 			<title>Jupyter notebook with C# and R</title>
 			<link>http://ewinnington.github.io/posts/jupyter-notebook-csharp-r</link>
 			<description>&lt;p&gt;Following the release of the &lt;a href="https://devblogs.microsoft.com/dotnet/net-core-with-juypter-notebooks-is-here-preview-1/"&gt;updated dotnet try tool&lt;/a&gt;, here are my instructions for getting started.&lt;/p&gt;</description>
 			<guid>http://ewinnington.github.io/posts/jupyter-notebook-csharp-r</guid>
-			<pubDate>Tue, 12 Nov 2019 00:00:00 GMT</pubDate>
+			<pubDate>Tue, 12 Nov 2019 19:00:00 GMT</pubDate>
 			<content:encoded>&lt;p&gt;Following the release of the &lt;a href="https://devblogs.microsoft.com/dotnet/net-core-with-juypter-notebooks-is-here-preview-1/"&gt;updated dotnet try tool&lt;/a&gt;, here are my instructions for getting started.&lt;/p&gt;
 &lt;h1 id="installing-jupyter-notebook-with-a-c-kernel"&gt;Installing jupyter notebook with a c# kernel&lt;/h1&gt;
 &lt;ul&gt;
@@ -676,26 +749,6 @@ WHERE b.table_name = 'XXXXX';
 &lt;p&gt;I've installed a distribution called &lt;a href="https://arkos.io/"&gt;ArkOS&lt;/a&gt;, which exposes a web interface allowing the easy configuration of many network accessible services, including a blog and an &lt;a href="http://owncloud.org/"&gt;owncloud&lt;/a&gt; instance.&lt;/p&gt;
 &lt;p&gt;I use owncloud as my private, unlimited, Dropbox. The first time I set it up, on a nginx server, it took a lot of configuration to get just right. ArkOS does it all out of the box.&lt;/p&gt;
 &lt;p&gt;For dynamic DNS, instead of my previous self-hosted &amp;quot;poor man's&amp;quot; link, I am now using &lt;a href="http://duckdns.org/"&gt;DuckDNS&lt;/a&gt; which promises free dynamic DNS and is really easy to use.&lt;/p&gt;
-</content:encoded>
-		</item>
-		<item>
-			<title>Commenting and Uncommenting in vi</title>
-			<link>http://ewinnington.github.io/posts/commenting-and-uncommenting-in-vi</link>
-			<description>&lt;p&gt;Sometimes I have to edit large config files in vi. Typically I have to comment out a block or even the whole file. Here's the command to insert a # before every line in the file:&lt;/p&gt;</description>
-			<guid>http://ewinnington.github.io/posts/commenting-and-uncommenting-in-vi</guid>
-			<pubDate>Tue, 23 Jul 2013 00:00:00 GMT</pubDate>
-			<content:encoded>&lt;p&gt;Sometimes I have to edit large config files in vi. Typically I have to comment out a block or even the whole file. Here's the command to insert a # before every line in the file:&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;:%s/^/# /
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;To comment the next 4 lines (. is current line , . + 3 lines more)&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;:.,.+3s/^/# /
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;And to uncomment the first character from every line:&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;:%s/^#  
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;Or uncomment a section:&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;:.,.+3s/^#
-&lt;/code&gt;&lt;/pre&gt;
 </content:encoded>
 		</item>
 	</channel>

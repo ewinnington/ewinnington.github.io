@@ -1,0 +1,207 @@
+﻿
+<!DOCTYPE html>
+<!--
+	Phantom by HTML5 UP
+	html5up.net | @ajlkn
+	Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
+-->
+<html lang="en">
+
+	<head>
+		<title>Eric Winnington - Testing SQLite in C# Jupyter notebook</title>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1" />		
+        <link href="/assets/css/highlight.css" rel="stylesheet">
+		<!--[if lte IE 8]><script src="/assets/js/ie/html5shiv.js"></script><![endif]-->
+		<link rel="stylesheet" href="/assets/css/main.css" />
+		<!--[if lte IE 9]><link rel="stylesheet" href="/assets/css/ie9.css" /><![endif]-->
+		<!--[if lte IE 8]><link rel="stylesheet" href="/assets/css/ie8.css" /><![endif]-->
+        <link href="/assets/css/override.css" rel="stylesheet" />
+
+		<meta name="description" content="A collection of thoughts, code and snippets." />
+		<link type="application/rss+xml" rel="alternate" title="Eric Winnington" href="/feed.rss" />
+				<link type="application/atom+xml" rel="alternate" title="Eric Winnington" href="/feed.atom" />
+		<link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+		<link rel="icon" href="/favicon.ico" type="image/x-icon">
+
+		<meta name="application-name" content="Eric Winnington" />
+		<meta name="msapplication-tooltip" content="Eric Winnington" />
+		<meta name="msapplication-starturl" content="/" />
+
+		<meta property="og:title" content="Eric Winnington - Testing SQLite in C# Jupyter notebook" /> 
+		<meta property="og:type" content="website" />
+		<meta property="og:url" content="http://ewinnington.github.io/posts/jupyter-sqlite-csharp" />
+		<!-- TODO: More social graph meta tags -->
+
+        <script src="/assets/js/highlight.pack.js"></script>   
+		
+        <meta name="twitter:card" content="summary" />
+<meta name="twitter:site" content="@ewinnington" />
+<meta name="twitter:title" content="Eric Winnington - Testing SQLite in C# Jupyter notebook" />
+<meta name="twitter:description" content="A collection of thoughts, code and snippets." />
+		
+	</head>
+
+	<body>
+		<!-- Wrapper -->
+		<div id="wrapper">
+
+			<!-- Header -->
+			<header id="header">
+				<div class="inner">
+
+					<!-- Logo -->
+					<a href="/" class="logo">
+						<span class="title">Eric Winnington</span>
+					</a>
+
+					<!-- Nav -->
+					<nav>
+						<ul>
+							<li><a href="#menu">Menu</a></li>
+						</ul>
+					</nav>
+
+				</div>
+			</header>
+
+			<!-- Menu -->
+			<nav id="menu">
+				<h2>Menu</h2>
+				<ul>
+					        <li><a href="/posts">Archive</a></li>
+        <li><a href="/tags">Tags</a></li>
+        <li><a href="/about">About Me</a></li>
+        <li><a href="/videos">Videos on programming</a></li>
+
+				</ul>
+			</nav>
+
+			<!-- Main -->
+			<div id="main">
+				<div class="inner">
+
+    
+<header>
+    <h1>Testing SQLite in C# Jupyter notebook</h1>
+            <p><em>Published on Tuesday, 12 November 2019</em></p>
+            <ul class="actions small">
+                    <li><a role="button" href="/tags/CSharp" class="button small">CSharp</a></li>
+                    <li><a role="button" href="/tags/Dotnet-try" class="button small">Dotnet try</a></li>
+                    <li><a role="button" href="/tags/Jupyter-notebook" class="button small">Jupyter notebook</a></li>
+                    <li><a role="button" href="/tags/SQLite" class="button small">SQLite</a></li>
+        </ul>     
+</header>
+
+					
+					<div id="content">
+						
+
+<p>Now that we have <a href="/posts/jupyter-notebook-csharp-r">Jupyter Notebooks with C# installed</a>, using it as an environment to play with SQLite is very easy. <a href="https://www.sqlite.org/index.html">SQLite</a> is a relational database that is small in footprint and self-contained. It also has a great in-memory mode which is perfect for playing around in a Jupyter notebook.</p>
+<p>You can access my <a href="https://github.com/ewinnington/noteb/blob/master/SqliteInteraction.ipynb">SQLite example notebook here</a>.</p>
+<p>You can create a C# Notebook from the file menu of Jupyter.</p>
+<p><img src="posts/images/jupyter-notebook-csharp-r/new-notebook.png" class="img-fluid" alt="new-notebook" /></p>
+<p>We need to pull in the nuget package <code>System.Data.SQLite</code> to interact with the database.</p>
+<pre><code class="language-CSharp">#r &quot;nuget:System.Data.SQLite&quot;
+using System.Data.SQLite;
+</code></pre>
+<p><code>#r</code> is used to reference a dll or a nuget package. If you prefix the command with &quot;nuget:&quot; then the jupyter notebook will download the nuget and add it as a reference. Then as in usual c#, you must reference it.</p>
+<p>When you run this cell, you should see the following output:</p>
+<p><img src="posts/images/jupyter-notebook-csharp-r/sqlite01.png" class="img-fluid" alt="sqlite01" /></p>
+<p>We can then create a connection to an in-memory SQLite database.</p>
+<pre><code class="language-CSharp">SQLiteConnection conn;
+
+conn = new SQLiteConnection(&quot;Data Source=:memory:;Version=3;New=True;&quot;);
+
+try
+{
+conn.Open();
+}
+catch (Exception ex)
+{
+Console.WriteLine(ex); 
+}
+</code></pre>
+<p>Creating two identical tables <em>SampleTable</em> and <em>SampleTable1</em>.</p>
+<pre><code>using (SQLiteCommand sqlite_cmd = conn.CreateCommand()) {
+    string Createsql = &quot;CREATE TABLE SampleTable(Col1 VARCHAR(20), Col2 INT)&quot;;
+    string Createsql1 = &quot;CREATE TABLE SampleTable1(Col1 VARCHAR(20), Col2 INT)&quot;;
+    sqlite_cmd.CommandText = Createsql;
+    sqlite_cmd.ExecuteNonQuery();
+    sqlite_cmd.CommandText = Createsql1;
+    sqlite_cmd.ExecuteNonQuery();
+}
+</code></pre>
+<p>Inserting a set of data into these tables.</p>
+<pre><code>using (SQLiteCommand sqlite_cmd = conn.CreateCommand()) {
+    sqlite_cmd.CommandText = &quot;INSERT INTO SampleTable(Col1, Col2) VALUES ('Test Text ', 1);&quot;;
+    sqlite_cmd.ExecuteNonQuery();
+    sqlite_cmd.CommandText = &quot;INSERT INTO SampleTable(Col1, Col2) VALUES ('Test1 Text1 ', 2);&quot;;
+    sqlite_cmd.ExecuteNonQuery();
+    sqlite_cmd.CommandText = &quot;INSERT INTO SampleTable(Col1, Col2) VALUES ('Test2 Text2 ', 3);&quot;;
+    sqlite_cmd.ExecuteNonQuery();
+    sqlite_cmd.CommandText = &quot;INSERT INTO SampleTable1(Col1, Col2) VALUES ('Test3 Text3 ', 3);&quot;;
+    sqlite_cmd.ExecuteNonQuery();
+}
+</code></pre>
+<p>Reading from <em>SampleTable</em> to verify the insertions went through correctly.</p>
+<pre><code>using (SQLiteCommand sqlite_cmd = conn.CreateCommand()) {
+    sqlite_cmd.CommandText = &quot;SELECT * FROM SampleTable&quot;;
+
+    using(var sqlite_datareader = sqlite_cmd.ExecuteReader()){
+        while (sqlite_datareader.Read())
+        {
+        string myreader = sqlite_datareader.GetString(0);
+        Console.WriteLine(myreader);
+        }
+    }
+}
+</code></pre>
+<p>If you executed the whole workbook up to now, you should have the following output.</p>
+<p><img src="posts/images/jupyter-notebook-csharp-r/sqlite05.png" class="img-fluid" alt="sqlite05" /></p>
+<p>Closing the connection to the databse.</p>
+<pre><code>conn.Close();
+</code></pre>
+
+
+
+					</div>
+				</div>
+			</div>
+
+			<!-- Footer -->
+			<footer id="footer">
+				<div class="inner">
+    <section>
+        <h2>Feeds</h2>
+        <ul class="actions small vertical">
+            <li><a href="/feed.rss" class="button small"><i class="fa fa-rss"></i> RSS Feed</a></li>
+                        <li><a href="/feed.atom" class="button small"><i class="fa fa-rss"></i> Atom Feed</a></li>
+        </ul>
+    </section>
+    <section>
+    </section>
+    <ul class="copyright">
+        <li>Copyright © 2019</li>
+        <li>Design: <a href="http://html5up.net">HTML5 UP</a></li>
+        <li><a href="https://wyam.io">Generated by Wyam</a></li>
+    </ul>
+</div>
+
+			</footer>
+
+		</div>
+		
+		
+
+		<!-- Scripts -->
+		<script>hljs.initHighlightingOnLoad();</script>
+		<script src="/assets/js/jquery.min.js"></script>
+		<script src="/assets/js/skel.min.js"></script>
+		<script src="/assets/js/util.js"></script>
+		<!--[if lte IE 8]><script src="/assets/js/ie/respond.min.js"></script><![endif]-->
+		<script src="/assets/js/main.js"></script>
+
+	</body>
+
+</html>
