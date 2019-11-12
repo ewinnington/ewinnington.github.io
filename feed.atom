@@ -4,14 +4,15 @@
 	<title>Eric Winnington</title>
 	<link rel="self" href="http://ewinnington.github.io/" />
 	<rights>2019</rights>
-	<updated>2019-11-12T19:38:10Z</updated>
+	<updated>2019-11-12T19:55:01Z</updated>
 	<subtitle>A collection of thoughts, code and snippets.</subtitle>
 	<entry>
 		<id>http://ewinnington.github.io/posts/jupyter-notebook-csharp-r</id>
 		<title>Jupyter notebook with C# and R</title>
 		<link href="http://ewinnington.github.io/posts/jupyter-notebook-csharp-r" />
 		<updated>2019-11-12T00:00:00Z</updated>
-		<content>&lt;h1 id="installing-jupyter-notebook-with-a-c-kernel"&gt;Installing jupyter notebook with a c# kernel&lt;/h1&gt;
+		<content>&lt;p&gt;Following the release of the &lt;a href="https://devblogs.microsoft.com/dotnet/net-core-with-juypter-notebooks-is-here-preview-1/"&gt;updated dotnet try tool&lt;/a&gt;, here are my instructions for getting started.&lt;/p&gt;
+&lt;h1 id="installing-jupyter-notebook-with-a-c-kernel"&gt;Installing jupyter notebook with a c# kernel&lt;/h1&gt;
 &lt;ul&gt;
 &lt;li&gt;Check if you installed python with visual studio.&lt;/li&gt;
 &lt;/ul&gt;
@@ -102,7 +103,7 @@ IRkernel::installspec(user = FALSE)
 &lt;p&gt;Executing this should show you the following long list of tables with mathematical symbols.&lt;/p&gt;
 &lt;p&gt;&lt;img src="/posts/images/jupyter-notebook-csharp-r/jupyter_R.png" class="img-fluid" :height="360px" width="620px" alt="img7" /&gt;&lt;/p&gt;
 </content>
-		<summary>&lt;p&gt;Go to the start menu and start typing Python&lt;/p&gt;</summary>
+		<summary>&lt;p&gt;Following the release of the &lt;a href="https://devblogs.microsoft.com/dotnet/net-core-with-juypter-notebooks-is-here-preview-1/"&gt;updated dotnet try tool&lt;/a&gt;, here are my instructions for getting started.&lt;/p&gt;</summary>
 	</entry>
 	<entry>
 		<id>http://ewinnington.github.io/posts/bulk-inserts</id>
@@ -282,6 +283,30 @@ if (nRowsCount &amp;gt; 0)
 		<summary>&lt;p&gt;I rewatched this talk from 2014, &lt;a href="https://www.destroyallsoftware.com/talks/the-birth-and-death-of-javascript"&gt;The Birth and Death of JavaScript&lt;/a&gt;, and am still amazed at how prescient it was and still is.&lt;/p&gt;</summary>
 	</entry>
 	<entry>
+		<id>http://ewinnington.github.io/posts/R-Redis-Json</id>
+		<title>R - Reading JSON from redis</title>
+		<link href="http://ewinnington.github.io/posts/R-Redis-Json" />
+		<updated>2019-11-03T00:00:00Z</updated>
+		<content>&lt;p&gt;I needed to access Redis from R. Here's the code I used to connect, set a value, then deserialize a key that was in json format and publish a message. &lt;a href="https://cran.r-project.org/web/packages/rredis/vignettes/rredis.pdf"&gt;Rredis documentation located here&lt;/a&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;library(&amp;quot;rredis&amp;quot;)
+library(&amp;quot;jsonlite&amp;quot;, lib.loc=&amp;quot;~/R/win-library/3.2&amp;quot;)
+
+redisConnect()
+redisSet(&amp;quot;x&amp;quot;,rnorm(5))
+redisGet(&amp;quot;x&amp;quot;)
+
+x = fromJSON(redisGet(&amp;quot;ts_1&amp;quot;))
+x$t &amp;lt;-  strptime(x$t, &amp;quot;%Y-%m-%dT%H:%M:%S&amp;quot;)
+
+//https://cran.r-project.org/web/packages/rredis/vignettes/rredis.pdf
+redisPublish(&amp;quot;General:Active&amp;quot;, charToRaw('Message'))
+
+redisClose()
+&lt;/code&gt;&lt;/pre&gt;
+</content>
+		<summary>&lt;p&gt;I needed to access Redis from R. Here's the code I used to connect, set a value, then deserialize a key that was in json format and publish a message. &lt;a href="https://cran.r-project.org/web/packages/rredis/vignettes/rredis.pdf"&gt;Rredis documentation located here&lt;/a&gt;&lt;/p&gt;</summary>
+	</entry>
+	<entry>
 		<id>http://ewinnington.github.io/posts/wyam-github-actions</id>
 		<title>Using Github actions to build Wyam and publish to github pages</title>
 		<link href="http://ewinnington.github.io/posts/wyam-github-actions" />
@@ -408,30 +433,6 @@ dim(y) &amp;lt;- c(51, 50, 50, 15, 13)
 &lt;/code&gt;&lt;/pre&gt;
 </content>
 		<summary>&lt;p&gt;I had to get some data out of files written by Fortran. The format was a large array of doubles.&lt;/p&gt;</summary>
-	</entry>
-	<entry>
-		<id>http://ewinnington.github.io/posts/R-Redis-Json</id>
-		<title>R - Reading JSON from redis</title>
-		<link href="http://ewinnington.github.io/posts/R-Redis-Json" />
-		<updated>2019-11-03T00:00:00Z</updated>
-		<content>&lt;p&gt;I needed to access Redis from R. Here's the code I used to connect, set a value, then deserialize a key that was in json format and publish a message. &lt;a href="https://cran.r-project.org/web/packages/rredis/vignettes/rredis.pdf"&gt;Rredis documentation located here&lt;/a&gt;&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;library(&amp;quot;rredis&amp;quot;)
-library(&amp;quot;jsonlite&amp;quot;, lib.loc=&amp;quot;~/R/win-library/3.2&amp;quot;)
-
-redisConnect()
-redisSet(&amp;quot;x&amp;quot;,rnorm(5))
-redisGet(&amp;quot;x&amp;quot;)
-
-x = fromJSON(redisGet(&amp;quot;ts_1&amp;quot;))
-x$t &amp;lt;-  strptime(x$t, &amp;quot;%Y-%m-%dT%H:%M:%S&amp;quot;)
-
-//https://cran.r-project.org/web/packages/rredis/vignettes/rredis.pdf
-redisPublish(&amp;quot;General:Active&amp;quot;, charToRaw('Message'))
-
-redisClose()
-&lt;/code&gt;&lt;/pre&gt;
-</content>
-		<summary>&lt;p&gt;I needed to access Redis from R. Here's the code I used to connect, set a value, then deserialize a key that was in json format and publish a message. &lt;a href="https://cran.r-project.org/web/packages/rredis/vignettes/rredis.pdf"&gt;Rredis documentation located here&lt;/a&gt;&lt;/p&gt;</summary>
 	</entry>
 	<entry>
 		<id>http://ewinnington.github.io/posts/Switching-to-wyam</id>
@@ -656,6 +657,15 @@ WHERE b.table_name = 'XXXXX';
 		<summary>&lt;p&gt;A couple of days ago, I stumbled upon &lt;a href="http://www.sqlfiddle.com/"&gt;SQLFiddle&lt;/a&gt;, a little magical website that allows you to upload a DBSchema and run queries on it, live in the browser. It also allows to share them with other users.&lt;/p&gt;</summary>
 	</entry>
 	<entry>
+		<id>http://ewinnington.github.io/posts/debugging-tips</id>
+		<title>Debugging tips</title>
+		<link href="http://ewinnington.github.io/posts/debugging-tips" />
+		<updated>2013-10-31T00:00:00Z</updated>
+		<content>&lt;p&gt;If you get a bug in a loop, remember that the bug could be caused by the previous execution of the loop and thus be below the code point that fails.&lt;/p&gt;
+</content>
+		<summary>&lt;p&gt;If you get a bug in a loop, remember that the bug could be caused by the previous execution of the loop and thus be below the code point that fails.&lt;/p&gt;</summary>
+	</entry>
+	<entry>
 		<id>http://ewinnington.github.io/posts/raspberry-pi-update-arkos</id>
 		<title>Raspberry Pi update Arkos</title>
 		<link href="http://ewinnington.github.io/posts/raspberry-pi-update-arkos" />
@@ -666,15 +676,6 @@ WHERE b.table_name = 'XXXXX';
 &lt;p&gt;For dynamic DNS, instead of my previous self-hosted &amp;quot;poor man's&amp;quot; link, I am now using &lt;a href="http://duckdns.org/"&gt;DuckDNS&lt;/a&gt; which promises free dynamic DNS and is really easy to use.&lt;/p&gt;
 </content>
 		<summary>&lt;p&gt;Since I haven't talked much about what I've been doing with my Pi, here's the latest:&lt;/p&gt;</summary>
-	</entry>
-	<entry>
-		<id>http://ewinnington.github.io/posts/debugging-tips</id>
-		<title>Debugging tips</title>
-		<link href="http://ewinnington.github.io/posts/debugging-tips" />
-		<updated>2013-10-31T00:00:00Z</updated>
-		<content>&lt;p&gt;If you get a bug in a loop, remember that the bug could be caused by the previous execution of the loop and thus be below the code point that fails.&lt;/p&gt;
-</content>
-		<summary>&lt;p&gt;If you get a bug in a loop, remember that the bug could be caused by the previous execution of the loop and thus be below the code point that fails.&lt;/p&gt;</summary>
 	</entry>
 	<entry>
 		<id>http://ewinnington.github.io/posts/commenting-and-uncommenting-in-vi</id>
