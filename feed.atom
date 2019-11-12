@@ -4,8 +4,41 @@
 	<title>Eric Winnington</title>
 	<link rel="self" href="http://ewinnington.github.io/" />
 	<rights>2019</rights>
-	<updated>2019-11-12T21:18:40Z</updated>
+	<updated>2019-11-12T23:22:49Z</updated>
 	<subtitle>A collection of thoughts, code and snippets.</subtitle>
+	<entry>
+		<id>http://ewinnington.github.io/posts/jupyter-docker-csharp-postgres</id>
+		<title>Docker controlled from Jupyter Notebook C# with PostgresDB</title>
+		<link href="http://ewinnington.github.io/posts/jupyter-docker-csharp-postgres" />
+		<updated>2019-11-12T23:18:00Z</updated>
+		<content>&lt;p&gt;In the context of Docker and Jupyter Notebook, it's interesting to note that there exists a Nuget that allows C# to control docker. So, yes, it is possible to launch a Postgresql database, on docker, inside a Jupyter notebook!&lt;/p&gt;
+&lt;p&gt;This assumes you have &lt;a href="https://hub.docker.com/?overlay=onboarding"&gt;Docker&lt;/a&gt;, &lt;a href="https://github.com/dotnet/try/blob/master/DotNetTryLocal.md"&gt;Dotnet try&lt;/a&gt;, &lt;a href="https://jupyter.org/"&gt;Jupyter notebook&lt;/a&gt; and follow the setup of the &lt;a href="/posts/jupyter-notebook-csharp-r"&gt;C# kernel for Jupyter&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;If you don't want to wait, you can find my &lt;a href="https://github.com/ewinnington/noteb/blob/master/DockerInteraction.ipynb"&gt;complete notebook here&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;Microsoft has created a &lt;a href="https://github.com/microsoft/Docker.DotNet"&gt;C# Client library for talking to Docker&lt;/a&gt;, so we will be taking advantage of it. Much of the magic docker code is pulled from the Docker.DotNet repository.
+I'm using the &lt;a href="https://www.npgsql.org/index.html"&gt;Npgsql drivers&lt;/a&gt; for accessing the PostgreSQL database.
+&lt;img src="/posts/images/jupyter-notebook-csharp-r/docker-pg-01.png" class="img-fluid" alt="pgsql01" /&gt;&lt;/p&gt;
+&lt;p&gt;The real magic moment is when you access the Docker instance, if it is on your local machine on windows, you can use the &lt;code&gt;npipe://./pipe/docker_engine&lt;/code&gt; Uri. If you are on Linux, use &lt;code&gt;unix:///var/run/docker.sock&lt;/code&gt; (at this time, I haven't tried it on linux, but if you do, please tell me).
+&lt;img src="/posts/images/jupyter-notebook-csharp-r/docker-pg-02.png" class="img-fluid" alt="pgsql02" /&gt;&lt;/p&gt;
+&lt;p&gt;In block 3, we select a random port to host the pgSQL database. Then list the local image names that are available (you should get postgres:latest on your machine to run this). We create and start up the container, passing the environment variables for the password, user and initial schema. Once the container is started, we detach ourselves from it, so it runs in the background. Finally, I wait until I'm pretty sure the container and database is ready (10s sleep at the end). You can reduce that sleep time. On my Surface laptop 1, I sometimes have an issue when I've got too many other containers running.
+&lt;img src="/posts/images/jupyter-notebook-csharp-r/docker-pg-03.png" class="img-fluid" alt="pgsql03" /&gt;&lt;/p&gt;
+&lt;p&gt;I'm connecting to the database and validating the connection name.
+&lt;img src="/posts/images/jupyter-notebook-csharp-r/docker-pg-04.png" class="img-fluid" alt="pgsql04" /&gt;&lt;/p&gt;
+&lt;p&gt;I'm creating a database schema and a user for this particular schema, then reconning with the new user.
+&lt;img src="/posts/images/jupyter-notebook-csharp-r/docker-pg-05.png" class="img-fluid" alt="pgsql05" /&gt;&lt;/p&gt;
+&lt;p&gt;Creating a table and inserting two rows using direct strings and string concatenation. In production, you should never be using string concatenation for your SQL statements. Please always use Bound variables as described below.
+&lt;img src="/posts/images/jupyter-notebook-csharp-r/docker-pg-06.png" class="img-fluid" alt="pgsql06" /&gt;&lt;/p&gt;
+&lt;p&gt;This is how you should interact with the PostgreSQL database if you are using direct SQL statements. You should be using Bound commands with parameters.
+&lt;img src="/posts/images/jupyter-notebook-csharp-r/docker-pg-07.png" class="img-fluid" alt="pgsql07" /&gt;&lt;/p&gt;
+&lt;p&gt;Finally, I check that all three insertions were successful.
+&lt;img src="/posts/images/jupyter-notebook-csharp-r/docker-pg-08.png" class="img-fluid" alt="pgsql08" /&gt;&lt;/p&gt;
+&lt;p&gt;You can watch the container run in the &lt;a href="https://marketplace.visualstudio.com/items?itemName=ms-azuretools.vscode-docker"&gt;docker extension&lt;/a&gt; of &lt;a href="https://code.visualstudio.com/"&gt;Visual studio Code&lt;/a&gt;. It's a great way of monitoring what is currently running, as well as deleting old containers that might be still present.
+&lt;img src="/posts/images/jupyter-notebook-csharp-r/docker-pg-10.png" class="img-fluid" alt="pgsql10" /&gt;&lt;/p&gt;
+&lt;p&gt;Talking of deleting old containers, this is how you shut them down and delete them at the end of the notebook. I first close the Db connection and dispose of it before asking Docker.DotNet to stop the containers.
+&lt;img src="/posts/images/jupyter-notebook-csharp-r/docker-pg-09.png" class="img-fluid" alt="pgsql09" /&gt;&lt;/p&gt;
+&lt;p&gt;It would be cleaner if I knew how to enfore a &lt;code&gt;Finally&lt;/code&gt; in Jupyter Notebook, but at this time, I don't know. If you do, drop me a line on &lt;a href="https://twitter.com/ThrowATwit"&gt;twitter&lt;/a&gt; or a pull request on this blog post.&lt;/p&gt;
+</content>
+		<summary>&lt;p&gt;In the context of Docker and Jupyter Notebook, it's interesting to note that there exists a Nuget that allows C# to control docker. So, yes, it is possible to launch a Postgresql database, on docker, inside a Jupyter notebook!&lt;/p&gt;</summary>
+	</entry>
 	<entry>
 		<id>http://ewinnington.github.io/posts/jupyter-sqlite-csharp</id>
 		<title>Testing SQLite in C# Jupyter notebook</title>
@@ -356,6 +389,30 @@ if (nRowsCount &amp;gt; 0)
 		<summary>&lt;p&gt;I rewatched this talk from 2014, &lt;a href="https://www.destroyallsoftware.com/talks/the-birth-and-death-of-javascript"&gt;The Birth and Death of JavaScript&lt;/a&gt;, and am still amazed at how prescient it was and still is.&lt;/p&gt;</summary>
 	</entry>
 	<entry>
+		<id>http://ewinnington.github.io/posts/R-Redis-Json</id>
+		<title>R - Reading JSON from redis</title>
+		<link href="http://ewinnington.github.io/posts/R-Redis-Json" />
+		<updated>2019-11-03T00:00:00Z</updated>
+		<content>&lt;p&gt;I needed to access Redis from R. Here's the code I used to connect, set a value, then deserialize a key that was in json format and publish a message. &lt;a href="https://cran.r-project.org/web/packages/rredis/vignettes/rredis.pdf"&gt;Rredis documentation located here&lt;/a&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;library(&amp;quot;rredis&amp;quot;)
+library(&amp;quot;jsonlite&amp;quot;, lib.loc=&amp;quot;~/R/win-library/3.2&amp;quot;)
+
+redisConnect()
+redisSet(&amp;quot;x&amp;quot;,rnorm(5))
+redisGet(&amp;quot;x&amp;quot;)
+
+x = fromJSON(redisGet(&amp;quot;ts_1&amp;quot;))
+x$t &amp;lt;-  strptime(x$t, &amp;quot;%Y-%m-%dT%H:%M:%S&amp;quot;)
+
+//https://cran.r-project.org/web/packages/rredis/vignettes/rredis.pdf
+redisPublish(&amp;quot;General:Active&amp;quot;, charToRaw('Message'))
+
+redisClose()
+&lt;/code&gt;&lt;/pre&gt;
+</content>
+		<summary>&lt;p&gt;I needed to access Redis from R. Here's the code I used to connect, set a value, then deserialize a key that was in json format and publish a message. &lt;a href="https://cran.r-project.org/web/packages/rredis/vignettes/rredis.pdf"&gt;Rredis documentation located here&lt;/a&gt;&lt;/p&gt;</summary>
+	</entry>
+	<entry>
 		<id>http://ewinnington.github.io/posts/wyam-github-actions</id>
 		<title>Using Github actions to build Wyam and publish to github pages</title>
 		<link href="http://ewinnington.github.io/posts/wyam-github-actions" />
@@ -482,30 +539,6 @@ dim(y) &amp;lt;- c(51, 50, 50, 15, 13)
 &lt;/code&gt;&lt;/pre&gt;
 </content>
 		<summary>&lt;p&gt;I had to get some data out of files written by Fortran. The format was a large array of doubles.&lt;/p&gt;</summary>
-	</entry>
-	<entry>
-		<id>http://ewinnington.github.io/posts/R-Redis-Json</id>
-		<title>R - Reading JSON from redis</title>
-		<link href="http://ewinnington.github.io/posts/R-Redis-Json" />
-		<updated>2019-11-03T00:00:00Z</updated>
-		<content>&lt;p&gt;I needed to access Redis from R. Here's the code I used to connect, set a value, then deserialize a key that was in json format and publish a message. &lt;a href="https://cran.r-project.org/web/packages/rredis/vignettes/rredis.pdf"&gt;Rredis documentation located here&lt;/a&gt;&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;library(&amp;quot;rredis&amp;quot;)
-library(&amp;quot;jsonlite&amp;quot;, lib.loc=&amp;quot;~/R/win-library/3.2&amp;quot;)
-
-redisConnect()
-redisSet(&amp;quot;x&amp;quot;,rnorm(5))
-redisGet(&amp;quot;x&amp;quot;)
-
-x = fromJSON(redisGet(&amp;quot;ts_1&amp;quot;))
-x$t &amp;lt;-  strptime(x$t, &amp;quot;%Y-%m-%dT%H:%M:%S&amp;quot;)
-
-//https://cran.r-project.org/web/packages/rredis/vignettes/rredis.pdf
-redisPublish(&amp;quot;General:Active&amp;quot;, charToRaw('Message'))
-
-redisClose()
-&lt;/code&gt;&lt;/pre&gt;
-</content>
-		<summary>&lt;p&gt;I needed to access Redis from R. Here's the code I used to connect, set a value, then deserialize a key that was in json format and publish a message. &lt;a href="https://cran.r-project.org/web/packages/rredis/vignettes/rredis.pdf"&gt;Rredis documentation located here&lt;/a&gt;&lt;/p&gt;</summary>
 	</entry>
 	<entry>
 		<id>http://ewinnington.github.io/posts/Switching-to-wyam</id>
@@ -728,15 +761,6 @@ WHERE b.table_name = 'XXXXX';
 &lt;p&gt;You can even view your query's execution plan, which is a really nice touch. I'll take the time to share some more oracle sql statements next time in an SQLFiddle.&lt;/p&gt;
 </content>
 		<summary>&lt;p&gt;A couple of days ago, I stumbled upon &lt;a href="http://www.sqlfiddle.com/"&gt;SQLFiddle&lt;/a&gt;, a little magical website that allows you to upload a DBSchema and run queries on it, live in the browser. It also allows to share them with other users.&lt;/p&gt;</summary>
-	</entry>
-	<entry>
-		<id>http://ewinnington.github.io/posts/debugging-tips</id>
-		<title>Debugging tips</title>
-		<link href="http://ewinnington.github.io/posts/debugging-tips" />
-		<updated>2013-10-31T00:00:00Z</updated>
-		<content>&lt;p&gt;If you get a bug in a loop, remember that the bug could be caused by the previous execution of the loop and thus be below the code point that fails.&lt;/p&gt;
-</content>
-		<summary>&lt;p&gt;If you get a bug in a loop, remember that the bug could be caused by the previous execution of the loop and thus be below the code point that fails.&lt;/p&gt;</summary>
 	</entry>
 	<entry>
 		<id>http://ewinnington.github.io/posts/raspberry-pi-update-arkos</id>

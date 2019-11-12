@@ -91,6 +91,37 @@
 <div class="row">
     <div class="8u 12u$(medium)">
                 <div>
+                    <a href="/posts/jupyter-docker-csharp-postgres">
+                        <h2>Docker controlled from Jupyter Notebook C# with PostgresDB</h2>
+                    </a>
+                    <p>Posted on Tuesday, 12 November 2019</p>
+<p>In the context of Docker and Jupyter Notebook, it's interesting to note that there exists a Nuget that allows C# to control docker. So, yes, it is possible to launch a Postgresql database, on docker, inside a Jupyter notebook!</p>
+<p>This assumes you have <a href="https://hub.docker.com/?overlay=onboarding">Docker</a>, <a href="https://github.com/dotnet/try/blob/master/DotNetTryLocal.md">Dotnet try</a>, <a href="https://jupyter.org/">Jupyter notebook</a> and follow the setup of the <a href="/posts/jupyter-notebook-csharp-r">C# kernel for Jupyter</a>.</p>
+<p>If you don't want to wait, you can find my <a href="https://github.com/ewinnington/noteb/blob/master/DockerInteraction.ipynb">complete notebook here</a>.</p>
+<p>Microsoft has created a <a href="https://github.com/microsoft/Docker.DotNet">C# Client library for talking to Docker</a>, so we will be taking advantage of it. Much of the magic docker code is pulled from the Docker.DotNet repository.
+I'm using the <a href="https://www.npgsql.org/index.html">Npgsql drivers</a> for accessing the PostgreSQL database.
+<img src="/posts/images/jupyter-notebook-csharp-r/docker-pg-01.png" class="img-fluid" alt="pgsql01" /></p>
+<p>The real magic moment is when you access the Docker instance, if it is on your local machine on windows, you can use the <code>npipe://./pipe/docker_engine</code> Uri. If you are on Linux, use <code>unix:///var/run/docker.sock</code> (at this time, I haven't tried it on linux, but if you do, please tell me).
+<img src="/posts/images/jupyter-notebook-csharp-r/docker-pg-02.png" class="img-fluid" alt="pgsql02" /></p>
+<p>In block 3, we select a random port to host the pgSQL database. Then list the local image names that are available (you should get postgres:latest on your machine to run this). We create and start up the container, passing the environment variables for the password, user and initial schema. Once the container is started, we detach ourselves from it, so it runs in the background. Finally, I wait until I'm pretty sure the container and database is ready (10s sleep at the end). You can reduce that sleep time. On my Surface laptop 1, I sometimes have an issue when I've got too many other containers running.
+<img src="/posts/images/jupyter-notebook-csharp-r/docker-pg-03.png" class="img-fluid" alt="pgsql03" /></p>
+<p>I'm connecting to the database and validating the connection name.
+<img src="/posts/images/jupyter-notebook-csharp-r/docker-pg-04.png" class="img-fluid" alt="pgsql04" /></p>
+<p>I'm creating a database schema and a user for this particular schema, then reconning with the new user.
+<img src="/posts/images/jupyter-notebook-csharp-r/docker-pg-05.png" class="img-fluid" alt="pgsql05" /></p>
+<p>Creating a table and inserting two rows using direct strings and string concatenation. In production, you should never be using string concatenation for your SQL statements. Please always use Bound variables as described below.
+<img src="/posts/images/jupyter-notebook-csharp-r/docker-pg-06.png" class="img-fluid" alt="pgsql06" /></p>
+<p>This is how you should interact with the PostgreSQL database if you are using direct SQL statements. You should be using Bound commands with parameters.
+<img src="/posts/images/jupyter-notebook-csharp-r/docker-pg-07.png" class="img-fluid" alt="pgsql07" /></p>
+<p>Finally, I check that all three insertions were successful.
+<img src="/posts/images/jupyter-notebook-csharp-r/docker-pg-08.png" class="img-fluid" alt="pgsql08" /></p>
+<p>You can watch the container run in the <a href="https://marketplace.visualstudio.com/items?itemName=ms-azuretools.vscode-docker">docker extension</a> of <a href="https://code.visualstudio.com/">Visual studio Code</a>. It's a great way of monitoring what is currently running, as well as deleting old containers that might be still present.
+<img src="/posts/images/jupyter-notebook-csharp-r/docker-pg-10.png" class="img-fluid" alt="pgsql10" /></p>
+<p>Talking of deleting old containers, this is how you shut them down and delete them at the end of the notebook. I first close the Db connection and dispose of it before asking Docker.DotNet to stop the containers.
+<img src="/posts/images/jupyter-notebook-csharp-r/docker-pg-09.png" class="img-fluid" alt="pgsql09" /></p>
+<p>It would be cleaner if I knew how to enfore a <code>Finally</code> in Jupyter Notebook, but at this time, I don't know. If you do, drop me a line on <a href="https://twitter.com/ThrowATwit">twitter</a> or a pull request on this blog post.</p>
+                </div>       
+                <div>
                     <a href="/posts/jupyter-sqlite-csharp">
                         <h2>Testing SQLite in C# Jupyter notebook</h2>
                     </a>
@@ -410,27 +441,6 @@ if (nRowsCount &gt; 0)
 <h1 id="links">Links</h1>
 <p>An excellent overview of connections to databases in .net core was published on the <a href="https://devblogs.microsoft.com/dotnet/net-core-data-access/">Microsoft devblogs</a>.</p>
                 </div>       
-                <div>
-                    <a href="/posts/webassembly-thoughts">
-                        <h2>Reflections on Webassembly - May/Nov 19</h2>
-                    </a>
-                    <p>Posted on Sunday, 3 November 2019</p>
-<h1 id="initial-post">Initial post</h1>
-<p>I rewatched this talk from 2014, <a href="https://www.destroyallsoftware.com/talks/the-birth-and-death-of-javascript">The Birth and Death of JavaScript</a>, and am still amazed at how prescient it was and still is.</p>
-<p>The blurb for this is:
-“This science fiction / comedy / absurdist / completely serious talk traces the history of JavaScript, and programming in general, from 1995 until 2035.”</p>
-<p>ASM JS is still there, but what Gary Bernhardt calls Metal in the talk is WebAssembly. And WebAssembly (Wasm) is coming, and not just for the web.</p>
-<p>In the .Net world, we see the first glimpses of the power of Wasm with the arrival of <a href="https://dotnet.microsoft.com/apps/aspnet/web-apps/blazor">Blazor</a>, which allows the execution of code running on the .net framework (using the mono runtime) inside a browser.</p>
-<p>Wasm is not stopping there. With the <a href="https://hacks.mozilla.org/2019/03/standardizing-wasi-a-webassembly-system-interface/">standardising of WASI</a>, a system interface to run Wasm outside the web, we are truly moving towards architecture independence.</p>
-<p>It might take until 2035, like in the video, for Wasm to take over the world, but I have the feeling we will see its impact in the near future. Looking at the progress on Wasm in the two last years, I would recommend any programmer to read up on it and understanding its implications on the way they work.</p>
-<p>For further reading on Wasm, I would recommend the mozilla <a href="https://hacks.mozilla.org/category/webassembly/">WebAssembly Archives</a> and in particular, the <a href="https://hacks.mozilla.org/2018/10/webassemblys-post-mvp-future/">WebAssembly post mvp future by Lin Clark</a>.</p>
-<h1 id="update-in-november-2019">Update in november 2019</h1>
-<p>Over the last few months, I have seen Wasm cropping up in more and more places, for example as a way to deploy code to running inside databases, such as the case of <a href="https://medium.com/wasmer/announcing-the-first-postgres-extension-to-run-webassembly-561af2cfcb1">Wasm for Postgres</a> which allows stored procedures to run webassembly code.</p>
-<p>Another case of that is the reflection on using <a href="https://youtu.be/3yVc5t-g-VU">WebAssembly as a glue between programming languages</a> by allowing type information and guarantees to flow between programming languages. This would allow future systems to take the best of breed choice of programming language for each component of the system while still allowing compile time reasoning on type safety by using a type preserving compiler.</p>
-<iframe width="480" height="270" src="https://www.youtube.com/embed/3yVc5t-g-VU?feature=oembed" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-<p>As I noted on twitter, as I read, watch and learn about webassembly, I'm getting the feeling this is going to be a titanic shift in the way we reason about programs, languages, frameworks and software design in general.</p>
-<p>&quot;The avalanche has already started, it is too late for the pebbles to vote&quot; - Ambassador Kosh, Babylon 5.</p>
-                </div>       
         <ul class="pager">
             <li class="previous">                
             </li>
@@ -443,15 +453,15 @@ if (nRowsCount &gt; 0)
             <h5>Tags</h5>
             <ul class="actions small">
                     <li><a role="button" href="/tags/Migrated" class="button small">Migrated (38)</a></li>
-                    <li><a role="button" href="/tags/Rpi" class="button small">Rpi (4)</a></li>
-                    <li><a role="button" href="/tags/WPF" class="button small">WPF (4)</a></li>
                     <li><a role="button" href="/tags/Oracle" class="button small">Oracle (4)</a></li>
+                    <li><a role="button" href="/tags/Rpi" class="button small">Rpi (4)</a></li>
                     <li><a role="button" href="/tags/CommandLine" class="button small">CommandLine (4)</a></li>
-                    <li><a role="button" href="/tags/R" class="button small">R (3)</a></li>
-                    <li><a role="button" href="/tags/CSharp" class="button small">CSharp (3)</a></li>
-                    <li><a role="button" href="/tags/iOS" class="button small">iOS (3)</a></li>
+                    <li><a role="button" href="/tags/CSharp" class="button small">CSharp (4)</a></li>
+                    <li><a role="button" href="/tags/WPF" class="button small">WPF (4)</a></li>
                     <li><a role="button" href="/tags/OSX" class="button small">OSX (3)</a></li>
-                    <li><a role="button" href="/tags/Wyam" class="button small">Wyam (2)</a></li>
+                    <li><a role="button" href="/tags/R" class="button small">R (3)</a></li>
+                    <li><a role="button" href="/tags/Jupyter-notebook" class="button small">Jupyter notebook (3)</a></li>
+                    <li><a role="button" href="/tags/Dotnet-try" class="button small">Dotnet try (3)</a></li>
             </ul>
             <ul class="actions small">
                 <li><a href="/tags" class="button small">View All Tags &rarr;</a></li>
@@ -459,10 +469,10 @@ if (nRowsCount &gt; 0)
 
             <h5>Older Posts</h5>
             <ul>
+                    <li><a href="/posts/webassembly-thoughts">Reflections on Webassembly - May/Nov 19</a></li>
+                    <li><a href="/posts/R-Redis-Json">R - Reading JSON from redis</a></li>
                     <li><a href="/posts/wyam-github-actions">Using Github actions to build Wyam and publish to github pages</a></li>
                     <li><a href="/posts/R-read-binary-file">R - Reading binary files</a></li>
-                    <li><a href="/posts/R-Redis-Json">R - Reading JSON from redis</a></li>
-                    <li><a href="/posts/Switching-to-wyam">Switching to Wyam</a></li>
             </ul>
                 <ul class="actions small">
                     <li><a href="/posts" class="button small">Archive &rarr;</a></li>
