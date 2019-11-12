@@ -9,7 +9,7 @@ You can access my [SQLite example notebook here](https://github.com/ewinnington/
 
 You can create a C# Notebook from the file menu of Jupyter. 
 
-![new-notebook](posts/images/jupyter-notebook-csharp-r/new-notebook.png)
+![new-notebook](/posts/images/jupyter-notebook-csharp-r/new-notebook.png)
 
 We need to pull in the nuget package ```System.Data.SQLite``` to interact with the database. 
 
@@ -22,7 +22,7 @@ using System.Data.SQLite;
 
 When you run this cell, you should see the following output: 
 
-![sqlite01](posts/images/jupyter-notebook-csharp-r/sqlite01.png)
+![sqlite01](/posts/images/jupyter-notebook-csharp-r/sqlite01.png)
 
 We can then create a connection to an in-memory SQLite database. 
 ```CSharp
@@ -83,7 +83,7 @@ using (SQLiteCommand sqlite_cmd = conn.CreateCommand()) {
 
 If you executed the whole workbook up to now, you should have the following output. 
 
-![sqlite05](posts/images/jupyter-notebook-csharp-r/sqlite05.png)
+![sqlite05](/posts/images/jupyter-notebook-csharp-r/sqlite05.png)
 
 Closing the connection to the databse.
 ```
