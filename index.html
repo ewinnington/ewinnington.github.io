@@ -359,7 +359,8 @@ using (SqlBulkCopy bulkCopy = new SqlBulkCopy(((SqlConnection)Con).ConnectionStr
 </code></pre>
 <h3 id="postgresql">Postgresql</h3>
 <p>In Postgresql, the important part to note is the COPY ... FROM command. This allows you to provide either a file located on the DB Server or data from STDIN, passed from the client. The Format specifier allows for binary, which we are using here or text and csv. Note, the csv format is very picky, try the text format first if you are doing imports.</p>
-<p>As usualm the Con represents an open database connection.</p>
+<p>As usual the Con represents an open database connection.</p>
+<p>You can see the implementation of this running <a href="https://github.com/ewinnington/noteb/blob/master/PgBulkInsert.ipynb">in the Jupyiter notebook with C#</a>.</p>
 <pre><code class="language-CSharp">using Npgsql; // Nuget https://www.nuget.org/packages/Npgsql 
 
 public void DumpDataTableToDB(string TableName, DataTable dt, int nCount)
@@ -453,15 +454,15 @@ if (nRowsCount &gt; 0)
             <h5>Tags</h5>
             <ul class="actions small">
                     <li><a role="button" href="/tags/Migrated" class="button small">Migrated (38)</a></li>
-                    <li><a role="button" href="/tags/Oracle" class="button small">Oracle (4)</a></li>
-                    <li><a role="button" href="/tags/Rpi" class="button small">Rpi (4)</a></li>
                     <li><a role="button" href="/tags/CommandLine" class="button small">CommandLine (4)</a></li>
                     <li><a role="button" href="/tags/CSharp" class="button small">CSharp (4)</a></li>
                     <li><a role="button" href="/tags/WPF" class="button small">WPF (4)</a></li>
-                    <li><a role="button" href="/tags/OSX" class="button small">OSX (3)</a></li>
+                    <li><a role="button" href="/tags/Rpi" class="button small">Rpi (4)</a></li>
+                    <li><a role="button" href="/tags/Oracle" class="button small">Oracle (4)</a></li>
+                    <li><a role="button" href="/tags/Dotnet-try" class="button small">Dotnet try (3)</a></li>
+                    <li><a role="button" href="/tags/iOS" class="button small">iOS (3)</a></li>
                     <li><a role="button" href="/tags/R" class="button small">R (3)</a></li>
                     <li><a role="button" href="/tags/Jupyter-notebook" class="button small">Jupyter notebook (3)</a></li>
-                    <li><a role="button" href="/tags/Dotnet-try" class="button small">Dotnet try (3)</a></li>
             </ul>
             <ul class="actions small">
                 <li><a href="/tags" class="button small">View All Tags &rarr;</a></li>
@@ -470,9 +471,9 @@ if (nRowsCount &gt; 0)
             <h5>Older Posts</h5>
             <ul>
                     <li><a href="/posts/webassembly-thoughts">Reflections on Webassembly - May/Nov 19</a></li>
-                    <li><a href="/posts/R-Redis-Json">R - Reading JSON from redis</a></li>
                     <li><a href="/posts/wyam-github-actions">Using Github actions to build Wyam and publish to github pages</a></li>
                     <li><a href="/posts/R-read-binary-file">R - Reading binary files</a></li>
+                    <li><a href="/posts/R-Redis-Json">R - Reading JSON from redis</a></li>
             </ul>
                 <ul class="actions small">
                     <li><a href="/posts" class="button small">Archive &rarr;</a></li>
