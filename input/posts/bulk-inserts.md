@@ -83,7 +83,9 @@ using (SqlBulkCopy bulkCopy = new SqlBulkCopy(((SqlConnection)Con).ConnectionStr
 ### Postgresql
 In Postgresql, the important part to note is the COPY ... FROM command. This allows you to provide either a file located on the DB Server or data from STDIN, passed from the client. The Format specifier allows for binary, which we are using here or text and csv. Note, the csv format is very picky, try the text format first if you are doing imports.
 
-As usualm the Con represents an open database connection. 
+As usual the Con represents an open database connection. 
+
+You can see the implementation of this running [in the Jupyiter notebook with C#](https://github.com/ewinnington/noteb/blob/master/PgBulkInsert.ipynb).
 
 ```CSharp
 using Npgsql; // Nuget https://www.nuget.org/packages/Npgsql 
