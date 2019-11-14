@@ -87,6 +87,9 @@ in the second cell. Executing it shows us that the C# Kernel is working.
 
 ```#r``` is used to reference a dll or a nuget package. If you prefix the command with "nuget:" then the jupyter notebook will download the nuget and add it as a reference. Then as in usual c#, you must reference it. 
 
+**Update** The C# notebook is now hosted on binder [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/ewinnington/noteb/master?filepath=HelloWorld.ipynb)
+ click to launch the environment! 
+
 # Installing an R kernel for jupyter notebook
 
 To install R Tools for Visual Studio, install the Visual Studio Extension R Tools for Visual Studio 2019, which was in preview when I looked. Once this is installed, you must install the Microsoft R client. This option will be presented if you go to the "R Interactive" window. 
