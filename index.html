@@ -100,7 +100,7 @@
                     </a>
                     <p>Posted on Thursday, 14 November 2019</p>
 <p><a href="https://mybinder.org/">MyBinder.org</a> in collaboration with <a href="https://github.com/dotnet/try">Dotnet try</a> allows you to host your .net notebooks online.</p>
-<p><a href="https://mybinder.org/v2/gh/ewinnington/noteb/master?filepath=HelloWorld.ipynb">SQLite example workbook: </a>
+<p><a href="https://mybinder.org/v2/gh/ewinnington/noteb/master?filepath=SqliteInteraction.ipynb">SQLite example workbook: </a>
 <a href="https://mybinder.org/v2/gh/ewinnington/noteb/master?filepath=HelloWorld.ipynb"><img src="https://mybinder.org/badge_logo.svg" class="img-fluid" alt="Binder" /></a></p>
 <p>To light up this for your own hosted repositories, you will need a public github repo. Inside the repository, you will need to create a Docker file that gives the setup required for MyBinder to setup the environment of the workbook.</p>
 <p>The <a href="https://github.com/dotnet/try/blob/master/CreateBinder.md">dotnet/try</a> has the set of instrunctions.</p>
@@ -192,6 +192,7 @@ WORKDIR ${HOME}/Notebooks/
 <p>Once the Dockerfile is in the repository. Head over to <a href="https://mybinder.org/">MyBinder.org</a> and enter the link to your repository. Optionally, you can set an initial ipynb file to start when the link is clicked.</p>
 <p><img src="/posts/images/my-binder/Binder-1.png" class="img-fluid" alt="MyBinder" /></p>
 <p>When you click &quot;launch&quot;, MyBinder will download your repository and start the docker build, very soon you will be able to access your binders online. Fully shareable and totally awesome!</p>
+<p><img src="/posts/images/my-binder/Binder-2.png" class="img-fluid" width="60%" alt="SQLite Running" /></p>
                 </div>       
                 <div>
                     <a href="/posts/jupyter-lp-10">
@@ -462,12 +463,12 @@ Console.WriteLine(ex);
                     <li><a role="button" href="/tags/CSharp" class="button small">CSharp (6)</a></li>
                     <li><a role="button" href="/tags/Jupyter-notebook" class="button small">Jupyter notebook (5)</a></li>
                     <li><a role="button" href="/tags/Dotnet-try" class="button small">Dotnet try (5)</a></li>
-                    <li><a role="button" href="/tags/Oracle" class="button small">Oracle (4)</a></li>
+                    <li><a role="button" href="/tags/Rpi" class="button small">Rpi (4)</a></li>
                     <li><a role="button" href="/tags/CommandLine" class="button small">CommandLine (4)</a></li>
                     <li><a role="button" href="/tags/WPF" class="button small">WPF (4)</a></li>
-                    <li><a role="button" href="/tags/Rpi" class="button small">Rpi (4)</a></li>
+                    <li><a role="button" href="/tags/Oracle" class="button small">Oracle (4)</a></li>
+                    <li><a role="button" href="/tags/iOS" class="button small">iOS (3)</a></li>
                     <li><a role="button" href="/tags/R" class="button small">R (3)</a></li>
-                    <li><a role="button" href="/tags/OSX" class="button small">OSX (3)</a></li>
             </ul>
             <ul class="actions small">
                 <li><a href="/tags" class="button small">View All Tags &rarr;</a></li>
@@ -478,7 +479,7 @@ Console.WriteLine(ex);
                     <li><a href="/posts/jupyter-notebook-csharp-r">Jupyter notebook with C# and R</a></li>
                     <li><a href="/posts/bulk-inserts">Using bulk inserts on databases</a></li>
                     <li><a href="/posts/webassembly-thoughts">Reflections on Webassembly - May/Nov 19</a></li>
-                    <li><a href="/posts/wyam-github-actions">Using Github actions to build Wyam and publish to github pages</a></li>
+                    <li><a href="/posts/R-Redis-Json">R - Reading JSON from redis</a></li>
             </ul>
                 <ul class="actions small">
                     <li><a href="/posts" class="button small">Archive &rarr;</a></li>

@@ -5,8 +5,8 @@
 		<link>http://ewinnington.github.io/</link>
 		<description>A collection of thoughts, code and snippets.</description>
 		<copyright>2019</copyright>
-		<pubDate>Thu, 14 Nov 2019 23:25:55 GMT</pubDate>
-		<lastBuildDate>Thu, 14 Nov 2019 23:25:55 GMT</lastBuildDate>
+		<pubDate>Thu, 14 Nov 2019 23:37:53 GMT</pubDate>
+		<lastBuildDate>Thu, 14 Nov 2019 23:37:53 GMT</lastBuildDate>
 		<item>
 			<title>Hosting your C# Jupyter notebook online by adding one file to your repo</title>
 			<link>http://ewinnington.github.io/posts/my-binder-jupyter-csharp</link>
@@ -14,7 +14,7 @@
 			<guid>http://ewinnington.github.io/posts/my-binder-jupyter-csharp</guid>
 			<pubDate>Thu, 14 Nov 2019 23:20:00 GMT</pubDate>
 			<content:encoded>&lt;p&gt;&lt;a href="https://mybinder.org/"&gt;MyBinder.org&lt;/a&gt; in collaboration with &lt;a href="https://github.com/dotnet/try"&gt;Dotnet try&lt;/a&gt; allows you to host your .net notebooks online.&lt;/p&gt;
-&lt;p&gt;&lt;a href="https://mybinder.org/v2/gh/ewinnington/noteb/master?filepath=HelloWorld.ipynb"&gt;SQLite example workbook: &lt;/a&gt;
+&lt;p&gt;&lt;a href="https://mybinder.org/v2/gh/ewinnington/noteb/master?filepath=SqliteInteraction.ipynb"&gt;SQLite example workbook: &lt;/a&gt;
 &lt;a href="https://mybinder.org/v2/gh/ewinnington/noteb/master?filepath=HelloWorld.ipynb"&gt;&lt;img src="https://mybinder.org/badge_logo.svg" class="img-fluid" alt="Binder" /&gt;&lt;/a&gt;&lt;/p&gt;
 &lt;p&gt;To light up this for your own hosted repositories, you will need a public github repo. Inside the repository, you will need to create a Docker file that gives the setup required for MyBinder to setup the environment of the workbook.&lt;/p&gt;
 &lt;p&gt;The &lt;a href="https://github.com/dotnet/try/blob/master/CreateBinder.md"&gt;dotnet/try&lt;/a&gt; has the set of instrunctions.&lt;/p&gt;
@@ -106,6 +106,7 @@ WORKDIR ${HOME}/Notebooks/
 &lt;p&gt;Once the Dockerfile is in the repository. Head over to &lt;a href="https://mybinder.org/"&gt;MyBinder.org&lt;/a&gt; and enter the link to your repository. Optionally, you can set an initial ipynb file to start when the link is clicked.&lt;/p&gt;
 &lt;p&gt;&lt;img src="/posts/images/my-binder/Binder-1.png" class="img-fluid" alt="MyBinder" /&gt;&lt;/p&gt;
 &lt;p&gt;When you click &amp;quot;launch&amp;quot;, MyBinder will download your repository and start the docker build, very soon you will be able to access your binders online. Fully shareable and totally awesome!&lt;/p&gt;
+&lt;p&gt;&lt;img src="/posts/images/my-binder/Binder-2.png" class="img-fluid" width="60%" alt="SQLite Running" /&gt;&lt;/p&gt;
 </content:encoded>
 		</item>
 		<item>
@@ -648,6 +649,30 @@ if (nRowsCount &amp;gt; 0)
 </content:encoded>
 		</item>
 		<item>
+			<title>R - Reading JSON from redis</title>
+			<link>http://ewinnington.github.io/posts/R-Redis-Json</link>
+			<description>&lt;p&gt;I needed to access Redis from R. Here's the code I used to connect, set a value, then deserialize a key that was in json format and publish a message. &lt;a href="https://cran.r-project.org/web/packages/rredis/vignettes/rredis.pdf"&gt;Rredis documentation located here&lt;/a&gt;&lt;/p&gt;</description>
+			<guid>http://ewinnington.github.io/posts/R-Redis-Json</guid>
+			<pubDate>Sun, 03 Nov 2019 00:00:00 GMT</pubDate>
+			<content:encoded>&lt;p&gt;I needed to access Redis from R. Here's the code I used to connect, set a value, then deserialize a key that was in json format and publish a message. &lt;a href="https://cran.r-project.org/web/packages/rredis/vignettes/rredis.pdf"&gt;Rredis documentation located here&lt;/a&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;library(&amp;quot;rredis&amp;quot;)
+library(&amp;quot;jsonlite&amp;quot;, lib.loc=&amp;quot;~/R/win-library/3.2&amp;quot;)
+
+redisConnect()
+redisSet(&amp;quot;x&amp;quot;,rnorm(5))
+redisGet(&amp;quot;x&amp;quot;)
+
+x = fromJSON(redisGet(&amp;quot;ts_1&amp;quot;))
+x$t &amp;lt;-  strptime(x$t, &amp;quot;%Y-%m-%dT%H:%M:%S&amp;quot;)
+
+//https://cran.r-project.org/web/packages/rredis/vignettes/rredis.pdf
+redisPublish(&amp;quot;General:Active&amp;quot;, charToRaw('Message'))
+
+redisClose()
+&lt;/code&gt;&lt;/pre&gt;
+</content:encoded>
+		</item>
+		<item>
 			<title>Using Github actions to build Wyam and publish to github pages</title>
 			<link>http://ewinnington.github.io/posts/wyam-github-actions</link>
 			<description>&lt;p&gt;Not that I have Wyam as a static site generator, I want to use &lt;a href="https://github.com/features/actions"&gt;Github Actions&lt;/a&gt; to automatically deploy it on push. This requires a quite few steps to setup, but I did it, now so can you!&lt;/p&gt;</description>
@@ -753,30 +778,6 @@ jobs:
 &lt;h1 id="closing"&gt;Closing&lt;/h1&gt;
 &lt;p&gt;If all went well, you should now have your personal wyam generated site up and running at &lt;a href="http://username.github.io"&gt;http://username.github.io&lt;/a&gt; .&lt;/p&gt;
 &lt;p&gt;Please feel free to look around both branches &lt;em&gt;source&lt;/em&gt; and &lt;em&gt;master&lt;/em&gt; on &lt;a href="https://github.com/ewinnington/ewinnington.github.io"&gt;my github repo&lt;/a&gt; to understand how my blog is setup.&lt;/p&gt;
-</content:encoded>
-		</item>
-		<item>
-			<title>R - Reading JSON from redis</title>
-			<link>http://ewinnington.github.io/posts/R-Redis-Json</link>
-			<description>&lt;p&gt;I needed to access Redis from R. Here's the code I used to connect, set a value, then deserialize a key that was in json format and publish a message. &lt;a href="https://cran.r-project.org/web/packages/rredis/vignettes/rredis.pdf"&gt;Rredis documentation located here&lt;/a&gt;&lt;/p&gt;</description>
-			<guid>http://ewinnington.github.io/posts/R-Redis-Json</guid>
-			<pubDate>Sun, 03 Nov 2019 00:00:00 GMT</pubDate>
-			<content:encoded>&lt;p&gt;I needed to access Redis from R. Here's the code I used to connect, set a value, then deserialize a key that was in json format and publish a message. &lt;a href="https://cran.r-project.org/web/packages/rredis/vignettes/rredis.pdf"&gt;Rredis documentation located here&lt;/a&gt;&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;library(&amp;quot;rredis&amp;quot;)
-library(&amp;quot;jsonlite&amp;quot;, lib.loc=&amp;quot;~/R/win-library/3.2&amp;quot;)
-
-redisConnect()
-redisSet(&amp;quot;x&amp;quot;,rnorm(5))
-redisGet(&amp;quot;x&amp;quot;)
-
-x = fromJSON(redisGet(&amp;quot;ts_1&amp;quot;))
-x$t &amp;lt;-  strptime(x$t, &amp;quot;%Y-%m-%dT%H:%M:%S&amp;quot;)
-
-//https://cran.r-project.org/web/packages/rredis/vignettes/rredis.pdf
-redisPublish(&amp;quot;General:Active&amp;quot;, charToRaw('Message'))
-
-redisClose()
-&lt;/code&gt;&lt;/pre&gt;
 </content:encoded>
 		</item>
 		<item>

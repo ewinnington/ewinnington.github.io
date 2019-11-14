@@ -101,7 +101,7 @@
 						
 
 <p><a href="https://mybinder.org/">MyBinder.org</a> in collaboration with <a href="https://github.com/dotnet/try">Dotnet try</a> allows you to host your .net notebooks online.</p>
-<p><a href="https://mybinder.org/v2/gh/ewinnington/noteb/master?filepath=HelloWorld.ipynb">SQLite example workbook: </a>
+<p><a href="https://mybinder.org/v2/gh/ewinnington/noteb/master?filepath=SqliteInteraction.ipynb">SQLite example workbook: </a>
 <a href="https://mybinder.org/v2/gh/ewinnington/noteb/master?filepath=HelloWorld.ipynb"><img src="https://mybinder.org/badge_logo.svg" class="img-fluid" alt="Binder" /></a></p>
 <p>To light up this for your own hosted repositories, you will need a public github repo. Inside the repository, you will need to create a Docker file that gives the setup required for MyBinder to setup the environment of the workbook.</p>
 <p>The <a href="https://github.com/dotnet/try/blob/master/CreateBinder.md">dotnet/try</a> has the set of instrunctions.</p>
@@ -193,6 +193,7 @@ WORKDIR ${HOME}/Notebooks/
 <p>Once the Dockerfile is in the repository. Head over to <a href="https://mybinder.org/">MyBinder.org</a> and enter the link to your repository. Optionally, you can set an initial ipynb file to start when the link is clicked.</p>
 <p><img src="/posts/images/my-binder/Binder-1.png" class="img-fluid" alt="MyBinder" /></p>
 <p>When you click &quot;launch&quot;, MyBinder will download your repository and start the docker build, very soon you will be able to access your binders online. Fully shareable and totally awesome!</p>
+<p><img src="/posts/images/my-binder/Binder-2.png" class="img-fluid" width="60%" alt="SQLite Running" /></p>
 
 
 
