@@ -5,7 +5,7 @@ Tags: [CSharp, Dotnet try, Jupyter notebook]
 
 [MyBinder.org](https://mybinder.org/) in collaboration with [Dotnet try](https://github.com/dotnet/try) allows you to host your .net notebooks online. 
 
-[SQLite example workbook: ](https://mybinder.org/v2/gh/ewinnington/noteb/master?filepath=HelloWorld.ipynb)
+[SQLite example workbook: ](https://mybinder.org/v2/gh/ewinnington/noteb/master?filepath=SqliteInteraction.ipynb)
 [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/ewinnington/noteb/master?filepath=HelloWorld.ipynb) 
 
 To light up this for your own hosted repositories, you will need a public github repo. Inside the repository, you will need to create a Docker file that gives the setup required for MyBinder to setup the environment of the workbook.
@@ -104,3 +104,5 @@ Once the Dockerfile is in the repository. Head over to [MyBinder.org](https://my
 ![MyBinder](/posts/images/my-binder/Binder-1.png)
 
 When you click "launch", MyBinder will download your repository and start the docker build, very soon you will be able to access your binders online. Fully shareable and totally awesome!
+
+![SQLite Running](/posts/images/my-binder/Binder-2.png){ width = 60%} 
