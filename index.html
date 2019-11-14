@@ -110,6 +110,7 @@
 <li>I used a fixed docker image <code>jupyter/scipy-notebook:45f07a14b422</code></li>
 <li>Since I have all my notebooks in the root of my repository I did <code>COPY . ${HOME}/Notebooks/</code></li>
 <li>Since I am always importing the Nuget files at the top of my workbook, I did not need to have the docker deamon add a nuget config. So I commented out the COPY command <code># COPY ./NuGet.config ${HOME}/nuget.config</code></li>
+<li>I commented out the custom <code>--add-source &quot;https://dotnet.myget.org/F/dotnet-try/api/v3/index.json&quot;</code> from the installation of the dotnet try tool, since I had issue with the nuget feed with the pre-release version. Installing with <code>RUN dotnet tool install -g dotnet-try</code> will get you the latest released version.</li>
 </ul>
 <pre><code class="language-Skip">FROM jupyter/scipy-notebook:45f07a14b422
 
@@ -463,12 +464,12 @@ Console.WriteLine(ex);
                     <li><a role="button" href="/tags/CSharp" class="button small">CSharp (6)</a></li>
                     <li><a role="button" href="/tags/Jupyter-notebook" class="button small">Jupyter notebook (5)</a></li>
                     <li><a role="button" href="/tags/Dotnet-try" class="button small">Dotnet try (5)</a></li>
-                    <li><a role="button" href="/tags/Rpi" class="button small">Rpi (4)</a></li>
                     <li><a role="button" href="/tags/CommandLine" class="button small">CommandLine (4)</a></li>
-                    <li><a role="button" href="/tags/WPF" class="button small">WPF (4)</a></li>
                     <li><a role="button" href="/tags/Oracle" class="button small">Oracle (4)</a></li>
-                    <li><a role="button" href="/tags/iOS" class="button small">iOS (3)</a></li>
+                    <li><a role="button" href="/tags/WPF" class="button small">WPF (4)</a></li>
+                    <li><a role="button" href="/tags/Rpi" class="button small">Rpi (4)</a></li>
                     <li><a role="button" href="/tags/R" class="button small">R (3)</a></li>
+                    <li><a role="button" href="/tags/OSX" class="button small">OSX (3)</a></li>
             </ul>
             <ul class="actions small">
                 <li><a href="/tags" class="button small">View All Tags &rarr;</a></li>
@@ -479,7 +480,7 @@ Console.WriteLine(ex);
                     <li><a href="/posts/jupyter-notebook-csharp-r">Jupyter notebook with C# and R</a></li>
                     <li><a href="/posts/bulk-inserts">Using bulk inserts on databases</a></li>
                     <li><a href="/posts/webassembly-thoughts">Reflections on Webassembly - May/Nov 19</a></li>
-                    <li><a href="/posts/R-Redis-Json">R - Reading JSON from redis</a></li>
+                    <li><a href="/posts/wyam-github-actions">Using Github actions to build Wyam and publish to github pages</a></li>
             </ul>
                 <ul class="actions small">
                     <li><a href="/posts" class="button small">Archive &rarr;</a></li>
