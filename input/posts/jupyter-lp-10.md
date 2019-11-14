@@ -3,6 +3,8 @@ Published: 14/11/2019 21:30
 Tags: [CSharp, LinearProgramming, Google OR-Tools, Dotnet try, Jupyter notebook] 
 ---
 
+[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/ewinnington/noteb/master?filepath=IntroToLP.ipynb)
+
 # Linear programming 
 
 [Linear programming](https://en.wikipedia.org/wiki/Linear_programming) (LP) is a method to provide an optimal solution to a problem defined by a set of linear constraints. It is very widely applied in engineering and science. 
@@ -30,7 +32,9 @@ There exist many linear programming solvers to calculate this optimum. We will b
 
 ## Meet the solver
 
-You can find my [notebook with all the code here](https://github.com/ewinnington/noteb/blob/master/IntroToLP.ipynb).[^Host] 
+
+
+You can find my [notebook with all the code here](https://github.com/ewinnington/noteb/blob/master/IntroToLP.ipynb). And you can now access the [Jupyter notebooks online, thanks to Binder](https://mybinder.org/v2/gh/ewinnington/noteb/master?filepath=IntroToLP.ipynb)! 
 
 [^Host]: I'm still waiting on a good way to host it in a live and executable mode online in Jupyter notebook C#. This whole tutorial was originally written as a dotnet-try workbook. 
 
