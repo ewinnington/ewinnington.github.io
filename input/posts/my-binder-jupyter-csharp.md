@@ -18,6 +18,7 @@ A list of my changes to the standard one proposed by dotnet/try:
 - I used a fixed docker image ```jupyter/scipy-notebook:45f07a14b422```
 - Since I have all my notebooks in the root of my repository I did ```COPY . ${HOME}/Notebooks/```
 - Since I am always importing the Nuget files at the top of my workbook, I did not need to have the docker deamon add a nuget config. So I commented out the COPY command ```# COPY ./NuGet.config ${HOME}/nuget.config```
+- I commented out the custom ```--add-source "https://dotnet.myget.org/F/dotnet-try/api/v3/index.json"``` from the installation of the dotnet try tool, since I had issue with the nuget feed with the pre-release version. Installing with ```RUN dotnet tool install -g dotnet-try``` will get you the latest released version.  
 
 ```Skip to content
 FROM jupyter/scipy-notebook:45f07a14b422
