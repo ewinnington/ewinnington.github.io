@@ -44,7 +44,7 @@ The [Coin-OR project](https://www.coin-or.org) provides high quality solvers for
 
 The [Google OR-Tools](https://developers.google.com/optimization/) provide us with a set of primitives with which to work with so that we can define optimisation problems and allow us to call to various solvers, including CLP, which we will be using. Also the OR-Tools provide routines to write out the problems in MPS and other formats. We will focus on using the OR Tools as soon as the introduction is over. 
 
-Adding the Google OR Tools through nuget to the Juypter notebook with the ```#r``` command and ```using``` in the cell imports the solver.
+Adding the Google OR Tools through nuget to the Jupyter notebook with the ```#r``` command and ```using``` in the cell imports the solver.
 
 ```CSharp 
 #r "nuget:Google.OrTools"
@@ -182,6 +182,16 @@ The solver is initialized with the full problem 2 defintion already, x and y are
 ![10-5.png](/posts/images/lp/10-5.png){ width = 100% }
 
 For those following along in the [notebook](https://github.com/ewinnington/noteb/blob/master/IntroToLP.ipynb) there is a hint below this section with a second implementation of the ```SolveProblem()``` function which should give you hints based on your objective value.  
+
+## The power of Jupyter special commands
+
+I'm discovering slowly the jupyter commands. The first command ```display()``` allows you to present objects in a table. A great way to select the properties you want to show is to use linq (remember to add ```using System.Linq```) to map a list of objects to an anonymous object with the properties you want to show in the table. 
+
+```
+display(solver.variables().Select(a => new { Name  = a.Name(), Value = a.SolutionValue() }));
+```
+
+![10-6.png](/posts/images/lp/10-6.png){ width = 100% }
 
 ## Recap
 
