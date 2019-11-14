@@ -122,7 +122,7 @@
 <p>The <a href="https://www.coin-or.org">Coin-OR project</a> provides high quality solvers for many applications with an open source license. <a href="https://github.com/coin-or/Clp">CLP</a> is the main linear programming solver we will be using until we start adding binary variables, at which point we will start using <a href="https://github.com/coin-or/Cbc">CBC</a>. To call them from C#, we could write out a format that CLP / CBC knows how to read, such as <a href="https://en.wikipedia.org/wiki/MPS_(format)">MPS</a> or we could use a wrapping library to call them directly from C#. We will be focusing on using the Google OR-Tools.</p>
 <h4 id="google-or-tools">Google OR-Tools</h4>
 <p>The <a href="https://developers.google.com/optimization/">Google OR-Tools</a> provide us with a set of primitives with which to work with so that we can define optimisation problems and allow us to call to various solvers, including CLP, which we will be using. Also the OR-Tools provide routines to write out the problems in MPS and other formats. We will focus on using the OR Tools as soon as the introduction is over.</p>
-<p>Adding the Google OR Tools through nuget to the Juypter notebook with the <code>#r</code> command and <code>using</code> in the cell imports the solver.</p>
+<p>Adding the Google OR Tools through nuget to the Jupyter notebook with the <code>#r</code> command and <code>using</code> in the cell imports the solver.</p>
 <pre><code class="language-CSharp">#r &quot;nuget:Google.OrTools&quot;
 
 using Google.OrTools.LinearSolver;
@@ -219,6 +219,11 @@ c.SetCoefficient(y, 1);
 <p>The solver is initialized with the full problem 2 defintion already, x and y are already declared. When you click on the solver's cell, the solver.Solve() function is called and results are written out.</p>
 <p><img src="/posts/images/lp/10-5.png" class="img-fluid" width="100%" alt="10-5.png" /></p>
 <p>For those following along in the <a href="https://github.com/ewinnington/noteb/blob/master/IntroToLP.ipynb">notebook</a> there is a hint below this section with a second implementation of the <code>SolveProblem()</code> function which should give you hints based on your objective value.</p>
+<h2 id="the-power-of-jupyter-special-commands">The power of Jupyter special commands</h2>
+<p>I'm discovering slowly the jupyter commands. The first command <code>display()</code> allows you to present objects in a table. A great way to select the properties you want to show is to use linq (remember to add <code>using System.Linq</code>) to map a list of objects to an anonymous object with the properties you want to show in the table.</p>
+<pre><code>display(solver.variables().Select(a =&gt; new { Name  = a.Name(), Value = a.SolutionValue() }));
+</code></pre>
+<p><img src="/posts/images/lp/10-6.png" class="img-fluid" width="100%" alt="10-6.png" /></p>
 <h2 id="recap">Recap</h2>
 <p>Now that we have introduced linear programming and know how to use the solver, the following chapter will cover two simple linear programming applications.</p>
 <div class="footnotes">
@@ -454,13 +459,13 @@ IRkernel::installspec(user = FALSE)
                     <li><a role="button" href="/tags/Migrated" class="button small">Migrated (38)</a></li>
                     <li><a role="button" href="/tags/CSharp" class="button small">CSharp (5)</a></li>
                     <li><a role="button" href="/tags/CommandLine" class="button small">CommandLine (4)</a></li>
-                    <li><a role="button" href="/tags/Dotnet-try" class="button small">Dotnet try (4)</a></li>
-                    <li><a role="button" href="/tags/Oracle" class="button small">Oracle (4)</a></li>
                     <li><a role="button" href="/tags/Jupyter-notebook" class="button small">Jupyter notebook (4)</a></li>
                     <li><a role="button" href="/tags/WPF" class="button small">WPF (4)</a></li>
                     <li><a role="button" href="/tags/Rpi" class="button small">Rpi (4)</a></li>
+                    <li><a role="button" href="/tags/Oracle" class="button small">Oracle (4)</a></li>
+                    <li><a role="button" href="/tags/Dotnet-try" class="button small">Dotnet try (4)</a></li>
                     <li><a role="button" href="/tags/OSX" class="button small">OSX (3)</a></li>
-                    <li><a role="button" href="/tags/R" class="button small">R (3)</a></li>
+                    <li><a role="button" href="/tags/iOS" class="button small">iOS (3)</a></li>
             </ul>
             <ul class="actions small">
                 <li><a href="/tags" class="button small">View All Tags &rarr;</a></li>
@@ -470,8 +475,8 @@ IRkernel::installspec(user = FALSE)
             <ul>
                     <li><a href="/posts/bulk-inserts">Using bulk inserts on databases</a></li>
                     <li><a href="/posts/webassembly-thoughts">Reflections on Webassembly - May/Nov 19</a></li>
-                    <li><a href="/posts/wyam-github-actions">Using Github actions to build Wyam and publish to github pages</a></li>
                     <li><a href="/posts/R-Redis-Json">R - Reading JSON from redis</a></li>
+                    <li><a href="/posts/wyam-github-actions">Using Github actions to build Wyam and publish to github pages</a></li>
             </ul>
                 <ul class="actions small">
                     <li><a href="/posts" class="button small">Archive &rarr;</a></li>

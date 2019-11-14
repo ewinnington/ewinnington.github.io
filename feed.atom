@@ -4,7 +4,7 @@
 	<title>Eric Winnington</title>
 	<link rel="self" href="http://ewinnington.github.io/" />
 	<rights>2019</rights>
-	<updated>2019-11-14T21:39:59Z</updated>
+	<updated>2019-11-14T22:22:45Z</updated>
 	<subtitle>A collection of thoughts, code and snippets.</subtitle>
 	<entry>
 		<id>http://ewinnington.github.io/posts/jupyter-lp-10</id>
@@ -34,7 +34,7 @@
 &lt;p&gt;The &lt;a href="https://www.coin-or.org"&gt;Coin-OR project&lt;/a&gt; provides high quality solvers for many applications with an open source license. &lt;a href="https://github.com/coin-or/Clp"&gt;CLP&lt;/a&gt; is the main linear programming solver we will be using until we start adding binary variables, at which point we will start using &lt;a href="https://github.com/coin-or/Cbc"&gt;CBC&lt;/a&gt;. To call them from C#, we could write out a format that CLP / CBC knows how to read, such as &lt;a href="https://en.wikipedia.org/wiki/MPS_(format)"&gt;MPS&lt;/a&gt; or we could use a wrapping library to call them directly from C#. We will be focusing on using the Google OR-Tools.&lt;/p&gt;
 &lt;h4 id="google-or-tools"&gt;Google OR-Tools&lt;/h4&gt;
 &lt;p&gt;The &lt;a href="https://developers.google.com/optimization/"&gt;Google OR-Tools&lt;/a&gt; provide us with a set of primitives with which to work with so that we can define optimisation problems and allow us to call to various solvers, including CLP, which we will be using. Also the OR-Tools provide routines to write out the problems in MPS and other formats. We will focus on using the OR Tools as soon as the introduction is over.&lt;/p&gt;
-&lt;p&gt;Adding the Google OR Tools through nuget to the Juypter notebook with the &lt;code&gt;#r&lt;/code&gt; command and &lt;code&gt;using&lt;/code&gt; in the cell imports the solver.&lt;/p&gt;
+&lt;p&gt;Adding the Google OR Tools through nuget to the Jupyter notebook with the &lt;code&gt;#r&lt;/code&gt; command and &lt;code&gt;using&lt;/code&gt; in the cell imports the solver.&lt;/p&gt;
 &lt;pre&gt;&lt;code class="language-CSharp"&gt;#r &amp;quot;nuget:Google.OrTools&amp;quot;
 
 using Google.OrTools.LinearSolver;
@@ -131,6 +131,11 @@ c.SetCoefficient(y, 1);
 &lt;p&gt;The solver is initialized with the full problem 2 defintion already, x and y are already declared. When you click on the solver's cell, the solver.Solve() function is called and results are written out.&lt;/p&gt;
 &lt;p&gt;&lt;img src="/posts/images/lp/10-5.png" class="img-fluid" width="100%" alt="10-5.png" /&gt;&lt;/p&gt;
 &lt;p&gt;For those following along in the &lt;a href="https://github.com/ewinnington/noteb/blob/master/IntroToLP.ipynb"&gt;notebook&lt;/a&gt; there is a hint below this section with a second implementation of the &lt;code&gt;SolveProblem()&lt;/code&gt; function which should give you hints based on your objective value.&lt;/p&gt;
+&lt;h2 id="the-power-of-jupyter-special-commands"&gt;The power of Jupyter special commands&lt;/h2&gt;
+&lt;p&gt;I'm discovering slowly the jupyter commands. The first command &lt;code&gt;display()&lt;/code&gt; allows you to present objects in a table. A great way to select the properties you want to show is to use linq (remember to add &lt;code&gt;using System.Linq&lt;/code&gt;) to map a list of objects to an anonymous object with the properties you want to show in the table.&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;display(solver.variables().Select(a =&amp;gt; new { Name  = a.Name(), Value = a.SolutionValue() }));
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src="/posts/images/lp/10-6.png" class="img-fluid" width="100%" alt="10-6.png" /&gt;&lt;/p&gt;
 &lt;h2 id="recap"&gt;Recap&lt;/h2&gt;
 &lt;p&gt;Now that we have introduced linear programming and know how to use the solver, the following chapter will cover two simple linear programming applications.&lt;/p&gt;
 &lt;div class="footnotes"&gt;
@@ -539,6 +544,30 @@ if (nRowsCount &amp;gt; 0)
 		<summary>&lt;p&gt;I rewatched this talk from 2014, &lt;a href="https://www.destroyallsoftware.com/talks/the-birth-and-death-of-javascript"&gt;The Birth and Death of JavaScript&lt;/a&gt;, and am still amazed at how prescient it was and still is.&lt;/p&gt;</summary>
 	</entry>
 	<entry>
+		<id>http://ewinnington.github.io/posts/R-Redis-Json</id>
+		<title>R - Reading JSON from redis</title>
+		<link href="http://ewinnington.github.io/posts/R-Redis-Json" />
+		<updated>2019-11-03T00:00:00Z</updated>
+		<content>&lt;p&gt;I needed to access Redis from R. Here's the code I used to connect, set a value, then deserialize a key that was in json format and publish a message. &lt;a href="https://cran.r-project.org/web/packages/rredis/vignettes/rredis.pdf"&gt;Rredis documentation located here&lt;/a&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;library(&amp;quot;rredis&amp;quot;)
+library(&amp;quot;jsonlite&amp;quot;, lib.loc=&amp;quot;~/R/win-library/3.2&amp;quot;)
+
+redisConnect()
+redisSet(&amp;quot;x&amp;quot;,rnorm(5))
+redisGet(&amp;quot;x&amp;quot;)
+
+x = fromJSON(redisGet(&amp;quot;ts_1&amp;quot;))
+x$t &amp;lt;-  strptime(x$t, &amp;quot;%Y-%m-%dT%H:%M:%S&amp;quot;)
+
+//https://cran.r-project.org/web/packages/rredis/vignettes/rredis.pdf
+redisPublish(&amp;quot;General:Active&amp;quot;, charToRaw('Message'))
+
+redisClose()
+&lt;/code&gt;&lt;/pre&gt;
+</content>
+		<summary>&lt;p&gt;I needed to access Redis from R. Here's the code I used to connect, set a value, then deserialize a key that was in json format and publish a message. &lt;a href="https://cran.r-project.org/web/packages/rredis/vignettes/rredis.pdf"&gt;Rredis documentation located here&lt;/a&gt;&lt;/p&gt;</summary>
+	</entry>
+	<entry>
 		<id>http://ewinnington.github.io/posts/wyam-github-actions</id>
 		<title>Using Github actions to build Wyam and publish to github pages</title>
 		<link href="http://ewinnington.github.io/posts/wyam-github-actions" />
@@ -645,30 +674,6 @@ jobs:
 &lt;p&gt;Please feel free to look around both branches &lt;em&gt;source&lt;/em&gt; and &lt;em&gt;master&lt;/em&gt; on &lt;a href="https://github.com/ewinnington/ewinnington.github.io"&gt;my github repo&lt;/a&gt; to understand how my blog is setup.&lt;/p&gt;
 </content>
 		<summary>&lt;p&gt;Not that I have Wyam as a static site generator, I want to use &lt;a href="https://github.com/features/actions"&gt;Github Actions&lt;/a&gt; to automatically deploy it on push. This requires a quite few steps to setup, but I did it, now so can you!&lt;/p&gt;</summary>
-	</entry>
-	<entry>
-		<id>http://ewinnington.github.io/posts/R-Redis-Json</id>
-		<title>R - Reading JSON from redis</title>
-		<link href="http://ewinnington.github.io/posts/R-Redis-Json" />
-		<updated>2019-11-03T00:00:00Z</updated>
-		<content>&lt;p&gt;I needed to access Redis from R. Here's the code I used to connect, set a value, then deserialize a key that was in json format and publish a message. &lt;a href="https://cran.r-project.org/web/packages/rredis/vignettes/rredis.pdf"&gt;Rredis documentation located here&lt;/a&gt;&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;library(&amp;quot;rredis&amp;quot;)
-library(&amp;quot;jsonlite&amp;quot;, lib.loc=&amp;quot;~/R/win-library/3.2&amp;quot;)
-
-redisConnect()
-redisSet(&amp;quot;x&amp;quot;,rnorm(5))
-redisGet(&amp;quot;x&amp;quot;)
-
-x = fromJSON(redisGet(&amp;quot;ts_1&amp;quot;))
-x$t &amp;lt;-  strptime(x$t, &amp;quot;%Y-%m-%dT%H:%M:%S&amp;quot;)
-
-//https://cran.r-project.org/web/packages/rredis/vignettes/rredis.pdf
-redisPublish(&amp;quot;General:Active&amp;quot;, charToRaw('Message'))
-
-redisClose()
-&lt;/code&gt;&lt;/pre&gt;
-</content>
-		<summary>&lt;p&gt;I needed to access Redis from R. Here's the code I used to connect, set a value, then deserialize a key that was in json format and publish a message. &lt;a href="https://cran.r-project.org/web/packages/rredis/vignettes/rredis.pdf"&gt;Rredis documentation located here&lt;/a&gt;&lt;/p&gt;</summary>
 	</entry>
 	<entry>
 		<id>http://ewinnington.github.io/posts/R-read-binary-file</id>
