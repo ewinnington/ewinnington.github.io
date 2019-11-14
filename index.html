@@ -39,6 +39,10 @@
 <meta name="twitter:site" content="@ewinnington" />
 <meta name="twitter:title" content="Eric Winnington" />
 <meta name="twitter:description" content="A collection of thoughts, code and snippets." />
+
+<script type="text/javascript" id="MathJax-script" async
+  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
+</script>
 		
 	</head>
 
@@ -90,6 +94,153 @@
 						
 <div class="row">
     <div class="8u 12u$(medium)">
+                <div>
+                    <a href="/posts/jupyter-lp-10">
+                        <h2>Introduction to linear programming with C# and OR-Tools inside Jupyter</h2>
+                    </a>
+                    <p>Posted on Thursday, 14 November 2019</p>
+<h1 id="linear-programming">Linear programming</h1>
+<p><a href="https://en.wikipedia.org/wiki/Linear_programming">Linear programming</a> (LP) is a method to provide an optimal solution to a problem defined by a set of linear constraints. It is very widely applied in engineering and science.</p>
+<p>A typical linear programming problem is defined by an Objective function (the target to maximise or minimise) and a set of constraints which limit the solution space.</p>
+<h2 id="what-does-an-lp-problem-look-like">What does an LP problem look like?</h2>
+<p>We are going to start with a very simple linear problem definition. The first line of the problem describes the objective function, in this the value to maximize. In this problem, we have two variables to optimize x and y. The constraints that limit the problem's space are defined under the subject to section.</p>
+<div class="math">
+\[
+\begin{aligned}
+\max (2y+x) \\
+\text{subject to:} \\
+\qquad x \leq 15 \\
+\qquad y \leq 8 
+\end{aligned}
+\]</div>
+<p>This very simple maximisation problem has a maximum solution of <span class="math">\(x=15\)</span> and <span class="math">\(y=8\)</span> for an objective value of <span class="math">\(31\)</span> .</p>
+<p><img src="/posts/images/lp/A1.png" class="img-fluid" width="100%" alt="A1" /></p>
+<p>There exist many linear programming solvers to calculate this optimum. We will be using <a href="https://github.com/coin-or/Clp">Coin-OR project CLP</a> with the <a href="https://developers.google.com/optimization">Google OR-Tools</a> as an interface for C#.</p>
+<h2 id="meet-the-solver">Meet the solver</h2>
+<p>You can find my <a href="https://github.com/ewinnington/noteb/blob/master/IntroToLP.ipynb">notebook with all the code here</a>.<a id="fnref:1" href="#fn:1" class="footnote-ref"><sup>1</sup></a></p>
+<h3 id="coin-or-clp-with-google-or-tools">Coin-OR<a id="fnref:2" href="#fn:2" class="footnote-ref"><sup>2</sup></a> CLP (with Google OR<a id="fnref:3" href="#fn:2" class="footnote-ref"><sup>2</sup></a>-Tools)</h3>
+<p>The <a href="https://www.coin-or.org">Coin-OR project</a> provides high quality solvers for many applications with an open source license. <a href="https://github.com/coin-or/Clp">CLP</a> is the main linear programming solver we will be using until we start adding binary variables, at which point we will start using <a href="https://github.com/coin-or/Cbc">CBC</a>. To call them from C#, we could write out a format that CLP / CBC knows how to read, such as <a href="https://en.wikipedia.org/wiki/MPS_(format)">MPS</a> or we could use a wrapping library to call them directly from C#. We will be focusing on using the Google OR-Tools.</p>
+<h4 id="google-or-tools">Google OR-Tools</h4>
+<p>The <a href="https://developers.google.com/optimization/">Google OR-Tools</a> provide us with a set of primitives with which to work with so that we can define optimisation problems and allow us to call to various solvers, including CLP, which we will be using. Also the OR-Tools provide routines to write out the problems in MPS and other formats. We will focus on using the OR Tools as soon as the introduction is over.</p>
+<p>Adding the Google OR Tools through nuget to the Juypter notebook with the <code>#r</code> command and <code>using</code> in the cell imports the solver.</p>
+<pre><code class="language-CSharp">#r &quot;nuget:Google.OrTools&quot;
+
+using Google.OrTools.LinearSolver;
+</code></pre>
+<p><img src="/posts/images/lp/10-1.png" class="img-fluid" alt="10-1.png" /></p>
+<p>This allows us to create a solver instance as follows, note the constant <code>CLP_LINEAR_PROGRAMMING</code> this tells us which solver we will be using.</p>
+<pre><code class="language-CSharp">Solver solver = Solver.CreateSolver(&quot;LinearProgramming&quot;, &quot;CLP_LINEAR_PROGRAMMING&quot;);
+</code></pre>
+<p>The following code snippet implements the linear program formulation below<a id="fnref:4" href="#fn:3" class="footnote-ref"><sup>3</sup></a>:</p>
+<div class="math">
+\[
+\begin{aligned}
+\max (2y+x) \\
+\text{subject to:} \\
+\qquad x \leq 15 \\
+\qquad y \leq 8 
+\end{aligned}
+\]</div>
+<p>The solver has been already defined and initalized. We are now defining the variables of the problem, the objective function and the linear constraints that apply.</p>
+<pre><code class="language-CSharp">Variable x = solver.MakeNumVar(0.0, double.PositiveInfinity, &quot;x&quot;);
+Variable y = solver.MakeNumVar(0.0, double.PositiveInfinity, &quot;y&quot;);
+
+// Maximize 2*y+x.
+Objective objective = solver.Objective();
+objective.SetCoefficient(x, 1);
+objective.SetCoefficient(y, 2);
+objective.SetMaximization();
+
+// 0 &lt;= x &lt;= 15 
+Constraint c0 = solver.MakeConstraint(0, 15);
+c0.SetCoefficient(x, 1);
+
+// 0 &lt;= y &lt;= 8
+Constraint c1 = solver.MakeConstraint(0, 8);
+c1.SetCoefficient(y, 1);
+</code></pre>
+<p><img src="/posts/images/lp/10-2.png" class="img-fluid" alt="10-2.png" /></p>
+<p>When you execute the next cells, the solver.Solve() function is called and the results will be written out to the cell's output. We will use this function cell several times over the course of the workbook.</p>
+<pre><code class="language-CSharp">public void SolveProblem() {
+    var resultStatus = solver.Solve();
+
+    // Check that the problem has an optimal solution.
+    if (resultStatus != Solver.ResultStatus.OPTIMAL)
+    {
+        Console.WriteLine(&quot;The problem does not have an optimal solution!&quot;);
+        return;
+    }
+
+    Console.WriteLine(&quot;Problem solved in &quot; + solver.WallTime() + &quot; milliseconds&quot;);
+
+    // The objective value of the solution.
+    Console.WriteLine(&quot;Optimal objective value = &quot; + solver.Objective().Value());
+
+    // The value of each variable in the solution.
+    foreach (var v in solver.variables())
+    { Console.WriteLine($&quot;{v.Name()} : {v.SolutionValue()} &quot;); };
+}
+</code></pre>
+<p><img src="/posts/images/lp/10-3.png" class="img-fluid" alt="10-3.png" /></p>
+<h3 id="other-solvers">Other solvers</h3>
+<p>There exists many other solvers that are available, either directly wrapped through the Google OR Tools such as GLOP or another library or as external programs fed through input files in MPS or other formats. The <a href="https://neos-server.org/neos/">NEOS project</a> provides a thorough set of optimisation solvers that are available online with many input formats available (MPS, AMPL, Lp, GAMS).</p>
+<h2 id="problem-2">Problem 2</h2>
+<p>We will be adding a third constraint to the formulation of Problem 1.</p>
+<div class="math">
+\[
+\begin{aligned}
+\text{Obj:} \max(2y+x)
+\\ \text{subject to:} \quad x \leq 15
+\\ \qquad \quad \quad \quad y \leq 8
+\\ \quad \quad \quad x+y \leq 18
+\end{aligned}
+\]</div>
+<p><img src="/posts/images/lp/A2.png" class="img-fluid" width="100%" alt="A2" /></p>
+<p>The solver is initialized with the full problem 1 defintion already, x and y are already declared. When you click run on the solver's cell, the solver.Solve() function is called and results are written out.</p>
+<pre><code class="language-CSharp">Constraint c = solver.MakeConstraint(0, 18);
+c.SetCoefficient(x, 1);
+c.SetCoefficient(y, 1);
+</code></pre>
+<p>If you call <code>SolveProblem();</code>, you will now have a new optimal value that is lower that the previous one. In linear programming maximization problem, adding a new constraint will always make the optimal value lower or equal to the less constrained. problem</p>
+<p><img src="/posts/images/lp/10-4.png" class="img-fluid" alt="10-4.png" /></p>
+<h2 id="problem-3">Problem 3</h2>
+<p>You should now be able to add an adding a fourth constraint to the formulation of Problem 2.</p>
+<div class="math">
+\[
+\begin{aligned}
+\text{Obj:} \max(2y+x)
+\\ \text{subject to:} \qquad x \leq 15
+\\ \qquad \quad y \leq 8
+\\ \quad x+y \leq 18
+\\ -\frac{1}{3}x+y \leq 2
+\end{aligned}
+\]</div>
+<p><img src="/posts/images/lp/A3.png" class="img-fluid" width="100%" alt="A3" /></p>
+<p>The solver is initialized with the full problem 2 defintion already, x and y are already declared. When you click on the solver's cell, the solver.Solve() function is called and results are written out.</p>
+<p><img src="/posts/images/lp/10-5.png" class="img-fluid" width="100%" alt="10-5.png" /></p>
+<p>For those following along in the <a href="https://github.com/ewinnington/noteb/blob/master/IntroToLP.ipynb">notebook</a> there is a hint below this section with a second implementation of the <code>SolveProblem()</code> function which should give you hints based on your objective value.</p>
+<h2 id="recap">Recap</h2>
+<p>Now that we have introduced linear programming and know how to use the solver, the following chapter will cover two simple linear programming applications.</p>
+<div class="footnotes">
+<hr />
+<ol>
+<li id="fn:1">
+<p>I'm still waiting on a good way to host it in a live and executable mode online in Jupyter notebook C#. This whole tutorial was originally written as a dotnet-try workbook.<a href="#fnref:1" class="footnote-back-ref">&#8617;</a></p>
+</li>
+<li id="fn:2">
+<p>OR here refers to <a href="https://en.wikipedia.org/wiki/Operations_research">Operational Research</a> - the field of mathematics dedicated to the search for optimal or near optimal solutions to problems.<a href="#fnref:2" class="footnote-back-ref">&#8617;</a><a href="#fnref:3" class="footnote-back-ref">&#8617;</a></p>
+</li>
+<li id="fn:3">
+<p>For those using <a href="/posts/Switching-to-wyam">Wyam to generate their blogs</a>, you can add the</p>
+<pre><code class="language-HTML">&lt;script type=&quot;text/javascript&quot; id=&quot;MathJax-script&quot; async
+src=&quot;https://cdn.jsdelivr.net/npm/mathjax&#64;3/es5/tex-mml-chtml.js&quot;&gt;
+&lt;/script&gt;
+</code></pre>
+<p>to your <code>_Head.cshtml</code> template page. I recommend checking out <a href="https://www.mathjax.org/">MathJax</a> for the latest <a href="http://docs.mathjax.org/en/latest/web/start.html#using-mathjax-from-a-content-delivery-network-cdn">CDN</a>.<a href="#fnref:4" class="footnote-back-ref">&#8617;</a></p>
+</li>
+</ol>
+</div>
+                </div>       
                 <div>
                     <a href="/posts/jupyter-docker-csharp-postgres">
                         <h2>Docker controlled from Jupyter Notebook C# with PostgresDB</h2>
@@ -289,159 +440,6 @@ IRkernel::installspec(user = FALSE)
 <p>Executing this should show you the following long list of tables with mathematical symbols.</p>
 <p><img src="/posts/images/jupyter-notebook-csharp-r/jupyter_R.png" class="img-fluid" :height="360px" width="620px" alt="img7" /></p>
                 </div>       
-                <div>
-                    <a href="/posts/bulk-inserts">
-                        <h2>Using bulk inserts on databases</h2>
-                    </a>
-                    <p>Posted on Monday, 11 November 2019</p>
-<p>When inserting large amounts of data into databases, you should consider using the bulk functions instead of running single row INSERT commands. Single row INSERT command will usually lead to poor performance. There exists two main techniques for mutiple row insertions in databases from code and several more if you use the loader tools that accompany the database. Here I'll detail the two main methods: BulkInserts and VectorInserts.</p>
-<h1 id="bulk-inserts-for-oracle-mssql-postgresql">Bulk Inserts for Oracle, MSSQL, Postgresql</h1>
-<p>For the examples, it is assumed that there exists an object Timeseries ts with a field IEnumerable TimeseriesData that contains Datapoints. A Datapoint has a DateTime field named t and a Decimal field named value.</p>
-<h2 id="datatable-to-database">Datatable to Database</h2>
-<p>We setup a DataTable in memory and fill it with the data we need to insert.</p>
-<pre><code class="language-CSharp">DataTable dt = new DataTable();
-dt.Columns.Add(&quot;IDTIMESERIES&quot;, typeof(int));
-dt.Columns.Add(&quot;TIMEPOINT&quot;, typeof(DateTime));
-dt.Columns.Add(&quot;VALUE1&quot;, typeof(decimal));
-
-int nRowsMaxDt = 0;
-//ts being a timeseries object that contains a IEnumberable TimeSeriesData of sp (single points) 
-foreach (var sp in ts.TimeSeriesData)
-{
-	object[] oRowDt = new object[3];
-	oRowDt[0] = ts.Id; oRowDt[1] = sp.t; oRowDt[2] = (decimal)sp.value; 
-	dt.Rows.Add(oRowDt); nRowsMaxDt = nRowsMaxDt + 1;
-}
-DumpDataTableToDB(&quot;DATATIMESERIES&quot;, dt, nRowsMaxDt);
-</code></pre>
-<p>The DumpDataTableToDB function is then written on a per database basis. Below you will find my examples for OracleDb, MSSQL and Postgres.</p>
-<h3 id="oracle">Oracle:</h3>
-<p>Oracle has two sets of drivers, the Unmanaged and the Managed drivers. Your usings will be different per package.</p>
-<p>With ODP.NET Unmanaged (Drivers installed seperately - you will need to add the references manually)</p>
-<pre><code class="language-CSharp">using Oracle.DataAccess.Client;
-using Oracle.DataAccess.Types;
-</code></pre>
-<p>With ODP.NET Managed (Nuget Installed <a href="https://www.nuget.org/packages/Oracle.ManagedDataAccess/">https://www.nuget.org/packages/Oracle.ManagedDataAccess/</a> )</p>
-<pre><code class="language-CSharp">using Oracle.ManagedDataAccess.Client;
-using Oracle.ManagedDataAccess.Types;
-</code></pre>
-<p>Use the OracleBulkCopy function with Con being an open connection to the database (OracleConnection).</p>
-<pre><code class="language-CSharp">public void DumpDataTableToDB(string TableName, DataTable dt, int nCount)
-{
-	using (OracleBulkCopy obc = new OracleBulkCopy(Con))
-	{
-		obc.BatchSize = nCount;
-		obc.DestinationTableName = TableName;
-		obc.WriteToServer(dt);
-		obc.Close();
-	}
-}
-</code></pre>
-<p>This method works, but I had issues with Oracle DataGuard. So for Oracle, I do recommend using the Vectorized data insert presented below with Oracle ArrayBind.</p>
-<h3 id="ms-sql-server">MS SQL Server</h3>
-<p>The Microsoft SQL server uses SqlBulkCopy to connect and import the data. Again here the Con represents an open connection to the database.</p>
-<pre><code class="language-CSharp">using System.Data;
-using System.Data.Common;
-using System.Data.SqlClient;
-
-public void DumpDataTableToDB(string TableName, DataTable dt, int nCount)
-{
-using (SqlBulkCopy bulkCopy = new SqlBulkCopy(((SqlConnection)Con).ConnectionString, SqlBulkCopyOptions.KeepNulls))
-            {
-                foreach (System.Data.DataColumn col in dt.Columns)
-                {
-                    bulkCopy.ColumnMappings.Add(col.ColumnName, col.ColumnName);
-                }
-                bulkCopy.DestinationTableName = TableName;
-                bulkCopy.WriteToServer(dt);
-            }
-}
-</code></pre>
-<h3 id="postgresql">Postgresql</h3>
-<p>In Postgresql, the important part to note is the COPY ... FROM command. This allows you to provide either a file located on the DB Server or data from STDIN, passed from the client. The Format specifier allows for binary, which we are using here or text and csv. Note, the csv format is very picky, try the text format first if you are doing imports.</p>
-<p>As usual the Con represents an open database connection.</p>
-<p>You can see the implementation of this running <a href="https://github.com/ewinnington/noteb/blob/master/PgBulkInsert.ipynb">in the Jupyiter notebook with C#</a>.</p>
-<pre><code class="language-CSharp">using Npgsql; // Nuget https://www.nuget.org/packages/Npgsql 
-
-public void DumpDataTableToDB(string TableName, DataTable dt, int nCount)
-{
-Dictionary&lt;Type, NpgsqlTypes.NpgsqlDbType&gt; TypeDict = new Dictionary&lt;Type, NpgsqlTypes.NpgsqlDbType&gt;();
-
-            TypeDict.Add(typeof(int), NpgsqlTypes.NpgsqlDbType.Integer);
-            TypeDict.Add(typeof(double), NpgsqlTypes.NpgsqlDbType.Double);
-            TypeDict.Add(typeof(decimal), NpgsqlTypes.NpgsqlDbType.Numeric);
-            TypeDict.Add(typeof(string), NpgsqlTypes.NpgsqlDbType.Varchar);
-            TypeDict.Add(typeof(DateTime), NpgsqlTypes.NpgsqlDbType.Timestamp);
-            TypeDict.Add(typeof(char[]), NpgsqlTypes.NpgsqlDbType.Varchar);
-            TypeDict.Add(typeof(Guid), NpgsqlTypes.NpgsqlDbType.Uuid);
-
-
-            string sql = &quot;COPY &quot; + TableName + &quot; ( &quot;;
-            foreach (System.Data.DataColumn col in dt.Columns)
-            {
-                sql += (col.ColumnName.ToLower() + &quot;,&quot;);
-            }
-            sql = sql.TrimEnd(',') + &quot;) FROM STDIN (FORMAT BINARY)&quot;;
-            int nRows = dt.Rows.Count;
-            using (var BulkWrite = ((Npgsql.NpgsqlConnection)Con).BeginBinaryImport(sql))
-            {
-                for (int idRow = 0; idRow &lt; nRows; idRow++)
-                {
-                    BulkWrite.StartRow();
-                    foreach (System.Data.DataColumn col in dt.Columns)
-                    {
-                        if (dt.Rows[idRow].IsNull(col))
-                        {
-                            BulkWrite.WriteNull();
-                        }
-                        else
-                        {
-                            if (col.DataType == typeof(string) &amp;&amp; string.IsNullOrEmpty(dt.Rows[idRow].Field&lt;string&gt;(col)))
-                            {
-                                BulkWrite.WriteNull();
-                            }
-                            else
-                            {
-                                BulkWrite.Write(dt.Rows[idRow][col.Ordinal], TypeDict[col.DataType]);
-                            }
-                        }
-                    }
-                    
-                }
-                BulkWrite.Complete();
-            }
-        }
-    }
-</code></pre>
-<h2 id="alternative-method-for-oracle-array-bind-for-vector-insertion">Alternative Method for Oracle Array Bind, for Vector Insertion</h2>
-<p>This is a better method for insertions on Oracle that does not cause issues with dataguard, using arrays of data. The single INSERT command is fed with an array of data.</p>
-<pre><code class="language-CSharp">int nRowsCount = ts.Count(); 
-int[] IDTIMESERIES = new int[nRowsCount];
-DateTime[] TIMEPOINT = new DateTime[nRowsCount];
-decimal[] VALUE1 = new decimal[nRowsCount];
-
-// loading the arrays with data 
-int i = 0;
-foreach (var sp in ts.TimeSeriesData)
-{
-	IDTIMESERIES[i] = ts.Id; TIMEPOINT[i] = sp.t; VALUE1[i] = sp.value;
-	i++;
-}
-
-if (nRowsCount &gt; 0)
-{
-	OracleCommand cmdTimeDump = new OracleCommand(&quot;Insert into DATATIMESERIES (IDTIMESERIES, TIMEPOINT, VALUE1) VALUES (:1, :2, :3)&quot;, OraCon);
-	cmdTimeDump.ArrayBindCount = nRowsCount;
-	cmdTimeDump.Parameters.Add(new OracleParameter() { OracleDbType = OracleDbType.Int32, Value = IDTIMESERIES });
-	cmdTimeDump.Parameters.Add(new OracleParameter() { OracleDbType = OracleDbType.Date, Value = TIMEPOINT });
-	cmdTimeDump.Parameters.Add(new OracleParameter() { OracleDbType = OracleDbType.Decimal, Value = VALUE1 });
-  
-	cmdTimeDump.ExecuteNonQuery();
-}
-</code></pre>
-<h1 id="links">Links</h1>
-<p>An excellent overview of connections to databases in .net core was published on the <a href="https://devblogs.microsoft.com/dotnet/net-core-data-access/">Microsoft devblogs</a>.</p>
-                </div>       
         <ul class="pager">
             <li class="previous">                
             </li>
@@ -454,15 +452,15 @@ if (nRowsCount &gt; 0)
             <h5>Tags</h5>
             <ul class="actions small">
                     <li><a role="button" href="/tags/Migrated" class="button small">Migrated (38)</a></li>
+                    <li><a role="button" href="/tags/CSharp" class="button small">CSharp (5)</a></li>
                     <li><a role="button" href="/tags/CommandLine" class="button small">CommandLine (4)</a></li>
-                    <li><a role="button" href="/tags/CSharp" class="button small">CSharp (4)</a></li>
+                    <li><a role="button" href="/tags/Dotnet-try" class="button small">Dotnet try (4)</a></li>
+                    <li><a role="button" href="/tags/Oracle" class="button small">Oracle (4)</a></li>
+                    <li><a role="button" href="/tags/Jupyter-notebook" class="button small">Jupyter notebook (4)</a></li>
                     <li><a role="button" href="/tags/WPF" class="button small">WPF (4)</a></li>
                     <li><a role="button" href="/tags/Rpi" class="button small">Rpi (4)</a></li>
-                    <li><a role="button" href="/tags/Oracle" class="button small">Oracle (4)</a></li>
-                    <li><a role="button" href="/tags/Dotnet-try" class="button small">Dotnet try (3)</a></li>
-                    <li><a role="button" href="/tags/iOS" class="button small">iOS (3)</a></li>
+                    <li><a role="button" href="/tags/OSX" class="button small">OSX (3)</a></li>
                     <li><a role="button" href="/tags/R" class="button small">R (3)</a></li>
-                    <li><a role="button" href="/tags/Jupyter-notebook" class="button small">Jupyter notebook (3)</a></li>
             </ul>
             <ul class="actions small">
                 <li><a href="/tags" class="button small">View All Tags &rarr;</a></li>
@@ -470,9 +468,9 @@ if (nRowsCount &gt; 0)
 
             <h5>Older Posts</h5>
             <ul>
+                    <li><a href="/posts/bulk-inserts">Using bulk inserts on databases</a></li>
                     <li><a href="/posts/webassembly-thoughts">Reflections on Webassembly - May/Nov 19</a></li>
                     <li><a href="/posts/wyam-github-actions">Using Github actions to build Wyam and publish to github pages</a></li>
-                    <li><a href="/posts/R-read-binary-file">R - Reading binary files</a></li>
                     <li><a href="/posts/R-Redis-Json">R - Reading JSON from redis</a></li>
             </ul>
                 <ul class="actions small">
