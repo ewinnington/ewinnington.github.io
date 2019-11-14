@@ -281,7 +281,9 @@ I'm using the <a href="https://www.npgsql.org/index.html">Npgsql drivers</a> for
                     </a>
                     <p>Posted on Tuesday, 12 November 2019</p>
 <p>Now that we have <a href="/posts/jupyter-notebook-csharp-r">Jupyter Notebooks with C# installed</a>, using it as an environment to play with SQLite is very easy. <a href="https://www.sqlite.org/index.html">SQLite</a> is a relational database that is small in footprint and self-contained. It also has a great in-memory mode which is perfect for playing around in a Jupyter notebook.</p>
-<p>You can access my <a href="https://github.com/ewinnington/noteb/blob/master/SqliteInteraction.ipynb">SQLite example notebook here</a>. (<em>Note, if you can tell me how to host them online to make them executable, drop me a line on <a href="https://twitter.com/ThrowATwit">twitter</a></em>)</p>
+<p>You can access my <a href="https://github.com/ewinnington/noteb/blob/master/SqliteInteraction.ipynb">SQLite example notebook here</a>.</p>
+<p>You can now launch this online and follow along:
+<a href="https://mybinder.org/v2/gh/ewinnington/noteb/master?filepath=SqliteInteraction.ipynb"><img src="https://mybinder.org/badge_logo.svg" class="img-fluid" alt="Binder" /></a></p>
 <p>You can create a C# Notebook from the file menu of Jupyter.</p>
 <p><img src="/posts/images/jupyter-notebook-csharp-r/new-notebook.png" class="img-fluid" alt="new-notebook" /></p>
 <p>We need to pull in the nuget package <code>System.Data.SQLite</code> to interact with the database.</p>
@@ -422,6 +424,8 @@ Console.WriteLine(ex);
 <p>in the second cell. Executing it shows us that the C# Kernel is working.</p>
 <p><img src="/posts/images/jupyter-notebook-csharp-r/jupyter_hello_world_csharp.png" class="img-fluid" :height="360px" width="620px" alt="imgHello" /></p>
 <p><code>#r</code> is used to reference a dll or a nuget package. If you prefix the command with &quot;nuget:&quot; then the jupyter notebook will download the nuget and add it as a reference. Then as in usual c#, you must reference it.</p>
+<p><strong>Update</strong> The C# notebook is now hosted on binder <a href="https://mybinder.org/v2/gh/ewinnington/noteb/master?filepath=HelloWorld.ipynb"><img src="https://mybinder.org/badge_logo.svg" class="img-fluid" alt="Binder" /></a>
+click to launch the environment!</p>
 <h1 id="installing-an-r-kernel-for-jupyter-notebook">Installing an R kernel for jupyter notebook</h1>
 <p>To install R Tools for Visual Studio, install the Visual Studio Extension R Tools for Visual Studio 2019, which was in preview when I looked. Once this is installed, you must install the Microsoft R client. This option will be presented if you go to the &quot;R Interactive&quot; window.</p>
 <p><img src="/posts/images/jupyter-notebook-csharp-r/install_R_vs.png" class="img-fluid" :height="360px" width="620px" alt="img5" /></p>
@@ -456,14 +460,14 @@ IRkernel::installspec(user = FALSE)
             <ul class="actions small">
                     <li><a role="button" href="/tags/Migrated" class="button small">Migrated (38)</a></li>
                     <li><a role="button" href="/tags/CSharp" class="button small">CSharp (5)</a></li>
-                    <li><a role="button" href="/tags/Dotnet-try" class="button small">Dotnet try (4)</a></li>
-                    <li><a role="button" href="/tags/WPF" class="button small">WPF (4)</a></li>
+                    <li><a role="button" href="/tags/Rpi" class="button small">Rpi (4)</a></li>
                     <li><a role="button" href="/tags/Oracle" class="button small">Oracle (4)</a></li>
                     <li><a role="button" href="/tags/CommandLine" class="button small">CommandLine (4)</a></li>
+                    <li><a role="button" href="/tags/WPF" class="button small">WPF (4)</a></li>
                     <li><a role="button" href="/tags/Jupyter-notebook" class="button small">Jupyter notebook (4)</a></li>
-                    <li><a role="button" href="/tags/Rpi" class="button small">Rpi (4)</a></li>
-                    <li><a role="button" href="/tags/R" class="button small">R (3)</a></li>
+                    <li><a role="button" href="/tags/Dotnet-try" class="button small">Dotnet try (4)</a></li>
                     <li><a role="button" href="/tags/OSX" class="button small">OSX (3)</a></li>
+                    <li><a role="button" href="/tags/iOS" class="button small">iOS (3)</a></li>
             </ul>
             <ul class="actions small">
                 <li><a href="/tags" class="button small">View All Tags &rarr;</a></li>
@@ -474,7 +478,7 @@ IRkernel::installspec(user = FALSE)
                     <li><a href="/posts/bulk-inserts">Using bulk inserts on databases</a></li>
                     <li><a href="/posts/webassembly-thoughts">Reflections on Webassembly - May/Nov 19</a></li>
                     <li><a href="/posts/wyam-github-actions">Using Github actions to build Wyam and publish to github pages</a></li>
-                    <li><a href="/posts/R-Redis-Json">R - Reading JSON from redis</a></li>
+                    <li><a href="/posts/R-read-binary-file">R - Reading binary files</a></li>
             </ul>
                 <ul class="actions small">
                     <li><a href="/posts" class="button small">Archive &rarr;</a></li>
