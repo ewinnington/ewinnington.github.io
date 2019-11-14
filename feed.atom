@@ -4,14 +4,15 @@
 	<title>Eric Winnington</title>
 	<link rel="self" href="http://ewinnington.github.io/" />
 	<rights>2019</rights>
-	<updated>2019-11-14T22:22:45Z</updated>
+	<updated>2019-11-14T22:43:46Z</updated>
 	<subtitle>A collection of thoughts, code and snippets.</subtitle>
 	<entry>
 		<id>http://ewinnington.github.io/posts/jupyter-lp-10</id>
 		<title>Introduction to linear programming with C# and OR-Tools inside Jupyter</title>
 		<link href="http://ewinnington.github.io/posts/jupyter-lp-10" />
 		<updated>2019-11-14T21:30:00Z</updated>
-		<content>&lt;h1 id="linear-programming"&gt;Linear programming&lt;/h1&gt;
+		<content>&lt;p&gt;&lt;a href="https://mybinder.org/v2/gh/ewinnington/noteb/master?filepath=IntroToLP.ipynb"&gt;&lt;img src="https://mybinder.org/badge_logo.svg" class="img-fluid" alt="Binder" /&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;h1 id="linear-programming"&gt;Linear programming&lt;/h1&gt;
 &lt;p&gt;&lt;a href="https://en.wikipedia.org/wiki/Linear_programming"&gt;Linear programming&lt;/a&gt; (LP) is a method to provide an optimal solution to a problem defined by a set of linear constraints. It is very widely applied in engineering and science.&lt;/p&gt;
 &lt;p&gt;A typical linear programming problem is defined by an Objective function (the target to maximise or minimise) and a set of constraints which limit the solution space.&lt;/p&gt;
 &lt;h2 id="what-does-an-lp-problem-look-like"&gt;What does an LP problem look like?&lt;/h2&gt;
@@ -29,8 +30,8 @@
 &lt;p&gt;&lt;img src="/posts/images/lp/A1.png" class="img-fluid" width="100%" alt="A1" /&gt;&lt;/p&gt;
 &lt;p&gt;There exist many linear programming solvers to calculate this optimum. We will be using &lt;a href="https://github.com/coin-or/Clp"&gt;Coin-OR project CLP&lt;/a&gt; with the &lt;a href="https://developers.google.com/optimization"&gt;Google OR-Tools&lt;/a&gt; as an interface for C#.&lt;/p&gt;
 &lt;h2 id="meet-the-solver"&gt;Meet the solver&lt;/h2&gt;
-&lt;p&gt;You can find my &lt;a href="https://github.com/ewinnington/noteb/blob/master/IntroToLP.ipynb"&gt;notebook with all the code here&lt;/a&gt;.&lt;a id="fnref:1" href="#fn:1" class="footnote-ref"&gt;&lt;sup&gt;1&lt;/sup&gt;&lt;/a&gt;&lt;/p&gt;
-&lt;h3 id="coin-or-clp-with-google-or-tools"&gt;Coin-OR&lt;a id="fnref:2" href="#fn:2" class="footnote-ref"&gt;&lt;sup&gt;2&lt;/sup&gt;&lt;/a&gt; CLP (with Google OR&lt;a id="fnref:3" href="#fn:2" class="footnote-ref"&gt;&lt;sup&gt;2&lt;/sup&gt;&lt;/a&gt;-Tools)&lt;/h3&gt;
+&lt;p&gt;You can find my &lt;a href="https://github.com/ewinnington/noteb/blob/master/IntroToLP.ipynb"&gt;notebook with all the code here&lt;/a&gt;. And you can now access the &lt;a href="https://mybinder.org/v2/gh/ewinnington/noteb/master?filepath=IntroToLP.ipynb"&gt;Jupyter notebooks online, thanks to Binder&lt;/a&gt;!&lt;/p&gt;
+&lt;h3 id="coin-or-clp-with-google-or-tools"&gt;Coin-OR&lt;a id="fnref:1" href="#fn:1" class="footnote-ref"&gt;&lt;sup&gt;1&lt;/sup&gt;&lt;/a&gt; CLP (with Google OR&lt;a id="fnref:2" href="#fn:1" class="footnote-ref"&gt;&lt;sup&gt;1&lt;/sup&gt;&lt;/a&gt;-Tools)&lt;/h3&gt;
 &lt;p&gt;The &lt;a href="https://www.coin-or.org"&gt;Coin-OR project&lt;/a&gt; provides high quality solvers for many applications with an open source license. &lt;a href="https://github.com/coin-or/Clp"&gt;CLP&lt;/a&gt; is the main linear programming solver we will be using until we start adding binary variables, at which point we will start using &lt;a href="https://github.com/coin-or/Cbc"&gt;CBC&lt;/a&gt;. To call them from C#, we could write out a format that CLP / CBC knows how to read, such as &lt;a href="https://en.wikipedia.org/wiki/MPS_(format)"&gt;MPS&lt;/a&gt; or we could use a wrapping library to call them directly from C#. We will be focusing on using the Google OR-Tools.&lt;/p&gt;
 &lt;h4 id="google-or-tools"&gt;Google OR-Tools&lt;/h4&gt;
 &lt;p&gt;The &lt;a href="https://developers.google.com/optimization/"&gt;Google OR-Tools&lt;/a&gt; provide us with a set of primitives with which to work with so that we can define optimisation problems and allow us to call to various solvers, including CLP, which we will be using. Also the OR-Tools provide routines to write out the problems in MPS and other formats. We will focus on using the OR Tools as soon as the introduction is over.&lt;/p&gt;
@@ -43,7 +44,7 @@ using Google.OrTools.LinearSolver;
 &lt;p&gt;This allows us to create a solver instance as follows, note the constant &lt;code&gt;CLP_LINEAR_PROGRAMMING&lt;/code&gt; this tells us which solver we will be using.&lt;/p&gt;
 &lt;pre&gt;&lt;code class="language-CSharp"&gt;Solver solver = Solver.CreateSolver(&amp;quot;LinearProgramming&amp;quot;, &amp;quot;CLP_LINEAR_PROGRAMMING&amp;quot;);
 &lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;The following code snippet implements the linear program formulation below&lt;a id="fnref:4" href="#fn:3" class="footnote-ref"&gt;&lt;sup&gt;3&lt;/sup&gt;&lt;/a&gt;:&lt;/p&gt;
+&lt;p&gt;The following code snippet implements the linear program formulation below&lt;a id="fnref:3" href="#fn:2" class="footnote-ref"&gt;&lt;sup&gt;2&lt;/sup&gt;&lt;/a&gt;:&lt;/p&gt;
 &lt;div class="math"&gt;
 \[
 \begin{aligned}
@@ -142,23 +143,20 @@ c.SetCoefficient(y, 1);
 &lt;hr /&gt;
 &lt;ol&gt;
 &lt;li id="fn:1"&gt;
-&lt;p&gt;I'm still waiting on a good way to host it in a live and executable mode online in Jupyter notebook C#. This whole tutorial was originally written as a dotnet-try workbook.&lt;a href="#fnref:1" class="footnote-back-ref"&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;OR here refers to &lt;a href="https://en.wikipedia.org/wiki/Operations_research"&gt;Operational Research&lt;/a&gt; - the field of mathematics dedicated to the search for optimal or near optimal solutions to problems.&lt;a href="#fnref:1" class="footnote-back-ref"&gt;&amp;#8617;&lt;/a&gt;&lt;a href="#fnref:2" class="footnote-back-ref"&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
 &lt;/li&gt;
 &lt;li id="fn:2"&gt;
-&lt;p&gt;OR here refers to &lt;a href="https://en.wikipedia.org/wiki/Operations_research"&gt;Operational Research&lt;/a&gt; - the field of mathematics dedicated to the search for optimal or near optimal solutions to problems.&lt;a href="#fnref:2" class="footnote-back-ref"&gt;&amp;#8617;&lt;/a&gt;&lt;a href="#fnref:3" class="footnote-back-ref"&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
-&lt;/li&gt;
-&lt;li id="fn:3"&gt;
 &lt;p&gt;For those using &lt;a href="/posts/Switching-to-wyam"&gt;Wyam to generate their blogs&lt;/a&gt;, you can add the&lt;/p&gt;
 &lt;pre&gt;&lt;code class="language-HTML"&gt;&amp;lt;script type=&amp;quot;text/javascript&amp;quot; id=&amp;quot;MathJax-script&amp;quot; async
 src=&amp;quot;https://cdn.jsdelivr.net/npm/mathjax&amp;#64;3/es5/tex-mml-chtml.js&amp;quot;&amp;gt;
 &amp;lt;/script&amp;gt;
 &lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;to your &lt;code&gt;_Head.cshtml&lt;/code&gt; template page. I recommend checking out &lt;a href="https://www.mathjax.org/"&gt;MathJax&lt;/a&gt; for the latest &lt;a href="http://docs.mathjax.org/en/latest/web/start.html#using-mathjax-from-a-content-delivery-network-cdn"&gt;CDN&lt;/a&gt;.&lt;a href="#fnref:4" class="footnote-back-ref"&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;to your &lt;code&gt;_Head.cshtml&lt;/code&gt; template page. I recommend checking out &lt;a href="https://www.mathjax.org/"&gt;MathJax&lt;/a&gt; for the latest &lt;a href="http://docs.mathjax.org/en/latest/web/start.html#using-mathjax-from-a-content-delivery-network-cdn"&gt;CDN&lt;/a&gt;.&lt;a href="#fnref:3" class="footnote-back-ref"&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
 &lt;/li&gt;
 &lt;/ol&gt;
 &lt;/div&gt;
 </content>
-		<summary>&lt;p&gt;&lt;a href="https://en.wikipedia.org/wiki/Linear_programming"&gt;Linear programming&lt;/a&gt; (LP) is a method to provide an optimal solution to a problem defined by a set of linear constraints. It is very widely applied in engineering and science.&lt;/p&gt;</summary>
+		<summary>&lt;p&gt;&lt;a href="https://mybinder.org/v2/gh/ewinnington/noteb/master?filepath=IntroToLP.ipynb"&gt;&lt;img src="https://mybinder.org/badge_logo.svg" class="img-fluid" alt="Binder"&gt;&lt;/a&gt;&lt;/p&gt;</summary>
 	</entry>
 	<entry>
 		<id>http://ewinnington.github.io/posts/jupyter-docker-csharp-postgres</id>
@@ -544,30 +542,6 @@ if (nRowsCount &amp;gt; 0)
 		<summary>&lt;p&gt;I rewatched this talk from 2014, &lt;a href="https://www.destroyallsoftware.com/talks/the-birth-and-death-of-javascript"&gt;The Birth and Death of JavaScript&lt;/a&gt;, and am still amazed at how prescient it was and still is.&lt;/p&gt;</summary>
 	</entry>
 	<entry>
-		<id>http://ewinnington.github.io/posts/R-Redis-Json</id>
-		<title>R - Reading JSON from redis</title>
-		<link href="http://ewinnington.github.io/posts/R-Redis-Json" />
-		<updated>2019-11-03T00:00:00Z</updated>
-		<content>&lt;p&gt;I needed to access Redis from R. Here's the code I used to connect, set a value, then deserialize a key that was in json format and publish a message. &lt;a href="https://cran.r-project.org/web/packages/rredis/vignettes/rredis.pdf"&gt;Rredis documentation located here&lt;/a&gt;&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;library(&amp;quot;rredis&amp;quot;)
-library(&amp;quot;jsonlite&amp;quot;, lib.loc=&amp;quot;~/R/win-library/3.2&amp;quot;)
-
-redisConnect()
-redisSet(&amp;quot;x&amp;quot;,rnorm(5))
-redisGet(&amp;quot;x&amp;quot;)
-
-x = fromJSON(redisGet(&amp;quot;ts_1&amp;quot;))
-x$t &amp;lt;-  strptime(x$t, &amp;quot;%Y-%m-%dT%H:%M:%S&amp;quot;)
-
-//https://cran.r-project.org/web/packages/rredis/vignettes/rredis.pdf
-redisPublish(&amp;quot;General:Active&amp;quot;, charToRaw('Message'))
-
-redisClose()
-&lt;/code&gt;&lt;/pre&gt;
-</content>
-		<summary>&lt;p&gt;I needed to access Redis from R. Here's the code I used to connect, set a value, then deserialize a key that was in json format and publish a message. &lt;a href="https://cran.r-project.org/web/packages/rredis/vignettes/rredis.pdf"&gt;Rredis documentation located here&lt;/a&gt;&lt;/p&gt;</summary>
-	</entry>
-	<entry>
 		<id>http://ewinnington.github.io/posts/wyam-github-actions</id>
 		<title>Using Github actions to build Wyam and publish to github pages</title>
 		<link href="http://ewinnington.github.io/posts/wyam-github-actions" />
@@ -674,6 +648,30 @@ jobs:
 &lt;p&gt;Please feel free to look around both branches &lt;em&gt;source&lt;/em&gt; and &lt;em&gt;master&lt;/em&gt; on &lt;a href="https://github.com/ewinnington/ewinnington.github.io"&gt;my github repo&lt;/a&gt; to understand how my blog is setup.&lt;/p&gt;
 </content>
 		<summary>&lt;p&gt;Not that I have Wyam as a static site generator, I want to use &lt;a href="https://github.com/features/actions"&gt;Github Actions&lt;/a&gt; to automatically deploy it on push. This requires a quite few steps to setup, but I did it, now so can you!&lt;/p&gt;</summary>
+	</entry>
+	<entry>
+		<id>http://ewinnington.github.io/posts/R-Redis-Json</id>
+		<title>R - Reading JSON from redis</title>
+		<link href="http://ewinnington.github.io/posts/R-Redis-Json" />
+		<updated>2019-11-03T00:00:00Z</updated>
+		<content>&lt;p&gt;I needed to access Redis from R. Here's the code I used to connect, set a value, then deserialize a key that was in json format and publish a message. &lt;a href="https://cran.r-project.org/web/packages/rredis/vignettes/rredis.pdf"&gt;Rredis documentation located here&lt;/a&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;library(&amp;quot;rredis&amp;quot;)
+library(&amp;quot;jsonlite&amp;quot;, lib.loc=&amp;quot;~/R/win-library/3.2&amp;quot;)
+
+redisConnect()
+redisSet(&amp;quot;x&amp;quot;,rnorm(5))
+redisGet(&amp;quot;x&amp;quot;)
+
+x = fromJSON(redisGet(&amp;quot;ts_1&amp;quot;))
+x$t &amp;lt;-  strptime(x$t, &amp;quot;%Y-%m-%dT%H:%M:%S&amp;quot;)
+
+//https://cran.r-project.org/web/packages/rredis/vignettes/rredis.pdf
+redisPublish(&amp;quot;General:Active&amp;quot;, charToRaw('Message'))
+
+redisClose()
+&lt;/code&gt;&lt;/pre&gt;
+</content>
+		<summary>&lt;p&gt;I needed to access Redis from R. Here's the code I used to connect, set a value, then deserialize a key that was in json format and publish a message. &lt;a href="https://cran.r-project.org/web/packages/rredis/vignettes/rredis.pdf"&gt;Rredis documentation located here&lt;/a&gt;&lt;/p&gt;</summary>
 	</entry>
 	<entry>
 		<id>http://ewinnington.github.io/posts/R-read-binary-file</id>

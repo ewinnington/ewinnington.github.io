@@ -102,6 +102,7 @@
 					<div id="content">
 						
 
+<p><a href="https://mybinder.org/v2/gh/ewinnington/noteb/master?filepath=IntroToLP.ipynb"><img src="https://mybinder.org/badge_logo.svg" class="img-fluid" alt="Binder" /></a></p>
 <h1 id="linear-programming">Linear programming</h1>
 <p><a href="https://en.wikipedia.org/wiki/Linear_programming">Linear programming</a> (LP) is a method to provide an optimal solution to a problem defined by a set of linear constraints. It is very widely applied in engineering and science.</p>
 <p>A typical linear programming problem is defined by an Objective function (the target to maximise or minimise) and a set of constraints which limit the solution space.</p>
@@ -120,8 +121,8 @@
 <p><img src="/posts/images/lp/A1.png" class="img-fluid" width="100%" alt="A1" /></p>
 <p>There exist many linear programming solvers to calculate this optimum. We will be using <a href="https://github.com/coin-or/Clp">Coin-OR project CLP</a> with the <a href="https://developers.google.com/optimization">Google OR-Tools</a> as an interface for C#.</p>
 <h2 id="meet-the-solver">Meet the solver</h2>
-<p>You can find my <a href="https://github.com/ewinnington/noteb/blob/master/IntroToLP.ipynb">notebook with all the code here</a>.<a id="fnref:1" href="#fn:1" class="footnote-ref"><sup>1</sup></a></p>
-<h3 id="coin-or-clp-with-google-or-tools">Coin-OR<a id="fnref:2" href="#fn:2" class="footnote-ref"><sup>2</sup></a> CLP (with Google OR<a id="fnref:3" href="#fn:2" class="footnote-ref"><sup>2</sup></a>-Tools)</h3>
+<p>You can find my <a href="https://github.com/ewinnington/noteb/blob/master/IntroToLP.ipynb">notebook with all the code here</a>. And you can now access the <a href="https://mybinder.org/v2/gh/ewinnington/noteb/master?filepath=IntroToLP.ipynb">Jupyter notebooks online, thanks to Binder</a>!</p>
+<h3 id="coin-or-clp-with-google-or-tools">Coin-OR<a id="fnref:1" href="#fn:1" class="footnote-ref"><sup>1</sup></a> CLP (with Google OR<a id="fnref:2" href="#fn:1" class="footnote-ref"><sup>1</sup></a>-Tools)</h3>
 <p>The <a href="https://www.coin-or.org">Coin-OR project</a> provides high quality solvers for many applications with an open source license. <a href="https://github.com/coin-or/Clp">CLP</a> is the main linear programming solver we will be using until we start adding binary variables, at which point we will start using <a href="https://github.com/coin-or/Cbc">CBC</a>. To call them from C#, we could write out a format that CLP / CBC knows how to read, such as <a href="https://en.wikipedia.org/wiki/MPS_(format)">MPS</a> or we could use a wrapping library to call them directly from C#. We will be focusing on using the Google OR-Tools.</p>
 <h4 id="google-or-tools">Google OR-Tools</h4>
 <p>The <a href="https://developers.google.com/optimization/">Google OR-Tools</a> provide us with a set of primitives with which to work with so that we can define optimisation problems and allow us to call to various solvers, including CLP, which we will be using. Also the OR-Tools provide routines to write out the problems in MPS and other formats. We will focus on using the OR Tools as soon as the introduction is over.</p>
@@ -134,7 +135,7 @@ using Google.OrTools.LinearSolver;
 <p>This allows us to create a solver instance as follows, note the constant <code>CLP_LINEAR_PROGRAMMING</code> this tells us which solver we will be using.</p>
 <pre><code class="language-CSharp">Solver solver = Solver.CreateSolver(&quot;LinearProgramming&quot;, &quot;CLP_LINEAR_PROGRAMMING&quot;);
 </code></pre>
-<p>The following code snippet implements the linear program formulation below<a id="fnref:4" href="#fn:3" class="footnote-ref"><sup>3</sup></a>:</p>
+<p>The following code snippet implements the linear program formulation below<a id="fnref:3" href="#fn:2" class="footnote-ref"><sup>2</sup></a>:</p>
 <div class="math">
 \[
 \begin{aligned}
@@ -233,18 +234,15 @@ c.SetCoefficient(y, 1);
 <hr />
 <ol>
 <li id="fn:1">
-<p>I'm still waiting on a good way to host it in a live and executable mode online in Jupyter notebook C#. This whole tutorial was originally written as a dotnet-try workbook.<a href="#fnref:1" class="footnote-back-ref">&#8617;</a></p>
+<p>OR here refers to <a href="https://en.wikipedia.org/wiki/Operations_research">Operational Research</a> - the field of mathematics dedicated to the search for optimal or near optimal solutions to problems.<a href="#fnref:1" class="footnote-back-ref">&#8617;</a><a href="#fnref:2" class="footnote-back-ref">&#8617;</a></p>
 </li>
 <li id="fn:2">
-<p>OR here refers to <a href="https://en.wikipedia.org/wiki/Operations_research">Operational Research</a> - the field of mathematics dedicated to the search for optimal or near optimal solutions to problems.<a href="#fnref:2" class="footnote-back-ref">&#8617;</a><a href="#fnref:3" class="footnote-back-ref">&#8617;</a></p>
-</li>
-<li id="fn:3">
 <p>For those using <a href="/posts/Switching-to-wyam">Wyam to generate their blogs</a>, you can add the</p>
 <pre><code class="language-HTML">&lt;script type=&quot;text/javascript&quot; id=&quot;MathJax-script&quot; async
 src=&quot;https://cdn.jsdelivr.net/npm/mathjax&#64;3/es5/tex-mml-chtml.js&quot;&gt;
 &lt;/script&gt;
 </code></pre>
-<p>to your <code>_Head.cshtml</code> template page. I recommend checking out <a href="https://www.mathjax.org/">MathJax</a> for the latest <a href="http://docs.mathjax.org/en/latest/web/start.html#using-mathjax-from-a-content-delivery-network-cdn">CDN</a>.<a href="#fnref:4" class="footnote-back-ref">&#8617;</a></p>
+<p>to your <code>_Head.cshtml</code> template page. I recommend checking out <a href="https://www.mathjax.org/">MathJax</a> for the latest <a href="http://docs.mathjax.org/en/latest/web/start.html#using-mathjax-from-a-content-delivery-network-cdn">CDN</a>.<a href="#fnref:3" class="footnote-back-ref">&#8617;</a></p>
 </li>
 </ol>
 </div>
