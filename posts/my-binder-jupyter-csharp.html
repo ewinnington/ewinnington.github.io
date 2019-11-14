@@ -1,0 +1,238 @@
+﻿
+<!DOCTYPE html>
+<!--
+	Phantom by HTML5 UP
+	html5up.net | @ajlkn
+	Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
+-->
+<html lang="en">
+
+	<head>
+		<title>Eric Winnington - Hosting your C# Jupyter notebook online by adding one file to your repo</title>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1" />		
+        <link href="/assets/css/highlight.css" rel="stylesheet">
+		<!--[if lte IE 8]><script src="/assets/js/ie/html5shiv.js"></script><![endif]-->
+		<link rel="stylesheet" href="/assets/css/main.css" />
+		<!--[if lte IE 9]><link rel="stylesheet" href="/assets/css/ie9.css" /><![endif]-->
+		<!--[if lte IE 8]><link rel="stylesheet" href="/assets/css/ie8.css" /><![endif]-->
+        <link href="/assets/css/override.css" rel="stylesheet" />
+
+		<meta name="description" content="A collection of thoughts, code and snippets." />
+		<link type="application/rss+xml" rel="alternate" title="Eric Winnington" href="/feed.rss" />
+				<link type="application/atom+xml" rel="alternate" title="Eric Winnington" href="/feed.atom" />
+		<link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+		<link rel="icon" href="/favicon.ico" type="image/x-icon">
+
+		<meta name="application-name" content="Eric Winnington" />
+		<meta name="msapplication-tooltip" content="Eric Winnington" />
+		<meta name="msapplication-starturl" content="/" />
+
+		<meta property="og:title" content="Eric Winnington - Hosting your C# Jupyter notebook online by adding one file to your repo" /> 
+		<meta property="og:type" content="website" />
+		<meta property="og:url" content="http://ewinnington.github.io/posts/my-binder-jupyter-csharp" />
+		<!-- TODO: More social graph meta tags -->
+
+        <script src="/assets/js/highlight.pack.js"></script>   
+		
+        <meta name="twitter:card" content="summary" />
+<meta name="twitter:site" content="@ewinnington" />
+<meta name="twitter:title" content="Eric Winnington - Hosting your C# Jupyter notebook online by adding one file to your repo" />
+<meta name="twitter:description" content="A collection of thoughts, code and snippets." />
+
+<script type="text/javascript" id="MathJax-script" async
+  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
+</script>
+		
+	</head>
+
+	<body>
+		<!-- Wrapper -->
+		<div id="wrapper">
+
+			<!-- Header -->
+			<header id="header">
+				<div class="inner">
+
+					<!-- Logo -->
+					<a href="/" class="logo">
+						<span class="title">Eric Winnington</span>
+					</a>
+
+					<!-- Nav -->
+					<nav>
+						<ul>
+							<li><a href="#menu">Menu</a></li>
+						</ul>
+					</nav>
+
+				</div>
+			</header>
+
+			<!-- Menu -->
+			<nav id="menu">
+				<h2>Menu</h2>
+				<ul>
+					        <li><a href="/posts">Archive</a></li>
+        <li><a href="/tags">Tags</a></li>
+        <li><a href="/about">About Me</a></li>
+        <li><a href="/videos">Videos on programming</a></li>
+
+				</ul>
+			</nav>
+
+			<!-- Main -->
+			<div id="main">
+				<div class="inner">
+
+    
+<header>
+    <h1>Hosting your C# Jupyter notebook online by adding one file to your repo</h1>
+            <p><em>Published on Thursday, 14 November 2019</em></p>
+            <ul class="actions small">
+                    <li><a role="button" href="/tags/CSharp" class="button small">CSharp</a></li>
+                    <li><a role="button" href="/tags/Dotnet-try" class="button small">Dotnet try</a></li>
+                    <li><a role="button" href="/tags/Jupyter-notebook" class="button small">Jupyter notebook</a></li>
+        </ul>     
+</header>
+
+					
+					<div id="content">
+						
+
+<p><a href="https://mybinder.org/">MyBinder.org</a> in collaboration with <a href="https://github.com/dotnet/try">Dotnet try</a> allows you to host your .net notebooks online.</p>
+<p><a href="https://mybinder.org/v2/gh/ewinnington/noteb/master?filepath=HelloWorld.ipynb">SQLite example workbook: </a>
+<a href="https://mybinder.org/v2/gh/ewinnington/noteb/master?filepath=HelloWorld.ipynb"><img src="https://mybinder.org/badge_logo.svg" class="img-fluid" alt="Binder" /></a></p>
+<p>To light up this for your own hosted repositories, you will need a public github repo. Inside the repository, you will need to create a Docker file that gives the setup required for MyBinder to setup the environment of the workbook.</p>
+<p>The <a href="https://github.com/dotnet/try/blob/master/CreateBinder.md">dotnet/try</a> has the set of instrunctions.</p>
+<p>For my repository, I used the following <a href="https://github.com/ewinnington/noteb/blob/master/Dockerfile">Dockerfile</a></p>
+<p>A list of my changes to the standard one proposed by dotnet/try:</p>
+<ul>
+<li>I used a fixed docker image <code>jupyter/scipy-notebook:45f07a14b422</code></li>
+<li>Since I have all my notebooks in the root of my repository I did <code>COPY . ${HOME}/Notebooks/</code></li>
+<li>Since I am always importing the Nuget files at the top of my workbook, I did not need to have the docker deamon add a nuget config. So I commented out the COPY command <code># COPY ./NuGet.config ${HOME}/nuget.config</code></li>
+</ul>
+<pre><code class="language-Skip">FROM jupyter/scipy-notebook:45f07a14b422
+
+# Install .NET CLI dependencies
+
+ARG NB_USER=jovyan
+ARG NB_UID=1000
+ENV USER ${NB_USER}
+ENV NB_UID ${NB_UID}
+ENV HOME /home/${NB_USER}
+
+WORKDIR ${HOME}
+
+USER root
+RUN apt-get update
+RUN apt-get install -y curl
+
+# Install .NET CLI dependencies
+RUN apt-get install -y --no-install-recommends \
+        libc6 \
+        libgcc1 \
+        libgssapi-krb5-2 \
+        libicu60 \
+        libssl1.1 \
+        libstdc++6 \
+        zlib1g 
+
+RUN rm -rf /var/lib/apt/lists/*
+
+# Install .NET Core SDK
+ENV DOTNET_SDK_VERSION 3.0.100
+
+RUN curl -SL --output dotnet.tar.gz https://dotnetcli.blob.core.windows.net/dotnet/Sdk/$DOTNET_SDK_VERSION/dotnet-sdk-$DOTNET_SDK_VERSION-linux-x64.tar.gz \
+    &amp;&amp; dotnet_sha512='766da31f9a0bcfbf0f12c91ea68354eb509ac2111879d55b656f19299c6ea1c005d31460dac7c2a4ef82b3edfea30232c82ba301fb52c0ff268d3e3a1b73d8f7' \
+    &amp;&amp; echo &quot;$dotnet_sha512 dotnet.tar.gz&quot; | sha512sum -c - \
+    &amp;&amp; mkdir -p /usr/share/dotnet \
+    &amp;&amp; tar -zxf dotnet.tar.gz -C /usr/share/dotnet \
+    &amp;&amp; rm dotnet.tar.gz \
+    &amp;&amp; ln -s /usr/share/dotnet/dotnet /usr/bin/dotnet
+
+# Enable detection of running in a container
+ENV DOTNET_RUNNING_IN_CONTAINER=true \
+    # Enable correct mode for dotnet watch (only mode supported in a container)
+    DOTNET_USE_POLLING_FILE_WATCHER=true \
+    # Skip extraction of XML docs - generally not useful within an image/container - helps performance
+    NUGET_XMLDOC_MODE=skip \
+    # Opt out of telemetry until after we install jupyter when building the image, this prevents caching of machine id
+    DOTNET_TRY_CLI_TELEMETRY_OPTOUT=true
+
+# Trigger first run experience by running arbitrary cmd
+RUN dotnet help
+
+# Copy notebooks
+
+COPY . ${HOME}/Notebooks/
+
+# Copy package sources
+
+# COPY ./NuGet.config ${HOME}/nuget.config
+
+RUN chown -R ${NB_UID} ${HOME}
+USER ${USER}
+
+# Install Microsoft.DotNet.Interactive
+RUN dotnet tool install -g dotnet-try 
+#--add-source &quot;https://dotnet.myget.org/F/dotnet-try/api/v3/index.json&quot;
+
+ENV PATH=&quot;${PATH}:${HOME}/.dotnet/tools&quot;
+RUN echo &quot;$PATH&quot;
+
+# Install kernel specs
+RUN dotnet try jupyter install
+
+# Enable telemetry once we install jupyter for the image
+ENV DOTNET_TRY_CLI_TELEMETRY_OPTOUT=false
+
+# Set root to Notebooks
+WORKDIR ${HOME}/Notebooks/
+</code></pre>
+<p>Once the Dockerfile is in the repository. Head over to <a href="https://mybinder.org/">MyBinder.org</a> and enter the link to your repository. Optionally, you can set an initial ipynb file to start when the link is clicked.</p>
+<p><img src="/posts/images/my-binder/Binder-1.png" class="img-fluid" alt="MyBinder" /></p>
+<p>When you click &quot;launch&quot;, MyBinder will download your repository and start the docker build, very soon you will be able to access your binders online. Fully shareable and totally awesome!</p>
+
+
+
+					</div>
+				</div>
+			</div>
+
+			<!-- Footer -->
+			<footer id="footer">
+				<div class="inner">
+    <section>
+        <h2>Feeds</h2>
+        <ul class="actions small vertical">
+            <li><a href="/feed.rss" class="button small"><i class="fa fa-rss"></i> RSS Feed</a></li>
+                        <li><a href="/feed.atom" class="button small"><i class="fa fa-rss"></i> Atom Feed</a></li>
+        </ul>
+    </section>
+    <section>
+    </section>
+    <ul class="copyright">
+        <li>Copyright © 2019</li>
+        <li>Design: <a href="http://html5up.net">HTML5 UP</a></li>
+        <li><a href="https://wyam.io">Generated by Wyam</a></li>
+    </ul>
+</div>
+
+			</footer>
+
+		</div>
+		
+		
+
+		<!-- Scripts -->
+		<script>hljs.initHighlightingOnLoad();</script>
+		<script src="/assets/js/jquery.min.js"></script>
+		<script src="/assets/js/skel.min.js"></script>
+		<script src="/assets/js/util.js"></script>
+		<!--[if lte IE 8]><script src="/assets/js/ie/respond.min.js"></script><![endif]-->
+		<script src="/assets/js/main.js"></script>
+
+	</body>
+
+</html>

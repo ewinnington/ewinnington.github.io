@@ -95,6 +95,105 @@
 <div class="row">
     <div class="8u 12u$(medium)">
                 <div>
+                    <a href="/posts/my-binder-jupyter-csharp">
+                        <h2>Hosting your C# Jupyter notebook online by adding one file to your repo</h2>
+                    </a>
+                    <p>Posted on Thursday, 14 November 2019</p>
+<p><a href="https://mybinder.org/">MyBinder.org</a> in collaboration with <a href="https://github.com/dotnet/try">Dotnet try</a> allows you to host your .net notebooks online.</p>
+<p><a href="https://mybinder.org/v2/gh/ewinnington/noteb/master?filepath=HelloWorld.ipynb">SQLite example workbook: </a>
+<a href="https://mybinder.org/v2/gh/ewinnington/noteb/master?filepath=HelloWorld.ipynb"><img src="https://mybinder.org/badge_logo.svg" class="img-fluid" alt="Binder" /></a></p>
+<p>To light up this for your own hosted repositories, you will need a public github repo. Inside the repository, you will need to create a Docker file that gives the setup required for MyBinder to setup the environment of the workbook.</p>
+<p>The <a href="https://github.com/dotnet/try/blob/master/CreateBinder.md">dotnet/try</a> has the set of instrunctions.</p>
+<p>For my repository, I used the following <a href="https://github.com/ewinnington/noteb/blob/master/Dockerfile">Dockerfile</a></p>
+<p>A list of my changes to the standard one proposed by dotnet/try:</p>
+<ul>
+<li>I used a fixed docker image <code>jupyter/scipy-notebook:45f07a14b422</code></li>
+<li>Since I have all my notebooks in the root of my repository I did <code>COPY . ${HOME}/Notebooks/</code></li>
+<li>Since I am always importing the Nuget files at the top of my workbook, I did not need to have the docker deamon add a nuget config. So I commented out the COPY command <code># COPY ./NuGet.config ${HOME}/nuget.config</code></li>
+</ul>
+<pre><code class="language-Skip">FROM jupyter/scipy-notebook:45f07a14b422
+
+# Install .NET CLI dependencies
+
+ARG NB_USER=jovyan
+ARG NB_UID=1000
+ENV USER ${NB_USER}
+ENV NB_UID ${NB_UID}
+ENV HOME /home/${NB_USER}
+
+WORKDIR ${HOME}
+
+USER root
+RUN apt-get update
+RUN apt-get install -y curl
+
+# Install .NET CLI dependencies
+RUN apt-get install -y --no-install-recommends \
+        libc6 \
+        libgcc1 \
+        libgssapi-krb5-2 \
+        libicu60 \
+        libssl1.1 \
+        libstdc++6 \
+        zlib1g 
+
+RUN rm -rf /var/lib/apt/lists/*
+
+# Install .NET Core SDK
+ENV DOTNET_SDK_VERSION 3.0.100
+
+RUN curl -SL --output dotnet.tar.gz https://dotnetcli.blob.core.windows.net/dotnet/Sdk/$DOTNET_SDK_VERSION/dotnet-sdk-$DOTNET_SDK_VERSION-linux-x64.tar.gz \
+    &amp;&amp; dotnet_sha512='766da31f9a0bcfbf0f12c91ea68354eb509ac2111879d55b656f19299c6ea1c005d31460dac7c2a4ef82b3edfea30232c82ba301fb52c0ff268d3e3a1b73d8f7' \
+    &amp;&amp; echo &quot;$dotnet_sha512 dotnet.tar.gz&quot; | sha512sum -c - \
+    &amp;&amp; mkdir -p /usr/share/dotnet \
+    &amp;&amp; tar -zxf dotnet.tar.gz -C /usr/share/dotnet \
+    &amp;&amp; rm dotnet.tar.gz \
+    &amp;&amp; ln -s /usr/share/dotnet/dotnet /usr/bin/dotnet
+
+# Enable detection of running in a container
+ENV DOTNET_RUNNING_IN_CONTAINER=true \
+    # Enable correct mode for dotnet watch (only mode supported in a container)
+    DOTNET_USE_POLLING_FILE_WATCHER=true \
+    # Skip extraction of XML docs - generally not useful within an image/container - helps performance
+    NUGET_XMLDOC_MODE=skip \
+    # Opt out of telemetry until after we install jupyter when building the image, this prevents caching of machine id
+    DOTNET_TRY_CLI_TELEMETRY_OPTOUT=true
+
+# Trigger first run experience by running arbitrary cmd
+RUN dotnet help
+
+# Copy notebooks
+
+COPY . ${HOME}/Notebooks/
+
+# Copy package sources
+
+# COPY ./NuGet.config ${HOME}/nuget.config
+
+RUN chown -R ${NB_UID} ${HOME}
+USER ${USER}
+
+# Install Microsoft.DotNet.Interactive
+RUN dotnet tool install -g dotnet-try 
+#--add-source &quot;https://dotnet.myget.org/F/dotnet-try/api/v3/index.json&quot;
+
+ENV PATH=&quot;${PATH}:${HOME}/.dotnet/tools&quot;
+RUN echo &quot;$PATH&quot;
+
+# Install kernel specs
+RUN dotnet try jupyter install
+
+# Enable telemetry once we install jupyter for the image
+ENV DOTNET_TRY_CLI_TELEMETRY_OPTOUT=false
+
+# Set root to Notebooks
+WORKDIR ${HOME}/Notebooks/
+</code></pre>
+<p>Once the Dockerfile is in the repository. Head over to <a href="https://mybinder.org/">MyBinder.org</a> and enter the link to your repository. Optionally, you can set an initial ipynb file to start when the link is clicked.</p>
+<p><img src="/posts/images/my-binder/Binder-1.png" class="img-fluid" alt="MyBinder" /></p>
+<p>When you click &quot;launch&quot;, MyBinder will download your repository and start the docker build, very soon you will be able to access your binders online. Fully shareable and totally awesome!</p>
+                </div>       
+                <div>
                     <a href="/posts/jupyter-lp-10">
                         <h2>Introduction to linear programming with C# and OR-Tools inside Jupyter</h2>
                     </a>
@@ -348,105 +447,6 @@ Console.WriteLine(ex);
 <pre><code>conn.Close();
 </code></pre>
                 </div>       
-                <div>
-                    <a href="/posts/jupyter-notebook-csharp-r">
-                        <h2>Jupyter notebook with C# and R</h2>
-                    </a>
-                    <p>Posted on Tuesday, 12 November 2019</p>
-<p>Following the release of the <a href="https://devblogs.microsoft.com/dotnet/net-core-with-juypter-notebooks-is-here-preview-1/">updated dotnet try tool</a>, here are my instructions for getting started.</p>
-<h1 id="installing-jupyter-notebook-with-a-c-kernel">Installing jupyter notebook with a c# kernel</h1>
-<ul>
-<li>Check if you installed python with visual studio.</li>
-</ul>
-<p>Go to the start menu and start typing Python</p>
-<p><img src="/posts/images/jupyter-notebook-csharp-r/python_installed.png" class="img-fluid" :height="360px" width="620px" alt="img1" /></p>
-<p>Right click on python and follow the Open File Location until you find the place where python is installed.</p>
-<p><img src="/posts/images/jupyter-notebook-csharp-r/python_installed_location.png" class="img-fluid" :height="360px" width="620px" alt="img2" /></p>
-<ul>
-<li><p>Or type: <code>where python</code> in the command line.</p>
-</li>
-<li><p>If so, add python to the PATH of your environment. On my installation, the paths to Python were as follows. I had to add the Scripts path for the pip installation to be in the command line.</p>
-<ul>
-<li><code>C:\Program Files (x86)\Microsoft Visual Studio\Shared\Python37_64\</code></li>
-<li><code>C:\Program Files (x86)\Microsoft Visual Studio\Shared\Python37_64\Scripts</code></li>
-</ul>
-</li>
-<li><p>install jupyter using pip which was installed with visual studio, make sure to run in an <strong>administrator</strong> shell
-<code>pip install jupyter</code></p>
-</li>
-<li><p>Now get the list of installed jupyter kernels:
-<code>jupyter kernelspec list</code></p>
-</li>
-</ul>
-<pre><code>Available kernels:
-  c:\program files (x86)\microsoft visual studio\shared\python37_64\share\jupyter\kernels\python3  
-</code></pre>
-<ul>
-<li><p>Install the latest version of .net try
-<code>dotnet tool install dotnet-try -g</code></p>
-</li>
-<li><p>finally install the .net kernel for jupyter with the command:
-<code>dotnet try jupyter install</code></p>
-</li>
-<li><p>test the kernel is now installed with <code>jupyter kernelspec list</code></p>
-</li>
-</ul>
-<p><img src="/posts/images/jupyter-notebook-csharp-r/jupyter_kernels.png" class="img-fluid" alt="img3" /></p>
-<h1 id="launch-jupyter-notebook">launch jupyter notebook</h1>
-<p>In the command line, type:
-<code>jupyter notebook</code></p>
-<p>A browser window should open and the terminal should display:</p>
-<pre><code>C:\Repos\noteb&gt;jupyter notebook
-[I 22:14:55.617 NotebookApp] JupyterLab extension loaded from c:\program files (x86)\microsoft visual studio\shared\python37_64\lib\site-packages\jupyterlab
-[I 22:14:55.618 NotebookApp] JupyterLab application directory is c:\program files (x86)\microsoft visual studio\shared\python37_64\share\jupyter\lab
-[I 22:14:55.625 NotebookApp] Serving notebooks from local directory: C:\Repos\noteb
-[I 22:14:55.626 NotebookApp] The Jupyter Notebook is running at:
-[I 22:14:55.627 NotebookApp] http://localhost:8888/?token=XXXXXXXXXXXXXXXXXXXc1ee1dfccc0a6624263d584b8ca4c
-[I 22:14:55.628 NotebookApp]  or http://127.0.0.1:8888/?token=XXXXXXXXXXXXXXXXXXXc1ee1dfccc0a6624263d584b8ca4c
-[I 22:14:55.629 NotebookApp] Use Control-C to stop this server and shut down all kernels (twice to skip confirmation).  [C 22:14:55.737 NotebookApp]
-
-    To access the notebook, open this file in a browser:
-        file:///C:/Users/xxxxxx/AppData/Roaming/jupyter/runtime/nbserver-17608-open.html
-    Or copy and paste one of these URLs:
-        http://localhost:8888/?token=XXXXXXXXXXXXXXXXXXXc1ee1dfccc0a6624263d584b8ca4c
-     or http://127.0.0.1:8888/?token=XXXXXXXXXXXXXXXXXXXc1ee1dfccc0a6624263d584b8ca4c
-[I 22:15:16.852 NotebookApp] Kernel started: be6910a0-92f0-4ec0-a26c-d8274b44cd6d
-</code></pre>
-<p>The main page of the Jupyter notebook allows you to see the notebooks available in the folder and to create new ones.</p>
-<p><img src="/posts/images/jupyter-notebook-csharp-r/jupyter_create_csharp.png" class="img-fluid" :height="360px" width="620px" alt="img4" /></p>
-<h1 id="hello-world">Hello world</h1>
-<p>Create a new C# notebook. Then type</p>
-<pre><code class="language-CSharp">using System; 
-</code></pre>
-<p>in the first cell. I executed it and then typed:</p>
-<pre><code class="language-CSharp">Console.WriteLine(&quot;Hello World&quot;); 
-</code></pre>
-<p>in the second cell. Executing it shows us that the C# Kernel is working.</p>
-<p><img src="/posts/images/jupyter-notebook-csharp-r/jupyter_hello_world_csharp.png" class="img-fluid" :height="360px" width="620px" alt="imgHello" /></p>
-<p><code>#r</code> is used to reference a dll or a nuget package. If you prefix the command with &quot;nuget:&quot; then the jupyter notebook will download the nuget and add it as a reference. Then as in usual c#, you must reference it.</p>
-<p><strong>Update</strong> The C# notebook is now hosted on binder <a href="https://mybinder.org/v2/gh/ewinnington/noteb/master?filepath=HelloWorld.ipynb"><img src="https://mybinder.org/badge_logo.svg" class="img-fluid" alt="Binder" /></a>
-click to launch the environment!</p>
-<h1 id="installing-an-r-kernel-for-jupyter-notebook">Installing an R kernel for jupyter notebook</h1>
-<p>To install R Tools for Visual Studio, install the Visual Studio Extension R Tools for Visual Studio 2019, which was in preview when I looked. Once this is installed, you must install the Microsoft R client. This option will be presented if you go to the &quot;R Interactive&quot; window.</p>
-<p><img src="/posts/images/jupyter-notebook-csharp-r/install_R_vs.png" class="img-fluid" :height="360px" width="620px" alt="img5" /></p>
-<p>I have R installed with visual studio, so I launched visual studio in <strong>admin mode</strong> to be able to have my R directory writable, went to the R Tools menu at the top and selected &quot;R Interactive&quot;.</p>
-<p><img src="/posts/images/jupyter-notebook-csharp-r/r_interactive_vs.png" class="img-fluid" alt="img6" /></p>
-<p>From the command line of R, I typed in the following commands. <a href="https://irkernel.github.io/installation/">Installation guide R</a></p>
-<p><img src="/posts/images/jupyter-notebook-csharp-r/r_interactive_kernel_install.png" class="img-fluid" alt="img6" /></p>
-<pre><code class="language-R">install.packages('IRkernel')
-IRkernel::installspec(user = FALSE)
-</code></pre>
-<p>I got the following output after installing the IRKernel into Jupyter <code>[InstallKernelSpec] Installed kernelspec ir in C:\ProgramData\jupyter\kernels\ir</code>. Following this, you can check on the command line that the R kernel appears in the list of Jupyter Kernels with <code>jupyter kernelspec list</code>, this should show the ir kernel installed:</p>
-<pre><code>Available kernels:
-  ir             C:\ProgramData\jupyter\kernels\ir
-</code></pre>
-<h2 id="use-r-to-show-a-some-math">Use R to show a some math</h2>
-<p>Create a new R notebook and type in the first cell:</p>
-<pre><code class="language-R">demo(plotmath)
-</code></pre>
-<p>Executing this should show you the following long list of tables with mathematical symbols.</p>
-<p><img src="/posts/images/jupyter-notebook-csharp-r/jupyter_R.png" class="img-fluid" :height="360px" width="620px" alt="img7" /></p>
-                </div>       
         <ul class="pager">
             <li class="previous">                
             </li>
@@ -459,15 +459,15 @@ IRkernel::installspec(user = FALSE)
             <h5>Tags</h5>
             <ul class="actions small">
                     <li><a role="button" href="/tags/Migrated" class="button small">Migrated (38)</a></li>
-                    <li><a role="button" href="/tags/CSharp" class="button small">CSharp (5)</a></li>
-                    <li><a role="button" href="/tags/Rpi" class="button small">Rpi (4)</a></li>
+                    <li><a role="button" href="/tags/CSharp" class="button small">CSharp (6)</a></li>
+                    <li><a role="button" href="/tags/Jupyter-notebook" class="button small">Jupyter notebook (5)</a></li>
+                    <li><a role="button" href="/tags/Dotnet-try" class="button small">Dotnet try (5)</a></li>
                     <li><a role="button" href="/tags/Oracle" class="button small">Oracle (4)</a></li>
                     <li><a role="button" href="/tags/CommandLine" class="button small">CommandLine (4)</a></li>
                     <li><a role="button" href="/tags/WPF" class="button small">WPF (4)</a></li>
-                    <li><a role="button" href="/tags/Jupyter-notebook" class="button small">Jupyter notebook (4)</a></li>
-                    <li><a role="button" href="/tags/Dotnet-try" class="button small">Dotnet try (4)</a></li>
+                    <li><a role="button" href="/tags/Rpi" class="button small">Rpi (4)</a></li>
+                    <li><a role="button" href="/tags/R" class="button small">R (3)</a></li>
                     <li><a role="button" href="/tags/OSX" class="button small">OSX (3)</a></li>
-                    <li><a role="button" href="/tags/iOS" class="button small">iOS (3)</a></li>
             </ul>
             <ul class="actions small">
                 <li><a href="/tags" class="button small">View All Tags &rarr;</a></li>
@@ -475,10 +475,10 @@ IRkernel::installspec(user = FALSE)
 
             <h5>Older Posts</h5>
             <ul>
+                    <li><a href="/posts/jupyter-notebook-csharp-r">Jupyter notebook with C# and R</a></li>
                     <li><a href="/posts/bulk-inserts">Using bulk inserts on databases</a></li>
                     <li><a href="/posts/webassembly-thoughts">Reflections on Webassembly - May/Nov 19</a></li>
                     <li><a href="/posts/wyam-github-actions">Using Github actions to build Wyam and publish to github pages</a></li>
-                    <li><a href="/posts/R-read-binary-file">R - Reading binary files</a></li>
             </ul>
                 <ul class="actions small">
                     <li><a href="/posts" class="button small">Archive &rarr;</a></li>
