@@ -5,8 +5,8 @@
 		<link>http://ewinnington.github.io/</link>
 		<description>A collection of thoughts, code and snippets.</description>
 		<copyright>2019</copyright>
-		<pubDate>Thu, 14 Nov 2019 23:43:36 GMT</pubDate>
-		<lastBuildDate>Thu, 14 Nov 2019 23:43:36 GMT</lastBuildDate>
+		<pubDate>Fri, 15 Nov 2019 11:52:07 GMT</pubDate>
+		<lastBuildDate>Fri, 15 Nov 2019 11:52:07 GMT</lastBuildDate>
 		<item>
 			<title>Hosting your C# Jupyter notebook online by adding one file to your repo</title>
 			<link>http://ewinnington.github.io/posts/my-binder-jupyter-csharp</link>
@@ -15,7 +15,7 @@
 			<pubDate>Thu, 14 Nov 2019 23:20:00 GMT</pubDate>
 			<content:encoded>&lt;p&gt;&lt;a href="https://mybinder.org/"&gt;MyBinder.org&lt;/a&gt; in collaboration with &lt;a href="https://github.com/dotnet/try"&gt;Dotnet try&lt;/a&gt; allows you to host your .net notebooks online.&lt;/p&gt;
 &lt;p&gt;&lt;a href="https://mybinder.org/v2/gh/ewinnington/noteb/master?filepath=SqliteInteraction.ipynb"&gt;SQLite example workbook: &lt;/a&gt;
-&lt;a href="https://mybinder.org/v2/gh/ewinnington/noteb/master?filepath=HelloWorld.ipynb"&gt;&lt;img src="https://mybinder.org/badge_logo.svg" class="img-fluid" alt="Binder" /&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;a href="https://mybinder.org/v2/gh/ewinnington/noteb/master?filepath=SqliteInteraction.ipynb"&gt;&lt;img src="https://mybinder.org/badge_logo.svg" class="img-fluid" alt="Binder" /&gt;&lt;/a&gt;&lt;/p&gt;
 &lt;p&gt;To light up this for your own hosted repositories, you will need a public github repo. Inside the repository, you will need to create a Docker file that gives the setup required for MyBinder to setup the environment of the workbook.&lt;/p&gt;
 &lt;p&gt;The &lt;a href="https://github.com/dotnet/try/blob/master/CreateBinder.md"&gt;dotnet/try&lt;/a&gt; has the set of instrunctions.&lt;/p&gt;
 &lt;p&gt;For my repository, I used the following &lt;a href="https://github.com/ewinnington/noteb/blob/master/Dockerfile"&gt;Dockerfile&lt;/a&gt;&lt;/p&gt;
