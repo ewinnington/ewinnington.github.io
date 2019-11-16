@@ -1,5 +1,5 @@
 Title: Applications in LP and MILP with C# and OR-Tools inside Jupyter
-Published: 17/11/2019 00:10
+Published: 16/11/2019 23:30
 Tags: [CSharp, LinearProgramming, Mixed Integer linear programming, Google OR-Tools, Dotnet try, Jupyter notebook] 
 ---
 
