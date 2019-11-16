@@ -4,7 +4,7 @@
 	<title>Eric Winnington</title>
 	<link rel="self" href="http://ewinnington.github.io/" />
 	<rights>2019</rights>
-	<updated>2019-11-16T23:34:03Z</updated>
+	<updated>2019-11-16T23:38:11Z</updated>
 	<subtitle>A collection of thoughts, code and snippets.</subtitle>
 	<entry>
 		<id>http://ewinnington.github.io/posts/jupyter-lp-20</id>
@@ -88,7 +88,7 @@ SolveAndPrint(milp_solver, nItems, weights);
 		<content>&lt;p&gt;&lt;a href="https://mybinder.org/"&gt;MyBinder.org&lt;/a&gt; in collaboration with &lt;a href="https://github.com/dotnet/try"&gt;Dotnet try&lt;/a&gt; allows you to host your .net notebooks online.&lt;/p&gt;
 &lt;p&gt;&lt;a href="https://mybinder.org/v2/gh/ewinnington/noteb/master?filepath=SqliteInteraction.ipynb"&gt;SQLite example workbook: &lt;/a&gt;
 &lt;a href="https://mybinder.org/v2/gh/ewinnington/noteb/master?filepath=SqliteInteraction.ipynb"&gt;&lt;img src="https://mybinder.org/badge_logo.svg" class="img-fluid" alt="Binder" /&gt;&lt;/a&gt;&lt;/p&gt;
-&lt;p&gt;To light up this for your own hosted repositories, you will need a public github repo. Inside the repository, you will need to create a Docker file that gives the setup required for MyBinder to setup the environment of the workbook.&lt;/p&gt;
+&lt;p&gt;To light up this for your own hosted repositories, you will need a public github repo. Inside the repository, you will need to create a &lt;a href="https://www.docker.com/"&gt;Docker&lt;/a&gt; file that gives the setup required for MyBinder to setup the environment of the workbook.&lt;/p&gt;
 &lt;p&gt;The &lt;a href="https://github.com/dotnet/try/blob/master/CreateBinder.md"&gt;dotnet/try&lt;/a&gt; has the set of instrunctions.&lt;/p&gt;
 &lt;p&gt;For my repository, I used the following &lt;a href="https://github.com/ewinnington/noteb/blob/master/Dockerfile"&gt;Dockerfile&lt;/a&gt;&lt;/p&gt;
 &lt;p&gt;A list of my changes to the standard one proposed by dotnet/try:&lt;/p&gt;
@@ -723,6 +723,26 @@ if (nRowsCount &amp;gt; 0)
 		<summary>&lt;p&gt;I rewatched this talk from 2014, &lt;a href="https://www.destroyallsoftware.com/talks/the-birth-and-death-of-javascript"&gt;The Birth and Death of JavaScript&lt;/a&gt;, and am still amazed at how prescient it was and still is.&lt;/p&gt;</summary>
 	</entry>
 	<entry>
+		<id>http://ewinnington.github.io/posts/R-read-binary-file</id>
+		<title>R - Reading binary files</title>
+		<link href="http://ewinnington.github.io/posts/R-read-binary-file" />
+		<updated>2019-11-03T00:00:00Z</updated>
+		<content>&lt;p&gt;I had to get some data out of files written by Fortran. The format was a large array of doubles.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;numeric() for doubles&lt;/li&gt;
+&lt;li&gt;integer() for integers&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;readBin takes the input file and reads the binary data. If you want to read to the end of the file, don't give a dimension as 3rd parameter.&lt;/p&gt;
+&lt;pre&gt;&lt;code class="language-R"&gt;#### Reading value field from file
+z &amp;lt;- file(&amp;quot;/BoundValueRemain.bin&amp;quot;, &amp;quot;rb&amp;quot;)
+y &amp;lt;- readBin (z, numeric(), 51*50*50*15*13)
+close(z)
+dim(y) &amp;lt;- c(51, 50, 50, 15, 13)
+&lt;/code&gt;&lt;/pre&gt;
+</content>
+		<summary>&lt;p&gt;I had to get some data out of files written by Fortran. The format was a large array of doubles.&lt;/p&gt;</summary>
+	</entry>
+	<entry>
 		<id>http://ewinnington.github.io/posts/wyam-github-actions</id>
 		<title>Using Github actions to build Wyam and publish to github pages</title>
 		<link href="http://ewinnington.github.io/posts/wyam-github-actions" />
@@ -853,26 +873,6 @@ redisClose()
 &lt;/code&gt;&lt;/pre&gt;
 </content>
 		<summary>&lt;p&gt;I needed to access Redis from R. Here's the code I used to connect, set a value, then deserialize a key that was in json format and publish a message. &lt;a href="https://cran.r-project.org/web/packages/rredis/vignettes/rredis.pdf"&gt;Rredis documentation located here&lt;/a&gt;&lt;/p&gt;</summary>
-	</entry>
-	<entry>
-		<id>http://ewinnington.github.io/posts/R-read-binary-file</id>
-		<title>R - Reading binary files</title>
-		<link href="http://ewinnington.github.io/posts/R-read-binary-file" />
-		<updated>2019-11-03T00:00:00Z</updated>
-		<content>&lt;p&gt;I had to get some data out of files written by Fortran. The format was a large array of doubles.&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;numeric() for doubles&lt;/li&gt;
-&lt;li&gt;integer() for integers&lt;/li&gt;
-&lt;/ul&gt;
-&lt;p&gt;readBin takes the input file and reads the binary data. If you want to read to the end of the file, don't give a dimension as 3rd parameter.&lt;/p&gt;
-&lt;pre&gt;&lt;code class="language-R"&gt;#### Reading value field from file
-z &amp;lt;- file(&amp;quot;/BoundValueRemain.bin&amp;quot;, &amp;quot;rb&amp;quot;)
-y &amp;lt;- readBin (z, numeric(), 51*50*50*15*13)
-close(z)
-dim(y) &amp;lt;- c(51, 50, 50, 15, 13)
-&lt;/code&gt;&lt;/pre&gt;
-</content>
-		<summary>&lt;p&gt;I had to get some data out of files written by Fortran. The format was a large array of doubles.&lt;/p&gt;</summary>
 	</entry>
 	<entry>
 		<id>http://ewinnington.github.io/posts/Switching-to-wyam</id>

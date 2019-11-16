@@ -5,8 +5,8 @@
 		<link>http://ewinnington.github.io/</link>
 		<description>A collection of thoughts, code and snippets.</description>
 		<copyright>2019</copyright>
-		<pubDate>Sat, 16 Nov 2019 23:34:03 GMT</pubDate>
-		<lastBuildDate>Sat, 16 Nov 2019 23:34:03 GMT</lastBuildDate>
+		<pubDate>Sat, 16 Nov 2019 23:38:11 GMT</pubDate>
+		<lastBuildDate>Sat, 16 Nov 2019 23:38:11 GMT</lastBuildDate>
 		<item>
 			<title>Applications in LP and MILP with C# and OR-Tools inside Jupyter</title>
 			<link>http://ewinnington.github.io/posts/jupyter-lp-20</link>
@@ -90,7 +90,7 @@ SolveAndPrint(milp_solver, nItems, weights);
 			<content:encoded>&lt;p&gt;&lt;a href="https://mybinder.org/"&gt;MyBinder.org&lt;/a&gt; in collaboration with &lt;a href="https://github.com/dotnet/try"&gt;Dotnet try&lt;/a&gt; allows you to host your .net notebooks online.&lt;/p&gt;
 &lt;p&gt;&lt;a href="https://mybinder.org/v2/gh/ewinnington/noteb/master?filepath=SqliteInteraction.ipynb"&gt;SQLite example workbook: &lt;/a&gt;
 &lt;a href="https://mybinder.org/v2/gh/ewinnington/noteb/master?filepath=SqliteInteraction.ipynb"&gt;&lt;img src="https://mybinder.org/badge_logo.svg" class="img-fluid" alt="Binder" /&gt;&lt;/a&gt;&lt;/p&gt;
-&lt;p&gt;To light up this for your own hosted repositories, you will need a public github repo. Inside the repository, you will need to create a Docker file that gives the setup required for MyBinder to setup the environment of the workbook.&lt;/p&gt;
+&lt;p&gt;To light up this for your own hosted repositories, you will need a public github repo. Inside the repository, you will need to create a &lt;a href="https://www.docker.com/"&gt;Docker&lt;/a&gt; file that gives the setup required for MyBinder to setup the environment of the workbook.&lt;/p&gt;
 &lt;p&gt;The &lt;a href="https://github.com/dotnet/try/blob/master/CreateBinder.md"&gt;dotnet/try&lt;/a&gt; has the set of instrunctions.&lt;/p&gt;
 &lt;p&gt;For my repository, I used the following &lt;a href="https://github.com/ewinnington/noteb/blob/master/Dockerfile"&gt;Dockerfile&lt;/a&gt;&lt;/p&gt;
 &lt;p&gt;A list of my changes to the standard one proposed by dotnet/try:&lt;/p&gt;
@@ -724,6 +724,26 @@ if (nRowsCount &amp;gt; 0)
 </content:encoded>
 		</item>
 		<item>
+			<title>R - Reading binary files</title>
+			<link>http://ewinnington.github.io/posts/R-read-binary-file</link>
+			<description>&lt;p&gt;I had to get some data out of files written by Fortran. The format was a large array of doubles.&lt;/p&gt;</description>
+			<guid>http://ewinnington.github.io/posts/R-read-binary-file</guid>
+			<pubDate>Sun, 03 Nov 2019 00:00:00 GMT</pubDate>
+			<content:encoded>&lt;p&gt;I had to get some data out of files written by Fortran. The format was a large array of doubles.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;numeric() for doubles&lt;/li&gt;
+&lt;li&gt;integer() for integers&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;readBin takes the input file and reads the binary data. If you want to read to the end of the file, don't give a dimension as 3rd parameter.&lt;/p&gt;
+&lt;pre&gt;&lt;code class="language-R"&gt;#### Reading value field from file
+z &amp;lt;- file(&amp;quot;/BoundValueRemain.bin&amp;quot;, &amp;quot;rb&amp;quot;)
+y &amp;lt;- readBin (z, numeric(), 51*50*50*15*13)
+close(z)
+dim(y) &amp;lt;- c(51, 50, 50, 15, 13)
+&lt;/code&gt;&lt;/pre&gt;
+</content:encoded>
+		</item>
+		<item>
 			<title>Using Github actions to build Wyam and publish to github pages</title>
 			<link>http://ewinnington.github.io/posts/wyam-github-actions</link>
 			<description>&lt;p&gt;Not that I have Wyam as a static site generator, I want to use &lt;a href="https://github.com/features/actions"&gt;Github Actions&lt;/a&gt; to automatically deploy it on push. This requires a quite few steps to setup, but I did it, now so can you!&lt;/p&gt;</description>
@@ -852,26 +872,6 @@ x$t &amp;lt;-  strptime(x$t, &amp;quot;%Y-%m-%dT%H:%M:%S&amp;quot;)
 redisPublish(&amp;quot;General:Active&amp;quot;, charToRaw('Message'))
 
 redisClose()
-&lt;/code&gt;&lt;/pre&gt;
-</content:encoded>
-		</item>
-		<item>
-			<title>R - Reading binary files</title>
-			<link>http://ewinnington.github.io/posts/R-read-binary-file</link>
-			<description>&lt;p&gt;I had to get some data out of files written by Fortran. The format was a large array of doubles.&lt;/p&gt;</description>
-			<guid>http://ewinnington.github.io/posts/R-read-binary-file</guid>
-			<pubDate>Sun, 03 Nov 2019 00:00:00 GMT</pubDate>
-			<content:encoded>&lt;p&gt;I had to get some data out of files written by Fortran. The format was a large array of doubles.&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;numeric() for doubles&lt;/li&gt;
-&lt;li&gt;integer() for integers&lt;/li&gt;
-&lt;/ul&gt;
-&lt;p&gt;readBin takes the input file and reads the binary data. If you want to read to the end of the file, don't give a dimension as 3rd parameter.&lt;/p&gt;
-&lt;pre&gt;&lt;code class="language-R"&gt;#### Reading value field from file
-z &amp;lt;- file(&amp;quot;/BoundValueRemain.bin&amp;quot;, &amp;quot;rb&amp;quot;)
-y &amp;lt;- readBin (z, numeric(), 51*50*50*15*13)
-close(z)
-dim(y) &amp;lt;- c(51, 50, 50, 15, 13)
 &lt;/code&gt;&lt;/pre&gt;
 </content:encoded>
 		</item>
