@@ -1,6 +1,6 @@
 Title: Hosting your C# Jupyter notebook online by adding one file to your repo
 Published: 14/11/2019 23:20
-Tags: [CSharp, Dotnet try, Jupyter notebook] 
+Tags: [CSharp, Dotnet try, Docker, Jupyter notebook] 
 ---
 
 [MyBinder.org](https://mybinder.org/) in collaboration with [Dotnet try](https://github.com/dotnet/try) allows you to host your .net notebooks online. 
@@ -8,7 +8,7 @@ Tags: [CSharp, Dotnet try, Jupyter notebook]
 [SQLite example workbook: ](https://mybinder.org/v2/gh/ewinnington/noteb/master?filepath=SqliteInteraction.ipynb)
 [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/ewinnington/noteb/master?filepath=SqliteInteraction.ipynb) 
 
-To light up this for your own hosted repositories, you will need a public github repo. Inside the repository, you will need to create a Docker file that gives the setup required for MyBinder to setup the environment of the workbook.
+To light up this for your own hosted repositories, you will need a public github repo. Inside the repository, you will need to create a [Docker](https://www.docker.com/) file that gives the setup required for MyBinder to setup the environment of the workbook.
 
 The [dotnet/try](https://github.com/dotnet/try/blob/master/CreateBinder.md) has the set of instrunctions. 
 
