@@ -95,6 +95,67 @@
 <div class="row">
     <div class="8u 12u$(medium)">
                 <div>
+                    <a href="/posts/jupyter-tips-csharp">
+                        <h2>Tips and tricks for C# Jupyter notebook</h2>
+                    </a>
+                    <p>Posted on Sunday, 17 November 2019</p>
+<p>As I use the Jupyter notebook with C# integration, I'll add to this list of tricks as I discover them.</p>
+<h2 id="adding-collapsed-details-to-jupyter-notebooks">Adding collapsed details to jupyter notebooks</h2>
+<p>I wanted to show hints and answers to questions in the jupyter notebook, but I didn't want them to be directly visible without interaction.</p>
+<p><img src="/posts/images/jupyter-notebook-tips/collapsed_details.png" class="img-fluid" alt="collapsed" /></p>
+<p><img src="/posts/images/jupyter-notebook-tips/expanded_details.png" class="img-fluid" alt="expanded" /></p>
+<p>This was done by creating a markdown block with an HTML section inside. When interacted with, the section expands.</p>
+<pre><code class="language-HTML">&lt;details&gt;
+&lt;summary&gt;Summary of the fold&lt;/summary&gt;
+  ... Content shown after the fold ...
+&lt;/details&gt;
+</code></pre>
+<details>
+<summary>Summary of the fold</summary>
+  ... Content shown after the fold ...
+</details>
+<p>And since it's just HTML, it works anywere, including here.</p>
+<h2 id="display-function">display() function</h2>
+<p>The C# kernel embedded in Jupyter has some functions that control the output to the cells of the notebook when executed. One of these functions is  <code>display()</code>.</p>
+<h3 id="tables">Tables</h3>
+<p>It shows properties of objects or lists in a table format. In my linear programming solver examples, I used this command to make a table with the name and value of each problem variable.</p>
+<pre><code class="language-CSharp"> display(solver.variables().Select(a =&gt; new { Name  = a.Name(), Value = a.SolutionValue() })); 
+</code></pre>
+<p><img src="/posts/images/lp/10-6.png" class="img-fluid" alt="var_table" /></p>
+<p>This is an ideal case for <a href="https://docs.microsoft.com/en-us/dotnet/csharp/programming-guide/classes-and-structs/anonymous-types">C#'s anonymous objects</a> and <a href="https://docs.microsoft.com/en-us/dotnet/csharp/programming-guide/concepts/linq/data-transformations-with-linq">linq to select the object properties</a> that you want to see in the table. Adding <code>using System.Linq;</code> to your references will allow you to use the <code>.Select( x =&gt; new { PropertyHeader = x.PropertyValue, ... })</code> linq command.</p>
+<h3 id="svgs">SVGs</h3>
+<p>I discovered the <code>display(HTML())</code> function allows you to pass items such as SVGs from inside C# to be rendered below the block. Two examples are the SVG image triange and the bar chart. On top of that, the bar chart is stylable by CSS.</p>
+<p><img src="/posts/images/jupyter-notebook-tips/svg_img.png" class="img-fluid" alt="expanded" /></p>
+<p>The SVG code is generated inside C#, then the variable containing the SVG is displayed.</p>
+<p><img src="/posts/images/jupyter-notebook-tips/bar_chart.png" class="img-fluid" alt="expanded" /></p>
+<p>Finally, you can add create a cell containing some CSS (with <code>%%html</code>) , which when executed will change the chart as shown.
+<img src="/posts/images/jupyter-notebook-tips/bar_chart_with_css.png" class="img-fluid" alt="expanded" />
+<img src="/posts/images/jupyter-notebook-tips/bar_chart_css.png" class="img-fluid" alt="expanded" /></p>
+<h2 id="magic">Magic</h2>
+<p>The <code>%lsmagic</code> command shows a list of commands available to use in code blocks.</p>
+<p><img src="/posts/images/jupyter-notebook-tips/lsmagic.png" class="img-fluid" alt="expanded" /></p>
+<h3 id="javascript">%%javascript</h3>
+<p>You can execute javascript with the <code>%%javascript</code> magic.</p>
+<p><img src="/posts/images/jupyter-notebook-tips/javascript_hello.png" class="img-fluid" alt="collapsed" /></p>
+<p><img src="/posts/images/jupyter-notebook-tips/javascript_hello_active.png" class="img-fluid" alt="collapsed" /></p>
+<h3 id="html">%%html</h3>
+<p>As previously mentioned, the %%html command will allow you to add CSS blocks and any other HTML output directly into the Jupyter output cell.</p>
+<h3 id="time">%%time</h3>
+<p>Gives you access to the wall time. Actual time took to execution of the cell.</p>
+<h3 id="whos">%whos</h3>
+<p>Gives you access to the list of currently defined variable in the memory of the notebook. Also lists the type and value (as a &quot;toString() representation) of the objects.</p>
+<h3 id="fsharp">%%fsharp</h3>
+<p>You can intermingle C# and F# code inside one notebook, as long as they are in different cells. You can switch to F# by prefixing the cell with <code>%%fsharp</code></p>
+<pre><code class="language-%%fsharp">let main argv =
+    display &quot;Hello World from F#!&quot;
+    0 
+main()
+</code></pre>
+<p><img src="/posts/images/jupyter-notebook-tips/f_sharp.png" class="img-fluid" alt="collapsed" /></p>
+<h2 id="graphing-from-c">Graphing from C#</h2>
+<p>I still have to find out what are good solutions for C# graphs. I saw there was work done on <a href="https://www.nuget.org/packages/XPlot.Plotly/">F# integration with Jupyter</a>, <a href="https://devblogs.microsoft.com/dotnet/net-core-with-juypter-notebooks-is-here-preview-1/">as shown on the blog</a>, but I haven't had time to look at it in depth.</p>
+                </div>       
+                <div>
                     <a href="/posts/jupyter-lp-20">
                         <h2>Applications in LP and MILP with C# and OR-Tools inside Jupyter</h2>
                     </a>
@@ -417,37 +478,6 @@ src=&quot;https://cdn.jsdelivr.net/npm/mathjax&#64;3/es5/tex-mml-chtml.js&quot;&
 </ol>
 </div>
                 </div>       
-                <div>
-                    <a href="/posts/jupyter-docker-csharp-postgres">
-                        <h2>Docker controlled from Jupyter Notebook C# with PostgresDB</h2>
-                    </a>
-                    <p>Posted on Tuesday, 12 November 2019</p>
-<p>In the context of Docker and Jupyter Notebook, it's interesting to note that there exists a Nuget that allows C# to control docker. So, yes, it is possible to launch a Postgresql database, on docker, inside a Jupyter notebook!</p>
-<p>This assumes you have <a href="https://hub.docker.com/?overlay=onboarding">Docker</a>, <a href="https://github.com/dotnet/try/blob/master/DotNetTryLocal.md">Dotnet try</a>, <a href="https://jupyter.org/">Jupyter notebook</a> and follow the setup of the <a href="/posts/jupyter-notebook-csharp-r">C# kernel for Jupyter</a>.</p>
-<p>If you don't want to wait, you can find my <a href="https://github.com/ewinnington/noteb/blob/master/DockerInteraction.ipynb">complete notebook here</a>.</p>
-<p>Microsoft has created a <a href="https://github.com/microsoft/Docker.DotNet">C# Client library for talking to Docker</a>, so we will be taking advantage of it. Much of the magic docker code is pulled from the Docker.DotNet repository.
-I'm using the <a href="https://www.npgsql.org/index.html">Npgsql drivers</a> for accessing the PostgreSQL database.
-<img src="/posts/images/jupyter-notebook-csharp-r/docker-pg-01.png" class="img-fluid" alt="pgsql01" /></p>
-<p>The real magic moment is when you access the Docker instance, if it is on your local machine on windows, you can use the <code>npipe://./pipe/docker_engine</code> Uri. If you are on Linux, use <code>unix:///var/run/docker.sock</code> (at this time, I haven't tried it on linux, but if you do, please tell me).
-<img src="/posts/images/jupyter-notebook-csharp-r/docker-pg-02.png" class="img-fluid" alt="pgsql02" /></p>
-<p>In block 3, we select a random port to host the pgSQL database. Then list the local image names that are available (you should get postgres:latest on your machine to run this). We create and start up the container, passing the environment variables for the password, user and initial schema. Once the container is started, we detach ourselves from it, so it runs in the background. Finally, I wait until I'm pretty sure the container and database is ready (10s sleep at the end). You can reduce that sleep time. On my Surface laptop 1, I sometimes have an issue when I've got too many other containers running.
-<img src="/posts/images/jupyter-notebook-csharp-r/docker-pg-03.png" class="img-fluid" alt="pgsql03" /></p>
-<p>I'm connecting to the database and validating the connection name.
-<img src="/posts/images/jupyter-notebook-csharp-r/docker-pg-04.png" class="img-fluid" alt="pgsql04" /></p>
-<p>I'm creating a database schema and a user for this particular schema, then reconning with the new user.
-<img src="/posts/images/jupyter-notebook-csharp-r/docker-pg-05.png" class="img-fluid" alt="pgsql05" /></p>
-<p>Creating a table and inserting two rows using direct strings and string concatenation. In production, you should never be using string concatenation for your SQL statements. Please always use Bound variables as described below.
-<img src="/posts/images/jupyter-notebook-csharp-r/docker-pg-06.png" class="img-fluid" alt="pgsql06" /></p>
-<p>This is how you should interact with the PostgreSQL database if you are using direct SQL statements. You should be using Bound commands with parameters.
-<img src="/posts/images/jupyter-notebook-csharp-r/docker-pg-07.png" class="img-fluid" alt="pgsql07" /></p>
-<p>Finally, I check that all three insertions were successful.
-<img src="/posts/images/jupyter-notebook-csharp-r/docker-pg-08.png" class="img-fluid" alt="pgsql08" /></p>
-<p>You can watch the container run in the <a href="https://marketplace.visualstudio.com/items?itemName=ms-azuretools.vscode-docker">docker extension</a> of <a href="https://code.visualstudio.com/">Visual studio Code</a>. It's a great way of monitoring what is currently running, as well as deleting old containers that might be still present.
-<img src="/posts/images/jupyter-notebook-csharp-r/docker-pg-10.png" class="img-fluid" alt="pgsql10" /></p>
-<p>Talking of deleting old containers, this is how you shut them down and delete them at the end of the notebook. I first close the Db connection and dispose of it before asking Docker.DotNet to stop the containers.
-<img src="/posts/images/jupyter-notebook-csharp-r/docker-pg-09.png" class="img-fluid" alt="pgsql09" /></p>
-<p>It would be cleaner if I knew how to enfore a <code>Finally</code> in Jupyter Notebook, but at this time, I don't know. If you do, drop me a line on <a href="https://twitter.com/ThrowATwit">twitter</a> or a pull request on this blog post.</p>
-                </div>       
         <ul class="pager">
             <li class="previous">                
             </li>
@@ -460,15 +490,15 @@ I'm using the <a href="https://www.npgsql.org/index.html">Npgsql drivers</a> for
             <h5>Tags</h5>
             <ul class="actions small">
                     <li><a role="button" href="/tags/Migrated" class="button small">Migrated (38)</a></li>
-                    <li><a role="button" href="/tags/CSharp" class="button small">CSharp (7)</a></li>
-                    <li><a role="button" href="/tags/Jupyter-notebook" class="button small">Jupyter notebook (6)</a></li>
-                    <li><a role="button" href="/tags/Dotnet-try" class="button small">Dotnet try (6)</a></li>
+                    <li><a role="button" href="/tags/CSharp" class="button small">CSharp (8)</a></li>
+                    <li><a role="button" href="/tags/Dotnet-try" class="button small">Dotnet try (7)</a></li>
+                    <li><a role="button" href="/tags/Jupyter-notebook" class="button small">Jupyter notebook (7)</a></li>
+                    <li><a role="button" href="/tags/CommandLine" class="button small">CommandLine (4)</a></li>
+                    <li><a role="button" href="/tags/Oracle" class="button small">Oracle (4)</a></li>
                     <li><a role="button" href="/tags/WPF" class="button small">WPF (4)</a></li>
                     <li><a role="button" href="/tags/Rpi" class="button small">Rpi (4)</a></li>
-                    <li><a role="button" href="/tags/Oracle" class="button small">Oracle (4)</a></li>
-                    <li><a role="button" href="/tags/CommandLine" class="button small">CommandLine (4)</a></li>
+                    <li><a role="button" href="/tags/R" class="button small">R (3)</a></li>
                     <li><a role="button" href="/tags/OSX" class="button small">OSX (3)</a></li>
-                    <li><a role="button" href="/tags/iOS" class="button small">iOS (3)</a></li>
             </ul>
             <ul class="actions small">
                 <li><a href="/tags" class="button small">View All Tags &rarr;</a></li>
@@ -476,10 +506,10 @@ I'm using the <a href="https://www.npgsql.org/index.html">Npgsql drivers</a> for
 
             <h5>Older Posts</h5>
             <ul>
+                    <li><a href="/posts/jupyter-docker-csharp-postgres">Docker controlled from Jupyter Notebook C# with PostgresDB</a></li>
                     <li><a href="/posts/jupyter-sqlite-csharp">Testing SQLite in C# Jupyter notebook</a></li>
                     <li><a href="/posts/jupyter-notebook-csharp-r">Jupyter notebook with C# and R</a></li>
                     <li><a href="/posts/bulk-inserts">Using bulk inserts on databases</a></li>
-                    <li><a href="/posts/webassembly-thoughts">Reflections on Webassembly - May/Nov 19</a></li>
             </ul>
                 <ul class="actions small">
                     <li><a href="/posts" class="button small">Archive &rarr;</a></li>

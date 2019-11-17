@@ -4,8 +4,71 @@
 	<title>Eric Winnington</title>
 	<link rel="self" href="http://ewinnington.github.io/" />
 	<rights>2019</rights>
-	<updated>2019-11-16T23:38:11Z</updated>
+	<updated>2019-11-17T01:53:28Z</updated>
 	<subtitle>A collection of thoughts, code and snippets.</subtitle>
+	<entry>
+		<id>http://ewinnington.github.io/posts/jupyter-tips-csharp</id>
+		<title>Tips and tricks for C# Jupyter notebook</title>
+		<link href="http://ewinnington.github.io/posts/jupyter-tips-csharp" />
+		<updated>2019-11-17T01:30:00Z</updated>
+		<content>&lt;p&gt;As I use the Jupyter notebook with C# integration, I'll add to this list of tricks as I discover them.&lt;/p&gt;
+&lt;h2 id="adding-collapsed-details-to-jupyter-notebooks"&gt;Adding collapsed details to jupyter notebooks&lt;/h2&gt;
+&lt;p&gt;I wanted to show hints and answers to questions in the jupyter notebook, but I didn't want them to be directly visible without interaction.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/posts/images/jupyter-notebook-tips/collapsed_details.png" class="img-fluid" alt="collapsed" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src="/posts/images/jupyter-notebook-tips/expanded_details.png" class="img-fluid" alt="expanded" /&gt;&lt;/p&gt;
+&lt;p&gt;This was done by creating a markdown block with an HTML section inside. When interacted with, the section expands.&lt;/p&gt;
+&lt;pre&gt;&lt;code class="language-HTML"&gt;&amp;lt;details&amp;gt;
+&amp;lt;summary&amp;gt;Summary of the fold&amp;lt;/summary&amp;gt;
+  ... Content shown after the fold ...
+&amp;lt;/details&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;details&gt;
+&lt;summary&gt;Summary of the fold&lt;/summary&gt;
+  ... Content shown after the fold ...
+&lt;/details&gt;
+&lt;p&gt;And since it's just HTML, it works anywere, including here.&lt;/p&gt;
+&lt;h2 id="display-function"&gt;display() function&lt;/h2&gt;
+&lt;p&gt;The C# kernel embedded in Jupyter has some functions that control the output to the cells of the notebook when executed. One of these functions is  &lt;code&gt;display()&lt;/code&gt;.&lt;/p&gt;
+&lt;h3 id="tables"&gt;Tables&lt;/h3&gt;
+&lt;p&gt;It shows properties of objects or lists in a table format. In my linear programming solver examples, I used this command to make a table with the name and value of each problem variable.&lt;/p&gt;
+&lt;pre&gt;&lt;code class="language-CSharp"&gt; display(solver.variables().Select(a =&amp;gt; new { Name  = a.Name(), Value = a.SolutionValue() })); 
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src="/posts/images/lp/10-6.png" class="img-fluid" alt="var_table" /&gt;&lt;/p&gt;
+&lt;p&gt;This is an ideal case for &lt;a href="https://docs.microsoft.com/en-us/dotnet/csharp/programming-guide/classes-and-structs/anonymous-types"&gt;C#'s anonymous objects&lt;/a&gt; and &lt;a href="https://docs.microsoft.com/en-us/dotnet/csharp/programming-guide/concepts/linq/data-transformations-with-linq"&gt;linq to select the object properties&lt;/a&gt; that you want to see in the table. Adding &lt;code&gt;using System.Linq;&lt;/code&gt; to your references will allow you to use the &lt;code&gt;.Select( x =&amp;gt; new { PropertyHeader = x.PropertyValue, ... })&lt;/code&gt; linq command.&lt;/p&gt;
+&lt;h3 id="svgs"&gt;SVGs&lt;/h3&gt;
+&lt;p&gt;I discovered the &lt;code&gt;display(HTML())&lt;/code&gt; function allows you to pass items such as SVGs from inside C# to be rendered below the block. Two examples are the SVG image triange and the bar chart. On top of that, the bar chart is stylable by CSS.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/posts/images/jupyter-notebook-tips/svg_img.png" class="img-fluid" alt="expanded" /&gt;&lt;/p&gt;
+&lt;p&gt;The SVG code is generated inside C#, then the variable containing the SVG is displayed.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/posts/images/jupyter-notebook-tips/bar_chart.png" class="img-fluid" alt="expanded" /&gt;&lt;/p&gt;
+&lt;p&gt;Finally, you can add create a cell containing some CSS (with &lt;code&gt;%%html&lt;/code&gt;) , which when executed will change the chart as shown.
+&lt;img src="/posts/images/jupyter-notebook-tips/bar_chart_with_css.png" class="img-fluid" alt="expanded" /&gt;
+&lt;img src="/posts/images/jupyter-notebook-tips/bar_chart_css.png" class="img-fluid" alt="expanded" /&gt;&lt;/p&gt;
+&lt;h2 id="magic"&gt;Magic&lt;/h2&gt;
+&lt;p&gt;The &lt;code&gt;%lsmagic&lt;/code&gt; command shows a list of commands available to use in code blocks.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/posts/images/jupyter-notebook-tips/lsmagic.png" class="img-fluid" alt="expanded" /&gt;&lt;/p&gt;
+&lt;h3 id="javascript"&gt;%%javascript&lt;/h3&gt;
+&lt;p&gt;You can execute javascript with the &lt;code&gt;%%javascript&lt;/code&gt; magic.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/posts/images/jupyter-notebook-tips/javascript_hello.png" class="img-fluid" alt="collapsed" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src="/posts/images/jupyter-notebook-tips/javascript_hello_active.png" class="img-fluid" alt="collapsed" /&gt;&lt;/p&gt;
+&lt;h3 id="html"&gt;%%html&lt;/h3&gt;
+&lt;p&gt;As previously mentioned, the %%html command will allow you to add CSS blocks and any other HTML output directly into the Jupyter output cell.&lt;/p&gt;
+&lt;h3 id="time"&gt;%%time&lt;/h3&gt;
+&lt;p&gt;Gives you access to the wall time. Actual time took to execution of the cell.&lt;/p&gt;
+&lt;h3 id="whos"&gt;%whos&lt;/h3&gt;
+&lt;p&gt;Gives you access to the list of currently defined variable in the memory of the notebook. Also lists the type and value (as a &amp;quot;toString() representation) of the objects.&lt;/p&gt;
+&lt;h3 id="fsharp"&gt;%%fsharp&lt;/h3&gt;
+&lt;p&gt;You can intermingle C# and F# code inside one notebook, as long as they are in different cells. You can switch to F# by prefixing the cell with &lt;code&gt;%%fsharp&lt;/code&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code class="language-%%fsharp"&gt;let main argv =
+    display &amp;quot;Hello World from F#!&amp;quot;
+    0 
+main()
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src="/posts/images/jupyter-notebook-tips/f_sharp.png" class="img-fluid" alt="collapsed" /&gt;&lt;/p&gt;
+&lt;h2 id="graphing-from-c"&gt;Graphing from C#&lt;/h2&gt;
+&lt;p&gt;I still have to find out what are good solutions for C# graphs. I saw there was work done on &lt;a href="https://www.nuget.org/packages/XPlot.Plotly/"&gt;F# integration with Jupyter&lt;/a&gt;, &lt;a href="https://devblogs.microsoft.com/dotnet/net-core-with-juypter-notebooks-is-here-preview-1/"&gt;as shown on the blog&lt;/a&gt;, but I haven't had time to look at it in depth.&lt;/p&gt;
+</content>
+		<summary>&lt;p&gt;As I use the Jupyter notebook with C# integration, I'll add to this list of tricks as I discover them.&lt;/p&gt;</summary>
+	</entry>
 	<entry>
 		<id>http://ewinnington.github.io/posts/jupyter-lp-20</id>
 		<title>Applications in LP and MILP with C# and OR-Tools inside Jupyter</title>
@@ -723,6 +786,30 @@ if (nRowsCount &amp;gt; 0)
 		<summary>&lt;p&gt;I rewatched this talk from 2014, &lt;a href="https://www.destroyallsoftware.com/talks/the-birth-and-death-of-javascript"&gt;The Birth and Death of JavaScript&lt;/a&gt;, and am still amazed at how prescient it was and still is.&lt;/p&gt;</summary>
 	</entry>
 	<entry>
+		<id>http://ewinnington.github.io/posts/R-Redis-Json</id>
+		<title>R - Reading JSON from redis</title>
+		<link href="http://ewinnington.github.io/posts/R-Redis-Json" />
+		<updated>2019-11-03T00:00:00Z</updated>
+		<content>&lt;p&gt;I needed to access Redis from R. Here's the code I used to connect, set a value, then deserialize a key that was in json format and publish a message. &lt;a href="https://cran.r-project.org/web/packages/rredis/vignettes/rredis.pdf"&gt;Rredis documentation located here&lt;/a&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;library(&amp;quot;rredis&amp;quot;)
+library(&amp;quot;jsonlite&amp;quot;, lib.loc=&amp;quot;~/R/win-library/3.2&amp;quot;)
+
+redisConnect()
+redisSet(&amp;quot;x&amp;quot;,rnorm(5))
+redisGet(&amp;quot;x&amp;quot;)
+
+x = fromJSON(redisGet(&amp;quot;ts_1&amp;quot;))
+x$t &amp;lt;-  strptime(x$t, &amp;quot;%Y-%m-%dT%H:%M:%S&amp;quot;)
+
+//https://cran.r-project.org/web/packages/rredis/vignettes/rredis.pdf
+redisPublish(&amp;quot;General:Active&amp;quot;, charToRaw('Message'))
+
+redisClose()
+&lt;/code&gt;&lt;/pre&gt;
+</content>
+		<summary>&lt;p&gt;I needed to access Redis from R. Here's the code I used to connect, set a value, then deserialize a key that was in json format and publish a message. &lt;a href="https://cran.r-project.org/web/packages/rredis/vignettes/rredis.pdf"&gt;Rredis documentation located here&lt;/a&gt;&lt;/p&gt;</summary>
+	</entry>
+	<entry>
 		<id>http://ewinnington.github.io/posts/R-read-binary-file</id>
 		<title>R - Reading binary files</title>
 		<link href="http://ewinnington.github.io/posts/R-read-binary-file" />
@@ -849,30 +936,6 @@ jobs:
 &lt;p&gt;Please feel free to look around both branches &lt;em&gt;source&lt;/em&gt; and &lt;em&gt;master&lt;/em&gt; on &lt;a href="https://github.com/ewinnington/ewinnington.github.io"&gt;my github repo&lt;/a&gt; to understand how my blog is setup.&lt;/p&gt;
 </content>
 		<summary>&lt;p&gt;Not that I have Wyam as a static site generator, I want to use &lt;a href="https://github.com/features/actions"&gt;Github Actions&lt;/a&gt; to automatically deploy it on push. This requires a quite few steps to setup, but I did it, now so can you!&lt;/p&gt;</summary>
-	</entry>
-	<entry>
-		<id>http://ewinnington.github.io/posts/R-Redis-Json</id>
-		<title>R - Reading JSON from redis</title>
-		<link href="http://ewinnington.github.io/posts/R-Redis-Json" />
-		<updated>2019-11-03T00:00:00Z</updated>
-		<content>&lt;p&gt;I needed to access Redis from R. Here's the code I used to connect, set a value, then deserialize a key that was in json format and publish a message. &lt;a href="https://cran.r-project.org/web/packages/rredis/vignettes/rredis.pdf"&gt;Rredis documentation located here&lt;/a&gt;&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;library(&amp;quot;rredis&amp;quot;)
-library(&amp;quot;jsonlite&amp;quot;, lib.loc=&amp;quot;~/R/win-library/3.2&amp;quot;)
-
-redisConnect()
-redisSet(&amp;quot;x&amp;quot;,rnorm(5))
-redisGet(&amp;quot;x&amp;quot;)
-
-x = fromJSON(redisGet(&amp;quot;ts_1&amp;quot;))
-x$t &amp;lt;-  strptime(x$t, &amp;quot;%Y-%m-%dT%H:%M:%S&amp;quot;)
-
-//https://cran.r-project.org/web/packages/rredis/vignettes/rredis.pdf
-redisPublish(&amp;quot;General:Active&amp;quot;, charToRaw('Message'))
-
-redisClose()
-&lt;/code&gt;&lt;/pre&gt;
-</content>
-		<summary>&lt;p&gt;I needed to access Redis from R. Here's the code I used to connect, set a value, then deserialize a key that was in json format and publish a message. &lt;a href="https://cran.r-project.org/web/packages/rredis/vignettes/rredis.pdf"&gt;Rredis documentation located here&lt;/a&gt;&lt;/p&gt;</summary>
 	</entry>
 	<entry>
 		<id>http://ewinnington.github.io/posts/Switching-to-wyam</id>
@@ -1025,50 +1088,5 @@ string status = (DbServer.isAvailable ? &amp;quot;ok&amp;quot; : &amp;quot;nok&a
 &lt;/code&gt;&lt;/pre&gt;
 </content>
 		<summary>&lt;p&gt;To list the network channels in use by the various wi-fi networks, you can always use this command in an Administrator command prompt.&lt;/p&gt;</summary>
-	</entry>
-	<entry>
-		<id>http://ewinnington.github.io/posts/oracle-reclaiming-lob-space-after-deletion-clob-blob</id>
-		<title>Oracle - Reclaiming LOB space after deletion (CLOB, BLOB)</title>
-		<link href="http://ewinnington.github.io/posts/oracle-reclaiming-lob-space-after-deletion-clob-blob" />
-		<updated>2014-02-03T00:00:00Z</updated>
-		<content>&lt;p&gt;To reclaim space after a deleting LOBs, use the following commands. XXXXX is my tablename, data is my column name for the lob, in pink the size of the table.&lt;/p&gt;
-&lt;ol&gt;
-&lt;li&gt;Check size of the table XXXXX&lt;/li&gt;
-&lt;/ol&gt;
-&lt;pre&gt;&lt;code&gt;SELECT table_name, column_name, segment_name, a.bytes
-FROM dba_segments a JOIN dba_lobs b
-USING (owner, segment_name)
-WHERE b.table_name = 'XXXXX';
-&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;&amp;gt;&amp;gt; XXXXX DATA SYS_LOB0000025315C00007$$ 1073741824
-&lt;/code&gt;&lt;/pre&gt;
-&lt;ol start="2"&gt;
-&lt;li&gt;Delete, in my case, I just clean up all files in my table.&lt;/li&gt;
-&lt;/ol&gt;
-&lt;pre&gt;&lt;code&gt;DELETE FROM XXXXX;
-COMMIT;
-&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;&amp;gt;&amp;gt; 183 rows deleted.
-&amp;gt;&amp;gt; committed.
-&lt;/code&gt;&lt;/pre&gt;
-&lt;ol start="3"&gt;
-&lt;li&gt;Ask Oracle to shrink the tablespace used by the LOB column ‘data’. Have a coffee break.&lt;/li&gt;
-&lt;/ol&gt;
-&lt;pre&gt;&lt;code&gt;ALTER TABLE XXXXX MODIFY LOB (data) (SHRINK SPACE);
-&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;&amp;gt;&amp;gt; table XXXXX altered.
-&lt;/code&gt;&lt;/pre&gt;
-&lt;ol start="4"&gt;
-&lt;li&gt;Check size again:&lt;/li&gt;
-&lt;/ol&gt;
-&lt;pre&gt;&lt;code&gt;SELECT table_name, column_name, segment_name, a.bytes
-FROM dba_segments a JOIN dba_lobs b
-USING (owner, segment_name)
-WHERE b.table_name = 'XXXXX';
-&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;&amp;gt;&amp;gt; XXXXX DATA SYS\_LOB0000025315C00007$$ 65536
-&lt;/code&gt;&lt;/pre&gt;
-</content>
-		<summary>&lt;p&gt;To reclaim space after a deleting LOBs, use the following commands. XXXXX is my tablename, data is my column name for the lob, in pink the size of the table.&lt;/p&gt;</summary>
 	</entry>
 </feed>
