@@ -98,4 +98,121 @@ main()
 
 ## Graphing from C# 
 
-I still have to find out what are good solutions for C# graphs. I saw there was work done on [F# integration with Jupyter](https://www.nuget.org/packages/XPlot.Plotly/), [as shown on the blog](https://devblogs.microsoft.com/dotnet/net-core-with-juypter-notebooks-is-here-preview-1/), but I haven't had time to look at it in depth. 
+We can chart using ```Xplot.Plotly```. 
+
+```CSharp
+//Install XPlot package
+#r "nuget:XPlot.Plotly,2.0.0"
+using XPlot.Plotly;
+```
+
+Input data: 
+
+```CSharp
+DateTime now = DateTime.Now; 
+var imax = 8760; 
+var rand = new Random(); 
+double[] data = Enumerable.Range(1, imax).Select(x => 20.0 + 15.0 * Math.Sin(x/60.0) + 12 * rand.NextDouble()).ToArray(); 
+DateTime[] tp = Enumerable.Range(1, imax).Select(x => now.AddHours(x) ).ToArray(); 
+
+int totalNumberForBarChart = 3;
+double[] actualFares = new [] {3.4, 12.3, 20.42};
+double[] predictionFares = new [] {7.4, 14.3, 18.42};
+int[] elements = Enumerable.Range(0, totalNumberForBarChart).ToArray();
+```
+
+my samples are here [C# charts](https://github.com/ewinnington/noteb/blob/master/Charts_CSharp.ipynb)
+
+### Two bar plot
+
+![bar](/posts/images/jupyter-notebook-tips/bar.png)
+
+```CSharp
+// Define group for Actual values
+var ActualValuesGroupBarGraph = new Graph.Bar()
+{
+   x = elements,
+   y = actualFares,
+   name = "Actual"
+};
+ 
+// Define group for Prediction values
+var PredictionValuesGroupBarGraph = new Graph.Bar()
+{
+   x = elements,
+   y = predictionFares,
+   name = "Predicted"
+};
+ 
+var chart = Chart.Plot(new[] {ActualValuesGroupBarGraph, PredictionValuesGroupBarGraph});
+var layout = new Layout.Layout(){barmode = "group", title="Actual fares vs. Predicted fares Comparison"};
+chart.WithLayout(layout);
+chart.WithXTitle("Cases");
+chart.WithYTitle("Fare");
+chart.WithLegend(true);
+chart.Width = 700;
+chart.Height = 400;
+ 
+display(chart);
+```
+
+### Histogram 
+
+![hist](/posts/images/jupyter-notebook-tips/histogram.png)
+
+```CSharp
+var faresHistogram = Chart.Plot(new Graph.Histogram(){x = data, autobinx = false, nbinsx = 20});
+var layout = new Layout.Layout(){title="Distribution of taxi trips per cost"};
+faresHistogram.WithLayout(layout);
+
+display(faresHistogram);
+```
+
+### Scatter 
+
+![scatter](/posts/images/jupyter-notebook-tips/scatter.png)
+
+```CSharp
+var chart = Chart.Plot(
+    new Graph.Scatter()
+    {
+        x = actualFares,
+        y = predictionFares,
+        mode = "markers",
+        marker = new Graph.Marker()
+        {
+            color = predictionFares,
+            colorscale = "Jet"
+        }
+    }
+);
+
+var layout = new Layout.Layout(){title="Plot Time vs. Distance & color scale on Fares"};
+chart.WithLayout(layout);
+chart.Width = 500;
+chart.Height = 500;
+chart.WithLegend(true);
+
+display(chart);
+```
+
+### Line chart with scatter 
+
+![lines](/posts/images/jupyter-notebook-tips/lines.png)
+
+```CSharp
+var linedUp = new Graph.Scatter()
+{
+    x = tp,
+    y = data,
+    mode = "lines",
+};
+
+var chart = Chart.Plot(linedUp);
+chart.WithXTitle("Date");
+chart.WithYTitle("Value");
+chart.WithLegend(true);
+chart.Width = 1200;
+chart.Height = 600;
+display(chart);
+```
