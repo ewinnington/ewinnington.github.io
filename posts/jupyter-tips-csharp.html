@@ -154,7 +154,102 @@ main()
 </code></pre>
 <p><img src="/posts/images/jupyter-notebook-tips/f_sharp.png" class="img-fluid" alt="collapsed" /></p>
 <h2 id="graphing-from-c">Graphing from C#</h2>
-<p>I still have to find out what are good solutions for C# graphs. I saw there was work done on <a href="https://www.nuget.org/packages/XPlot.Plotly/">F# integration with Jupyter</a>, <a href="https://devblogs.microsoft.com/dotnet/net-core-with-juypter-notebooks-is-here-preview-1/">as shown on the blog</a>, but I haven't had time to look at it in depth.</p>
+<p>We can chart using <code>Xplot.Plotly</code>.</p>
+<pre><code class="language-CSharp">//Install XPlot package
+#r &quot;nuget:XPlot.Plotly,2.0.0&quot;
+using XPlot.Plotly;
+</code></pre>
+<p>Input data:</p>
+<pre><code class="language-CSharp">DateTime now = DateTime.Now; 
+var imax = 8760; 
+var rand = new Random(); 
+double[] data = Enumerable.Range(1, imax).Select(x =&gt; 20.0 + 15.0 * Math.Sin(x/60.0) + 12 * rand.NextDouble()).ToArray(); 
+DateTime[] tp = Enumerable.Range(1, imax).Select(x =&gt; now.AddHours(x) ).ToArray(); 
+
+int totalNumberForBarChart = 3;
+double[] actualFares = new [] {3.4, 12.3, 20.42};
+double[] predictionFares = new [] {7.4, 14.3, 18.42};
+int[] elements = Enumerable.Range(0, totalNumberForBarChart).ToArray();
+</code></pre>
+<p>my samples are here <a href="https://github.com/ewinnington/noteb/blob/master/Charts_CSharp.ipynb">C# charts</a></p>
+<h3 id="two-bar-plot">Two bar plot</h3>
+<p><img src="/posts/images/jupyter-notebook-tips/bar.png" class="img-fluid" alt="bar" /></p>
+<pre><code class="language-CSharp">// Define group for Actual values
+var ActualValuesGroupBarGraph = new Graph.Bar()
+{
+   x = elements,
+   y = actualFares,
+   name = &quot;Actual&quot;
+};
+ 
+// Define group for Prediction values
+var PredictionValuesGroupBarGraph = new Graph.Bar()
+{
+   x = elements,
+   y = predictionFares,
+   name = &quot;Predicted&quot;
+};
+ 
+var chart = Chart.Plot(new[] {ActualValuesGroupBarGraph, PredictionValuesGroupBarGraph});
+var layout = new Layout.Layout(){barmode = &quot;group&quot;, title=&quot;Actual fares vs. Predicted fares Comparison&quot;};
+chart.WithLayout(layout);
+chart.WithXTitle(&quot;Cases&quot;);
+chart.WithYTitle(&quot;Fare&quot;);
+chart.WithLegend(true);
+chart.Width = 700;
+chart.Height = 400;
+ 
+display(chart);
+</code></pre>
+<h3 id="histogram">Histogram</h3>
+<p><img src="/posts/images/jupyter-notebook-tips/histogram.png" class="img-fluid" alt="hist" /></p>
+<pre><code class="language-CSharp">var faresHistogram = Chart.Plot(new Graph.Histogram(){x = data, autobinx = false, nbinsx = 20});
+var layout = new Layout.Layout(){title=&quot;Distribution of taxi trips per cost&quot;};
+faresHistogram.WithLayout(layout);
+
+display(faresHistogram);
+</code></pre>
+<h3 id="scatter">Scatter</h3>
+<p><img src="/posts/images/jupyter-notebook-tips/scatter.png" class="img-fluid" alt="scatter" /></p>
+<pre><code class="language-CSharp">var chart = Chart.Plot(
+    new Graph.Scatter()
+    {
+        x = actualFares,
+        y = predictionFares,
+        mode = &quot;markers&quot;,
+        marker = new Graph.Marker()
+        {
+            color = predictionFares,
+            colorscale = &quot;Jet&quot;
+        }
+    }
+);
+
+var layout = new Layout.Layout(){title=&quot;Plot Time vs. Distance &amp; color scale on Fares&quot;};
+chart.WithLayout(layout);
+chart.Width = 500;
+chart.Height = 500;
+chart.WithLegend(true);
+
+display(chart);
+</code></pre>
+<h3 id="line-chart-with-scatter">Line chart with scatter</h3>
+<p><img src="/posts/images/jupyter-notebook-tips/lines.png" class="img-fluid" alt="lines" /></p>
+<pre><code class="language-CSharp">var linedUp = new Graph.Scatter()
+{
+    x = tp,
+    y = data,
+    mode = &quot;lines&quot;,
+};
+
+var chart = Chart.Plot(linedUp);
+chart.WithXTitle(&quot;Date&quot;);
+chart.WithYTitle(&quot;Value&quot;);
+chart.WithLegend(true);
+chart.Width = 1200;
+chart.Height = 600;
+display(chart);
+</code></pre>
 
 
 <hr>
