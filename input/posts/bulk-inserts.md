@@ -1,6 +1,6 @@
 Title: Using bulk inserts on databases
 Published: 11/11/2019
-Tags: [CSharp, OracleDb, MsSql, Postgresql, BulkInserts] 
+Tags: [CSharp, Oracle, MsSql, Postgresql, BulkInserts] 
 ---
 When inserting large amounts of data into databases, you should consider using the bulk functions instead of running single row INSERT commands. Single row INSERT command will usually lead to poor performance. There exists two main techniques for mutiple row insertions in databases from code and several more if you use the loader tools that accompany the database. Here I'll detail the two main methods: BulkInserts and VectorInserts. 
 
