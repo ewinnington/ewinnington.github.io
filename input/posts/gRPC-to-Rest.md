@@ -13,7 +13,7 @@ Tags: [gRPC, Rest, CSharp, Python, Java, Go, Node, Polyglot project]
 
 [Reference to http.proto specification ](https://github.com/googleapis/googleapis/blob/ca1372c6d7bcb199638ebfdb40d2b2660bab7b88/google/api/http.proto)
 
-[API Design guide](https://cloud.google.com/apis/design/standard_methods)
+[API Design guide standard methods](https://cloud.google.com/apis/design/standard_methods) this shows how to add http endpoints in a proto file
 
 ## Proto3 service definition
 
