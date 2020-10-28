@@ -1,6 +1,6 @@
 Title: Serving gRPC and Rest endpoints defined by a .proto file in .Net C#, Java, Python, Go, Node
 Published: 3/11/2020
-Tags: [gRPC, Rest, CSharp, Python, Java, Go, Node] 
+Tags: [gRPC, Rest, CSharp, Python, Java, Go, Node, Polyglot project] 
 ---
 
 # Serving gRPC and Rest endpoints defined by a .proto file in dotNet, Java, Python, Go, Node
