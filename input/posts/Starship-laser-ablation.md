@@ -1,4 +1,4 @@
-Title: the case for a SpaceX Starship laser ablation for orbital debris management
+Title: The case for a SpaceX Starship laser ablation platform for orbital debris management
 Published: 18/09/2022
 Tags: [SpaceX, Space] 
 ---
