@@ -21,8 +21,8 @@ jobs:
     - name: Publish blog
       run: ./wyam -r blog -t Phantom
     - name: Deploy
-      uses: peaceiris/actions-gh-pages@v2.5.0
-      env:
-        ACTIONS_DEPLOY_KEY: ${{ secrets.ACTIONS_DEPLOY_KEY }}
-        PUBLISH_BRANCH: master  # deploying branch
-        PUBLISH_DIR: ./output
+      uses: peaceiris/actions-gh-pages@v3
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        publish_branch: master  # deploying branch
+        publish_dir: ./output
