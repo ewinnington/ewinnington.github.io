@@ -31,4 +31,4 @@ https://minutemanmissile.com/abl.html
 
 ## Discussion 
 
-A [discussion thread on reddit about this post](https://www.reddit.com/r/SpaceXLounge/comments/xj8bjh/the_case_for_a_spacex_starship_laser_ablation/)
+A [discussion thread on reddit about this post](https://www.reddit.com/r/SpaceXLounge/comments/xj8bjh/the_case_for_a_spacex_starship_laser_ablation/) has provided some feedback and the post has been updated.
