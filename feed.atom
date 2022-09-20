@@ -4,7 +4,7 @@
 	<title>Eric Winnington</title>
 	<link rel="self" href="http://ewinnington.github.io/" />
 	<rights>2022</rights>
-	<updated>2022-09-20T18:55:45Z</updated>
+	<updated>2022-09-20T19:03:36Z</updated>
 	<subtitle>A collection of thoughts, code and snippets.</subtitle>
 	<entry>
 		<id>http://ewinnington.github.io/posts/Starship-laser-ablation</id>
@@ -17,7 +17,7 @@
 &lt;p&gt;To be able to make orbital cleanup affordable, we need to have a cheap to fly, high power laser with a sufficient burn time and have the ability to choose the orbit of our laser platform.&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;Cheap to fly: The launch costs of a SpaceX starship is estimated to be at least one order of magnitude less in dollar per kilo to orbit.&lt;/li&gt;
-&lt;li&gt;High power laser: The high power of chemical lasers along with their high mass requirements make them a good fit for integration into a Starship. With sufficient mass for the chemicals to supply the laser, the lasers could be used long enough to clear the coplanar orbit. Once the chemicals are depleted, the starship can be landed and the laser refuelled for another mission.&lt;/li&gt;
+&lt;li&gt;High power laser: The high power of chemical lasers along with their high mass requirements make them a good fit for integration into a Starship. With sufficient mass for the chemicals to supply the laser, the lasers could be used long enough to clear the coplanar orbit. Once the chemicals are depleted, the starship can be landed and the laser refuelled for another mission. Other types of lasers, which have been developed recently, are also candidates: Solid state lasers, fiber lasers, diode lasers - with these the mass capability of Starship would be used for large batteries and potentially hydrogen fuel cells to provide enough power for the application.&lt;/li&gt;
 &lt;li&gt;Ability to choose orbit: Laser ablation is most effective when the platform if shooting from a “same altitude and coplanar” orbit. Different launches are then the most effective way of reaching these orbits to get maximal efficiency.&lt;/li&gt;
 &lt;/ul&gt;
 &lt;p&gt;If the &lt;a href="https://www.fastcompany.com/90789865/orbits-act-what-to-know-about-congress-effort-to-clean-up-space-debris"&gt;US government decides to start paying for orbital clearing services&lt;/a&gt; with the Orbital Clearance with the Orbital Sustainability (ORBITS) Act, it would be a clear case to develop such a Starship variant. Without other incentives, it might still be profitable by selling “deorbiting and clearance services” to other satellite providers. This remains to be seen how much “good citizenship” is to be expected from satellite constructors, launchers and operators.&lt;/p&gt;
