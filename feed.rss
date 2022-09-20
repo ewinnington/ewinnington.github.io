@@ -5,8 +5,8 @@
 		<link>http://ewinnington.github.io/</link>
 		<description>A collection of thoughts, code and snippets.</description>
 		<copyright>2022</copyright>
-		<pubDate>Sun, 18 Sep 2022 19:56:26 GMT</pubDate>
-		<lastBuildDate>Sun, 18 Sep 2022 19:56:26 GMT</lastBuildDate>
+		<pubDate>Tue, 20 Sep 2022 13:21:13 GMT</pubDate>
+		<lastBuildDate>Tue, 20 Sep 2022 13:21:13 GMT</lastBuildDate>
 		<item>
 			<title>The case for a SpaceX Starship laser ablation platform for orbital debris management</title>
 			<link>http://ewinnington.github.io/posts/Starship-laser-ablation</link>
@@ -23,6 +23,13 @@
 &lt;li&gt;Ability to choose orbit: Laser ablation is most effective when the platform if shooting from a “same altitude and coplanar” orbit. Different launches are then the most effective way of reaching these orbits to get maximal efficiency.&lt;/li&gt;
 &lt;/ul&gt;
 &lt;p&gt;If the US government decides to start paying for orbital clearing services, it would be a clear case to develop such a Starship variant. Without other incentives, it might still be profitable by selling “deorbiting and clearance services” to other satellite providers. This remains to be seen how much “good citizenship” is to be expected from satellite constructors, launchers and operators.&lt;/p&gt;
+&lt;p&gt;References to laser ablation papers&lt;/p&gt;
+&lt;p&gt;Space based -
+&lt;a href="https://conference.sdo.esoc.esa.int/proceedings/sdc8/paper/43/SDC8-paper43.pdf"&gt;https://conference.sdo.esoc.esa.int/proceedings/sdc8/paper/43/SDC8-paper43.pdf&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Ground based -
+&lt;a href="https://conference.sdo.esoc.esa.int/proceedings/sdc6/paper/29/SDC6-paper29.pdf"&gt;https://conference.sdo.esoc.esa.int/proceedings/sdc6/paper/29/SDC6-paper29.pdf&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Air based Anti ballistic missile chemical laser - a lower powered could be used in Starsjip for de-orbiting, but this shows the feasibility.
+&lt;a href="https://minutemanmissile.com/abl.html"&gt;https://minutemanmissile.com/abl.html&lt;/a&gt;&lt;/p&gt;
 </content:encoded>
 		</item>
 		<item>
