@@ -16,3 +16,15 @@ To be able to make orbital cleanup affordable, we need to have a cheap to fly, h
 - Ability to choose orbit: Laser ablation is most effective when the platform if shooting from a “same altitude and coplanar” orbit. Different launches are then the most effective way of reaching these orbits to get maximal efficiency.
 
 If the US government decides to start paying for orbital clearing services, it would be a clear case to develop such a Starship variant. Without other incentives, it might still be profitable by selling “deorbiting and clearance services” to other satellite providers. This remains to be seen how much “good citizenship” is to be expected from satellite constructors, launchers and operators. 
+
+
+References to laser ablation papers
+
+Space based - 
+https://conference.sdo.esoc.esa.int/proceedings/sdc8/paper/43/SDC8-paper43.pdf
+
+Ground based - 
+https://conference.sdo.esoc.esa.int/proceedings/sdc6/paper/29/SDC6-paper29.pdf
+
+Air based Anti ballistic missile chemical laser - a lower powered could be used in Starsjip for de-orbiting, but this shows the feasibility. 
+https://minutemanmissile.com/abl.html
