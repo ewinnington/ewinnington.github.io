@@ -30,5 +30,28 @@ Tags: [gRPC, Rest, CSharp, Python, Java, Go, Node, Polyglot project]
 
 ## Go 
 
+Installing the support for go required a few steps: 
+1) Make sure you followed all the instructions on https://github.com/grpc-ecosystem/grpc-gateway 
+1) in a new folder do the following
+1) ```Go mod init module/path/name```
+1) Create a tools.go file with 
+    ```go 
+    // +build tools
+
+    package tools
+
+    import (
+        _ "github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-grpc-gateway"
+        _ "github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-openapiv2"
+        _ "google.golang.org/grpc/cmd/protoc-gen-go-grpc"
+        _ "google.golang.org/protobuf/cmd/protoc-gen-go"
+    )
+    ``` 
+
+1) ```go mod tidy```
+1) make sure your %GOBIN% environment variable is set ```setx GOBIN "C:\SOFTWARE\GO\BIN"``` in my case (setx requires admin rights, otherwise use set)
+1) ```go install github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-grpc-gateway github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-openapiv2 google.golang.org/protobuf/cmd/protoc-gen-go google.golang.org/grpc/cmd/protoc-gen-go-grpc```
+1) Generate the go files for the implementation  ``` protoc -I.  --go_out ./gen/go/ --go-grpc_out ./gen/go greet.proto```
+
 ## Node
 
