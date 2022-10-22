@@ -95,6 +95,20 @@
 <div class="row">
     <div class="8u 12u$(medium)">
                 <div>
+                    <a href="/posts/sqlite-microstores">
+                        <h2>Embracing SQLite and living with micro-services</h2>
+                    </a>
+                    <p>Posted on Saturday, 22 October 2022</p>
+<p>The idea of micro-services and their own single purpose data stores is easy to describe. But then to implement and live with it is a different story. So as a developer and architect, I’ve decided to do just that! Make micro-services and micro-data stores to cover the tiny and small stuff in my life I want to keep track of.</p>
+<p>As an example, I read online comics, light novels and mangas. I had a continuous list of a couple hundred bookmarks that I tried to keep updated with the last position I was when I read the story. But I always forget to update the bookmark and have so many of them that I lose the last read chapter. My solution?</p>
+<p>A SQLite db and some Python code to load it. Pass a single url on some command line Python and it gets added to the Db, a Request goes out, gets the title and chapter from the html, then adds it to the DB by title. Now I have a track of where I left off and I can get have last updated / last read records. Bonus, I can do a SELECT .. ORDER BY updated LIMIT 10 to check the last stories I was reading and pipe them to my browser to open up the chapters where I left them off.</p>
+<p>To really embrace SQLite is to make everything in your life become a new micro database, even if there's only a couple of tables with a dozen or a hundred rows.</p>
+<p>Stock tracking? an SQLite Db with Transactions and a roll-up Inventory table.</p>
+<p>In fact, even when sending data around from one system to another, we should even embrace the simplicity of SQLite over CSV files. See <a href="https://berthub.eu/articles/posts/big-data-storage/">https://berthub.eu/articles/posts/big-data-storage/</a> for his views and performance tests.</p>
+<p>Now I have micro data-stores, I can add a service on top which contains the CRUD commands I need to interact with them and show them in a personal dashboard.</p>
+						<hr>
+                </div>       
+                <div>
                     <a href="/posts/Starship-laser-ablation">
                         <h2>The case for a SpaceX Starship laser ablation platform for orbital debris management</h2>
                     </a>
@@ -293,79 +307,6 @@ display(chart);
 </code></pre>
 						<hr>
                 </div>       
-                <div>
-                    <a href="/posts/jupyter-lp-20">
-                        <h2>Applications in LP and MILP with C# and OR-Tools inside Jupyter</h2>
-                    </a>
-                    <p>Posted on Saturday, 16 November 2019</p>
-<p>Thanks to the integration of C# into <a href="https://jupyter.org/">Jupyter notebooks</a> with the <a href="https://github.com/dotnet/try">kernel from Donet try</a> and support from the <a href="https://mybinder.org/">MyBinder.org</a> hosting, it's easy to share with you runnable workbooks to illustrate how to use the <a href="https://developers.google.com/optimization">Google OR-Tools</a> to solve the <a href="https://en.wikipedia.org/wiki/Linear_programming">linear</a> (LP) and <a href="https://en.wikipedia.org/wiki/Integer_programming">mixed-integer linear problems</a> (MILP) .</p>
-<h1 id="applications-of-linear-programming">Applications of linear programming</h1>
-<h2 id="lp-problem-wire-production">LP Problem : Wire production</h2>
-<p>A plant makes aluminium and copper wires. Each Kg of aluminium wire requires 10 kWh of electricity and <span class="math">\(\frac{1}{2}\)</span> hour of labour. Each Kg of Copper wire requires 4 kWh of electricity and $1$ hour of labour. Electricity is limited to 450 kWh/day, labour is limited to 42.5 hours/day at a cost of 11 € an hour, Electricity cost is 20 € / MWh, Aluminium cost is 1.8 €/Kg, Copper cost is 5.4 €/Kg. Total weight delivered to the plant daily is limited to 56 Kg. Aluminium wire sales price is 45 €/Kg, Copper wire sales price is 50 €/Kg.</p>
-<p>What should be produced to maximise profit and what is the maximum profit?</p>
-<p><a href="https://mybinder.org/v2/gh/ewinnington/noteb/master?filepath=Lp_WireProduction.ipynb">Launch the binder</a>  <a href="https://mybinder.org/v2/gh/ewinnington/noteb/master?filepath=Lp_WireProduction.ipynb"><img src="https://mybinder.org/badge_logo.svg" class="img-fluid" alt="Binder" /></a></p>
-<pre><code class="language-CSharp">Solver solver = Solver.CreateSolver(&quot;LinearProgramming&quot;, &quot;CLP_LINEAR_PROGRAMMING&quot;);
-
-//Setting up the variables and constants of the problem 
-Variable Al = solver.MakeNumVar(0.0, double.PositiveInfinity, &quot;Al&quot;);
-Variable Cu = solver.MakeNumVar(0.0, double.PositiveInfinity, &quot;Cu&quot;);
-double El_Price = 20.0; double El_Max = 450; 
-double La_Price = 11.0; double La_Max = 42.5; 
-double Weight_Max = 56.0; 
-double Al_Purchase = 1.8 ; double Al_Sale = 45.0;
-double Cu_Purchase = 5.4; double Cu_Sale = 50.0;
-
-// Maximize revenue 
-Objective objective = solver.Objective();
-objective.SetCoefficient(Al, Al_Sale-Al_Purchase-(La_Price * 1/2.0)-(El_Price * 10/1000.0));
-objective.SetCoefficient(Cu, Cu_Sale-Cu_Purchase-(La_Price * 1)-(El_Price * 4/1000.0));
-objective.SetMaximization();
-
-// Electricity usage limit
-Constraint c0 = solver.MakeConstraint(0, El_Max);
-c0.SetCoefficient(Al, 10);
-c0.SetCoefficient(Cu, 4);
-
-// Labour usage limit
-Constraint c1 = solver.MakeConstraint(0, La_Max);
-c1.SetCoefficient(Al, 1/2.0);
-c1.SetCoefficient(Cu, 1);
-
-// Weight limit
-Constraint c2 = solver.MakeConstraint(0, Weight_Max);
-c2.SetCoefficient(Al, 1);
-c2.SetCoefficient(Cu, 1);
-
-SolveAndPrint(solver);
-</code></pre>
-<h2 id="milp-problem-knapsack">MILP Problem : Knapsack</h2>
-<p>The <a href="https://en.wikipedia.org/wiki/Knapsack_problem">knapsack problem</a> defines a bag that was a maximal weight of <span class="math">\(W\)</span>, we can take items from a set of items each with a weight of <span class="math">\(w_i\)</span> and a value of <span class="math">\(v_i\)</span>. Typically, the problem is defined with an <span class="math">\(x_i \in \{0,1\}\)</span> variable set to either 0 or 1 knapsack where each item is either taken or not.</p>
-<p>Here we are going to allow fractional parts of the items to be taken so that we can solve it as a linear problem (also known as a linear relaxation), allowing <span class="math">\(x_i \in [0,1]\)</span>.</p>
-<p><a href="https://mybinder.org/v2/gh/ewinnington/noteb/master?filepath=Knapsack_Lp_Milp.ipynb">Launch the binder</a>  <a href="https://mybinder.org/v2/gh/ewinnington/noteb/master?filepath=Knapsack_Lp_Milp.ipynb"><img src="https://mybinder.org/badge_logo.svg" class="img-fluid" alt="Binder" /></a></p>
-<pre><code class="language-CSharp">//Array of items, weights and totals
-int nItems = 10; 
-double maxWeight = 220; 
-double[] weights = {31, 27, 12, 39,  2, 69, 66, 29, 45, 58};
-double[] values =  {24, 27, 26, 15, 19, 33, 30, 28, 65, 42};
-
-Solver milp_solver = Solver.CreateSolver(&quot;MILP&quot;, &quot;CBC_MIXED_INTEGER_PROGRAMMING&quot;);
-
-Variable[] Items = milp_solver.MakeBoolVarArray(10, &quot;Items&quot;);
-
-// Maximize revenue 
-Objective objective = milp_solver.Objective();
-for(int i = 0; i &lt; nItems; i++) objective.SetCoefficient(Items[i], values[i]);
-objective.SetMaximization();
-
-// Weight limit
-Constraint c0 = milp_solver.MakeConstraint(0, maxWeight);
-for(int i = 0; i &lt; nItems; i++) c0.SetCoefficient(Items[i], weights[i]);
-
-SolveAndPrint(milp_solver, nItems, weights);
-</code></pre>
-<p>There are many ways of solving the knapsack problem, using LP and MILP solvers as seen here or using Dynamic Programming. The Google OR-Tools have a specific solver for multi-dimensional knapsack problems, including one which uses Dynamic Programming.</p>
-						<hr>
-                </div>       
         <ul class="pager">
             <li class="previous">                
             </li>
@@ -379,14 +320,14 @@ SolveAndPrint(milp_solver, nItems, weights);
             <ul class="actions small">
                     <li><a role="button" href="/tags/Migrated" class="button small">Migrated (38)</a></li>
                     <li><a role="button" href="/tags/CSharp" class="button small">CSharp (8)</a></li>
-                    <li><a role="button" href="/tags/Jupyter-notebook" class="button small">Jupyter notebook (7)</a></li>
                     <li><a role="button" href="/tags/Dotnet-try" class="button small">Dotnet try (7)</a></li>
+                    <li><a role="button" href="/tags/Jupyter-notebook" class="button small">Jupyter notebook (7)</a></li>
                     <li><a role="button" href="/tags/Oracle" class="button small">Oracle (6)</a></li>
                     <li><a role="button" href="/tags/WPF" class="button small">WPF (4)</a></li>
-                    <li><a role="button" href="/tags/Rpi" class="button small">Rpi (4)</a></li>
                     <li><a role="button" href="/tags/CommandLine" class="button small">CommandLine (4)</a></li>
-                    <li><a role="button" href="/tags/Postgresql" class="button small">Postgresql (3)</a></li>
-                    <li><a role="button" href="/tags/OSX" class="button small">OSX (3)</a></li>
+                    <li><a role="button" href="/tags/Rpi" class="button small">Rpi (4)</a></li>
+                    <li><a role="button" href="/tags/iOS" class="button small">iOS (3)</a></li>
+                    <li><a role="button" href="/tags/R" class="button small">R (3)</a></li>
             </ul>
             <ul class="actions small">
                 <li><a href="/tags" class="button small">View All Tags &rarr;</a></li>
@@ -394,10 +335,10 @@ SolveAndPrint(milp_solver, nItems, weights);
 
             <h5>Older Posts</h5>
             <ul>
+                    <li><a href="/posts/jupyter-lp-20">Applications in LP and MILP with C# and OR-Tools inside Jupyter</a></li>
                     <li><a href="/posts/my-binder-jupyter-csharp">Hosting your C# Jupyter notebook online by adding one file to your repo</a></li>
                     <li><a href="/posts/jupyter-lp-10">Introduction to linear programming with C# and OR-Tools inside Jupyter</a></li>
                     <li><a href="/posts/jupyter-docker-csharp-postgres">Docker controlled from Jupyter Notebook C# with PostgresDB</a></li>
-                    <li><a href="/posts/jupyter-sqlite-csharp">Testing SQLite in C# Jupyter notebook</a></li>
             </ul>
                 <ul class="actions small">
                     <li><a href="/posts" class="button small">Archive &rarr;</a></li>
