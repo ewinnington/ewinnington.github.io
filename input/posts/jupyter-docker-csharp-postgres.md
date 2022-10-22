@@ -1,6 +1,6 @@
 Title: Docker controlled from Jupyter Notebook C# with PostgresDB
 Published: 12/11/2019 23:18
-Tags: [CSharp, Postgresql, Docker, Dotnet try, Jupyter notebook] 
+Tags: [CSharp, Postgresql, Docker, Dotnet try, Jupyter notebook, Database] 
 ---
 
 In the context of Docker and Jupyter Notebook, it's interesting to note that there exists a Nuget that allows C# to control docker. So, yes, it is possible to launch a Postgresql database, on docker, inside a Jupyter notebook!

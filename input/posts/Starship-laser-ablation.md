@@ -1,6 +1,6 @@
 Title: The case for a SpaceX Starship laser ablation platform for orbital debris management
 Published: 18/09/2022
-Tags: [SpaceX, Space] 
+Tags: [SpaceX, Space, Thoughts] 
 ---
 
 SpaceX’s Starship program as a platform for specialised load-outs has many potential applications: Tanker variants for orbital refuelling, Crew variant for Dear Moon mission and dedicated satellite launcher for the Starlink satellite constellation deployment being the variants we already know about.

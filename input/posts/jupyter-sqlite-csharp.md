@@ -1,6 +1,6 @@
 Title: Testing SQLite in C# Jupyter notebook
 Published: 12/11/2019 20:00
-Tags: [CSharp, SQLite, Dotnet try, Jupyter notebook] 
+Tags: [CSharp, SQLite, Dotnet try, Jupyter notebook, Database] 
 ---
 
 Now that we have [Jupyter Notebooks with C# installed](/posts/jupyter-notebook-csharp-r), using it as an environment to play with SQLite is very easy. [SQLite](https://www.sqlite.org/index.html) is a relational database that is small in footprint and self-contained. It also has a great in-memory mode which is perfect for playing around in a Jupyter notebook. 

@@ -1,6 +1,6 @@
 Title: Embracing SQLite and living with micro-services
 Published: 22/10/2022
-Tags: [SQLite, SQL, Database] 
+Tags: [SQLite, SQL, Database, Thoughts] 
 ---
 
 The idea of micro-services and their own single purpose data stores is easy to describe. But then to implement and live with it is a different story. So as a developer and architect, I’ve decided to do just that! Make micro-services and micro-data stores to cover the tiny and small stuff in my life I want to keep track of. 
