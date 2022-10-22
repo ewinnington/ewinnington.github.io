@@ -4,7 +4,7 @@
 	<title>Eric Winnington</title>
 	<link rel="self" href="http://ewinnington.github.io/" />
 	<rights>2022</rights>
-	<updated>2022-10-22T15:22:04Z</updated>
+	<updated>2022-10-22T16:24:22Z</updated>
 	<subtitle>A collection of thoughts, code and snippets.</subtitle>
 	<entry>
 		<id>http://ewinnington.github.io/posts/sqlite-microstores</id>
@@ -49,6 +49,16 @@
 		<summary>&lt;p&gt;SpaceX’s Starship program as a platform for specialised load-outs has many potential applications: Tanker variants for orbital refuelling, Crew variant for Dear Moon mission and dedicated satellite launcher for the Starlink satellite constellation deployment being the variants we already know about.&lt;/p&gt;</summary>
 	</entry>
 	<entry>
+		<id>http://ewinnington.github.io/posts/Viruses-left-behind</id>
+		<title>We can leave viruses behind on Earth as we leave the gravity well</title>
+		<link href="http://ewinnington.github.io/posts/Viruses-left-behind" />
+		<updated>2022-01-14T00:00:00Z</updated>
+		<content>&lt;p&gt;As humanity left for the stars, bacteria hitched a ride with us. They were on us, in us and around us - as much part of us as our own cells. Viruses, on the other hand, due to careful screening programs, quarantines and selective breeding programs of the few animals that took to the stars, were confined to the gravity well of Earth. Without hosts, they could not follow us. We had left our ancient enemy behind.&lt;/p&gt;
+&lt;p&gt;Within two generations, the space born growing up on the O’Neill colony cylinders - even those who lived at 0.9 to 1g - realised that earth was going to be a forbidden planet for them. They had no defences against the viruses that continued to permeate the planet. A visit to earth required them to live in an isolation suit and sterile quarters - limiting contact with the earthers and fauna.&lt;/p&gt;
+</content>
+		<summary>&lt;p&gt;As humanity left for the stars, bacteria hitched a ride with us. They were on us, in us and around us - as much part of us as our own cells. Viruses, on the other hand, due to careful screening programs, quarantines and selective breeding programs of the few animals that took to the stars, were confined to the gravity well of Earth. Without hosts, they could not follow us. We had left our ancient enemy behind.&lt;/p&gt;</summary>
+	</entry>
+	<entry>
 		<id>http://ewinnington.github.io/posts/db-health</id>
 		<title>Checking for liveness on databases for health checks</title>
 		<link href="http://ewinnington.github.io/posts/db-health" />
@@ -64,6 +74,19 @@
 &lt;p&gt;There is really an odd one on the list.&lt;/p&gt;
 </content>
 		<summary>&lt;p&gt;When you just want to check a DB is reachable from your api or code, a health check is used. For the following DBs the simplest query is:&lt;/p&gt;</summary>
+	</entry>
+	<entry>
+		<id>http://ewinnington.github.io/posts/Point-of-exporing-space</id>
+		<title>The point of Space exploration</title>
+		<link href="http://ewinnington.github.io/posts/Point-of-exporing-space" />
+		<updated>2020-04-18T00:00:00Z</updated>
+		<content>&lt;p&gt;In my view, the point of exploration is hope. For a small slice of humanity, hope in a better world is what drives us.&lt;/p&gt;
+&lt;p&gt;By learning about the composition of the moon, setting up ultra precise reflectors on its surface to map its motion and exploring it, we are learning about our solar system and the universe, as well as the challenges we will face in the centuries to come.&lt;/p&gt;
+&lt;p&gt;Humanity needs to expand beyond earth to realize how precious earth is. Every person who has been to space has come back profoundly changed and humbled by the experience. A little distance is needed to appreciate the view and realize how lucky we all are.&lt;/p&gt;
+&lt;p&gt;The science benefits us all: Solar panels and microwaves to medical innovations. Theory of ecology in closed systems, advanced recycling  and so many more.&lt;/p&gt;
+&lt;p&gt;Mars and the moon are but a stepping stone to the solar system. And hopefully to the milky way and beyond. We need to answer the question &amp;quot;Is there life out there?&amp;quot;, or at least I do.&lt;/p&gt;
+</content>
+		<summary>&lt;p&gt;In my view, the point of exploration is hope. For a small slice of humanity, hope in a better world is what drives us.&lt;/p&gt;</summary>
 	</entry>
 	<entry>
 		<id>http://ewinnington.github.io/posts/jupyter-tips-csharp</id>
@@ -940,6 +963,30 @@ if (nRowsCount &amp;gt; 0)
 		<summary>&lt;p&gt;I rewatched this talk from 2014, &lt;a href="https://www.destroyallsoftware.com/talks/the-birth-and-death-of-javascript"&gt;The Birth and Death of JavaScript&lt;/a&gt;, and am still amazed at how prescient it was and still is.&lt;/p&gt;</summary>
 	</entry>
 	<entry>
+		<id>http://ewinnington.github.io/posts/R-Redis-Json</id>
+		<title>R - Reading JSON from redis</title>
+		<link href="http://ewinnington.github.io/posts/R-Redis-Json" />
+		<updated>2019-11-03T00:00:00Z</updated>
+		<content>&lt;p&gt;I needed to access Redis from R. Here's the code I used to connect, set a value, then deserialize a key that was in json format and publish a message. &lt;a href="https://cran.r-project.org/web/packages/rredis/vignettes/rredis.pdf"&gt;Rredis documentation located here&lt;/a&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;library(&amp;quot;rredis&amp;quot;)
+library(&amp;quot;jsonlite&amp;quot;, lib.loc=&amp;quot;~/R/win-library/3.2&amp;quot;)
+
+redisConnect()
+redisSet(&amp;quot;x&amp;quot;,rnorm(5))
+redisGet(&amp;quot;x&amp;quot;)
+
+x = fromJSON(redisGet(&amp;quot;ts_1&amp;quot;))
+x$t &amp;lt;-  strptime(x$t, &amp;quot;%Y-%m-%dT%H:%M:%S&amp;quot;)
+
+//https://cran.r-project.org/web/packages/rredis/vignettes/rredis.pdf
+redisPublish(&amp;quot;General:Active&amp;quot;, charToRaw('Message'))
+
+redisClose()
+&lt;/code&gt;&lt;/pre&gt;
+</content>
+		<summary>&lt;p&gt;I needed to access Redis from R. Here's the code I used to connect, set a value, then deserialize a key that was in json format and publish a message. &lt;a href="https://cran.r-project.org/web/packages/rredis/vignettes/rredis.pdf"&gt;Rredis documentation located here&lt;/a&gt;&lt;/p&gt;</summary>
+	</entry>
+	<entry>
 		<id>http://ewinnington.github.io/posts/wyam-github-actions</id>
 		<title>Using Github actions to build Wyam and publish to github pages</title>
 		<link href="http://ewinnington.github.io/posts/wyam-github-actions" />
@@ -1068,30 +1115,6 @@ dim(y) &amp;lt;- c(51, 50, 50, 15, 13)
 		<summary>&lt;p&gt;I had to get some data out of files written by Fortran. The format was a large array of doubles.&lt;/p&gt;</summary>
 	</entry>
 	<entry>
-		<id>http://ewinnington.github.io/posts/R-Redis-Json</id>
-		<title>R - Reading JSON from redis</title>
-		<link href="http://ewinnington.github.io/posts/R-Redis-Json" />
-		<updated>2019-11-03T00:00:00Z</updated>
-		<content>&lt;p&gt;I needed to access Redis from R. Here's the code I used to connect, set a value, then deserialize a key that was in json format and publish a message. &lt;a href="https://cran.r-project.org/web/packages/rredis/vignettes/rredis.pdf"&gt;Rredis documentation located here&lt;/a&gt;&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;library(&amp;quot;rredis&amp;quot;)
-library(&amp;quot;jsonlite&amp;quot;, lib.loc=&amp;quot;~/R/win-library/3.2&amp;quot;)
-
-redisConnect()
-redisSet(&amp;quot;x&amp;quot;,rnorm(5))
-redisGet(&amp;quot;x&amp;quot;)
-
-x = fromJSON(redisGet(&amp;quot;ts_1&amp;quot;))
-x$t &amp;lt;-  strptime(x$t, &amp;quot;%Y-%m-%dT%H:%M:%S&amp;quot;)
-
-//https://cran.r-project.org/web/packages/rredis/vignettes/rredis.pdf
-redisPublish(&amp;quot;General:Active&amp;quot;, charToRaw('Message'))
-
-redisClose()
-&lt;/code&gt;&lt;/pre&gt;
-</content>
-		<summary>&lt;p&gt;I needed to access Redis from R. Here's the code I used to connect, set a value, then deserialize a key that was in json format and publish a message. &lt;a href="https://cran.r-project.org/web/packages/rredis/vignettes/rredis.pdf"&gt;Rredis documentation located here&lt;/a&gt;&lt;/p&gt;</summary>
-	</entry>
-	<entry>
 		<id>http://ewinnington.github.io/posts/Switching-to-wyam</id>
 		<title>Switching to Wyam</title>
 		<link href="http://ewinnington.github.io/posts/Switching-to-wyam" />
@@ -1106,6 +1129,26 @@ wyam -r blog -t Phantom -p -w
 &lt;p&gt;I also exported the previous posts from Wordpress and will be adding those that are not too outdated back here.&lt;/p&gt;
 </content>
 		<summary>&lt;p&gt;After many years with a half abandoned Wordpress blog, I'm switching to &lt;a href="https://wyam.io/"&gt;Wyam&lt;/a&gt; for a static site generator.&lt;/p&gt;</summary>
+	</entry>
+	<entry>
+		<id>http://ewinnington.github.io/posts/60-year-bet</id>
+		<title>60 year bet on the state of Humanity in Space</title>
+		<link href="http://ewinnington.github.io/posts/60-year-bet" />
+		<updated>2018-06-05T00:00:00Z</updated>
+		<content>&lt;p&gt;In 2018, I bet that within the next 60 years (2078), humanity will have:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Asteroid mining (e.g. 16 Psyche)&lt;/li&gt;
+&lt;li&gt;Created an industrial base in space using resources mined outside of high gravity wells&lt;/li&gt;
+&lt;li&gt;Have a space based colony using spin gravity with 1000+ people that is 90% self sufficient with resources taken from non high gravity wells such as asteroids&lt;/li&gt;
+&lt;li&gt;At least one large asteroid / non-earth moon will have a permanent human presence&lt;/li&gt;
+&lt;li&gt;Small colonies on both the moon and mars&lt;/li&gt;
+&lt;li&gt;Vegetables, meat (probably cloned) and fish (aquaponics) will be produced in space&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;My colleague thinks my time frame is too aggressive, I think my time frame is actually quite conservative and hope to win the bet before I get to 98 years old.&lt;/p&gt;
+&lt;h2 id="reasoning"&gt;Reasoning&lt;/h2&gt;
+&lt;p&gt;My reasoning behind my prediction is that as soon as asteroid mining (primary economy) starts in earnest, there will be an incentive to produce materials outside of earth's gravity well. Very quickly, industrial production will be done in space (secondary economy), probably located at Lagrange points, with only the highest value items being shipped back down to earth. As soon as the industrial production is in place, a tertiary economy will arise, servicing the humans who work in space. Even if we have advanced AI and robots, we will still need people up there, and they need to live somewhere. The most logical at this time is a spin gravity solution for long term inhabitation (O'Neil colony cylinder or something similar). I am placing a large number of people on the spin gravity cylinder simply because to make it produce enough g, you must make it big. If you make it big, might as well have few with a reasonable population on them. Due to the cost of shipping food from planet side, food and other supplies must largely be produced in space, even with a lower cost of shipping due to advances in space flight, we are still bound to the tyranny of the rocket equation. Mars and the moon will have colonies and at least one other moon or asteroid will have a research station - kind of like McMurdo in Antarctica.&lt;/p&gt;
+</content>
+		<summary>&lt;p&gt;In 2018, I bet that within the next 60 years (2078), humanity will have:&lt;/p&gt;</summary>
 	</entry>
 	<entry>
 		<id>http://ewinnington.github.io/posts/append-files-together-using-windows-command-line</id>
@@ -1127,42 +1170,5 @@ wyam -r blog -t Phantom -p -w
 &lt;/code&gt;&lt;/pre&gt;
 </content>
 		<summary>&lt;p&gt;In the command prompt, an easy way to append files together is to use the "type" command and pipe it to an output file.&lt;/p&gt;</summary>
-	</entry>
-	<entry>
-		<id>http://ewinnington.github.io/posts/tail-command-with-powershell</id>
-		<title>Tail command with powershell</title>
-		<link href="http://ewinnington.github.io/posts/tail-command-with-powershell" />
-		<updated>2015-02-19T00:00:00Z</updated>
-		<content>&lt;p&gt;Powershell has now got a command to see the last lines of a file. The syntax is for the last 10 lines:&lt;/p&gt;
-&lt;pre&gt;&lt;code class="language-powershell"&gt;Get-Content _filename _\-Tail 10
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;It also has a -wait command that blocks and shows new entries as they arrive.&lt;/p&gt;
-</content>
-		<summary>&lt;p&gt;Powershell has now got a command to see the last lines of a file. The syntax is for the last 10 lines:&lt;/p&gt;</summary>
-	</entry>
-	<entry>
-		<id>http://ewinnington.github.io/posts/oracle-getting-a-list-of-all-columns-data-types-lengths-of-column-for-every-table-in-your-schema</id>
-		<title>Oracle Getting a list of all columns, data types, lengths of column for every table in your schema</title>
-		<link href="http://ewinnington.github.io/posts/oracle-getting-a-list-of-all-columns-data-types-lengths-of-column-for-every-table-in-your-schema" />
-		<updated>2014-09-16T00:00:00Z</updated>
-		<content>&lt;p&gt;To get all the columns in the schema of an oracle DB, with the appropriate datatype and column length you can use:&lt;/p&gt;
-&lt;pre&gt;&lt;code class="language-sql"&gt;select column_name, data_type, data_length, table_name 
-from all_tab_columns where table_name in 
-(select TABLE_NAME from user_tables);
-&lt;/code&gt;&lt;/pre&gt;
-</content>
-		<summary>&lt;p&gt;To get all the columns in the schema of an oracle DB, with the appropriate datatype and column length you can use:&lt;/p&gt;</summary>
-	</entry>
-	<entry>
-		<id>http://ewinnington.github.io/posts/getting-autoincremented-version-numbers-in-visual-studio</id>
-		<title>Getting autoincremented version numbers in Visual Studio</title>
-		<link href="http://ewinnington.github.io/posts/getting-autoincremented-version-numbers-in-visual-studio" />
-		<updated>2014-08-25T00:00:00Z</updated>
-		<content>&lt;p&gt;On C# projects, in the &amp;quot;AssemblyInfo.cs&amp;quot; file, you can set the Assembly Version to contain *, which sets the version automatically to the build date and time.&lt;/p&gt;
-&lt;p&gt;If you comment out the AssemblyFileVersion, then you can see it in the Windows explorer. If you don't then Windows Explorer will always report the AssemblyFileVersion which does not support the * notation.&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;\[assembly: AssemblyVersion(&amp;quot;1.0.\*&amp;quot;)\]
-&lt;/code&gt;&lt;/pre&gt;
-</content>
-		<summary>&lt;p&gt;On C# projects, in the "AssemblyInfo.cs" file, you can set the Assembly Version to contain *, which sets the version automatically to the build date and time.&lt;/p&gt;</summary>
 	</entry>
 </feed>

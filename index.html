@@ -135,6 +135,15 @@
 						<hr>
                 </div>       
                 <div>
+                    <a href="/posts/Viruses-left-behind">
+                        <h2>We can leave viruses behind on Earth as we leave the gravity well</h2>
+                    </a>
+                    <p>Posted on Friday, 14 January 2022</p>
+<p>As humanity left for the stars, bacteria hitched a ride with us. They were on us, in us and around us - as much part of us as our own cells. Viruses, on the other hand, due to careful screening programs, quarantines and selective breeding programs of the few animals that took to the stars, were confined to the gravity well of Earth. Without hosts, they could not follow us. We had left our ancient enemy behind.</p>
+<p>Within two generations, the space born growing up on the O’Neill colony cylinders - even those who lived at 0.9 to 1g - realised that earth was going to be a forbidden planet for them. They had no defences against the viruses that continued to permeate the planet. A visit to earth required them to live in an isolation suit and sterile quarters - limiting contact with the earthers and fauna.</p>
+						<hr>
+                </div>       
+                <div>
                     <a href="/posts/db-health">
                         <h2>Checking for liveness on databases for health checks</h2>
                     </a>
@@ -148,163 +157,6 @@
 <li>Microsoft SQL-Server: <code>SELECT 1</code></li>
 </ul>
 <p>There is really an odd one on the list.</p>
-						<hr>
-                </div>       
-                <div>
-                    <a href="/posts/jupyter-tips-csharp">
-                        <h2>Tips and tricks for C# Jupyter notebook</h2>
-                    </a>
-                    <p>Posted on Sunday, 17 November 2019</p>
-<p>As I use the Jupyter notebook with C# integration, I'll add to this list of tricks as I discover them.</p>
-<h2 id="adding-collapsed-details-to-jupyter-notebooks">Adding collapsed details to jupyter notebooks</h2>
-<p>I wanted to show hints and answers to questions in the jupyter notebook, but I didn't want them to be directly visible without interaction.</p>
-<p><img src="/posts/images/jupyter-notebook-tips/collapsed_details.png" class="img-fluid" alt="collapsed" /></p>
-<p><img src="/posts/images/jupyter-notebook-tips/expanded_details.png" class="img-fluid" alt="expanded" /></p>
-<p>This was done by creating a markdown block with an HTML section inside. When interacted with, the section expands.</p>
-<pre><code class="language-HTML">&lt;details&gt;
-&lt;summary&gt;Summary of the fold&lt;/summary&gt;
-  ... Content shown after the fold ...
-&lt;/details&gt;
-</code></pre>
-<details>
-<summary>Summary of the fold</summary>
-  ... Content shown after the fold ...
-</details>
-<p>And since it's just HTML, it works anywere, including here.</p>
-<h2 id="display-function">display() function</h2>
-<p>The C# kernel embedded in Jupyter has some functions that control the output to the cells of the notebook when executed. One of these functions is  <code>display()</code>.</p>
-<h3 id="tables">Tables</h3>
-<p>It shows properties of objects or lists in a table format. In my linear programming solver examples, I used this command to make a table with the name and value of each problem variable.</p>
-<pre><code class="language-CSharp"> display(solver.variables().Select(a =&gt; new { Name  = a.Name(), Value = a.SolutionValue() })); 
-</code></pre>
-<p><img src="/posts/images/lp/10-6.png" class="img-fluid" alt="var_table" /></p>
-<p>This is an ideal case for <a href="https://docs.microsoft.com/en-us/dotnet/csharp/programming-guide/classes-and-structs/anonymous-types">C#'s anonymous objects</a> and <a href="https://docs.microsoft.com/en-us/dotnet/csharp/programming-guide/concepts/linq/data-transformations-with-linq">linq to select the object properties</a> that you want to see in the table. Adding <code>using System.Linq;</code> to your references will allow you to use the <code>.Select( x =&gt; new { PropertyHeader = x.PropertyValue, ... })</code> linq command.</p>
-<h3 id="svgs">SVGs</h3>
-<p>I discovered the <code>display(HTML())</code> function allows you to pass items such as SVGs from inside C# to be rendered below the block. Two examples are the SVG image triange and the bar chart. On top of that, the bar chart is stylable by CSS.</p>
-<p><img src="/posts/images/jupyter-notebook-tips/svg_img.png" class="img-fluid" alt="expanded" /></p>
-<p>The SVG code is generated inside C#, then the variable containing the SVG is displayed.</p>
-<p><img src="/posts/images/jupyter-notebook-tips/bar_chart.png" class="img-fluid" alt="expanded" /></p>
-<p>Finally, you can add create a cell containing some CSS (with <code>%%html</code>) , which when executed will change the chart as shown.
-<img src="/posts/images/jupyter-notebook-tips/bar_chart_with_css.png" class="img-fluid" alt="expanded" />
-<img src="/posts/images/jupyter-notebook-tips/bar_chart_css.png" class="img-fluid" alt="expanded" /></p>
-<h2 id="magic">Magic</h2>
-<p>The <code>%lsmagic</code> command shows a list of commands available to use in code blocks.</p>
-<p><img src="/posts/images/jupyter-notebook-tips/lsmagic.png" class="img-fluid" alt="expanded" /></p>
-<h3 id="javascript">%%javascript</h3>
-<p>You can execute javascript with the <code>%%javascript</code> magic.</p>
-<p><img src="/posts/images/jupyter-notebook-tips/javascript_hello.png" class="img-fluid" alt="collapsed" /></p>
-<p><img src="/posts/images/jupyter-notebook-tips/javascript_hello_active.png" class="img-fluid" alt="collapsed" /></p>
-<h3 id="html">%%html</h3>
-<p>As previously mentioned, the %%html command will allow you to add CSS blocks and any other HTML output directly into the Jupyter output cell.</p>
-<h3 id="time">%%time</h3>
-<p>Gives you access to the wall time. Actual time took to execution of the cell.</p>
-<h3 id="whos">%whos</h3>
-<p>Gives you access to the list of currently defined variable in the memory of the notebook. Also lists the type and value (as a &quot;toString() representation) of the objects.</p>
-<h3 id="fsharp">%%fsharp</h3>
-<p>You can intermingle C# and F# code inside one notebook, as long as they are in different cells. You can switch to F# by prefixing the cell with <code>%%fsharp</code></p>
-<pre><code class="language-%%fsharp">let main argv =
-    display &quot;Hello World from F#!&quot;
-    0 
-main()
-</code></pre>
-<p><img src="/posts/images/jupyter-notebook-tips/f_sharp.png" class="img-fluid" alt="collapsed" /></p>
-<h2 id="graphing-from-c">Graphing from C#</h2>
-<p>We can chart using <code>Xplot.Plotly</code>.</p>
-<pre><code class="language-CSharp">//Install XPlot package
-#r &quot;nuget:XPlot.Plotly,2.0.0&quot;
-using XPlot.Plotly;
-</code></pre>
-<p>Input data:</p>
-<pre><code class="language-CSharp">DateTime now = DateTime.Now; 
-var imax = 8760; 
-var rand = new Random(); 
-double[] data = Enumerable.Range(1, imax).Select(x =&gt; 20.0 + 15.0 * Math.Sin(x/60.0) + 12 * rand.NextDouble()).ToArray(); 
-DateTime[] tp = Enumerable.Range(1, imax).Select(x =&gt; now.AddHours(x) ).ToArray(); 
-
-int totalNumberForBarChart = 3;
-double[] actualFares = new [] {3.4, 12.3, 20.42};
-double[] predictionFares = new [] {7.4, 14.3, 18.42};
-int[] elements = Enumerable.Range(0, totalNumberForBarChart).ToArray();
-</code></pre>
-<p>my samples are here <a href="https://github.com/ewinnington/noteb/blob/master/Charts_CSharp.ipynb">C# charts</a></p>
-<h3 id="two-bar-plot">Two bar plot</h3>
-<p><img src="/posts/images/jupyter-notebook-tips/bar.png" class="img-fluid" alt="bar" /></p>
-<pre><code class="language-CSharp">// Define group for Actual values
-var ActualValuesGroupBarGraph = new Graph.Bar()
-{
-   x = elements,
-   y = actualFares,
-   name = &quot;Actual&quot;
-};
- 
-// Define group for Prediction values
-var PredictionValuesGroupBarGraph = new Graph.Bar()
-{
-   x = elements,
-   y = predictionFares,
-   name = &quot;Predicted&quot;
-};
- 
-var chart = Chart.Plot(new[] {ActualValuesGroupBarGraph, PredictionValuesGroupBarGraph});
-var layout = new Layout.Layout(){barmode = &quot;group&quot;, title=&quot;Actual fares vs. Predicted fares Comparison&quot;};
-chart.WithLayout(layout);
-chart.WithXTitle(&quot;Cases&quot;);
-chart.WithYTitle(&quot;Fare&quot;);
-chart.WithLegend(true);
-chart.Width = 700;
-chart.Height = 400;
- 
-display(chart);
-</code></pre>
-<h3 id="histogram">Histogram</h3>
-<p><img src="/posts/images/jupyter-notebook-tips/histogram.png" class="img-fluid" alt="hist" /></p>
-<pre><code class="language-CSharp">var faresHistogram = Chart.Plot(new Graph.Histogram(){x = data, autobinx = false, nbinsx = 20});
-var layout = new Layout.Layout(){title=&quot;Distribution of taxi trips per cost&quot;};
-faresHistogram.WithLayout(layout);
-
-display(faresHistogram);
-</code></pre>
-<h3 id="scatter">Scatter</h3>
-<p><img src="/posts/images/jupyter-notebook-tips/scatter.png" class="img-fluid" alt="scatter" /></p>
-<pre><code class="language-CSharp">var chart = Chart.Plot(
-    new Graph.Scatter()
-    {
-        x = actualFares,
-        y = predictionFares,
-        mode = &quot;markers&quot;,
-        marker = new Graph.Marker()
-        {
-            color = predictionFares,
-            colorscale = &quot;Jet&quot;
-        }
-    }
-);
-
-var layout = new Layout.Layout(){title=&quot;Plot Time vs. Distance &amp; color scale on Fares&quot;};
-chart.WithLayout(layout);
-chart.Width = 500;
-chart.Height = 500;
-chart.WithLegend(true);
-
-display(chart);
-</code></pre>
-<h3 id="line-chart-with-scatter">Line chart with scatter</h3>
-<p><img src="/posts/images/jupyter-notebook-tips/lines.png" class="img-fluid" alt="lines" /></p>
-<pre><code class="language-CSharp">var linedUp = new Graph.Scatter()
-{
-    x = tp,
-    y = data,
-    mode = &quot;lines&quot;,
-};
-
-var chart = Chart.Plot(linedUp);
-chart.WithXTitle(&quot;Date&quot;);
-chart.WithYTitle(&quot;Value&quot;);
-chart.WithLegend(true);
-chart.Width = 1200;
-chart.Height = 600;
-display(chart);
-</code></pre>
 						<hr>
                 </div>       
         <ul class="pager">
@@ -324,10 +176,10 @@ display(chart);
                     <li><a role="button" href="/tags/Dotnet-try" class="button small">Dotnet try (7)</a></li>
                     <li><a role="button" href="/tags/Jupyter-notebook" class="button small">Jupyter notebook (7)</a></li>
                     <li><a role="button" href="/tags/Oracle" class="button small">Oracle (6)</a></li>
-                    <li><a role="button" href="/tags/WPF" class="button small">WPF (4)</a></li>
+                    <li><a role="button" href="/tags/Thoughts" class="button small">Thoughts (6)</a></li>
+                    <li><a role="button" href="/tags/Space" class="button small">Space (4)</a></li>
                     <li><a role="button" href="/tags/Rpi" class="button small">Rpi (4)</a></li>
                     <li><a role="button" href="/tags/CommandLine" class="button small">CommandLine (4)</a></li>
-                    <li><a role="button" href="/tags/R" class="button small">R (3)</a></li>
             </ul>
             <ul class="actions small">
                 <li><a href="/tags" class="button small">View All Tags &rarr;</a></li>
@@ -335,10 +187,10 @@ display(chart);
 
             <h5>Older Posts</h5>
             <ul>
+                    <li><a href="/posts/Point-of-exporing-space">The point of Space exploration</a></li>
+                    <li><a href="/posts/jupyter-tips-csharp">Tips and tricks for C# Jupyter notebook</a></li>
                     <li><a href="/posts/jupyter-lp-20">Applications in LP and MILP with C# and OR-Tools inside Jupyter</a></li>
                     <li><a href="/posts/my-binder-jupyter-csharp">Hosting your C# Jupyter notebook online by adding one file to your repo</a></li>
-                    <li><a href="/posts/jupyter-lp-10">Introduction to linear programming with C# and OR-Tools inside Jupyter</a></li>
-                    <li><a href="/posts/jupyter-docker-csharp-postgres">Docker controlled from Jupyter Notebook C# with PostgresDB</a></li>
             </ul>
                 <ul class="actions small">
                     <li><a href="/posts" class="button small">Archive &rarr;</a></li>
