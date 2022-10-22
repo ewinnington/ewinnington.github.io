@@ -1,6 +1,6 @@
 Title: Oracle Getting a list of all columns, data types, lengths of column for every table in your schema
 Published: 16/09/2014
-Tags: [Migrated, Oracle] 
+Tags: [Migrated, Oracle, Database] 
 ---
 
 To get all the columns in the schema of an oracle DB, with the appropriate datatype and column length you can use:

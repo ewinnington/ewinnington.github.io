@@ -1,6 +1,6 @@
 Title: Oracle - Reclaiming LOB space after deletion (CLOB, BLOB)
 Published: 03/02/2014
-Tags: [Migrated, Oracle] 
+Tags: [Migrated, Oracle, Database] 
 ---
 
 To reclaim space after a deleting LOBs, use the following commands. XXXXX is my tablename, data is my column name for the lob, in pink the size of the table.

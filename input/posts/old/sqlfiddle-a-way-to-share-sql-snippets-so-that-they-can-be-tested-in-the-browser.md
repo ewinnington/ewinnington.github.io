@@ -1,6 +1,6 @@
 Title: SqlFiddle - A way to share SQL snippets so that they can be tested in the browser
 Published: 05/11/2013
-Tags: [Migrated, SQL] 
+Tags: [Migrated, SQL, Database] 
 ---
 
 A couple of days ago, I stumbled upon [SQLFiddle](http://www.sqlfiddle.com/), a little magical website that allows you to upload a DBSchema and run queries on it, live in the browser. It also allows to share them with other users.

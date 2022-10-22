@@ -1,6 +1,6 @@
 Title: Oracle 10g - Pivoting data
 Published: 27/01/2012
-Tags: [Oracle, SQL, Migrated]
+Tags: [Oracle, SQL, Migrated, Database]
 ---
 
 Oracle 10g doesn't have the Pivot function. To convert a common type a data (Date, Id, Value) into a list of (Date, Value of Id1, Value of Id2, ...), if you know the number of columns (and their names), you can a decode function (basically a SQL IF or CASE) function to do it.

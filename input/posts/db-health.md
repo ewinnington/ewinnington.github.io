@@ -1,6 +1,6 @@
 Title: Checking for liveness on databases for health checks
 Published: 14/07/2020
-Tags: [Oracle, MsSql, Postgresql, SQLite, MySql, MariaDb] 
+Tags: [Oracle, MsSql, Postgresql, SQLite, MySql, MariaDb, Database] 
 ---
 
 When you just want to check a DB is reachable from your api or code, a health check is used. For the following DBs the simplest query is: 
