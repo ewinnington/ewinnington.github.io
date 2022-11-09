@@ -95,6 +95,81 @@
 <div class="row">
     <div class="8u 12u$(medium)">
                 <div>
+                    <a href="/posts/tesla-megapack">
+                        <h2>Tesla Megapacks put into context</h2>
+                    </a>
+                    <p>Posted on Wednesday, 9 November 2022</p>
+<h1 id="tesla-megapacks">Tesla Megapacks</h1>
+<p>Tesla on Twitter announced: <a href="https://t.co/aw85eHECXI">&quot;Meet Megafactory, our new Megapack factory in Lathrop, CA 🔋🔋🔋&quot;</a></p>
+<p>Tesla's energy division has recently completed their new Megapack factory in Lathrop California , which they claim can produce currently 10'000 Megapacks a year. How much storage is that and how does this compare to a Hydropower pump storage plant?</p>
+<h2 id="tesla-megapacks-specs-per-pack">Tesla megapacks Specs per pack</h2>
+<ul>
+<li>4 Hour Duration</li>
+<li>Power: 970 kW</li>
+<li>Energy: 3,916 kWh per Megapack</li>
+<li>Round Trip Efficiency: 93.5%</li>
+<li>9.12 m x 1.65 m x 2.79 m</li>
+<li>38,100 kg</li>
+<li>~$2 million per pack</li>
+</ul>
+<h2 id="offer">Offer</h2>
+<p>An offer was generated on the Tesla Energy website to get an appropriate pricing for the largest system they offer.</p>
+<ul>
+<li>1000 Megapack</li>
+<li>969.6 MW Power</li>
+<li>3916 MWh Energy Megapack</li>
+<li>Duration: 4 Hours</li>
+<li>Delivery: Q3 2024</li>
+<li>Estimated Price (California) $1,832,519,850</li>
+<li>Est. Annual Maintenance $4,821,480 - Maintenance Price escalates at 2% per year</li>
+</ul>
+<p>Based on this, we can see that 10'000 megapacks represent about 39160 MWh of storage (39 GWh), with a sales cost of approx $18 billion.</p>
+<p>So how does this compare to the two latest large Swiss Pump-Storage Hydropowerplants?</p>
+<h2 id="hydropower-plants">Hydropower plants</h2>
+<h3 id="nant-de-drance-pump-storage-extension">Nant-de-Drance pump-storage extension</h3>
+<ul>
+<li>1 Pump-storage power plant</li>
+<li>Power 900 MW (Turbines and Pumps)</li>
+<li>Storage 20 GWh</li>
+<li>Duration: 19 Hours</li>
+<li>Round trip efficiency: over 90%</li>
+<li>Estimated Price 2 billion CHF</li>
+<li>~14 years to build and bring into operation</li>
+</ul>
+<h3 id="kraftwerk-linthlimmern-pump-storage-extension">Kraftwerk-Linth–Limmern pump-storage extension</h3>
+<ul>
+<li>1 Pump-storage power plant</li>
+<li>Power 1000 MW (Turbines and Pumps)</li>
+<li>Storage 33 GWh</li>
+<li>Duration: 33 Hours</li>
+<li>Round trip efficiency: over 90%</li>
+<li>Estimated Price 2.1 billion CHF</li>
+<li>~10 years to build and bring into operation</li>
+</ul>
+<h2 id="conclusion">Conclusion</h2>
+<p>The storage cost of the batteries is currently about a factor 4-9x the price of the hydropower plant construction but have the advantage of being available within about 18 months. What remains to be seen is how much battery degradation is a factor in these grid scale battery installations. At least Tesla is offering, from my understanding, a 15 year warranty on the Megapack.</p>
+<p>The amount of storage produced by the factory represents more than 1 large hydropower plant per year.</p>
+<p>The 39 GWh storage produced by the factory in one year is a huge amount, so much that it would cover around 25% of the <a href="https://www.iea.org/data-and-statistics/charts/battery-storage-capability-by-countries-2020-and-2026">expected total capacity that the IEA planned for the entire world by 2026</a>.</p>
+<h2 id="post-scriptum-new-gridscale-batteries-in-europe">Post-scriptum: new gridscale batteries in Europe</h2>
+<p>2022.11.07 - <a href="https://www.rwe.com/en/press/rwe-generation/2022-11-07-battery-storage-220-mw-neurath">RWE gives green light for 220-megawatt battery storage system in North Rhine-Westphalia</a></p>
+<ul>
+<li>Power: 80 + 140 MW = 220 MW</li>
+<li>Storage: delivering the required output for over an hour but full capacity not mentioned. 220 MWh to 440MWh.</li>
+<li>140 million euros</li>
+<li>commissioning in 2024</li>
+<li>Supplier: Not mentioned.</li>
+</ul>
+<p>2021.07.22 - <a href="https://www.rwe.com/en/press/rwe-ag/2021-07-22-rwe-builds-one-of-the-largest-battery-storage-facilities-in-germany">RWE bringing 72MW BESS in Germany online in November</a></p>
+<ul>
+<li>Power: 72 + 45MW = 117 MW</li>
+<li>Storage: 128MWh</li>
+<li>€50 million</li>
+<li>commissioning in end 2022</li>
+<li>Supplier: CATL batteries</li>
+</ul>
+						<hr>
+                </div>       
+                <div>
                     <a href="/posts/sqlite-microstores">
                         <h2>Embracing SQLite and living with micro-services</h2>
                     </a>
@@ -143,22 +218,6 @@
 <p>Within two generations, the space born growing up on the O’Neill colony cylinders - even those who lived at 0.9 to 1g - realised that earth was going to be a forbidden planet for them. They had no defences against the viruses that continued to permeate the planet. A visit to earth required them to live in an isolation suit and sterile quarters - limiting contact with the earthers and fauna.</p>
 						<hr>
                 </div>       
-                <div>
-                    <a href="/posts/db-health">
-                        <h2>Checking for liveness on databases for health checks</h2>
-                    </a>
-                    <p>Posted on Tuesday, 14 July 2020</p>
-<p>When you just want to check a DB is reachable from your api or code, a health check is used. For the following DBs the simplest query is:</p>
-<ul>
-<li>Oracle: <code>SELECT 1 FROM dual</code></li>
-<li>Postgresql: <code>SELECT 1</code></li>
-<li>SQLite: <code>SELECT 1</code></li>
-<li>Mysql / MariaDb: <code>SELECT 1</code></li>
-<li>Microsoft SQL-Server: <code>SELECT 1</code></li>
-</ul>
-<p>There is really an odd one on the list.</p>
-						<hr>
-                </div>       
         <ul class="pager">
             <li class="previous">                
             </li>
@@ -173,13 +232,13 @@
                     <li><a role="button" href="/tags/Migrated" class="button small">Migrated (38)</a></li>
                     <li><a role="button" href="/tags/Database" class="button small">Database (10)</a></li>
                     <li><a role="button" href="/tags/CSharp" class="button small">CSharp (8)</a></li>
-                    <li><a role="button" href="/tags/Jupyter-notebook" class="button small">Jupyter notebook (7)</a></li>
                     <li><a role="button" href="/tags/Dotnet-try" class="button small">Dotnet try (7)</a></li>
+                    <li><a role="button" href="/tags/Jupyter-notebook" class="button small">Jupyter notebook (7)</a></li>
+                    <li><a role="button" href="/tags/Thoughts" class="button small">Thoughts (7)</a></li>
                     <li><a role="button" href="/tags/Oracle" class="button small">Oracle (6)</a></li>
-                    <li><a role="button" href="/tags/Thoughts" class="button small">Thoughts (6)</a></li>
-                    <li><a role="button" href="/tags/Rpi" class="button small">Rpi (4)</a></li>
-                    <li><a role="button" href="/tags/CommandLine" class="button small">CommandLine (4)</a></li>
+                    <li><a role="button" href="/tags/WPF" class="button small">WPF (4)</a></li>
                     <li><a role="button" href="/tags/Space" class="button small">Space (4)</a></li>
+                    <li><a role="button" href="/tags/Rpi" class="button small">Rpi (4)</a></li>
             </ul>
             <ul class="actions small">
                 <li><a href="/tags" class="button small">View All Tags &rarr;</a></li>
@@ -187,10 +246,10 @@
 
             <h5>Older Posts</h5>
             <ul>
+                    <li><a href="/posts/db-health">Checking for liveness on databases for health checks</a></li>
                     <li><a href="/posts/Point-of-exporing-space">The point of Space exploration</a></li>
                     <li><a href="/posts/jupyter-tips-csharp">Tips and tricks for C# Jupyter notebook</a></li>
                     <li><a href="/posts/jupyter-lp-20">Applications in LP and MILP with C# and OR-Tools inside Jupyter</a></li>
-                    <li><a href="/posts/my-binder-jupyter-csharp">Hosting your C# Jupyter notebook online by adding one file to your repo</a></li>
             </ul>
                 <ul class="actions small">
                     <li><a href="/posts" class="button small">Archive &rarr;</a></li>
