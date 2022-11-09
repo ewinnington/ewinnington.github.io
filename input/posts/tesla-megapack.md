@@ -1,5 +1,5 @@
 Title: Tesla Megapacks put into context
-Published: 03/11/2019 17:00 
+Published: 09/11/2022 22:30 
 Tags: [Thoughts, Battery, Energy] 
 ---
 
