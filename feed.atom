@@ -4,7 +4,7 @@
 	<title>Eric Winnington</title>
 	<link rel="self" href="http://ewinnington.github.io/" />
 	<rights>2022</rights>
-	<updated>2022-10-22T16:24:22Z</updated>
+	<updated>2022-11-09T21:40:34Z</updated>
 	<subtitle>A collection of thoughts, code and snippets.</subtitle>
 	<entry>
 		<id>http://ewinnington.github.io/posts/sqlite-microstores</id>
@@ -940,6 +940,82 @@ if (nRowsCount &amp;gt; 0)
 		<summary>&lt;p&gt;When inserting large amounts of data into databases, you should consider using the bulk functions instead of running single row INSERT commands. Single row INSERT command will usually lead to poor performance. There exists two main techniques for mutiple row insertions in databases from code and several more if you use the loader tools that accompany the database. Here I'll detail the two main methods: BulkInserts and VectorInserts.&lt;/p&gt;</summary>
 	</entry>
 	<entry>
+		<id>http://ewinnington.github.io/posts/tesla-megapack</id>
+		<title>Tesla Megapacks put into context</title>
+		<link href="http://ewinnington.github.io/posts/tesla-megapack" />
+		<updated>2019-11-03T17:00:00Z</updated>
+		<content>&lt;h1 id="tesla-megapacks"&gt;Tesla Megapacks&lt;/h1&gt;
+&lt;p&gt;Tesla on Twitter announced: &lt;a href="https://t.co/aw85eHECXI"&gt;&amp;quot;Meet Megafactory, our new Megapack factory in Lathrop, CA 🔋🔋🔋&amp;quot;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Tesla's energy division has recently completed their new Megapack factory in Lathrop California , which they claim can produce currently 10'000 Megapacks a year. How much storage is that and how does this compare to a Hydropower pump storage plant?&lt;/p&gt;
+&lt;h2 id="tesla-megapacks-specs-per-pack"&gt;Tesla megapacks Specs per pack&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;4 Hour Duration&lt;/li&gt;
+&lt;li&gt;Power: 970 kW&lt;/li&gt;
+&lt;li&gt;Energy: 3,916 kWh per Megapack&lt;/li&gt;
+&lt;li&gt;Round Trip Efficiency: 93.5%&lt;/li&gt;
+&lt;li&gt;9.12 m x 1.65 m x 2.79 m&lt;/li&gt;
+&lt;li&gt;38,100 kg&lt;/li&gt;
+&lt;li&gt;~$2 million per pack&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="offer"&gt;Offer&lt;/h2&gt;
+&lt;p&gt;An offer was generated on the Tesla Energy website to get an appropriate pricing for the largest system they offer.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;1000 Megapack&lt;/li&gt;
+&lt;li&gt;969.6 MW Power&lt;/li&gt;
+&lt;li&gt;3916 MWh Energy Megapack&lt;/li&gt;
+&lt;li&gt;Duration: 4 Hours&lt;/li&gt;
+&lt;li&gt;Delivery: Q3 2024&lt;/li&gt;
+&lt;li&gt;Estimated Price (California) $1,832,519,850&lt;/li&gt;
+&lt;li&gt;Est. Annual Maintenance $4,821,480 - Maintenance Price escalates at 2% per year&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Based on this, we can see that 10'000 megapacks represent about 39160 MWh of storage (39 GWh), with a sales cost of approx $18 billion.&lt;/p&gt;
+&lt;p&gt;So how does this compare to the two latest large Swiss Pump-Storage Hydropowerplants?&lt;/p&gt;
+&lt;h2 id="hydropower-plants"&gt;Hydropower plants&lt;/h2&gt;
+&lt;h3 id="nant-de-drance-pump-storage-extension"&gt;Nant-de-Drance pump-storage extension&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;1 Pump-storage power plant&lt;/li&gt;
+&lt;li&gt;Power 900 MW (Turbines and Pumps)&lt;/li&gt;
+&lt;li&gt;Storage 20 GWh&lt;/li&gt;
+&lt;li&gt;Duration: 19 Hours&lt;/li&gt;
+&lt;li&gt;Round trip efficiency: over 90%&lt;/li&gt;
+&lt;li&gt;Estimated Price 2 billion CHF&lt;/li&gt;
+&lt;li&gt;~14 years to build and bring into operation&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id="kraftwerk-linthlimmern-pump-storage-extension"&gt;Kraftwerk-Linth–Limmern pump-storage extension&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;1 Pump-storage power plant&lt;/li&gt;
+&lt;li&gt;Power 1000 MW (Turbines and Pumps)&lt;/li&gt;
+&lt;li&gt;Storage 33 GWh&lt;/li&gt;
+&lt;li&gt;Duration: 33 Hours&lt;/li&gt;
+&lt;li&gt;Round trip efficiency: over 90%&lt;/li&gt;
+&lt;li&gt;Estimated Price 2.1 billion CHF&lt;/li&gt;
+&lt;li&gt;~10 years to build and bring into operation&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="conclusion"&gt;Conclusion&lt;/h2&gt;
+&lt;p&gt;The storage cost of the batteries is currently about a factor 4-9x the price of the hydropower plant construction but have the advantage of being available within about 18 months. What remains to be seen is how much battery degradation is a factor in these grid scale battery installations. At least Tesla is offering, from my understanding, a 15 year warranty on the Megapack.&lt;/p&gt;
+&lt;p&gt;The amount of storage produced by the factory represents more than 1 large hydropower plant per year.&lt;/p&gt;
+&lt;p&gt;The 39 GWh storage produced by the factory in one year is a huge amount, so much that it would cover around 25% of the &lt;a href="https://www.iea.org/data-and-statistics/charts/battery-storage-capability-by-countries-2020-and-2026"&gt;expected total capacity that the IEA planned for the entire world by 2026&lt;/a&gt;.&lt;/p&gt;
+&lt;h2 id="post-scriptum-new-gridscale-batteries-in-europe"&gt;Post-scriptum: new gridscale batteries in Europe&lt;/h2&gt;
+&lt;p&gt;2022.11.07 - &lt;a href="https://www.rwe.com/en/press/rwe-generation/2022-11-07-battery-storage-220-mw-neurath"&gt;RWE gives green light for 220-megawatt battery storage system in North Rhine-Westphalia&lt;/a&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Power: 80 + 140 MW = 220 MW&lt;/li&gt;
+&lt;li&gt;Storage: delivering the required output for over an hour but full capacity not mentioned. 220 MWh to 440MWh.&lt;/li&gt;
+&lt;li&gt;140 million euros&lt;/li&gt;
+&lt;li&gt;commissioning in 2024&lt;/li&gt;
+&lt;li&gt;Supplier: Not mentioned.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;2021.07.22 - &lt;a href="https://www.rwe.com/en/press/rwe-ag/2021-07-22-rwe-builds-one-of-the-largest-battery-storage-facilities-in-germany"&gt;RWE bringing 72MW BESS in Germany online in November&lt;/a&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Power: 72 + 45MW = 117 MW&lt;/li&gt;
+&lt;li&gt;Storage: 128MWh&lt;/li&gt;
+&lt;li&gt;€50 million&lt;/li&gt;
+&lt;li&gt;commissioning in end 2022&lt;/li&gt;
+&lt;li&gt;Supplier: CATL batteries&lt;/li&gt;
+&lt;/ul&gt;
+</content>
+		<summary>&lt;p&gt;Tesla on Twitter announced: &lt;a href="https://t.co/aw85eHECXI"&gt;"Meet Megafactory, our new Megapack factory in Lathrop, CA 🔋🔋🔋"&lt;/a&gt;&lt;/p&gt;</summary>
+	</entry>
+	<entry>
 		<id>http://ewinnington.github.io/posts/webassembly-thoughts</id>
 		<title>Reflections on Webassembly - May/Nov 19</title>
 		<link href="http://ewinnington.github.io/posts/webassembly-thoughts" />
@@ -1149,26 +1225,5 @@ wyam -r blog -t Phantom -p -w
 &lt;p&gt;My reasoning behind my prediction is that as soon as asteroid mining (primary economy) starts in earnest, there will be an incentive to produce materials outside of earth's gravity well. Very quickly, industrial production will be done in space (secondary economy), probably located at Lagrange points, with only the highest value items being shipped back down to earth. As soon as the industrial production is in place, a tertiary economy will arise, servicing the humans who work in space. Even if we have advanced AI and robots, we will still need people up there, and they need to live somewhere. The most logical at this time is a spin gravity solution for long term inhabitation (O'Neil colony cylinder or something similar). I am placing a large number of people on the spin gravity cylinder simply because to make it produce enough g, you must make it big. If you make it big, might as well have few with a reasonable population on them. Due to the cost of shipping food from planet side, food and other supplies must largely be produced in space, even with a lower cost of shipping due to advances in space flight, we are still bound to the tyranny of the rocket equation. Mars and the moon will have colonies and at least one other moon or asteroid will have a research station - kind of like McMurdo in Antarctica.&lt;/p&gt;
 </content>
 		<summary>&lt;p&gt;In 2018, I bet that within the next 60 years (2078), humanity will have:&lt;/p&gt;</summary>
-	</entry>
-	<entry>
-		<id>http://ewinnington.github.io/posts/append-files-together-using-windows-command-line</id>
-		<title>Append files together using windows command line</title>
-		<link href="http://ewinnington.github.io/posts/append-files-together-using-windows-command-line" />
-		<updated>2015-06-26T00:00:00Z</updated>
-		<content>&lt;p&gt;In the command prompt, an easy way to append files together is to use the &amp;quot;type&amp;quot; command and pipe it to an output file.&lt;/p&gt;
-&lt;p&gt;&lt;code&gt;type Results\_\* &amp;gt; Results\_combined.txt&lt;/code&gt;&lt;/p&gt;
-&lt;p&gt;To call this from a piece of C# code, I have been using the command line with the /c parameter, which makes it execute the attached command.&lt;/p&gt;
-&lt;p&gt;&lt;code&gt;cmd /c type Results\_\* &amp;gt; Results\_combined.txt&lt;/code&gt;&lt;/p&gt;
-&lt;p&gt;C# Example usage:&lt;/p&gt;
-&lt;pre&gt;&lt;code class="language-CSharp"&gt;using (Process RunProc = new Process()) {
-    string s = &amp;quot;cmd.exe&amp;quot;;  
-    string p = &amp;quot;/c type Results\_\* &amp;gt; Results\_combined.txt&amp;quot;;
-    RunProc.StartInfo = new ProcessStartInfo(s, p);
-    RunProc.Start();    
-    RunProc.WaitForExit();
-}
-&lt;/code&gt;&lt;/pre&gt;
-</content>
-		<summary>&lt;p&gt;In the command prompt, an easy way to append files together is to use the "type" command and pipe it to an output file.&lt;/p&gt;</summary>
 	</entry>
 </feed>
