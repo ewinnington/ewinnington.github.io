@@ -25,7 +25,7 @@ On the back-end, the storage of run meta-data has a reference implementation nam
 [Marquez data model](
 https://lucid.app/lucidchart/f918ce01-9eb4-4900-b266-49935da271b8/view?page=8xAE.zxyknLQ#)
 
-![](/posts/images/data-lineage/Marquez-Data-Model.png)
+![](/posts/images/data-lineage/Marquez-Data-Model.png){ width = 80% } 
 
 But it is also possible to implement one's own storage for metadata in case there is a need or added value, but adopting the open source solution will be an advantage for integration later. 
 
