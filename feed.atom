@@ -4,7 +4,7 @@
 	<title>Eric Winnington</title>
 	<link rel="self" href="http://ewinnington.github.io/" />
 	<rights>2022</rights>
-	<updated>2022-11-12T22:17:52Z</updated>
+	<updated>2022-11-12T22:50:58Z</updated>
 	<subtitle>A collection of thoughts, code and snippets.</subtitle>
 	<entry>
 		<id>http://ewinnington.github.io/posts/Data-Lineage</id>
@@ -22,7 +22,7 @@
 &lt;p&gt;To simplify its implementation with AirFlow, Open Lineage has an &lt;a href="https://github.com/OpenLineage/OpenLineage/tree/main/integration/airflow/openlineage/airflow"&gt;airflow connection module&lt;/a&gt; already available.&lt;/p&gt;
 &lt;p&gt;On the back-end, the storage of run meta-data has a reference implementation named Marquez. The data model is illustrated here.&lt;/p&gt;
 &lt;p&gt;&lt;a href="https://lucid.app/lucidchart/f918ce01-9eb4-4900-b266-49935da271b8/view?page=8xAE.zxyknLQ#"&gt;Marquez data model&lt;/a&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img src="/posts/images/data-lineage/Marquez-Data-Model.png" class="img-fluid" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src="/posts/images/data-lineage/Marquez-Data-Model.png" class="img-fluid" width="80%" alt="" /&gt;&lt;/p&gt;
 &lt;p&gt;But it is also possible to implement one's own storage for metadata in case there is a need or added value, but adopting the open source solution will be an advantage for integration later.&lt;/p&gt;
 &lt;h2 id="locally-grown-alternatives"&gt;Locally grown alternatives&lt;/h2&gt;
 &lt;p&gt;Data correlation and lineage information can be generated via the emission of events while processing input data. Additionally, input data can be fingerprinted via a fast hash function to check for duplicate imports, so as to enable idempotent processing.&lt;/p&gt;
@@ -1277,6 +1277,30 @@ if (nRowsCount &amp;gt; 0)
 		<summary>&lt;p&gt;I rewatched this talk from 2014, &lt;a href="https://www.destroyallsoftware.com/talks/the-birth-and-death-of-javascript"&gt;The Birth and Death of JavaScript&lt;/a&gt;, and am still amazed at how prescient it was and still is.&lt;/p&gt;</summary>
 	</entry>
 	<entry>
+		<id>http://ewinnington.github.io/posts/R-Redis-Json</id>
+		<title>R - Reading JSON from redis</title>
+		<link href="http://ewinnington.github.io/posts/R-Redis-Json" />
+		<updated>2019-11-03T00:00:00Z</updated>
+		<content>&lt;p&gt;I needed to access Redis from R. Here's the code I used to connect, set a value, then deserialize a key that was in json format and publish a message. &lt;a href="https://cran.r-project.org/web/packages/rredis/vignettes/rredis.pdf"&gt;Rredis documentation located here&lt;/a&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;library(&amp;quot;rredis&amp;quot;)
+library(&amp;quot;jsonlite&amp;quot;, lib.loc=&amp;quot;~/R/win-library/3.2&amp;quot;)
+
+redisConnect()
+redisSet(&amp;quot;x&amp;quot;,rnorm(5))
+redisGet(&amp;quot;x&amp;quot;)
+
+x = fromJSON(redisGet(&amp;quot;ts_1&amp;quot;))
+x$t &amp;lt;-  strptime(x$t, &amp;quot;%Y-%m-%dT%H:%M:%S&amp;quot;)
+
+//https://cran.r-project.org/web/packages/rredis/vignettes/rredis.pdf
+redisPublish(&amp;quot;General:Active&amp;quot;, charToRaw('Message'))
+
+redisClose()
+&lt;/code&gt;&lt;/pre&gt;
+</content>
+		<summary>&lt;p&gt;I needed to access Redis from R. Here's the code I used to connect, set a value, then deserialize a key that was in json format and publish a message. &lt;a href="https://cran.r-project.org/web/packages/rredis/vignettes/rredis.pdf"&gt;Rredis documentation located here&lt;/a&gt;&lt;/p&gt;</summary>
+	</entry>
+	<entry>
 		<id>http://ewinnington.github.io/posts/wyam-github-actions</id>
 		<title>Using Github actions to build Wyam and publish to github pages</title>
 		<link href="http://ewinnington.github.io/posts/wyam-github-actions" />
@@ -1403,30 +1427,6 @@ dim(y) &amp;lt;- c(51, 50, 50, 15, 13)
 &lt;/code&gt;&lt;/pre&gt;
 </content>
 		<summary>&lt;p&gt;I had to get some data out of files written by Fortran. The format was a large array of doubles.&lt;/p&gt;</summary>
-	</entry>
-	<entry>
-		<id>http://ewinnington.github.io/posts/R-Redis-Json</id>
-		<title>R - Reading JSON from redis</title>
-		<link href="http://ewinnington.github.io/posts/R-Redis-Json" />
-		<updated>2019-11-03T00:00:00Z</updated>
-		<content>&lt;p&gt;I needed to access Redis from R. Here's the code I used to connect, set a value, then deserialize a key that was in json format and publish a message. &lt;a href="https://cran.r-project.org/web/packages/rredis/vignettes/rredis.pdf"&gt;Rredis documentation located here&lt;/a&gt;&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;library(&amp;quot;rredis&amp;quot;)
-library(&amp;quot;jsonlite&amp;quot;, lib.loc=&amp;quot;~/R/win-library/3.2&amp;quot;)
-
-redisConnect()
-redisSet(&amp;quot;x&amp;quot;,rnorm(5))
-redisGet(&amp;quot;x&amp;quot;)
-
-x = fromJSON(redisGet(&amp;quot;ts_1&amp;quot;))
-x$t &amp;lt;-  strptime(x$t, &amp;quot;%Y-%m-%dT%H:%M:%S&amp;quot;)
-
-//https://cran.r-project.org/web/packages/rredis/vignettes/rredis.pdf
-redisPublish(&amp;quot;General:Active&amp;quot;, charToRaw('Message'))
-
-redisClose()
-&lt;/code&gt;&lt;/pre&gt;
-</content>
-		<summary>&lt;p&gt;I needed to access Redis from R. Here's the code I used to connect, set a value, then deserialize a key that was in json format and publish a message. &lt;a href="https://cran.r-project.org/web/packages/rredis/vignettes/rredis.pdf"&gt;Rredis documentation located here&lt;/a&gt;&lt;/p&gt;</summary>
 	</entry>
 	<entry>
 		<id>http://ewinnington.github.io/posts/Switching-to-wyam</id>
