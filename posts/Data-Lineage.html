@@ -1,0 +1,375 @@
+﻿
+<!DOCTYPE html>
+<!--
+	Phantom by HTML5 UP
+	html5up.net | @ajlkn
+	Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
+-->
+<html lang="en">
+
+	<head>
+		<title>Eric Winnington - Data Lineage for dataflow and workflow processes</title>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1" />		
+        <link href="/assets/css/highlight.css" rel="stylesheet">
+		<!--[if lte IE 8]><script src="/assets/js/ie/html5shiv.js"></script><![endif]-->
+		<link rel="stylesheet" href="/assets/css/main.css" />
+		<!--[if lte IE 9]><link rel="stylesheet" href="/assets/css/ie9.css" /><![endif]-->
+		<!--[if lte IE 8]><link rel="stylesheet" href="/assets/css/ie8.css" /><![endif]-->
+        <link href="/assets/css/override.css" rel="stylesheet" />
+
+		<meta name="description" content="A collection of thoughts, code and snippets." />
+		<link type="application/rss+xml" rel="alternate" title="Eric Winnington" href="/feed.rss" />
+				<link type="application/atom+xml" rel="alternate" title="Eric Winnington" href="/feed.atom" />
+		<link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+		<link rel="icon" href="/favicon.ico" type="image/x-icon">
+
+		<meta name="application-name" content="Eric Winnington" />
+		<meta name="msapplication-tooltip" content="Eric Winnington" />
+		<meta name="msapplication-starturl" content="/" />
+
+		<meta property="og:title" content="Eric Winnington - Data Lineage for dataflow and workflow processes" /> 
+		<meta property="og:type" content="website" />
+		<meta property="og:url" content="http://ewinnington.github.io/posts/Data-Lineage" />
+		<!-- TODO: More social graph meta tags -->
+
+        <script src="/assets/js/highlight.pack.js"></script>   
+		
+        <meta name="twitter:card" content="summary" />
+<meta name="twitter:site" content="@ewinnington" />
+<meta name="twitter:title" content="Eric Winnington - Data Lineage for dataflow and workflow processes" />
+<meta name="twitter:description" content="A collection of thoughts, code and snippets." />
+
+<script type="text/javascript" id="MathJax-script" async
+  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
+</script>
+		
+	</head>
+
+	<body>
+		<!-- Wrapper -->
+		<div id="wrapper">
+
+			<!-- Header -->
+			<header id="header">
+				<div class="inner">
+
+					<!-- Logo -->
+					<a href="/" class="logo">
+						<span class="title">Eric Winnington</span>
+					</a>
+
+					<!-- Nav -->
+					<nav>
+						<ul>
+							<li><a href="#menu">Menu</a></li>
+						</ul>
+					</nav>
+
+				</div>
+			</header>
+
+			<!-- Menu -->
+			<nav id="menu">
+				<h2>Menu</h2>
+				<ul>
+					        <li><a href="/posts">Archive</a></li>
+        <li><a href="/tags">Tags</a></li>
+        <li><a href="/about">About Me</a></li>
+        <li><a href="/videos">Videos on programming</a></li>
+
+				</ul>
+			</nav>
+
+			<!-- Main -->
+			<div id="main">
+				<div class="inner">
+
+    
+<header>
+    <h1>Data Lineage for dataflow and workflow processes</h1>
+            <p><em>Published on Saturday, 12 November 2022</em></p>
+            <ul class="actions small">
+                    <li><a role="button" href="/tags/Architecture" class="button small">Architecture</a></li>
+                    <li><a role="button" href="/tags/DataLineage" class="button small">DataLineage</a></li>
+                    <li><a role="button" href="/tags/Thoughts" class="button small">Thoughts</a></li>
+        </ul>     
+</header>
+
+					
+					<div id="content">
+						
+
+<p>An initial draft to compare data lineage solutions</p>
+<h1 id="data-lineage">Data lineage</h1>
+<p>When working with large amounts of data, extraction, transforms and loads procedures can hide the source of the original data and make inquiries on &quot;where did this data come from and what happened to it?&quot; difficult to answer.</p>
+<p>A data lineage is &quot;the process of understanding, recording, and visualizing data as it flows from data sources to consumption<a id="fnref:1" href="#fn:1" class="footnote-ref"><sup>1</sup></a>&quot; and tries to answer that question.</p>
+<p>Using dataflow and ETL orchestration tools such as <a href="https://airflow.apache.org/">Airflow</a>, <a href="https://www.prefect.io">Prefect</a>, <a href="https://nifi.apache.org/">NiFi</a>, we move and transform data, but also lose the reference as to how the data was transformed.</p>
+<p>In this document, we will approach one open source tool OpenLineage and one &quot;hand built&quot; approach to capturing and storing data lineage information.</p>
+<h2 id="openlineage-and-marquez-open-source-tools">OpenLineage and Marquez - Open source tools</h2>
+<p><a href="https://openlineage.io/">OpenLineage</a> is an open source project and framework for data lineage collection and analysis that helps collect lineage metadata from the data  processing applications. At its core, OpenLineage exposes a standard API for metadata collection - a single API call: <a href="https://openlineage.io/apidocs/openapi/"><strong>postRunEvent</strong></a>.</p>
+<p>To simplify its implementation with AirFlow, Open Lineage has an <a href="https://github.com/OpenLineage/OpenLineage/tree/main/integration/airflow/openlineage/airflow">airflow connection module</a> already available.</p>
+<p>On the back-end, the storage of run meta-data has a reference implementation named Marquez. The data model is illustrated here.</p>
+<p><a href="https://lucid.app/lucidchart/f918ce01-9eb4-4900-b266-49935da271b8/view?page=8xAE.zxyknLQ#">Marquez data model</a></p>
+<p><img src="/posts/images/data-lineage/Marquez-Data-Model.png" class="img-fluid" alt="" /></p>
+<p>But it is also possible to implement one's own storage for metadata in case there is a need or added value, but adopting the open source solution will be an advantage for integration later.</p>
+<h2 id="locally-grown-alternatives">Locally grown alternatives</h2>
+<p>Data correlation and lineage information can be generated via the emission of events while processing input data. Additionally, input data can be fingerprinted via a fast hash function to check for duplicate imports, so as to enable idempotent processing.</p>
+<h3 id="input-dataset-fingerprinting-via-non-cryptographic-hash-function">Input dataset fingerprinting via non-cryptographic hash function</h3>
+<p>We can use a fast non-cryptographic hash function such as <a href="https://github.com/backtrace-labs/umash">umash</a> to generate a hash of the input data or xxhash <code>sudo apt-get install xxhash</code>. xxhash is capable of taking streaming STDIN data from compressed files to generate a fast hash.</p>
+<pre><code class="language-bash">time gunzip -c /mnt/d/smart_meter_data/ckw_opendata_smartmeter_dataset_a_202101.csv.gz | /usr/bin/xxhsum
+</code></pre>
+<h3 id="correlation-ids-with-uuids">Correlation IDs with UUIDs</h3>
+<p>Generating uuid for correlations identifiers along <a href="https://www.rfc-editor.org/rfc/rfc4122.html">rfc4122</a> gives us multiple variant generation algorithms to give us sortable UUIDs which minimize collision possibilities even with a high UUID generation rate.</p>
+<h3 id="hierarchical-correlation-ids-using-closure-tables">Hierarchical correlation IDs using closure tables</h3>
+<p>When inputs contain a dataset that is composed of multiple data points that identify unique sets in our final processed dataset, it becomes necessary to be able to trace their lineage back to the initial input. A recursive search through a table of entries to find the parent correlation identifier of a child time-series is quite inefficient.</p>
+<p>To have fast search over deep hierarchies of correlations IDs in relational databases, we can turn to the concept of closure tables.</p>
+<table class="table">
+<thead>
+<tr>
+<th style="text-align: left;">Field</th>
+<th style="text-align: left;">Type</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">ParentId</td>
+<td style="text-align: left;">UUID</td>
+</tr>
+<tr>
+<td style="text-align: left;">ChildId</td>
+<td style="text-align: left;">UUID</td>
+</tr>
+<tr>
+<td style="text-align: left;">Depth</td>
+<td style="text-align: left;">integer</td>
+</tr>
+</tbody>
+</table>
+<p>This table structure allows to query in one query all parent or children of an identifier in one non-recursive sql query. This is done at the cost of having to insert the entire hierarchy of the correlationIDs upon insertion.</p>
+<p>Here we are representing the two hierarchies</p>
+<pre><code>aaa &gt; bbb &gt; ccc
+aaa &gt; eee 
+</code></pre>
+<table class="table">
+<thead>
+<tr>
+<th style="text-align: left;">ParentId</th>
+<th style="text-align: left;">ChildId</th>
+<th style="text-align: right;">Depth</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">aaa</td>
+<td style="text-align: left;">aaa</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr>
+<td style="text-align: left;">bbb</td>
+<td style="text-align: left;">bbb</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr>
+<td style="text-align: left;">ccc</td>
+<td style="text-align: left;">ccc</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr>
+<td style="text-align: left;">eee</td>
+<td style="text-align: left;">eee</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr>
+<td style="text-align: left;">aaa</td>
+<td style="text-align: left;">bbb</td>
+<td style="text-align: right;">1</td>
+</tr>
+<tr>
+<td style="text-align: left;">bbb</td>
+<td style="text-align: left;">ccc</td>
+<td style="text-align: right;">1</td>
+</tr>
+<tr>
+<td style="text-align: left;">aaa</td>
+<td style="text-align: left;">ccc</td>
+<td style="text-align: right;">2</td>
+</tr>
+<tr>
+<td style="text-align: left;">aaa</td>
+<td style="text-align: left;">eee</td>
+<td style="text-align: right;">1</td>
+</tr>
+</tbody>
+</table>
+<p><em>note</em>: <em>if desired the initial 0 depth nodes can be neglected from the insertion process without losing functionality, but can be useful in certain modeling processes (eg. rights, groups)</em></p>
+<p>If we need to find all children of <strong>aaa</strong>, we can do a</p>
+<pre><code>SELECT ChildId, Depth FROM Closure_Table WHERE ParentId = &quot;aaa&quot; ORDER BY Depth;
+</code></pre>
+<p>which returns the following</p>
+<table class="table">
+<thead>
+<tr>
+<th style="text-align: left;">ChildId</th>
+<th style="text-align: left;">Depth</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">aaa</td>
+<td style="text-align: left;">0</td>
+</tr>
+<tr>
+<td style="text-align: left;">bbb</td>
+<td style="text-align: left;">1</td>
+</tr>
+<tr>
+<td style="text-align: left;">eee</td>
+<td style="text-align: left;">1</td>
+</tr>
+<tr>
+<td style="text-align: left;">ccc</td>
+<td style="text-align: left;">2</td>
+</tr>
+</tbody>
+</table>
+<p>If we need to find all parents of <strong>eee</strong>, we can do a</p>
+<pre><code>SELECT ParentId, Depth FROM Closure_Table WHERE ChildId = &quot;eee&quot; ORDER BY Depth DESC;
+</code></pre>
+<p>which returns the following</p>
+<table class="table">
+<thead>
+<tr>
+<th style="text-align: left;">ParentId</th>
+<th style="text-align: left;">Depth</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">aaa</td>
+<td style="text-align: left;">1</td>
+</tr>
+<tr>
+<td style="text-align: left;">eee</td>
+<td style="text-align: left;">0</td>
+</tr>
+</tbody>
+</table>
+<h3 id="table-structure-for-a-correlated-fingerprinted-hierarchical-data-lineage">Table structure for a Correlated, fingerprinted hierarchical data lineage</h3>
+<p>With correlatedEvent and CorrelatedLineage tables, it becomes possible in a single request to generate a lineage graph for parents or descendants of correlated dataset.</p>
+<p><img src="/posts/images/data-lineage/CorrelatedLineageDataModel.png" class="img-fluid" alt="" /></p>
+<pre><code>erDiagram
+    CorrelationEvent {
+        uuid     IdEvent
+        string   Process
+        string   Version
+        hash     Fingerprint
+        int      InputSize
+        datetime EventTime
+        int      Forced
+    }
+
+    CorrelationDetails {
+        uuid IdEvent
+        string Field
+        json Data 
+    }
+
+    CorrelationLineage {
+        uuid IdParent
+        uuid IdChild
+        integer Depth
+    }
+
+    CorrelationEvent ||--o{ CorrelationDetails : &quot;&quot;
+    CorrelationEvent ||--o{ CorrelationLineage : &quot;parent&quot;
+    CorrelationEvent ||--o{ CorrelationLineage : &quot;child&quot;
+</code></pre>
+<p>It would even be possible to generate the diagrams using mermaid automatically to trace the flows through the system<a id="fnref:2" href="#fn:2" class="footnote-ref"><sup>2</sup></a>.</p>
+<p><img src="/posts/images/data-lineage/CorrelatedLineageFlow.png" class="img-fluid" alt="" /></p>
+<pre><code>flowchart LR
+    id1((&quot;DSO Timeseries&quot;)) --&gt; id2[SFTP Download] --&gt; id3[Split]
+    id3 --&gt; TS01
+    id3 --&gt; TS02
+    id3 --&gt; TS03 
+    id3 --&gt; TS04
+    id3 --&gt; TS..
+    TS01 --&gt; id4[Delivery point sum]
+    TS02 --&gt; id4
+    id4 --&gt; id5[Load]
+
+    met((Weather provider)) --&gt; met2[API Download] --&gt; met3[&quot;Aggregate to hour&quot;] --&gt; met4[&quot;delivery point history&quot;]
+
+    met4 --&gt; for1[forecast consumption]
+    id4 --&gt; for1 --&gt; for2[Load]
+</code></pre>
+<h3 id="solution-design">Solution design</h3>
+<p>A rabbitMQ message queue to receive correlation events emitted by the tasks, with several consumer tasks receiving and committing to the database is a preferred approach over an HTTP 1.1 connection due the the scaling efficiency of AMQP over pure HTTP<a id="fnref:3" href="#fn:3" class="footnote-ref"><sup>3</sup></a>.</p>
+<p><img src="/posts/images/data-lineage/CorrelatedApplicationFlow.png" class="img-fluid" alt="" /></p>
+<pre><code>flowchart LR
+    a[Airflow] ---&gt; b[AirFlowTask] --&gt; c[RabbitMQ Queue Events] --&gt; d[EventReceiver] --&gt; Postgresql --&gt; Monitoring
+</code></pre>
+<p>A particular focus on the monitoring of the solution is necessary to truly have an operational system. The RabbitMQ should be a redundant, instrumented and reported to Graphana, with a queue length monitoring in place. The EventReceivers should employ a dead letter queue in case message are rejected by the database. These rejected messages could also also be a uuid collision - which can be treated by the daily reconciliation process and DeadLetter queue processing.</p>
+<p>A high availability Postgresql is recommended, either as a local instance or as a cloud hosted service - which would facilitate operations.</p>
+<p>The issue of Data retention should be discussed with Business. If we do not keep a time-series history in the time-series datastore, then the event correlation become actually an <a href="https://microservices.io/patterns/data/event-sourcing.html">event sourcing pattern</a>, enabling to re-create the history of how the time-series was updated.</p>
+<h2 id="conclusion">Conclusion</h2>
+<p>Irrespective of the method chosen to capture and store the messages, the systems chosen must provide a high availability solution for data lineage - but must be sure to not block ingestion if the data lineage system is unresponsive. As long as the message queue is persistent and accessible, it can always be caught up later.</p>
+<p>The main task is emitting the events with meaningful data and unique correlation IDs. A focus on the semantics of the events while developing the workflow / dataflows is primordial. A callable event library provides the best developer experience to maximize standardization of code</p>
+<p>The design of idempotent imports into the system is important, it allows to replay events non-destructively and provides operational resilience.</p>
+<div class="footnotes">
+<hr />
+<ol>
+<li id="fn:1">
+<p><a href="https://www.imperva.com/learn/data-security/data-lineage/">https://www.imperva.com/learn/data-security/data-lineage/</a><a href="#fnref:1" class="footnote-back-ref">&#8617;</a></p>
+</li>
+<li id="fn:2">
+<p><a href="https://github.com/dotnet/interactive/blob/main/samples/notebooks/polyglot/github%20repo%20milestone%20report.ipynb">https://github.com/dotnet/interactive/blob/main/samples/notebooks/polyglot/github%20repo%20milestone%20report.ipynb</a> - See the PieWithMermaid C# task for a visualisation of such an interaction.<a href="#fnref:2" class="footnote-back-ref">&#8617;</a></p>
+</li>
+<li id="fn:3">
+<p>This should be re-evaluated when HTTP/3 oneshot becomes available in the servers and languages used. The expected performance improvement are such that at that time HTTP/3 QUIC might outrace any other streaming solution. <a href="https://blog.cloudflare.com/http3-the-past-present-and-future/">https://blog.cloudflare.com/http3-the-past-present-and-future/</a><a href="#fnref:3" class="footnote-back-ref">&#8617;</a></p>
+</li>
+</ol>
+</div>
+
+
+<hr>
+					</div>
+				</div>
+			</div>
+
+			<!-- Footer -->
+			<footer id="footer">
+				<div class="inner">
+    <section>
+        <h2>Feeds</h2>
+        <ul class="actions small vertical">
+            <li><a href="/feed.rss" class="button small"><i class="fa fa-rss"></i> RSS Feed</a></li>
+                        <li><a href="/feed.atom" class="button small"><i class="fa fa-rss"></i> Atom Feed</a></li>
+        </ul>
+    </section>
+    <section>
+    </section>
+    <ul class="copyright">
+        <li>Copyright © 2022</li>
+        <li>Design: <a href="http://html5up.net">HTML5 UP</a></li>
+        <li><a href="https://wyam.io">Generated by Wyam</a></li>
+    </ul>
+</div>
+
+			</footer>
+
+		</div>
+		
+		
+
+		<!-- Scripts -->
+		<script>hljs.initHighlightingOnLoad();</script>
+		<script src="/assets/js/jquery.min.js"></script>
+		<script src="/assets/js/skel.min.js"></script>
+		<script src="/assets/js/util.js"></script>
+		<!--[if lte IE 8]><script src="/assets/js/ie/respond.min.js"></script><![endif]-->
+		<script src="/assets/js/main.js"></script>
+
+	</body>
+
+</html>
