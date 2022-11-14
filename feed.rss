@@ -5,8 +5,8 @@
 		<link>http://ewinnington.github.io/</link>
 		<description>A collection of thoughts, code and snippets.</description>
 		<copyright>2022</copyright>
-		<pubDate>Mon, 14 Nov 2022 13:37:57 GMT</pubDate>
-		<lastBuildDate>Mon, 14 Nov 2022 13:37:57 GMT</lastBuildDate>
+		<pubDate>Mon, 14 Nov 2022 13:41:58 GMT</pubDate>
+		<lastBuildDate>Mon, 14 Nov 2022 13:41:58 GMT</lastBuildDate>
 		<item>
 			<title>Data Lineage for dataflow and workflow processes</title>
 			<link>http://ewinnington.github.io/posts/Data-Lineage</link>
@@ -217,7 +217,7 @@ aaa &amp;gt; eee
 &lt;/code&gt;&lt;/pre&gt;
 &lt;h3 id="solution-design"&gt;Solution design&lt;/h3&gt;
 &lt;p&gt;A rabbitMQ message queue to receive correlation events emitted by the tasks, with several consumer tasks receiving and committing to the database is a preferred approach over an HTTP 1.1 connection due the the scaling efficiency of AMQP over pure HTTP&lt;a id="fnref:3" href="#fn:3" class="footnote-ref"&gt;&lt;sup&gt;3&lt;/sup&gt;&lt;/a&gt;.&lt;/p&gt;
-&lt;p&gt;&lt;img src="/posts/images/data-lineage/CorrelatedApplicationFlow.png" class="img-fluid" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src="/posts/images/data-lineage/CorrelatedApplicationFlow.png" class="img-fluid" width="80%" alt="" /&gt;&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;flowchart LR
     a[Airflow] ---&amp;gt; b[AirFlowTask] --&amp;gt; c[[RabbitMQ Queue Events]] --&amp;gt; d[EventReceiver] -- success --&amp;gt; g[(Postgresql)] --&amp;gt; Monitoring
     d -- failed --&amp;gt; e[[RabbitMQ Queue Deadletter]] --&amp;gt; f[DLQ processing and Reconciliation] --&amp;gt; g

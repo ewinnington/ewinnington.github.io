@@ -304,7 +304,7 @@ aaa &gt; eee
 </code></pre>
 <h3 id="solution-design">Solution design</h3>
 <p>A rabbitMQ message queue to receive correlation events emitted by the tasks, with several consumer tasks receiving and committing to the database is a preferred approach over an HTTP 1.1 connection due the the scaling efficiency of AMQP over pure HTTP<a id="fnref:3" href="#fn:3" class="footnote-ref"><sup>3</sup></a>.</p>
-<p><img src="/posts/images/data-lineage/CorrelatedApplicationFlow.png" class="img-fluid" alt="" /></p>
+<p><img src="/posts/images/data-lineage/CorrelatedApplicationFlow.png" class="img-fluid" width="80%" alt="" /></p>
 <pre><code>flowchart LR
     a[Airflow] ---&gt; b[AirFlowTask] --&gt; c[[RabbitMQ Queue Events]] --&gt; d[EventReceiver] -- success --&gt; g[(Postgresql)] --&gt; Monitoring
     d -- failed --&gt; e[[RabbitMQ Queue Deadletter]] --&gt; f[DLQ processing and Reconciliation] --&gt; g

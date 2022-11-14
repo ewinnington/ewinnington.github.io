@@ -303,7 +303,7 @@ aaa &gt; eee
 </code></pre>
 <h3 id="solution-design">Solution design</h3>
 <p>A rabbitMQ message queue to receive correlation events emitted by the tasks, with several consumer tasks receiving and committing to the database is a preferred approach over an HTTP 1.1 connection due the the scaling efficiency of AMQP over pure HTTP<a id="fnref:3" href="#fn:3" class="footnote-ref"><sup>3</sup></a>.</p>
-<p><img src="/posts/images/data-lineage/CorrelatedApplicationFlow.png" class="img-fluid" alt="" /></p>
+<p><img src="/posts/images/data-lineage/CorrelatedApplicationFlow.png" class="img-fluid" width="80%" alt="" /></p>
 <pre><code>flowchart LR
     a[Airflow] ---&gt; b[AirFlowTask] --&gt; c[[RabbitMQ Queue Events]] --&gt; d[EventReceiver] -- success --&gt; g[(Postgresql)] --&gt; Monitoring
     d -- failed --&gt; e[[RabbitMQ Queue Deadletter]] --&gt; f[DLQ processing and Reconciliation] --&gt; g
@@ -461,12 +461,12 @@ aaa &gt; eee
                     <li><a role="button" href="/tags/Database" class="button small">Database (10)</a></li>
                     <li><a role="button" href="/tags/CSharp" class="button small">CSharp (8)</a></li>
                     <li><a role="button" href="/tags/Thoughts" class="button small">Thoughts (8)</a></li>
-                    <li><a role="button" href="/tags/Jupyter-notebook" class="button small">Jupyter notebook (7)</a></li>
                     <li><a role="button" href="/tags/Dotnet-try" class="button small">Dotnet try (7)</a></li>
+                    <li><a role="button" href="/tags/Jupyter-notebook" class="button small">Jupyter notebook (7)</a></li>
                     <li><a role="button" href="/tags/Oracle" class="button small">Oracle (6)</a></li>
-                    <li><a role="button" href="/tags/WPF" class="button small">WPF (4)</a></li>
-                    <li><a role="button" href="/tags/Rpi" class="button small">Rpi (4)</a></li>
+                    <li><a role="button" href="/tags/CommandLine" class="button small">CommandLine (4)</a></li>
                     <li><a role="button" href="/tags/Space" class="button small">Space (4)</a></li>
+                    <li><a role="button" href="/tags/WPF" class="button small">WPF (4)</a></li>
             </ul>
             <ul class="actions small">
                 <li><a href="/tags" class="button small">View All Tags &rarr;</a></li>
