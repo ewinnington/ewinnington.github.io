@@ -3,8 +3,6 @@ Published: 12/11/2022 22:10
 Tags: [Thoughts, DataLineage, Architecture] 
 ---
 
-An initial draft to compare data lineage solutions
-
 # Data lineage
 When working with large amounts of data, extraction, transforms and loads procedures can hide the source of the original data and make inquiries on "where did this data come from and what happened to it?" difficult to answer. 
 
@@ -14,7 +12,7 @@ Using dataflow and ETL orchestration tools such as [Airflow](https://airflow.apa
 
 In this document, we will approach one open source tool OpenLineage and one "hand built" approach to capturing and storing data lineage information.
 
-## OpenLineage and Marquez - Open source tools
+# OpenLineage and Marquez - Open source tools
 
 [OpenLineage](https://openlineage.io/) is an open source project and framework for data lineage collection and analysis that helps collect lineage metadata from the data  processing applications. At its core, OpenLineage exposes a standard API for metadata collection - a single API call: [**postRunEvent**](https://openlineage.io/apidocs/openapi/). 
 
@@ -29,7 +27,7 @@ https://lucid.app/lucidchart/f918ce01-9eb4-4900-b266-49935da271b8/view?page=8xAE
 
 But it is also possible to implement one's own storage for metadata in case there is a need or added value, but adopting the open source solution will be an advantage for integration later. 
 
-## Locally grown alternatives
+# Locally grown alternatives
 
 Data correlation and lineage information can be generated via the emission of events while processing input data. Additionally, input data can be fingerprinted via a fast hash function to check for duplicate imports, so as to enable idempotent processing.   
 
@@ -175,7 +173,8 @@ A rabbitMQ message queue to receive correlation events emitted by the tasks, wit
 
 ```
 flowchart LR
-    a[Airflow] ---> b[AirFlowTask] --> c[RabbitMQ Queue Events] --> d[EventReceiver] --> Postgresql --> Monitoring
+    a[Airflow] ---> b[AirFlowTask] --> c[[RabbitMQ Queue Events]] --> d[EventReceiver] -- success --> g[(Postgresql)] --> Monitoring
+    d -- failed --> e[[RabbitMQ Queue Deadletter]] --> f[DLQ processing and Reconciliation] --> g
 ```
 
 A particular focus on the monitoring of the solution is necessary to truly have an operational system. The RabbitMQ should be a redundant, instrumented and reported to Graphana, with a queue length monitoring in place. The EventReceivers should employ a dead letter queue in case message are rejected by the database. These rejected messages could also also be a uuid collision - which can be treated by the daily reconciliation process and DeadLetter queue processing.
