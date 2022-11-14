@@ -169,7 +169,7 @@ flowchart LR
 
 A rabbitMQ message queue to receive correlation events emitted by the tasks, with several consumer tasks receiving and committing to the database is a preferred approach over an HTTP 1.1 connection due the the scaling efficiency of AMQP over pure HTTP[^3]. 
 
-![](/posts/images/data-lineage/CorrelatedApplicationFlow.png)
+![](/posts/images/data-lineage/CorrelatedApplicationFlow.png){ width = 80% } 
 
 ```
 flowchart LR
