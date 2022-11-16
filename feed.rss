@@ -5,8 +5,8 @@
 		<link>http://ewinnington.github.io/</link>
 		<description>A collection of thoughts, code and snippets.</description>
 		<copyright>2022</copyright>
-		<pubDate>Wed, 16 Nov 2022 20:14:49 GMT</pubDate>
-		<lastBuildDate>Wed, 16 Nov 2022 20:14:49 GMT</lastBuildDate>
+		<pubDate>Wed, 16 Nov 2022 20:28:54 GMT</pubDate>
+		<lastBuildDate>Wed, 16 Nov 2022 20:28:54 GMT</lastBuildDate>
 		<item>
 			<title>Software Architecture illustrations</title>
 			<link>http://ewinnington.github.io/posts/Software-Architecture-Illustration</link>
@@ -84,7 +84,7 @@ with Diagram(&amp;quot;Composed Docker&amp;quot;, show=False):
     users &amp;gt;&amp;gt; web &amp;gt;&amp;gt; php &amp;gt;&amp;gt; rabbit &amp;gt;&amp;gt; listener &amp;gt;&amp;gt; db
     php &amp;gt;&amp;gt; redis
 &lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src="/posts/images/SA-Illustrations/composed_docker.png" class="img-fluid" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src="/posts/images/SA-Illustrations/composed_docker.png" class="img-fluid" width="80%" alt="" /&gt;&lt;/p&gt;
 &lt;h3 id="plantuml"&gt;PlantUML&lt;/h3&gt;
 &lt;p&gt;The big one! Plant UML has a ton of diagrams, the language is maybe a bit more obscure and complicated than mermaid, but you gain a lot from PlantUML when you actually need those features.&lt;/p&gt;
 &lt;ul&gt;
