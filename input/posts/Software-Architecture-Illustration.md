@@ -87,7 +87,7 @@ with Diagram("Composed Docker", show=False):
     php >> redis
 ```
 
-![](/posts/images/SA-Illustrations/composed_docker.png)
+![](/posts/images/SA-Illustrations/composed_docker.png){ width=80% }
 
 ### PlantUML 
 The big one! Plant UML has a ton of diagrams, the language is maybe a bit more obscure and complicated than mermaid, but you gain a lot from PlantUML when you actually need those features. 
