@@ -4,7 +4,7 @@
 	<title>Eric Winnington</title>
 	<link rel="self" href="http://ewinnington.github.io/" />
 	<rights>2022</rights>
-	<updated>2022-11-22T15:07:08Z</updated>
+	<updated>2022-11-22T15:08:21Z</updated>
 	<subtitle>A collection of thoughts, code and snippets.</subtitle>
 	<entry>
 		<id>http://ewinnington.github.io/posts/Software-Architecture-Illustration</id>
@@ -473,7 +473,7 @@ aaa &amp;gt; eee
 &lt;li&gt;Supplier: Tesla&lt;/li&gt;
 &lt;li&gt;Cost: ? (my estimate $100 million+)&lt;/li&gt;
 &lt;/ul&gt;
-&lt;p&gt;Us usual, BBC is terribly uninformative about specifications and cost. If we assume 50 Tesla Megapacks, cost should be around $100 million+ and 50 to 100 MW based on the 2h or 4h megapacks. Interesting to see a Tesla system in Europe. I expect many more to come online.&lt;/p&gt;
+&lt;p&gt;As usual, BBC is terribly uninformative about specifications and cost. If we assume 50 Tesla Megapacks, cost should be around $100 million+ and 50 to 100 MW based on the 2h or 4h megapacks. Interesting to see a Tesla system in Europe. I expect many more to come online.&lt;/p&gt;
 &lt;p&gt;2022.11.07 - &lt;a href="https://www.rwe.com/en/press/rwe-generation/2022-11-07-battery-storage-220-mw-neurath"&gt;RWE gives green light for 220-megawatt battery storage system in North Rhine-Westphalia&lt;/a&gt;&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;Power: 80 + 140 MW = 220 MW&lt;/li&gt;
