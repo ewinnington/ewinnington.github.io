@@ -76,7 +76,7 @@ The 39 GWh storage produced by the factory in one year is a huge amount, so much
 - Supplier: Tesla
 - Cost: ? (my estimate $100 million+)
 
-Us usual, BBC is terribly uninformative about specifications and cost. If we assume 50 Tesla Megapacks, cost should be around $100 million+ and 50 to 100 MW based on the 2h or 4h megapacks. Interesting to see a Tesla system in Europe. I expect many more to come online.
+As usual, BBC is terribly uninformative about specifications and cost. If we assume 50 Tesla Megapacks, cost should be around $100 million+ and 50 to 100 MW based on the 2h or 4h megapacks. Interesting to see a Tesla system in Europe. I expect many more to come online.
 
 2022.11.07 - [RWE gives green light for 220-megawatt battery storage system in North Rhine-Westphalia](https://www.rwe.com/en/press/rwe-generation/2022-11-07-battery-storage-220-mw-neurath)
 
