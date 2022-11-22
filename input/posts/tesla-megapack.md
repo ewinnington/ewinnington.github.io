@@ -70,7 +70,7 @@ The 39 GWh storage produced by the factory in one year is a huge amount, so much
 2022.11.22 - [Cottingham: Europe's biggest battery storage system switched on - 196MWh](https://www.bbc.com/news/uk-england-humber-63707463)
 
 - Power: ? (my estimate ~50-100 MW)
-- 196 MWh energy 
+- Storage: 196 MWh  
 - use Tesla's AI software to match energy supply to demand
 - Commissioning in two stages in December 2022 and March 2023.
 - Supplier: Tesla
