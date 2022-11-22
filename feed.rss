@@ -5,8 +5,8 @@
 		<link>http://ewinnington.github.io/</link>
 		<description>A collection of thoughts, code and snippets.</description>
 		<copyright>2022</copyright>
-		<pubDate>Tue, 22 Nov 2022 15:05:07 GMT</pubDate>
-		<lastBuildDate>Tue, 22 Nov 2022 15:05:07 GMT</lastBuildDate>
+		<pubDate>Tue, 22 Nov 2022 15:07:08 GMT</pubDate>
+		<lastBuildDate>Tue, 22 Nov 2022 15:07:08 GMT</lastBuildDate>
 		<item>
 			<title>Software Architecture illustrations</title>
 			<link>http://ewinnington.github.io/posts/Software-Architecture-Illustration</link>
@@ -469,7 +469,7 @@ aaa &amp;gt; eee
 &lt;p&gt;2022.11.22 - &lt;a href="https://www.bbc.com/news/uk-england-humber-63707463"&gt;Cottingham: Europe's biggest battery storage system switched on - 196MWh&lt;/a&gt;&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;Power: ? (my estimate ~50-100 MW)&lt;/li&gt;
-&lt;li&gt;196 MWh energy&lt;/li&gt;
+&lt;li&gt;Storage: 196 MWh&lt;/li&gt;
 &lt;li&gt;use Tesla's AI software to match energy supply to demand&lt;/li&gt;
 &lt;li&gt;Commissioning in two stages in December 2022 and March 2023.&lt;/li&gt;
 &lt;li&gt;Supplier: Tesla&lt;/li&gt;

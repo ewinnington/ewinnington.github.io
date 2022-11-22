@@ -4,7 +4,7 @@
 	<title>Eric Winnington</title>
 	<link rel="self" href="http://ewinnington.github.io/" />
 	<rights>2022</rights>
-	<updated>2022-11-22T15:05:07Z</updated>
+	<updated>2022-11-22T15:07:08Z</updated>
 	<subtitle>A collection of thoughts, code and snippets.</subtitle>
 	<entry>
 		<id>http://ewinnington.github.io/posts/Software-Architecture-Illustration</id>
@@ -467,7 +467,7 @@ aaa &amp;gt; eee
 &lt;p&gt;2022.11.22 - &lt;a href="https://www.bbc.com/news/uk-england-humber-63707463"&gt;Cottingham: Europe's biggest battery storage system switched on - 196MWh&lt;/a&gt;&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;Power: ? (my estimate ~50-100 MW)&lt;/li&gt;
-&lt;li&gt;196 MWh energy&lt;/li&gt;
+&lt;li&gt;Storage: 196 MWh&lt;/li&gt;
 &lt;li&gt;use Tesla's AI software to match energy supply to demand&lt;/li&gt;
 &lt;li&gt;Commissioning in two stages in December 2022 and March 2023.&lt;/li&gt;
 &lt;li&gt;Supplier: Tesla&lt;/li&gt;
