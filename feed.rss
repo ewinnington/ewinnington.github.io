@@ -5,8 +5,8 @@
 		<link>http://ewinnington.github.io/</link>
 		<description>A collection of thoughts, code and snippets.</description>
 		<copyright>2022</copyright>
-		<pubDate>Tue, 22 Nov 2022 15:08:21 GMT</pubDate>
-		<lastBuildDate>Tue, 22 Nov 2022 15:08:21 GMT</lastBuildDate>
+		<pubDate>Wed, 23 Nov 2022 17:29:10 GMT</pubDate>
+		<lastBuildDate>Wed, 23 Nov 2022 17:29:10 GMT</lastBuildDate>
 		<item>
 			<title>Software Architecture illustrations</title>
 			<link>http://ewinnington.github.io/posts/Software-Architecture-Illustration</link>
@@ -95,6 +95,11 @@ with Diagram(&amp;quot;Composed Docker&amp;quot;, show=False):
 &lt;li&gt;&lt;a href="https://www.plantuml.com/plantuml/uml/"&gt;https://www.plantuml.com/plantuml/uml/&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;
 &lt;p&gt;Actually, I’ve used it quite seldomly, being able to cover most requirements with Mermaid and Python Diagrams.&lt;/p&gt;
+&lt;h3 id="d2"&gt;D2&lt;/h3&gt;
+&lt;p&gt;D2 has recently been open-sourced and made available. I haven't yet had time to test it.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="https://d2lang.com/tour/intro/"&gt;https://d2lang.com/tour/intro/&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
 &lt;h2 id="diagrams-as-drawing"&gt;Diagrams as Drawing:&lt;/h2&gt;
 &lt;h3 id="diagrams"&gt;Diagrams&lt;/h3&gt;
 &lt;p&gt;Diagrams.net has both an online and an offline version of a vector drawing software that works exceedingly well for software architecture illustrations. With symbols for most public cloud platforms included in their delectable libraries, you’ll be able to find the right symbol you need.&lt;/p&gt;
