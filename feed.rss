@@ -5,8 +5,8 @@
 		<link>http://ewinnington.github.io/</link>
 		<description>A collection of thoughts, code and snippets.</description>
 		<copyright>2022</copyright>
-		<pubDate>Sun, 04 Dec 2022 21:50:47 GMT</pubDate>
-		<lastBuildDate>Sun, 04 Dec 2022 21:50:47 GMT</lastBuildDate>
+		<pubDate>Sun, 04 Dec 2022 21:58:27 GMT</pubDate>
+		<lastBuildDate>Sun, 04 Dec 2022 21:58:27 GMT</lastBuildDate>
 		<item>
 			<title>7 reasons to not use caching</title>
 			<link>http://ewinnington.github.io/posts/7Reasons-no-cache</link>
@@ -34,8 +34,10 @@
 &lt;li&gt;&lt;p&gt;Caching can create additional maintenance overhead, as you need to monitor the cache and ensure it is working properly. Monitoring cache hit and miss rates, ensuring that the cache is not getting too full, and periodically purging expired or stale data from the cache.&lt;/p&gt;
 &lt;/li&gt;
 &lt;/ol&gt;
+&lt;p&gt;and a bonus &lt;a href="https://mobile.twitter.com/joslat/status/1599518029649678336"&gt;8.&lt;/a&gt; from &lt;a href="https://mobile.twitter.com/joslat"&gt;Jose Luis Latorre&lt;/a&gt;
+&amp;quot;8. It should be also properly tested, and stress tested... without mention the security testing as well should include a check on this layer too... which would bring us to point 3. More expensive ;)&amp;quot;&lt;/p&gt;
 &lt;p&gt;Introducing Caching into any architecture is a decision that must be made with care. We have to ask if it helps us fulfill a business requirement (latency requirements), and improves quality or responsiveness for the end user. And we must ensure the solution is appropriate in terms of cost of operation and cost of monitoring and support. Additionally, the security aspects of a cache should be considered in the solution design.&lt;/p&gt;
-&lt;p&gt;In software architecture, there are very few single answers, everything is a shade. Caching is a great hammer and use it when it is appropriate, but remember not every problem is a nail.&lt;/p&gt;
+&lt;p&gt;In software architecture, there are very few single answers, everything is a compromise. Caching is a great hammer and use it when it is appropriate, but remember not every problem is a nail.&lt;/p&gt;
 </content:encoded>
 		</item>
 		<item>
