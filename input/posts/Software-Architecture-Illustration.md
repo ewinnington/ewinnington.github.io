@@ -100,6 +100,11 @@ PlantUML also has a live editor online:
 
 Actually, I’ve used it quite seldomly, being able to cover most requirements with Mermaid and Python Diagrams. 
 
+### D2
+D2 has recently been open-sourced and made available. I haven't yet had time to test it. 
+
+- https://d2lang.com/tour/intro/
+
 ## Diagrams as Drawing:
 ### Diagrams 
 Diagrams.net has both an online and an offline version of a vector drawing software that works exceedingly well for software architecture illustrations. With symbols for most public cloud platforms included in their delectable libraries, you’ll be able to find the right symbol you need. 

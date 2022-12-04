@@ -67,6 +67,17 @@ The 39 GWh storage produced by the factory in one year is a huge amount, so much
 
 ## Post-scriptum: new gridscale batteries in Europe
 
+2022.11.22 - [Cottingham: Europe's biggest battery storage system switched on - 196MWh](https://www.bbc.com/news/uk-england-humber-63707463)
+
+- Power: ? (my estimate ~50-100 MW)
+- Storage: 196 MWh  
+- use Tesla's AI software to match energy supply to demand
+- Commissioning in two stages in December 2022 and March 2023.
+- Supplier: Tesla
+- Cost: ? (my estimate $100 million+)
+
+As usual, BBC is terribly uninformative about specifications and cost. If we assume 50 Tesla Megapacks, cost should be around $100 million+ and 50 to 100 MW based on the 2h or 4h megapacks. Interesting to see a Tesla system in Europe. I expect many more to come online.
+
 2022.11.07 - [RWE gives green light for 220-megawatt battery storage system in North Rhine-Westphalia](https://www.rwe.com/en/press/rwe-generation/2022-11-07-battery-storage-220-mw-neurath)
 
 - Power: 80 + 140 MW = 220 MW
