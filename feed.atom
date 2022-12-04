@@ -4,7 +4,7 @@
 	<title>Eric Winnington</title>
 	<link rel="self" href="http://ewinnington.github.io/" />
 	<rights>2022</rights>
-	<updated>2022-12-04T17:37:31Z</updated>
+	<updated>2022-12-04T21:50:47Z</updated>
 	<subtitle>A collection of thoughts, code and snippets.</subtitle>
 	<entry>
 		<id>http://ewinnington.github.io/posts/7Reasons-no-cache</id>
@@ -28,6 +28,8 @@
 &lt;li&gt;&lt;p&gt;Caching can be a security risk, as sensitive data that is stored in the cache may be vulnerable to unauthorized access or exposure. It takes additional effort to ensure that the correct authorizations are applied to cached data, increasing application complexity.&lt;/p&gt;
 &lt;/li&gt;
 &lt;li&gt;&lt;p&gt;Caching can be harder to debug. To determine why a piece of data is not being retrieved from the cache or is being retrieved from the underlying data store instead is difficult. This can make it challenging to diagnose and fix performance issues related to caching.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;Caching can create additional maintenance overhead, as you need to monitor the cache and ensure it is working properly. Monitoring cache hit and miss rates, ensuring that the cache is not getting too full, and periodically purging expired or stale data from the cache.&lt;/p&gt;
 &lt;/li&gt;
 &lt;/ol&gt;
 &lt;p&gt;Introducing Caching into any architecture is a decision that must be made with care. We have to ask if it helps us fulfill a business requirement (latency requirements), and improves quality or responsiveness for the end user. And we must ensure the solution is appropriate in terms of cost of operation and cost of monitoring and support. Additionally, the security aspects of a cache should be considered in the solution design.&lt;/p&gt;
