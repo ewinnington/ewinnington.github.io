@@ -25,6 +25,8 @@ I found [seven reasons to not introduce caching](https://twitter.com/ThrowATwit/
 
 6. Caching can be harder to debug. To determine why a piece of data is not being retrieved from the cache or is being retrieved from the underlying data store instead is difficult. This can make it challenging to diagnose and fix performance issues related to caching.
 
+7. Caching can create additional maintenance overhead, as you need to monitor the cache and ensure it is working properly. Monitoring cache hit and miss rates, ensuring that the cache is not getting too full, and periodically purging expired or stale data from the cache.
+
 Introducing Caching into any architecture is a decision that must be made with care. We have to ask if it helps us fulfill a business requirement (latency requirements), and improves quality or responsiveness for the end user. And we must ensure the solution is appropriate in terms of cost of operation and cost of monitoring and support. Additionally, the security aspects of a cache should be considered in the solution design.
 
 In software architecture, there are very few single answers, everything is a shade. Caching is a great hammer and use it when it is appropriate, but remember not every problem is a nail.
