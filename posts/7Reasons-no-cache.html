@@ -1,0 +1,167 @@
+﻿
+<!DOCTYPE html>
+<!--
+	Phantom by HTML5 UP
+	html5up.net | @ajlkn
+	Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
+-->
+<html lang="en">
+
+	<head>
+		<title>Eric Winnington - 7 reasons to not use caching</title>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1" />		
+        <link href="/assets/css/highlight.css" rel="stylesheet">
+		<!--[if lte IE 8]><script src="/assets/js/ie/html5shiv.js"></script><![endif]-->
+		<link rel="stylesheet" href="/assets/css/main.css" />
+		<!--[if lte IE 9]><link rel="stylesheet" href="/assets/css/ie9.css" /><![endif]-->
+		<!--[if lte IE 8]><link rel="stylesheet" href="/assets/css/ie8.css" /><![endif]-->
+        <link href="/assets/css/override.css" rel="stylesheet" />
+
+		<meta name="description" content="A collection of thoughts, code and snippets." />
+		<link type="application/rss+xml" rel="alternate" title="Eric Winnington" href="/feed.rss" />
+				<link type="application/atom+xml" rel="alternate" title="Eric Winnington" href="/feed.atom" />
+		<link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+		<link rel="icon" href="/favicon.ico" type="image/x-icon">
+
+		<meta name="application-name" content="Eric Winnington" />
+		<meta name="msapplication-tooltip" content="Eric Winnington" />
+		<meta name="msapplication-starturl" content="/" />
+
+		<meta property="og:title" content="Eric Winnington - 7 reasons to not use caching" /> 
+		<meta property="og:type" content="website" />
+		<meta property="og:url" content="http://ewinnington.github.io/posts/7Reasons-no-cache" />
+		<!-- TODO: More social graph meta tags -->
+
+        <script src="/assets/js/highlight.pack.js"></script>   
+		
+        <meta name="twitter:card" content="summary" />
+<meta name="twitter:site" content="@ewinnington" />
+<meta name="twitter:title" content="Eric Winnington - 7 reasons to not use caching" />
+<meta name="twitter:description" content="A collection of thoughts, code and snippets." />
+
+<script type="text/javascript" id="MathJax-script" async
+  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
+</script>
+		
+	</head>
+
+	<body>
+		<!-- Wrapper -->
+		<div id="wrapper">
+
+			<!-- Header -->
+			<header id="header">
+				<div class="inner">
+
+					<!-- Logo -->
+					<a href="/" class="logo">
+						<span class="title">Eric Winnington</span>
+					</a>
+
+					<!-- Nav -->
+					<nav>
+						<ul>
+							<li><a href="#menu">Menu</a></li>
+						</ul>
+					</nav>
+
+				</div>
+			</header>
+
+			<!-- Menu -->
+			<nav id="menu">
+				<h2>Menu</h2>
+				<ul>
+					        <li><a href="/posts">Archive</a></li>
+        <li><a href="/tags">Tags</a></li>
+        <li><a href="/about">About Me</a></li>
+        <li><a href="/videos">Videos on programming</a></li>
+
+				</ul>
+			</nav>
+
+			<!-- Main -->
+			<div id="main">
+				<div class="inner">
+
+    
+<header>
+    <h1>7 reasons to not use caching</h1>
+            <p><em>Published on Sunday, 4 December 2022</em></p>
+            <ul class="actions small">
+                    <li><a role="button" href="/tags/Architecture" class="button small">Architecture</a></li>
+                    <li><a role="button" href="/tags/Caching" class="button small">Caching</a></li>
+                    <li><a role="button" href="/tags/Redis" class="button small">Redis</a></li>
+                    <li><a role="button" href="/tags/Thoughts" class="button small">Thoughts</a></li>
+        </ul>     
+</header>
+
+					
+					<div id="content">
+						
+
+<p>Inspired by <a href="https://twitter.com/mjovanovictech">Milan Jovanović</a> tweet on <a href="https://twitter.com/mjovanovictech/status/1599124855542411264">5 reasons to use Redis for caching</a>,</p>
+<p><img src="/posts/images/caching/5reasonsCaching.png" class="img-fluid" width="80%" alt="" /></p>
+<p>and <a href="https://twitter.com/danielmarbach">Daniel Marbach's</a> response &quot;<a href="https://twitter.com/danielmarbach/status/1599352526888849408">Now I want to see five reasons to avoid caching ✋😂</a>&quot;</p>
+<p><img src="/posts/images/caching/5reasonsNoCaching.png" class="img-fluid" width="80%" alt="" /></p>
+<p>I found <a href="https://twitter.com/ThrowATwit/status/1599356806874427392">seven reasons to not introduce caching</a>:</p>
+<ol>
+<li><p>Caching can increase complexity in your application, as you need to manage the cached data and ensure it remains consistent with the underlying data store.</p>
+</li>
+<li><p>Caching can increase latency, as the cache itself introduces an additional lookup step.</p>
+</li>
+<li><p>Caching can be expensive, both in terms of the additional hardware and storage required for the cache, and the overhead of managing the cache itself.</p>
+</li>
+<li><p>Caching can be unreliable, as cached data can become stale or inconsistent if it is not adequately managed or invalidated.</p>
+</li>
+<li><p>Caching can be a security risk, as sensitive data that is stored in the cache may be vulnerable to unauthorized access or exposure. It takes additional effort to ensure that the correct authorizations are applied to cached data, increasing application complexity.</p>
+</li>
+<li><p>Caching can be harder to debug. To determine why a piece of data is not being retrieved from the cache or is being retrieved from the underlying data store instead is difficult. This can make it challenging to diagnose and fix performance issues related to caching.</p>
+</li>
+</ol>
+<p>Introducing Caching into any architecture is a decision that must be made with care. We have to ask if it helps us fulfill a business requirement (latency requirements), and improves quality or responsiveness for the end user. And we must ensure the solution is appropriate in terms of cost of operation and cost of monitoring and support. Additionally, the security aspects of a cache should be considered in the solution design.</p>
+<p>In software architecture, there are very few single answers, everything is a shade. Caching is a great hammer and use it when it is appropriate, but remember not every problem is a nail.</p>
+
+
+<hr>
+					</div>
+				</div>
+			</div>
+
+			<!-- Footer -->
+			<footer id="footer">
+				<div class="inner">
+    <section>
+        <h2>Feeds</h2>
+        <ul class="actions small vertical">
+            <li><a href="/feed.rss" class="button small"><i class="fa fa-rss"></i> RSS Feed</a></li>
+                        <li><a href="/feed.atom" class="button small"><i class="fa fa-rss"></i> Atom Feed</a></li>
+        </ul>
+    </section>
+    <section>
+    </section>
+    <ul class="copyright">
+        <li>Copyright © 2022</li>
+        <li>Design: <a href="http://html5up.net">HTML5 UP</a></li>
+        <li><a href="https://wyam.io">Generated by Wyam</a></li>
+    </ul>
+</div>
+
+			</footer>
+
+		</div>
+		
+		
+
+		<!-- Scripts -->
+		<script>hljs.initHighlightingOnLoad();</script>
+		<script src="/assets/js/jquery.min.js"></script>
+		<script src="/assets/js/skel.min.js"></script>
+		<script src="/assets/js/util.js"></script>
+		<!--[if lte IE 8]><script src="/assets/js/ie/respond.min.js"></script><![endif]-->
+		<script src="/assets/js/main.js"></script>
+
+	</body>
+
+</html>

@@ -4,8 +4,37 @@
 	<title>Eric Winnington</title>
 	<link rel="self" href="http://ewinnington.github.io/" />
 	<rights>2022</rights>
-	<updated>2022-11-23T17:29:10Z</updated>
+	<updated>2022-12-04T17:37:31Z</updated>
 	<subtitle>A collection of thoughts, code and snippets.</subtitle>
+	<entry>
+		<id>http://ewinnington.github.io/posts/7Reasons-no-cache</id>
+		<title>7 reasons to not use caching</title>
+		<link href="http://ewinnington.github.io/posts/7Reasons-no-cache" />
+		<updated>2022-12-04T16:30:00Z</updated>
+		<content>&lt;p&gt;Inspired by &lt;a href="https://twitter.com/mjovanovictech"&gt;Milan Jovanović&lt;/a&gt; tweet on &lt;a href="https://twitter.com/mjovanovictech/status/1599124855542411264"&gt;5 reasons to use Redis for caching&lt;/a&gt;,&lt;/p&gt;
+&lt;p&gt;&lt;img src="/posts/images/caching/5reasonsCaching.png" class="img-fluid" width="80%" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;and &lt;a href="https://twitter.com/danielmarbach"&gt;Daniel Marbach's&lt;/a&gt; response &amp;quot;&lt;a href="https://twitter.com/danielmarbach/status/1599352526888849408"&gt;Now I want to see five reasons to avoid caching ✋😂&lt;/a&gt;&amp;quot;&lt;/p&gt;
+&lt;p&gt;&lt;img src="/posts/images/caching/5reasonsNoCaching.png" class="img-fluid" width="80%" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;I found &lt;a href="https://twitter.com/ThrowATwit/status/1599356806874427392"&gt;seven reasons to not introduce caching&lt;/a&gt;:&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;p&gt;Caching can increase complexity in your application, as you need to manage the cached data and ensure it remains consistent with the underlying data store.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;Caching can increase latency, as the cache itself introduces an additional lookup step.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;Caching can be expensive, both in terms of the additional hardware and storage required for the cache, and the overhead of managing the cache itself.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;Caching can be unreliable, as cached data can become stale or inconsistent if it is not adequately managed or invalidated.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;Caching can be a security risk, as sensitive data that is stored in the cache may be vulnerable to unauthorized access or exposure. It takes additional effort to ensure that the correct authorizations are applied to cached data, increasing application complexity.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;Caching can be harder to debug. To determine why a piece of data is not being retrieved from the cache or is being retrieved from the underlying data store instead is difficult. This can make it challenging to diagnose and fix performance issues related to caching.&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;Introducing Caching into any architecture is a decision that must be made with care. We have to ask if it helps us fulfill a business requirement (latency requirements), and improves quality or responsiveness for the end user. And we must ensure the solution is appropriate in terms of cost of operation and cost of monitoring and support. Additionally, the security aspects of a cache should be considered in the solution design.&lt;/p&gt;
+&lt;p&gt;In software architecture, there are very few single answers, everything is a shade. Caching is a great hammer and use it when it is appropriate, but remember not every problem is a nail.&lt;/p&gt;
+</content>
+		<summary>&lt;p&gt;Inspired by &lt;a href="https://twitter.com/mjovanovictech"&gt;Milan Jovanović&lt;/a&gt; tweet on &lt;a href="https://twitter.com/mjovanovictech/status/1599124855542411264"&gt;5 reasons to use Redis for caching&lt;/a&gt;,&lt;/p&gt;</summary>
+	</entry>
 	<entry>
 		<id>http://ewinnington.github.io/posts/Software-Architecture-Illustration</id>
 		<title>Software Architecture illustrations</title>
@@ -1455,28 +1484,24 @@ if (nRowsCount &amp;gt; 0)
 		<summary>&lt;p&gt;I rewatched this talk from 2014, &lt;a href="https://www.destroyallsoftware.com/talks/the-birth-and-death-of-javascript"&gt;The Birth and Death of JavaScript&lt;/a&gt;, and am still amazed at how prescient it was and still is.&lt;/p&gt;</summary>
 	</entry>
 	<entry>
-		<id>http://ewinnington.github.io/posts/R-Redis-Json</id>
-		<title>R - Reading JSON from redis</title>
-		<link href="http://ewinnington.github.io/posts/R-Redis-Json" />
+		<id>http://ewinnington.github.io/posts/R-read-binary-file</id>
+		<title>R - Reading binary files</title>
+		<link href="http://ewinnington.github.io/posts/R-read-binary-file" />
 		<updated>2019-11-03T00:00:00Z</updated>
-		<content>&lt;p&gt;I needed to access Redis from R. Here's the code I used to connect, set a value, then deserialize a key that was in json format and publish a message. &lt;a href="https://cran.r-project.org/web/packages/rredis/vignettes/rredis.pdf"&gt;Rredis documentation located here&lt;/a&gt;&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;library(&amp;quot;rredis&amp;quot;)
-library(&amp;quot;jsonlite&amp;quot;, lib.loc=&amp;quot;~/R/win-library/3.2&amp;quot;)
-
-redisConnect()
-redisSet(&amp;quot;x&amp;quot;,rnorm(5))
-redisGet(&amp;quot;x&amp;quot;)
-
-x = fromJSON(redisGet(&amp;quot;ts_1&amp;quot;))
-x$t &amp;lt;-  strptime(x$t, &amp;quot;%Y-%m-%dT%H:%M:%S&amp;quot;)
-
-//https://cran.r-project.org/web/packages/rredis/vignettes/rredis.pdf
-redisPublish(&amp;quot;General:Active&amp;quot;, charToRaw('Message'))
-
-redisClose()
+		<content>&lt;p&gt;I had to get some data out of files written by Fortran. The format was a large array of doubles.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;numeric() for doubles&lt;/li&gt;
+&lt;li&gt;integer() for integers&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;readBin takes the input file and reads the binary data. If you want to read to the end of the file, don't give a dimension as 3rd parameter.&lt;/p&gt;
+&lt;pre&gt;&lt;code class="language-R"&gt;#### Reading value field from file
+z &amp;lt;- file(&amp;quot;/BoundValueRemain.bin&amp;quot;, &amp;quot;rb&amp;quot;)
+y &amp;lt;- readBin (z, numeric(), 51*50*50*15*13)
+close(z)
+dim(y) &amp;lt;- c(51, 50, 50, 15, 13)
 &lt;/code&gt;&lt;/pre&gt;
 </content>
-		<summary>&lt;p&gt;I needed to access Redis from R. Here's the code I used to connect, set a value, then deserialize a key that was in json format and publish a message. &lt;a href="https://cran.r-project.org/web/packages/rredis/vignettes/rredis.pdf"&gt;Rredis documentation located here&lt;/a&gt;&lt;/p&gt;</summary>
+		<summary>&lt;p&gt;I had to get some data out of files written by Fortran. The format was a large array of doubles.&lt;/p&gt;</summary>
 	</entry>
 	<entry>
 		<id>http://ewinnington.github.io/posts/wyam-github-actions</id>
@@ -1585,25 +1610,5 @@ jobs:
 &lt;p&gt;Please feel free to look around both branches &lt;em&gt;source&lt;/em&gt; and &lt;em&gt;master&lt;/em&gt; on &lt;a href="https://github.com/ewinnington/ewinnington.github.io"&gt;my github repo&lt;/a&gt; to understand how my blog is setup.&lt;/p&gt;
 </content>
 		<summary>&lt;p&gt;Not that I have Wyam as a static site generator, I want to use &lt;a href="https://github.com/features/actions"&gt;Github Actions&lt;/a&gt; to automatically deploy it on push. This requires a quite few steps to setup, but I did it, now so can you!&lt;/p&gt;</summary>
-	</entry>
-	<entry>
-		<id>http://ewinnington.github.io/posts/R-read-binary-file</id>
-		<title>R - Reading binary files</title>
-		<link href="http://ewinnington.github.io/posts/R-read-binary-file" />
-		<updated>2019-11-03T00:00:00Z</updated>
-		<content>&lt;p&gt;I had to get some data out of files written by Fortran. The format was a large array of doubles.&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;numeric() for doubles&lt;/li&gt;
-&lt;li&gt;integer() for integers&lt;/li&gt;
-&lt;/ul&gt;
-&lt;p&gt;readBin takes the input file and reads the binary data. If you want to read to the end of the file, don't give a dimension as 3rd parameter.&lt;/p&gt;
-&lt;pre&gt;&lt;code class="language-R"&gt;#### Reading value field from file
-z &amp;lt;- file(&amp;quot;/BoundValueRemain.bin&amp;quot;, &amp;quot;rb&amp;quot;)
-y &amp;lt;- readBin (z, numeric(), 51*50*50*15*13)
-close(z)
-dim(y) &amp;lt;- c(51, 50, 50, 15, 13)
-&lt;/code&gt;&lt;/pre&gt;
-</content>
-		<summary>&lt;p&gt;I had to get some data out of files written by Fortran. The format was a large array of doubles.&lt;/p&gt;</summary>
 	</entry>
 </feed>

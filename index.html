@@ -95,6 +95,34 @@
 <div class="row">
     <div class="8u 12u$(medium)">
                 <div>
+                    <a href="/posts/7Reasons-no-cache">
+                        <h2>7 reasons to not use caching</h2>
+                    </a>
+                    <p>Posted on Sunday, 4 December 2022</p>
+<p>Inspired by <a href="https://twitter.com/mjovanovictech">Milan Jovanović</a> tweet on <a href="https://twitter.com/mjovanovictech/status/1599124855542411264">5 reasons to use Redis for caching</a>,</p>
+<p><img src="/posts/images/caching/5reasonsCaching.png" class="img-fluid" width="80%" alt="" /></p>
+<p>and <a href="https://twitter.com/danielmarbach">Daniel Marbach's</a> response &quot;<a href="https://twitter.com/danielmarbach/status/1599352526888849408">Now I want to see five reasons to avoid caching ✋😂</a>&quot;</p>
+<p><img src="/posts/images/caching/5reasonsNoCaching.png" class="img-fluid" width="80%" alt="" /></p>
+<p>I found <a href="https://twitter.com/ThrowATwit/status/1599356806874427392">seven reasons to not introduce caching</a>:</p>
+<ol>
+<li><p>Caching can increase complexity in your application, as you need to manage the cached data and ensure it remains consistent with the underlying data store.</p>
+</li>
+<li><p>Caching can increase latency, as the cache itself introduces an additional lookup step.</p>
+</li>
+<li><p>Caching can be expensive, both in terms of the additional hardware and storage required for the cache, and the overhead of managing the cache itself.</p>
+</li>
+<li><p>Caching can be unreliable, as cached data can become stale or inconsistent if it is not adequately managed or invalidated.</p>
+</li>
+<li><p>Caching can be a security risk, as sensitive data that is stored in the cache may be vulnerable to unauthorized access or exposure. It takes additional effort to ensure that the correct authorizations are applied to cached data, increasing application complexity.</p>
+</li>
+<li><p>Caching can be harder to debug. To determine why a piece of data is not being retrieved from the cache or is being retrieved from the underlying data store instead is difficult. This can make it challenging to diagnose and fix performance issues related to caching.</p>
+</li>
+</ol>
+<p>Introducing Caching into any architecture is a decision that must be made with care. We have to ask if it helps us fulfill a business requirement (latency requirements), and improves quality or responsiveness for the end user. And we must ensure the solution is appropriate in terms of cost of operation and cost of monitoring and support. Additionally, the security aspects of a cache should be considered in the solution design.</p>
+<p>In software architecture, there are very few single answers, everything is a shade. Caching is a great hammer and use it when it is appropriate, but remember not every problem is a nail.</p>
+						<hr>
+                </div>       
+                <div>
                     <a href="/posts/Software-Architecture-Illustration">
                         <h2>Software Architecture illustrations</h2>
                     </a>
@@ -583,20 +611,6 @@ aaa &gt; eee
 </ul>
 						<hr>
                 </div>       
-                <div>
-                    <a href="/posts/sqlite-microstores">
-                        <h2>Embracing SQLite and living with micro-services</h2>
-                    </a>
-                    <p>Posted on Saturday, 22 October 2022</p>
-<p>The idea of micro-services and their own single purpose data stores is easy to describe. But then to implement and live with it is a different story. So as a developer and architect, I’ve decided to do just that! Make micro-services and micro-data stores to cover the tiny and small stuff in my life I want to keep track of.</p>
-<p>As an example, I read online comics, light novels and mangas. I had a continuous list of a couple hundred bookmarks that I tried to keep updated with the last position I was when I read the story. But I always forget to update the bookmark and have so many of them that I lose the last read chapter. My solution?</p>
-<p>A SQLite db and some Python code to load it. Pass a single url on some command line Python and it gets added to the Db, a Request goes out, gets the title and chapter from the html, then adds it to the DB by title. Now I have a track of where I left off and I can get have last updated / last read records. Bonus, I can do a SELECT .. ORDER BY updated LIMIT 10 to check the last stories I was reading and pipe them to my browser to open up the chapters where I left them off.</p>
-<p>To really embrace SQLite is to make everything in your life become a new micro database, even if there's only a couple of tables with a dozen or a hundred rows.</p>
-<p>Stock tracking? an SQLite Db with Transactions and a roll-up Inventory table.</p>
-<p>In fact, even when sending data around from one system to another, we should even embrace the simplicity of SQLite over CSV files. See <a href="https://berthub.eu/articles/posts/big-data-storage/">https://berthub.eu/articles/posts/big-data-storage/</a> for his views and performance tests.</p>
-<p>Now I have micro data-stores, I can add a service on top which contains the CRUD commands I need to interact with them and show them in a personal dashboard.</p>
-						<hr>
-                </div>       
         <ul class="pager">
             <li class="previous">                
             </li>
@@ -610,13 +624,13 @@ aaa &gt; eee
             <ul class="actions small">
                     <li><a role="button" href="/tags/Migrated" class="button small">Migrated (38)</a></li>
                     <li><a role="button" href="/tags/Database" class="button small">Database (10)</a></li>
-                    <li><a role="button" href="/tags/Thoughts" class="button small">Thoughts (9)</a></li>
+                    <li><a role="button" href="/tags/Thoughts" class="button small">Thoughts (10)</a></li>
                     <li><a role="button" href="/tags/CSharp" class="button small">CSharp (8)</a></li>
                     <li><a role="button" href="/tags/Jupyter-notebook" class="button small">Jupyter notebook (7)</a></li>
                     <li><a role="button" href="/tags/Dotnet-try" class="button small">Dotnet try (7)</a></li>
                     <li><a role="button" href="/tags/Oracle" class="button small">Oracle (6)</a></li>
-                    <li><a role="button" href="/tags/WPF" class="button small">WPF (4)</a></li>
                     <li><a role="button" href="/tags/Space" class="button small">Space (4)</a></li>
+                    <li><a role="button" href="/tags/WPF" class="button small">WPF (4)</a></li>
                     <li><a role="button" href="/tags/Rpi" class="button small">Rpi (4)</a></li>
             </ul>
             <ul class="actions small">
@@ -625,10 +639,10 @@ aaa &gt; eee
 
             <h5>Older Posts</h5>
             <ul>
+                    <li><a href="/posts/sqlite-microstores">Embracing SQLite and living with micro-services</a></li>
                     <li><a href="/posts/Starship-laser-ablation">The case for a SpaceX Starship laser ablation platform for orbital debris management</a></li>
                     <li><a href="/posts/Viruses-left-behind">We can leave viruses behind on Earth as we leave the gravity well</a></li>
                     <li><a href="/posts/db-health">Checking for liveness on databases for health checks</a></li>
-                    <li><a href="/posts/Point-of-exporing-space">The point of Space exploration</a></li>
             </ul>
                 <ul class="actions small">
                     <li><a href="/posts" class="button small">Archive &rarr;</a></li>
