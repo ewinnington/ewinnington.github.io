@@ -4,7 +4,7 @@
 	<title>Eric Winnington</title>
 	<link rel="self" href="http://ewinnington.github.io/" />
 	<rights>2023</rights>
-	<updated>2023-04-05T11:51:23Z</updated>
+	<updated>2023-04-05T11:52:17Z</updated>
 	<subtitle>A collection of thoughts, code and snippets.</subtitle>
 	<entry>
 		<id>http://ewinnington.github.io/posts/mini-pc</id>
@@ -13,6 +13,8 @@
 		<updated>2023-04-05T00:00:00Z</updated>
 		<content>&lt;p&gt;I recently purchased (arrived yesterday!) two mini PCs, for 170.- CHF each (~$187). They sport the latest low power CPU from Intel, the N95, which is amazingly efficient, powerful and cheap.&lt;/p&gt;
 &lt;p&gt;The Beelink Mini S12 with the N95 intel CPU 4c, 16 GB Ram, 512 GB NVME storage drive, with space for an additional 2.5&amp;quot; SSD inside too. Amazingly small and light to carry around.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/posts/images/minipc.jpg" class="img-fluid" width="80%" alt="" /&gt;
+(coffee cup for scale)&lt;/p&gt;
 &lt;p&gt;I just got two of these to put in a Kubernetes cluster, and I've been playing around with them and they are super impressive. They pack a punch and sip power at 9-20W. The internal video card does 4k youtube playback without any issue.&lt;/p&gt;
 &lt;p&gt;Windows 11 comes included with the machine for the price. I've already put ubuntu server on one of them. These machines are powerful enough for family members to do all their online activities, zoom (with a webcam), or use as a media machine.&lt;/p&gt;
 &lt;p&gt;Over the next weeks, I'll be documenting configuring them and setting them up to serve as highly available servers from my home, using a reverse VPN tunneling.&lt;/p&gt;
