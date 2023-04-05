@@ -8,6 +8,7 @@ I recently purchased (arrived yesterday!) two mini PCs, for 170.- CHF each (~$18
 The Beelink Mini S12 with the N95 intel CPU 4c, 16 GB Ram, 512 GB NVME storage drive, with space for an additional 2.5" SSD inside too. Amazingly small and light to carry around. 
 
 ![](/posts/images/minipc.jpg){width = 80%}
+(coffee cup for scale)
 
 I just got two of these to put in a Kubernetes cluster, and I've been playing around with them and they are super impressive. They pack a punch and sip power at 9-20W. The internal video card does 4k youtube playback without any issue. 
 
