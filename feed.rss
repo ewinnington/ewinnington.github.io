@@ -5,8 +5,41 @@
 		<link>http://ewinnington.github.io/</link>
 		<description>A collection of thoughts, code and snippets.</description>
 		<copyright>2023</copyright>
-		<pubDate>Wed, 05 Apr 2023 11:52:17 GMT</pubDate>
-		<lastBuildDate>Wed, 05 Apr 2023 11:52:17 GMT</lastBuildDate>
+		<pubDate>Thu, 20 Apr 2023 18:47:03 GMT</pubDate>
+		<lastBuildDate>Thu, 20 Apr 2023 18:47:03 GMT</lastBuildDate>
+		<item>
+			<title>Network planning and VPN</title>
+			<link>http://ewinnington.github.io/posts/network-vpn</link>
+			<description>&lt;p&gt;I am in the process of setting up my homelab network between my two locations.&lt;/p&gt;</description>
+			<guid>http://ewinnington.github.io/posts/network-vpn</guid>
+			<pubDate>Thu, 20 Apr 2023 18:40:00 GMT</pubDate>
+			<content:encoded>&lt;p&gt;I am in the process of setting up my homelab network between my two locations.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/posts/images/network/network.png" class="img-fluid" width="100%" alt="Network" /&gt;&lt;/p&gt;
+&lt;h2 id="zone-z"&gt;Zone Z&lt;/h2&gt;
+&lt;p&gt;Z has a single fiber connection via Swisscom to internet.&lt;/p&gt;
+&lt;h3 id="inventory"&gt;Inventory&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;DeepThread is an AMD Threadripper 1920x running Windows 10.&lt;/li&gt;
+&lt;li&gt;Minis3 and Minis4 are the Beelink MiniS12 N95s running Ubuntu Server 23.04.&lt;/li&gt;
+&lt;li&gt;NAS is an an older QNAP TS-269L&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id="vpn"&gt;VPN&lt;/h3&gt;
+&lt;p&gt;With a L2TP VPN connection configured to allow remote access onto the network, so I can get Red (Surface Laptop) and Xr (iPhone) onto the network in case.&lt;/p&gt;
+&lt;h2 id="zone-n"&gt;Zone N&lt;/h2&gt;
+&lt;p&gt;N has two connections, a Starlink (v1 round) with only the powerbrick router and Sosh as a backup DSL provider (with an ADSL Router) both connected to a Ubiquity UDM-PRO-SE in Failover mode. Getting a VPN to N is a little more involved, since the UDM is behind a seperate router on each WAN.&lt;/p&gt;
+&lt;h3 id="inventory-1"&gt;Inventory&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;Minis1 is the Beelink MiniS12 N95s running Windows 11. Planned to Switch to Ubuntu 23.04, but enjoying it VESA mounted behind a screen in the office currently.&lt;/li&gt;
+&lt;li&gt;Minis2 is the Beelink MiniS12 N95s running Ubuntu Server 23.04. Currently rackmounted with the UDM-PRO.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id="vpn-1"&gt;VPN&lt;/h3&gt;
+&lt;p&gt;On the UDM-PRO, a VPN is configured with Ubiquity and I can use the iOS application WifiMan to access the network.
+On Minis2, a &lt;a href="https://github.com/cloudflare/cloudflared"&gt;cloudflared docker&lt;/a&gt; is running, reaching up to Cloudflare and providing an Zero trust tunnel to expose several dockerized websites hosted on it.&lt;/p&gt;
+&lt;h1 id="the-issue-at-hand"&gt;The issue at hand&lt;/h1&gt;
+&lt;p&gt;I would like the N Minis1 &amp;amp; Minis2 to be able to access the Z NAS, ideally with a relatively simple connection that I can leave running all the time, to be able to pull files from the NAS and ideally also access the NAS's front-end application from inside my N location. I could connect to the SwisscomVPN every time I do something that requires connectivity to the NAS, but I would really ideally like a more permanent solution where I make the Z NAS &amp;quot;visible&amp;quot; in the N network. Or go full and establish a site-to-site VPN and simply make the two ares N and Z communicate seamlessly while still having local connectivity.&lt;/p&gt;
+&lt;p&gt;Do you have any suggestions as to how best to accomplish this?&lt;/p&gt;
+</content:encoded>
+		</item>
 		<item>
 			<title>The era of the sub $200 PC</title>
 			<link>http://ewinnington.github.io/posts/mini-pc</link>
@@ -1677,29 +1710,6 @@ if (nRowsCount &amp;gt; 0)
 &lt;/code&gt;&lt;/pre&gt;
 &lt;h1 id="links"&gt;Links&lt;/h1&gt;
 &lt;p&gt;An excellent overview of connections to databases in .net core was published on the &lt;a href="https://devblogs.microsoft.com/dotnet/net-core-data-access/"&gt;Microsoft devblogs&lt;/a&gt;.&lt;/p&gt;
-</content:encoded>
-		</item>
-		<item>
-			<title>Reflections on Webassembly - May/Nov 19</title>
-			<link>http://ewinnington.github.io/posts/webassembly-thoughts</link>
-			<description>&lt;p&gt;I rewatched this talk from 2014, &lt;a href="https://www.destroyallsoftware.com/talks/the-birth-and-death-of-javascript"&gt;The Birth and Death of JavaScript&lt;/a&gt;, and am still amazed at how prescient it was and still is.&lt;/p&gt;</description>
-			<guid>http://ewinnington.github.io/posts/webassembly-thoughts</guid>
-			<pubDate>Sun, 03 Nov 2019 17:00:00 GMT</pubDate>
-			<content:encoded>&lt;h1 id="initial-post"&gt;Initial post&lt;/h1&gt;
-&lt;p&gt;I rewatched this talk from 2014, &lt;a href="https://www.destroyallsoftware.com/talks/the-birth-and-death-of-javascript"&gt;The Birth and Death of JavaScript&lt;/a&gt;, and am still amazed at how prescient it was and still is.&lt;/p&gt;
-&lt;p&gt;The blurb for this is:
-“This science fiction / comedy / absurdist / completely serious talk traces the history of JavaScript, and programming in general, from 1995 until 2035.”&lt;/p&gt;
-&lt;p&gt;ASM JS is still there, but what Gary Bernhardt calls Metal in the talk is WebAssembly. And WebAssembly (Wasm) is coming, and not just for the web.&lt;/p&gt;
-&lt;p&gt;In the .Net world, we see the first glimpses of the power of Wasm with the arrival of &lt;a href="https://dotnet.microsoft.com/apps/aspnet/web-apps/blazor"&gt;Blazor&lt;/a&gt;, which allows the execution of code running on the .net framework (using the mono runtime) inside a browser.&lt;/p&gt;
-&lt;p&gt;Wasm is not stopping there. With the &lt;a href="https://hacks.mozilla.org/2019/03/standardizing-wasi-a-webassembly-system-interface/"&gt;standardising of WASI&lt;/a&gt;, a system interface to run Wasm outside the web, we are truly moving towards architecture independence.&lt;/p&gt;
-&lt;p&gt;It might take until 2035, like in the video, for Wasm to take over the world, but I have the feeling we will see its impact in the near future. Looking at the progress on Wasm in the two last years, I would recommend any programmer to read up on it and understanding its implications on the way they work.&lt;/p&gt;
-&lt;p&gt;For further reading on Wasm, I would recommend the mozilla &lt;a href="https://hacks.mozilla.org/category/webassembly/"&gt;WebAssembly Archives&lt;/a&gt; and in particular, the &lt;a href="https://hacks.mozilla.org/2018/10/webassemblys-post-mvp-future/"&gt;WebAssembly post mvp future by Lin Clark&lt;/a&gt;.&lt;/p&gt;
-&lt;h1 id="update-in-november-2019"&gt;Update in november 2019&lt;/h1&gt;
-&lt;p&gt;Over the last few months, I have seen Wasm cropping up in more and more places, for example as a way to deploy code to running inside databases, such as the case of &lt;a href="https://medium.com/wasmer/announcing-the-first-postgres-extension-to-run-webassembly-561af2cfcb1"&gt;Wasm for Postgres&lt;/a&gt; which allows stored procedures to run webassembly code.&lt;/p&gt;
-&lt;p&gt;Another case of that is the reflection on using &lt;a href="https://youtu.be/3yVc5t-g-VU"&gt;WebAssembly as a glue between programming languages&lt;/a&gt; by allowing type information and guarantees to flow between programming languages. This would allow future systems to take the best of breed choice of programming language for each component of the system while still allowing compile time reasoning on type safety by using a type preserving compiler.&lt;/p&gt;
-&lt;?# YouTube 3yVc5t-g-VU /?&gt;
-&lt;p&gt;As I noted on twitter, as I read, watch and learn about webassembly, I'm getting the feeling this is going to be a titanic shift in the way we reason about programs, languages, frameworks and software design in general.&lt;/p&gt;
-&lt;p&gt;&amp;quot;The avalanche has already started, it is too late for the pebbles to vote&amp;quot; - Ambassador Kosh, Babylon 5.&lt;/p&gt;
 </content:encoded>
 		</item>
 	</channel>
