@@ -33,6 +33,6 @@ On Minis2, a [cloudflared docker](https://github.com/cloudflare/cloudflared) is 
 
 # The issue at hand
 
-I would like the N Minis1 & Minis2 to be able to access the Z NAS, ideally with a relatively simple connection that I can leave running all the time, to be able to pull files from the NAS and ideally also access the NAS's front-end application from inside my N location. I could connect to the SwisscomVPN every time I do something that requires connectivity to the NAS, but I would really ideally like a more permanent solution where I make the Z NAS "visible" in the N network. Or go full and establish a site-to-site VPN and simply make the two ares N and Z communicate seamlessly while still having local connectivity.
+I would like the N Minis1 & Minis2 to be able to access the Z NAS, ideally with a relatively simple connection that I can leave running all the time, to be able to pull files from the NAS and ideally also access the NAS's front-end application from inside my N location. I could connect to the SwisscomVPN every time I do something that requires connectivity to the NAS, but I would really ideally like a more permanent solution where I make the Z NAS "visible" in the N network. Or go full and establish a site-to-site VPN and simply make the two areas N and Z communicate seamlessly while still having local connectivity.
 
 Do you have any suggestions as to how best to accomplish this? 
