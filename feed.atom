@@ -4,7 +4,7 @@
 	<title>Eric Winnington</title>
 	<link rel="self" href="http://ewinnington.github.io/" />
 	<rights>2023</rights>
-	<updated>2023-04-20T18:47:03Z</updated>
+	<updated>2023-04-20T18:56:26Z</updated>
 	<subtitle>A collection of thoughts, code and snippets.</subtitle>
 	<entry>
 		<id>http://ewinnington.github.io/posts/network-vpn</id>
@@ -34,7 +34,7 @@
 &lt;p&gt;On the UDM-PRO, a VPN is configured with Ubiquity and I can use the iOS application WifiMan to access the network.
 On Minis2, a &lt;a href="https://github.com/cloudflare/cloudflared"&gt;cloudflared docker&lt;/a&gt; is running, reaching up to Cloudflare and providing an Zero trust tunnel to expose several dockerized websites hosted on it.&lt;/p&gt;
 &lt;h1 id="the-issue-at-hand"&gt;The issue at hand&lt;/h1&gt;
-&lt;p&gt;I would like the N Minis1 &amp;amp; Minis2 to be able to access the Z NAS, ideally with a relatively simple connection that I can leave running all the time, to be able to pull files from the NAS and ideally also access the NAS's front-end application from inside my N location. I could connect to the SwisscomVPN every time I do something that requires connectivity to the NAS, but I would really ideally like a more permanent solution where I make the Z NAS &amp;quot;visible&amp;quot; in the N network. Or go full and establish a site-to-site VPN and simply make the two ares N and Z communicate seamlessly while still having local connectivity.&lt;/p&gt;
+&lt;p&gt;I would like the N Minis1 &amp;amp; Minis2 to be able to access the Z NAS, ideally with a relatively simple connection that I can leave running all the time, to be able to pull files from the NAS and ideally also access the NAS's front-end application from inside my N location. I could connect to the SwisscomVPN every time I do something that requires connectivity to the NAS, but I would really ideally like a more permanent solution where I make the Z NAS &amp;quot;visible&amp;quot; in the N network. Or go full and establish a site-to-site VPN and simply make the two areas N and Z communicate seamlessly while still having local connectivity.&lt;/p&gt;
 &lt;p&gt;Do you have any suggestions as to how best to accomplish this?&lt;/p&gt;
 </content>
 		<summary>&lt;p&gt;I am in the process of setting up my homelab network between my two locations.&lt;/p&gt;</summary>
