@@ -21,7 +21,7 @@ With a L2TP VPN connection configured to allow remote access onto the network, s
 
 ## Zone N 
 
-N has two connections, a Starlink (v1 round) with only the powerbrick router and Sosh as a backup DSL provider (with an ADSL Router) both connected to a Ubiquity UDM-PRO-SE in Failover mode. Getting a VPN to N is a little more involved, since the UDM is behind a seperate router on each WAN. 
+N has two connections, a Starlink (v1 round) with only the powerbrick router and Sosh as a backup DSL provider (with an ADSL Router) both connected to a Ubiquity UDM-PRO-SE in Failover mode. Getting a VPN to N is a little more involved, since the UDM is behind a separate router on each WAN. 
 
 ### Inventory 
 - Minis1 is the Beelink MiniS12 N95s running Windows 11. Planned to Switch to Ubuntu 23.04, but enjoying it VESA mounted behind a screen in the office currently. 
