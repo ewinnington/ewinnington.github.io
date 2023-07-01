@@ -5,8 +5,64 @@
 		<link>http://ewinnington.github.io/</link>
 		<description>A collection of thoughts, code and snippets.</description>
 		<copyright>2023</copyright>
-		<pubDate>Sat, 22 Apr 2023 12:39:58 GMT</pubDate>
-		<lastBuildDate>Sat, 22 Apr 2023 12:39:58 GMT</lastBuildDate>
+		<pubDate>Sat, 01 Jul 2023 22:52:18 GMT</pubDate>
+		<lastBuildDate>Sat, 01 Jul 2023 22:52:18 GMT</lastBuildDate>
+		<item>
+			<title>Proxmox 8 on sub $200 mini PCs</title>
+			<link>http://ewinnington.github.io/posts/Proxmox</link>
+			<description>&lt;p&gt;This is a Beelink MiniS12 with an Intel N95s.&lt;/p&gt;</description>
+			<guid>http://ewinnington.github.io/posts/Proxmox</guid>
+			<pubDate>Sat, 01 Jul 2023 22:00:00 GMT</pubDate>
+			<content:encoded>&lt;h1 id="installing-proxmox-tailscale-win11-vms-and-automation"&gt;Installing Proxmox, Tailscale, Win11 VMs and Automation&lt;/h1&gt;
+&lt;p&gt;This is a Beelink MiniS12 with an Intel N95s.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/posts/images/minipc.jpg" class="img-fluid" width="80%" alt="" /&gt;
+(coffee cup for scale)&lt;/p&gt;
+&lt;p&gt;Up until Proxmox 8 dropped about a week ago, I was unable to install Proxmox due to compatibility with the graphics driver. Now in 8, that was fixed, so I've been able to install Proxmox on several of my machines.&lt;/p&gt;
+&lt;p&gt;The procedure is trivial: write the proxmox iso to a usb key via a software that will make the iso bootable. Boot the machine with the usb key inserted and select the correct boot drive, then follow the proxmox installation prompts.&lt;/p&gt;
+&lt;p&gt;It all worked out of the box.&lt;/p&gt;
+&lt;h2 id="clustering"&gt;Clustering&lt;/h2&gt;
+&lt;p&gt;I was able to connect to my proxmox installed machine on the port :8006 via a browser on my home network. Next step was enabling the management of multiple machines via a single UI. So as soon as I had two machines with Proxmox installer, I was able to go to my primary, click on Create cluster, confirm. Get the Join token, connect to the socond machine and paste the join token into the &amp;quot;Join Cluster&amp;quot;. Worked out of the box.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/posts/images/proxmox/proxmox-clustering.png" class="img-fluid" width="80%" alt="" /&gt;&lt;/p&gt;
+&lt;h2 id="removing-the-update-repositories-to-work-on-the-free-version-of-proxmox"&gt;Removing the Update Repositories to work on the Free version of Proxmox&lt;/h2&gt;
+&lt;p&gt;To stay within the Free licensing of Proxmox and be able to do apt-get, remember to go for each machine and to remove the non-free repos in the repository list.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/posts/images/proxmox/proxmox-remove-repos" class="img-fluid" width="80%" alt="" /&gt;&lt;/p&gt;
+&lt;h2 id="installing-tailscale"&gt;Installing Tailscale&lt;/h2&gt;
+&lt;p&gt;I use &lt;a href="https://tailscale.com/"&gt;Tailscale&lt;/a&gt; at home to connect across multiple locations and roaming devices. Every time I add a Tailscale device, I am amazed at how easy it is.&lt;/p&gt;
+&lt;pre&gt;&lt;code class="language-bash"&gt;curl -fsSL https://tailscale.com/install.sh | sh
+tailscale up
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Two lines, one URL to visit and the machines were enrolled.&lt;/p&gt;
+&lt;h2 id="vms-and-lxcs"&gt;VMs and LXCs&lt;/h2&gt;
+&lt;p&gt;To create VMs and LXCs, you need to add iso images or Templates to your local storage:&lt;/p&gt;
+&lt;p&gt;Container templates, you can create your own and upload them or simply click on &amp;quot;Templates&amp;quot; and get a couple of ready made ones for use in your containers.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/posts/images/proxmox/container-templates.png" class="img-fluid" width="80%" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;You can now get the official windows ISO from the microsoft website. So download it to your local machine and then Upload it to the ISO images.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/posts/images/proxmox/windows-iso.png" class="img-fluid" width="80%" alt="" /&gt;&lt;/p&gt;
+&lt;h3 id="installing-windows-11-pro-and-activating-with-the-hardware-license"&gt;Installing Windows 11 Pro and activating with the Hardware license&lt;/h3&gt;
+&lt;p&gt;I had previously logged in and linked to my microsoft account on the windows 11 pro licensed version of the OS for each of the machines. This meant that when installing the Windows11 Pro from the ISO onto a VM running on the machines, I was able to activate the machine by referring to the previous activation. #Windows11Pro allows itself to be reactivated with the license that came with the hardware, inside a proxmox8 VM of the same machine as long as you pass the host-cpu - or so it seems to me.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/posts/images/proxmox/activated.jpg" class="img-fluid" width="80%" alt="Proxmox-shell-mode-issue" /&gt;&lt;/p&gt;
+&lt;h2 id="issues-i-had-and-solutions"&gt;Issues I had and solutions&lt;/h2&gt;
+&lt;h3 id="console-not-connecting-to-lxc-containers"&gt;Console not connecting to LXC containers&lt;/h3&gt;
+&lt;p&gt;Several times, either while connecting to a container in Proxmox directly, or after a containter migation, I was not able to use the integrated shell. I therefore had to change the Container &amp;quot;Options-&amp;gt;Console mode&amp;quot; to &amp;quot;shell&amp;quot; to make it connect every time.
+&lt;img src="/posts/images/proxmox/Proxmox-Shell-mode.png" class="img-fluid" width="80%" alt="Proxmox-shell-mode-issue" /&gt;&lt;/p&gt;
+&lt;h3 id="apt-get-issue-in-proxmox-containers"&gt;apt-get issue in proxmox containers&lt;/h3&gt;
+&lt;p&gt;The first thing I do upon entering a container is nearly always apt-get update. And sometimes it breaks. I couldn't update or install. Here is my checklist:&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;p&gt;Check you gave and ip address to the container in the &amp;quot;Network&amp;quot; section, either a dhcp or a static address.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;Check your DNS servers: I had not noticed that after installing Tailscale, my DNS records were only pointing to the talescale DNS resolver. Adding back google (8.8.8.8) and cloudflare (1.1.1.1) to my proxmox hosts helped.&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;&lt;img src="/posts/images/proxmox/Tailscale-dns-issue-proxmox.png" class="img-fluid" width="80%" alt="Tailscale-dns-issue-proxmox" /&gt;&lt;/p&gt;
+&lt;p&gt;By fixing both of these I was able to get the apt-get running correctly.&lt;/p&gt;
+&lt;h2 id="automation"&gt;Automation&lt;/h2&gt;
+&lt;h3 id="installing-on-a-client-machine-the-proxmox-cli-tools"&gt;Installing on a client machine the Proxmox CLI Tools&lt;/h3&gt;
+&lt;p&gt;I'm planning on checking out automation of deployment on proxmox. Making a note here of the command line installation of the tools&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;sudo pip3 install pve-cli
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;I'll also look into Terraform + Ansible for a proxmox deployment, or the Packer LXC to make container templates, but that is for next time.&lt;/p&gt;
+</content:encoded>
+		</item>
 		<item>
 			<title>Network planning and VPN</title>
 			<link>http://ewinnington.github.io/posts/network-vpn</link>
@@ -1558,161 +1614,6 @@ IRkernel::installspec(user = FALSE)
 &lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;Executing this should show you the following long list of tables with mathematical symbols.&lt;/p&gt;
 &lt;p&gt;&lt;img src="/posts/images/jupyter-notebook-csharp-r/jupyter_R.png" class="img-fluid" :height="360px" width="620px" alt="img7" /&gt;&lt;/p&gt;
-</content:encoded>
-		</item>
-		<item>
-			<title>Using bulk inserts on databases</title>
-			<link>http://ewinnington.github.io/posts/bulk-inserts</link>
-			<description>&lt;p&gt;When inserting large amounts of data into databases, you should consider using the bulk functions instead of running single row INSERT commands. Single row INSERT command will usually lead to poor performance. There exists two main techniques for mutiple row insertions in databases from code and several more if you use the loader tools that accompany the database. Here I'll detail the two main methods: BulkInserts and VectorInserts.&lt;/p&gt;</description>
-			<guid>http://ewinnington.github.io/posts/bulk-inserts</guid>
-			<pubDate>Mon, 11 Nov 2019 00:00:00 GMT</pubDate>
-			<content:encoded>&lt;p&gt;When inserting large amounts of data into databases, you should consider using the bulk functions instead of running single row INSERT commands. Single row INSERT command will usually lead to poor performance. There exists two main techniques for mutiple row insertions in databases from code and several more if you use the loader tools that accompany the database. Here I'll detail the two main methods: BulkInserts and VectorInserts.&lt;/p&gt;
-&lt;h1 id="bulk-inserts-for-oracle-mssql-postgresql"&gt;Bulk Inserts for Oracle, MSSQL, Postgresql&lt;/h1&gt;
-&lt;p&gt;For the examples, it is assumed that there exists an object Timeseries ts with a field IEnumerable TimeseriesData that contains Datapoints. A Datapoint has a DateTime field named t and a Decimal field named value.&lt;/p&gt;
-&lt;h2 id="datatable-to-database"&gt;Datatable to Database&lt;/h2&gt;
-&lt;p&gt;We setup a DataTable in memory and fill it with the data we need to insert.&lt;/p&gt;
-&lt;pre&gt;&lt;code class="language-CSharp"&gt;DataTable dt = new DataTable();
-dt.Columns.Add(&amp;quot;IDTIMESERIES&amp;quot;, typeof(int));
-dt.Columns.Add(&amp;quot;TIMEPOINT&amp;quot;, typeof(DateTime));
-dt.Columns.Add(&amp;quot;VALUE1&amp;quot;, typeof(decimal));
-
-int nRowsMaxDt = 0;
-//ts being a timeseries object that contains a IEnumberable TimeSeriesData of sp (single points) 
-foreach (var sp in ts.TimeSeriesData)
-{
-	object[] oRowDt = new object[3];
-	oRowDt[0] = ts.Id; oRowDt[1] = sp.t; oRowDt[2] = (decimal)sp.value; 
-	dt.Rows.Add(oRowDt); nRowsMaxDt = nRowsMaxDt + 1;
-}
-DumpDataTableToDB(&amp;quot;DATATIMESERIES&amp;quot;, dt, nRowsMaxDt);
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;The DumpDataTableToDB function is then written on a per database basis. Below you will find my examples for OracleDb, MSSQL and Postgres.&lt;/p&gt;
-&lt;h3 id="oracle"&gt;Oracle:&lt;/h3&gt;
-&lt;p&gt;Oracle has two sets of drivers, the Unmanaged and the Managed drivers. Your usings will be different per package.&lt;/p&gt;
-&lt;p&gt;With ODP.NET Unmanaged (Drivers installed seperately - you will need to add the references manually)&lt;/p&gt;
-&lt;pre&gt;&lt;code class="language-CSharp"&gt;using Oracle.DataAccess.Client;
-using Oracle.DataAccess.Types;
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;With ODP.NET Managed (Nuget Installed &lt;a href="https://www.nuget.org/packages/Oracle.ManagedDataAccess/"&gt;https://www.nuget.org/packages/Oracle.ManagedDataAccess/&lt;/a&gt; )&lt;/p&gt;
-&lt;pre&gt;&lt;code class="language-CSharp"&gt;using Oracle.ManagedDataAccess.Client;
-using Oracle.ManagedDataAccess.Types;
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;Use the OracleBulkCopy function with Con being an open connection to the database (OracleConnection).&lt;/p&gt;
-&lt;pre&gt;&lt;code class="language-CSharp"&gt;public void DumpDataTableToDB(string TableName, DataTable dt, int nCount)
-{
-	using (OracleBulkCopy obc = new OracleBulkCopy(Con))
-	{
-		obc.BatchSize = nCount;
-		obc.DestinationTableName = TableName;
-		obc.WriteToServer(dt);
-		obc.Close();
-	}
-}
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;This method works, but I had issues with Oracle DataGuard. So for Oracle, I do recommend using the Vectorized data insert presented below with Oracle ArrayBind.&lt;/p&gt;
-&lt;h3 id="ms-sql-server"&gt;MS SQL Server&lt;/h3&gt;
-&lt;p&gt;The Microsoft SQL server uses SqlBulkCopy to connect and import the data. Again here the Con represents an open connection to the database.&lt;/p&gt;
-&lt;pre&gt;&lt;code class="language-CSharp"&gt;using System.Data;
-using System.Data.Common;
-using System.Data.SqlClient;
-
-public void DumpDataTableToDB(string TableName, DataTable dt, int nCount)
-{
-using (SqlBulkCopy bulkCopy = new SqlBulkCopy(((SqlConnection)Con).ConnectionString, SqlBulkCopyOptions.KeepNulls))
-            {
-                foreach (System.Data.DataColumn col in dt.Columns)
-                {
-                    bulkCopy.ColumnMappings.Add(col.ColumnName, col.ColumnName);
-                }
-                bulkCopy.DestinationTableName = TableName;
-                bulkCopy.WriteToServer(dt);
-            }
-}
-&lt;/code&gt;&lt;/pre&gt;
-&lt;h3 id="postgresql"&gt;Postgresql&lt;/h3&gt;
-&lt;p&gt;In Postgresql, the important part to note is the COPY ... FROM command. This allows you to provide either a file located on the DB Server or data from STDIN, passed from the client. The Format specifier allows for binary, which we are using here or text and csv. Note, the csv format is very picky, try the text format first if you are doing imports.&lt;/p&gt;
-&lt;p&gt;As usual the Con represents an open database connection.&lt;/p&gt;
-&lt;p&gt;You can see the implementation of this running &lt;a href="https://github.com/ewinnington/noteb/blob/master/PgBulkInsert.ipynb"&gt;in the Jupyiter notebook with C#&lt;/a&gt;.&lt;/p&gt;
-&lt;pre&gt;&lt;code class="language-CSharp"&gt;using Npgsql; // Nuget https://www.nuget.org/packages/Npgsql 
-
-public void DumpDataTableToDB(string TableName, DataTable dt, int nCount)
-{
-Dictionary&amp;lt;Type, NpgsqlTypes.NpgsqlDbType&amp;gt; TypeDict = new Dictionary&amp;lt;Type, NpgsqlTypes.NpgsqlDbType&amp;gt;();
-
-            TypeDict.Add(typeof(int), NpgsqlTypes.NpgsqlDbType.Integer);
-            TypeDict.Add(typeof(double), NpgsqlTypes.NpgsqlDbType.Double);
-            TypeDict.Add(typeof(decimal), NpgsqlTypes.NpgsqlDbType.Numeric);
-            TypeDict.Add(typeof(string), NpgsqlTypes.NpgsqlDbType.Varchar);
-            TypeDict.Add(typeof(DateTime), NpgsqlTypes.NpgsqlDbType.Timestamp);
-            TypeDict.Add(typeof(char[]), NpgsqlTypes.NpgsqlDbType.Varchar);
-            TypeDict.Add(typeof(Guid), NpgsqlTypes.NpgsqlDbType.Uuid);
-
-
-            string sql = &amp;quot;COPY &amp;quot; + TableName + &amp;quot; ( &amp;quot;;
-            foreach (System.Data.DataColumn col in dt.Columns)
-            {
-                sql += (col.ColumnName.ToLower() + &amp;quot;,&amp;quot;);
-            }
-            sql = sql.TrimEnd(',') + &amp;quot;) FROM STDIN (FORMAT BINARY)&amp;quot;;
-            int nRows = dt.Rows.Count;
-            using (var BulkWrite = ((Npgsql.NpgsqlConnection)Con).BeginBinaryImport(sql))
-            {
-                for (int idRow = 0; idRow &amp;lt; nRows; idRow++)
-                {
-                    BulkWrite.StartRow();
-                    foreach (System.Data.DataColumn col in dt.Columns)
-                    {
-                        if (dt.Rows[idRow].IsNull(col))
-                        {
-                            BulkWrite.WriteNull();
-                        }
-                        else
-                        {
-                            if (col.DataType == typeof(string) &amp;amp;&amp;amp; string.IsNullOrEmpty(dt.Rows[idRow].Field&amp;lt;string&amp;gt;(col)))
-                            {
-                                BulkWrite.WriteNull();
-                            }
-                            else
-                            {
-                                BulkWrite.Write(dt.Rows[idRow][col.Ordinal], TypeDict[col.DataType]);
-                            }
-                        }
-                    }
-                    
-                }
-                BulkWrite.Complete();
-            }
-        }
-    }
-&lt;/code&gt;&lt;/pre&gt;
-&lt;h2 id="alternative-method-for-oracle-array-bind-for-vector-insertion"&gt;Alternative Method for Oracle Array Bind, for Vector Insertion&lt;/h2&gt;
-&lt;p&gt;This is a better method for insertions on Oracle that does not cause issues with dataguard, using arrays of data. The single INSERT command is fed with an array of data.&lt;/p&gt;
-&lt;pre&gt;&lt;code class="language-CSharp"&gt;int nRowsCount = ts.Count(); 
-int[] IDTIMESERIES = new int[nRowsCount];
-DateTime[] TIMEPOINT = new DateTime[nRowsCount];
-decimal[] VALUE1 = new decimal[nRowsCount];
-
-// loading the arrays with data 
-int i = 0;
-foreach (var sp in ts.TimeSeriesData)
-{
-	IDTIMESERIES[i] = ts.Id; TIMEPOINT[i] = sp.t; VALUE1[i] = sp.value;
-	i++;
-}
-
-if (nRowsCount &amp;gt; 0)
-{
-	OracleCommand cmdTimeDump = new OracleCommand(&amp;quot;Insert into DATATIMESERIES (IDTIMESERIES, TIMEPOINT, VALUE1) VALUES (:1, :2, :3)&amp;quot;, OraCon);
-	cmdTimeDump.ArrayBindCount = nRowsCount;
-	cmdTimeDump.Parameters.Add(new OracleParameter() { OracleDbType = OracleDbType.Int32, Value = IDTIMESERIES });
-	cmdTimeDump.Parameters.Add(new OracleParameter() { OracleDbType = OracleDbType.Date, Value = TIMEPOINT });
-	cmdTimeDump.Parameters.Add(new OracleParameter() { OracleDbType = OracleDbType.Decimal, Value = VALUE1 });
-  
-	cmdTimeDump.ExecuteNonQuery();
-}
-&lt;/code&gt;&lt;/pre&gt;
-&lt;h1 id="links"&gt;Links&lt;/h1&gt;
-&lt;p&gt;An excellent overview of connections to databases in .net core was published on the &lt;a href="https://devblogs.microsoft.com/dotnet/net-core-data-access/"&gt;Microsoft devblogs&lt;/a&gt;.&lt;/p&gt;
 </content:encoded>
 		</item>
 	</channel>

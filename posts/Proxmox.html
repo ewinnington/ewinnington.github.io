@@ -1,0 +1,193 @@
+﻿
+<!DOCTYPE html>
+<!--
+	Phantom by HTML5 UP
+	html5up.net | @ajlkn
+	Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
+-->
+<html lang="en">
+
+	<head>
+		<title>Eric Winnington - Proxmox 8 on sub $200 mini PCs</title>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1" />		
+        <link href="/assets/css/highlight.css" rel="stylesheet">
+		<!--[if lte IE 8]><script src="/assets/js/ie/html5shiv.js"></script><![endif]-->
+		<link rel="stylesheet" href="/assets/css/main.css" />
+		<!--[if lte IE 9]><link rel="stylesheet" href="/assets/css/ie9.css" /><![endif]-->
+		<!--[if lte IE 8]><link rel="stylesheet" href="/assets/css/ie8.css" /><![endif]-->
+        <link href="/assets/css/override.css" rel="stylesheet" />
+
+		<meta name="description" content="A collection of thoughts, code and snippets." />
+		<link type="application/rss+xml" rel="alternate" title="Eric Winnington" href="/feed.rss" />
+				<link type="application/atom+xml" rel="alternate" title="Eric Winnington" href="/feed.atom" />
+		<link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+		<link rel="icon" href="/favicon.ico" type="image/x-icon">
+
+		<meta name="application-name" content="Eric Winnington" />
+		<meta name="msapplication-tooltip" content="Eric Winnington" />
+		<meta name="msapplication-starturl" content="/" />
+
+		<meta property="og:title" content="Eric Winnington - Proxmox 8 on sub $200 mini PCs" /> 
+		<meta property="og:type" content="website" />
+		<meta property="og:url" content="http://ewinnington.github.io/posts/Proxmox" />
+		<!-- TODO: More social graph meta tags -->
+
+        <script src="/assets/js/highlight.pack.js"></script>   
+		
+        <meta name="twitter:card" content="summary" />
+<meta name="twitter:site" content="@ewinnington" />
+<meta name="twitter:title" content="Eric Winnington - Proxmox 8 on sub $200 mini PCs" />
+<meta name="twitter:description" content="A collection of thoughts, code and snippets." />
+
+<script type="text/javascript" id="MathJax-script" async
+  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
+</script>
+		
+	</head>
+
+	<body>
+		<!-- Wrapper -->
+		<div id="wrapper">
+
+			<!-- Header -->
+			<header id="header">
+				<div class="inner">
+
+					<!-- Logo -->
+					<a href="/" class="logo">
+						<span class="title">Eric Winnington</span>
+					</a>
+
+					<!-- Nav -->
+					<nav>
+						<ul>
+							<li><a href="#menu">Menu</a></li>
+						</ul>
+					</nav>
+
+				</div>
+			</header>
+
+			<!-- Menu -->
+			<nav id="menu">
+				<h2>Menu</h2>
+				<ul>
+					        <li><a href="/posts">Archive</a></li>
+        <li><a href="/tags">Tags</a></li>
+        <li><a href="/about">About Me</a></li>
+        <li><a href="/videos">Videos on programming</a></li>
+
+				</ul>
+			</nav>
+
+			<!-- Main -->
+			<div id="main">
+				<div class="inner">
+
+    
+<header>
+    <h1>Proxmox 8 on sub $200 mini PCs</h1>
+            <p><em>Published on Saturday, 1 July 2023</em></p>
+            <ul class="actions small">
+                    <li><a role="button" href="/tags/Architecture" class="button small">Architecture</a></li>
+                    <li><a role="button" href="/tags/Proxmox" class="button small">Proxmox</a></li>
+                    <li><a role="button" href="/tags/Tailscale" class="button small">Tailscale</a></li>
+        </ul>     
+</header>
+
+					
+					<div id="content">
+						
+
+<h1 id="installing-proxmox-tailscale-win11-vms-and-automation">Installing Proxmox, Tailscale, Win11 VMs and Automation</h1>
+<p>This is a Beelink MiniS12 with an Intel N95s.</p>
+<p><img src="/posts/images/minipc.jpg" class="img-fluid" width="80%" alt="" />
+(coffee cup for scale)</p>
+<p>Up until Proxmox 8 dropped about a week ago, I was unable to install Proxmox due to compatibility with the graphics driver. Now in 8, that was fixed, so I've been able to install Proxmox on several of my machines.</p>
+<p>The procedure is trivial: write the proxmox iso to a usb key via a software that will make the iso bootable. Boot the machine with the usb key inserted and select the correct boot drive, then follow the proxmox installation prompts.</p>
+<p>It all worked out of the box.</p>
+<h2 id="clustering">Clustering</h2>
+<p>I was able to connect to my proxmox installed machine on the port :8006 via a browser on my home network. Next step was enabling the management of multiple machines via a single UI. So as soon as I had two machines with Proxmox installer, I was able to go to my primary, click on Create cluster, confirm. Get the Join token, connect to the socond machine and paste the join token into the &quot;Join Cluster&quot;. Worked out of the box.</p>
+<p><img src="/posts/images/proxmox/proxmox-clustering.png" class="img-fluid" width="80%" alt="" /></p>
+<h2 id="removing-the-update-repositories-to-work-on-the-free-version-of-proxmox">Removing the Update Repositories to work on the Free version of Proxmox</h2>
+<p>To stay within the Free licensing of Proxmox and be able to do apt-get, remember to go for each machine and to remove the non-free repos in the repository list.</p>
+<p><img src="/posts/images/proxmox/proxmox-remove-repos" class="img-fluid" width="80%" alt="" /></p>
+<h2 id="installing-tailscale">Installing Tailscale</h2>
+<p>I use <a href="https://tailscale.com/">Tailscale</a> at home to connect across multiple locations and roaming devices. Every time I add a Tailscale device, I am amazed at how easy it is.</p>
+<pre><code class="language-bash">curl -fsSL https://tailscale.com/install.sh | sh
+tailscale up
+</code></pre>
+<p>Two lines, one URL to visit and the machines were enrolled.</p>
+<h2 id="vms-and-lxcs">VMs and LXCs</h2>
+<p>To create VMs and LXCs, you need to add iso images or Templates to your local storage:</p>
+<p>Container templates, you can create your own and upload them or simply click on &quot;Templates&quot; and get a couple of ready made ones for use in your containers.</p>
+<p><img src="/posts/images/proxmox/container-templates.png" class="img-fluid" width="80%" alt="" /></p>
+<p>You can now get the official windows ISO from the microsoft website. So download it to your local machine and then Upload it to the ISO images.</p>
+<p><img src="/posts/images/proxmox/windows-iso.png" class="img-fluid" width="80%" alt="" /></p>
+<h3 id="installing-windows-11-pro-and-activating-with-the-hardware-license">Installing Windows 11 Pro and activating with the Hardware license</h3>
+<p>I had previously logged in and linked to my microsoft account on the windows 11 pro licensed version of the OS for each of the machines. This meant that when installing the Windows11 Pro from the ISO onto a VM running on the machines, I was able to activate the machine by referring to the previous activation. #Windows11Pro allows itself to be reactivated with the license that came with the hardware, inside a proxmox8 VM of the same machine as long as you pass the host-cpu - or so it seems to me.</p>
+<p><img src="/posts/images/proxmox/activated.jpg" class="img-fluid" width="80%" alt="Proxmox-shell-mode-issue" /></p>
+<h2 id="issues-i-had-and-solutions">Issues I had and solutions</h2>
+<h3 id="console-not-connecting-to-lxc-containers">Console not connecting to LXC containers</h3>
+<p>Several times, either while connecting to a container in Proxmox directly, or after a containter migation, I was not able to use the integrated shell. I therefore had to change the Container &quot;Options-&gt;Console mode&quot; to &quot;shell&quot; to make it connect every time.
+<img src="/posts/images/proxmox/Proxmox-Shell-mode.png" class="img-fluid" width="80%" alt="Proxmox-shell-mode-issue" /></p>
+<h3 id="apt-get-issue-in-proxmox-containers">apt-get issue in proxmox containers</h3>
+<p>The first thing I do upon entering a container is nearly always apt-get update. And sometimes it breaks. I couldn't update or install. Here is my checklist:</p>
+<ol>
+<li><p>Check you gave and ip address to the container in the &quot;Network&quot; section, either a dhcp or a static address.</p>
+</li>
+<li><p>Check your DNS servers: I had not noticed that after installing Tailscale, my DNS records were only pointing to the talescale DNS resolver. Adding back google (8.8.8.8) and cloudflare (1.1.1.1) to my proxmox hosts helped.</p>
+</li>
+</ol>
+<p><img src="/posts/images/proxmox/Tailscale-dns-issue-proxmox.png" class="img-fluid" width="80%" alt="Tailscale-dns-issue-proxmox" /></p>
+<p>By fixing both of these I was able to get the apt-get running correctly.</p>
+<h2 id="automation">Automation</h2>
+<h3 id="installing-on-a-client-machine-the-proxmox-cli-tools">Installing on a client machine the Proxmox CLI Tools</h3>
+<p>I'm planning on checking out automation of deployment on proxmox. Making a note here of the command line installation of the tools</p>
+<pre><code>sudo pip3 install pve-cli
+</code></pre>
+<p>I'll also look into Terraform + Ansible for a proxmox deployment, or the Packer LXC to make container templates, but that is for next time.</p>
+
+
+<hr>
+					</div>
+				</div>
+			</div>
+
+			<!-- Footer -->
+			<footer id="footer">
+				<div class="inner">
+    <section>
+        <h2>Feeds</h2>
+        <ul class="actions small vertical">
+            <li><a href="/feed.rss" class="button small"><i class="fa fa-rss"></i> RSS Feed</a></li>
+                        <li><a href="/feed.atom" class="button small"><i class="fa fa-rss"></i> Atom Feed</a></li>
+        </ul>
+    </section>
+    <section>
+    </section>
+    <ul class="copyright">
+        <li>Copyright © 2023</li>
+        <li>Design: <a href="http://html5up.net">HTML5 UP</a></li>
+        <li><a href="https://wyam.io">Generated by Wyam</a></li>
+    </ul>
+</div>
+
+			</footer>
+
+		</div>
+		
+		
+
+		<!-- Scripts -->
+		<script>hljs.initHighlightingOnLoad();</script>
+		<script src="/assets/js/jquery.min.js"></script>
+		<script src="/assets/js/skel.min.js"></script>
+		<script src="/assets/js/util.js"></script>
+		<!--[if lte IE 8]><script src="/assets/js/ie/respond.min.js"></script><![endif]-->
+		<script src="/assets/js/main.js"></script>
+
+	</body>
+
+</html>
