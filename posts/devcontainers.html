@@ -1,0 +1,230 @@
+﻿
+<!DOCTYPE html>
+<!--
+	Phantom by HTML5 UP
+	html5up.net | @ajlkn
+	Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
+-->
+<html lang="en">
+
+	<head>
+		<title>Eric Winnington - DevContainers - The future of developer environments</title>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1" />		
+        <link href="/assets/css/highlight.css" rel="stylesheet">
+		<!--[if lte IE 8]><script src="/assets/js/ie/html5shiv.js"></script><![endif]-->
+		<link rel="stylesheet" href="/assets/css/main.css" />
+		<!--[if lte IE 9]><link rel="stylesheet" href="/assets/css/ie9.css" /><![endif]-->
+		<!--[if lte IE 8]><link rel="stylesheet" href="/assets/css/ie8.css" /><![endif]-->
+        <link href="/assets/css/override.css" rel="stylesheet" />
+
+		<meta name="description" content="A collection of thoughts, code and snippets." />
+		<link type="application/rss+xml" rel="alternate" title="Eric Winnington" href="/feed.rss" />
+				<link type="application/atom+xml" rel="alternate" title="Eric Winnington" href="/feed.atom" />
+		<link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+		<link rel="icon" href="/favicon.ico" type="image/x-icon">
+
+		<meta name="application-name" content="Eric Winnington" />
+		<meta name="msapplication-tooltip" content="Eric Winnington" />
+		<meta name="msapplication-starturl" content="/" />
+
+		<meta property="og:title" content="Eric Winnington - DevContainers - The future of developer environments" /> 
+		<meta property="og:type" content="website" />
+		<meta property="og:url" content="http://ewinnington.github.io/posts/devcontainers" />
+		<!-- TODO: More social graph meta tags -->
+
+        <script src="/assets/js/highlight.pack.js"></script>   
+		
+        <meta name="twitter:card" content="summary" />
+<meta name="twitter:site" content="@ewinnington" />
+<meta name="twitter:title" content="Eric Winnington - DevContainers - The future of developer environments" />
+<meta name="twitter:description" content="A collection of thoughts, code and snippets." />
+
+<script type="text/javascript" id="MathJax-script" async
+  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
+</script>
+		
+	</head>
+
+	<body>
+		<!-- Wrapper -->
+		<div id="wrapper">
+
+			<!-- Header -->
+			<header id="header">
+				<div class="inner">
+
+					<!-- Logo -->
+					<a href="/" class="logo">
+						<span class="title">Eric Winnington</span>
+					</a>
+
+					<!-- Nav -->
+					<nav>
+						<ul>
+							<li><a href="#menu">Menu</a></li>
+						</ul>
+					</nav>
+
+				</div>
+			</header>
+
+			<!-- Menu -->
+			<nav id="menu">
+				<h2>Menu</h2>
+				<ul>
+					        <li><a href="/posts">Archive</a></li>
+        <li><a href="/tags">Tags</a></li>
+        <li><a href="/about">About Me</a></li>
+        <li><a href="/videos">Videos on programming</a></li>
+
+				</ul>
+			</nav>
+
+			<!-- Main -->
+			<div id="main">
+				<div class="inner">
+
+    
+<header>
+    <h1>DevContainers - The future of developer environments</h1>
+            <p><em>Published on Monday, 24 July 2023</em></p>
+            <ul class="actions small">
+                    <li><a role="button" href="/tags/Architecture" class="button small">Architecture</a></li>
+                    <li><a role="button" href="/tags/Codespaces" class="button small">Codespaces</a></li>
+                    <li><a role="button" href="/tags/Dev" class="button small">Dev</a></li>
+                    <li><a role="button" href="/tags/DevContainers" class="button small">DevContainers</a></li>
+                    <li><a role="button" href="/tags/Docker" class="button small">Docker</a></li>
+                    <li><a role="button" href="/tags/Github" class="button small">Github</a></li>
+                    <li><a role="button" href="/tags/VSCode" class="button small">VSCode</a></li>
+        </ul>     
+</header>
+
+					
+					<div id="content">
+						
+
+<h2 id="history">History</h2>
+<p>It's been years now that we've had Infrastructure as Code (IaC), Containers and Desired state Configuration (DsC) tools to do our deployments. But these have been mostly focused on the deployment side of things, with fewer tools on the developer side. On the dev machine, installing and maintaining the development tools and package dependencies has been in flux, both in windows where finally tools like Ninite, Chocolatey and Winget allow management of dev tools, and on the linux side, which was always quite well served with apt - but has also gained Snap, Flatpack and other package management tools. The thing is, sometimes you need more that one version of a particular tool, Python3.10 and Python3.11, Java9 and Java17, Dotnet 4.8 and Dotnet 6, to work on the various projects you have during the day. Sometimes, they work side by side very well and sometimes they don't. And when they don't, it can be a long process to figure out why and also very difficult to get help without resorting to having a clean image refresh and starting again to install your dependencies.</p>
+<p>Since the end of the 2010s and the early 2020s, with the rise of web hosted IDEs, there has been a need to define ways to have a base image that contained the environment and tools needed to work. I remember running some in the mid 2010s - Nitrous.IO (2013-16) - that allowed you to use a base container and configure it to do remote development.</p>
+<h2 id="devcontainers">DevContainers</h2>
+<p>With the arrival of Docker on every desktop, Github's Cloudspaces and Visual Studio Code, there's been a new interest in this type of desired state environments with developer tooling. Microsoft published the <a href="https://containers.dev/">DevContainer specification</a> in early 2022 to formalize the language.</p>
+<p>So how does it help us? Well, with a DevContainer, we can setup a new development environment on Premise (in VSCode), on the cloud VM (Azure+VM) or on a Codespace environment with a single file that ensures that we always have the tools we want and need installed. Starting to work is as easy as openining the connection and cloning the repo we need if the .devcontainer file is located inside.</p>
+<h2 id="devcontainer-example">DevContainer example</h2>
+<p>You can find below my <a href="https://github.com/ewinnington/DevContainerTemplate/blob/master/.devcontainer/devcontainer.json">personal DevContainer</a>, it is setup with Git, Node, AzureCLI, Docker control of hose, Dotnet, Terraform, Java with Maven, Python3 and Postgresql. I also have the VSCode extensions directly configured so I can directly start using them when I connect. I also use the &quot;postStartCommand&quot;: &quot;nohup bash -c 'postgres &amp;'&quot; to run an instance of Postgresql directly inside the development container, so I can a directly have a DB to run requests against. And yes, this is a bit of a kitchen sink DevContainer, they can be smaller and more tailored to a project with only one or two of these features included, but here I use a generic one add added everything I use apart from the c++ and fortran compilers.</p>
+<pre><code>{
+    &quot;name&quot;: &quot;Erics-base-dev-container&quot;,
+    &quot;image&quot;: &quot;mcr.microsoft.com/devcontainers/base:debian&quot;,
+ 
+    &quot;features&quot;: {
+        &quot;ghcr.io/devcontainers/features/git:1&quot;: {},
+        &quot;ghcr.io/devcontainers/features/node:1&quot;: {},
+        &quot;ghcr.io/devcontainers/features/azure-cli:1&quot;: {}, //azure-cli,
+        &quot;ghcr.io/devcontainers/features/docker-outside-of-docker:1&quot;: {}, //docker on host
+        &quot;ghcr.io/devcontainers/features/dotnet:1&quot;: {}, //dotnet installed
+        &quot;ghcr.io/devcontainers/features/terraform:1&quot;: {},
+        &quot;ghcr.io/devcontainers/features/java:1&quot;: { &quot;installMaven&quot; : true },
+        &quot;ghcr.io/devcontainers-contrib/features/postgres-asdf:1&quot;: {}
+    },
+ 
+    // Configure tool-specific properties.
+    &quot;customizations&quot;: {
+        // Configure properties specific to VS Code.
+        &quot;vscode&quot;: {
+            &quot;settings&quot;: {},
+            &quot;extensions&quot;: [
+                &quot;streetsidesoftware.code-spell-checker&quot;,
+                &quot;ms-azuretools.vscode-docker&quot;,
+                &quot;ms-dotnettools.csharp&quot;,
+                &quot;HashiCorp.terraform&quot;,
+                &quot;ms-azuretools.vscode-azureterraform&quot;,
+                &quot;GitHub.copilot&quot;,
+                &quot;GitHub.copilot-chat&quot;,
+                &quot;vscjava.vscode-java-pack&quot;,
+                &quot;ms-python.python&quot;
+            ]
+        }
+    },
+ 
+    // Use 'forwardPorts' to make a list of ports inside the container available locally.
+    // &quot;forwardPorts&quot;: [3000],
+ 
+    // Use 'portsAttributes' to set default properties for specific forwarded ports.
+    // More info: https://containers.dev/implementors/json_reference/#port-attributes
+    &quot;portsAttributes&quot;: {
+        &quot;3000&quot;: {
+            &quot;label&quot;: &quot;Hello Remote World&quot;,
+            &quot;onAutoForward&quot;: &quot;notify&quot;
+        }
+    },
+ 
+    // Use 'postCreateCommand' to run commands after the container is created.
+    &quot;postCreateCommand&quot;: &quot;&quot;,
+ 
+    &quot;postStartCommand&quot;: &quot;nohup bash -c 'postgres &amp;'&quot;
+ 
+    // Uncomment to connect as root instead. More info: https://aka.ms/dev-containers-non-root.
+    // &quot;remoteUser&quot;: &quot;root&quot;
+}
+</code></pre>
+<h2 id="so-how-do-you-start-with-devcontainers">So how do you start with DevContainers?</h2>
+<p>There are 2 easy ways:</p>
+<ol>
+<li>(remote) Github Codespaces
+By going to my repo, you can click &quot;Create Codespace on Master&quot; and get a running VSCode in the cloud with all those tools setup instantly.</li>
+</ol>
+<p>(at first build, the image might take time)</p>
+<ol start="2">
+<li>(local) Docker + VS Code
+Ensure you have the <a href="https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers">ms-vscode-remote.remote-containers</a> extension installed in VS Code and Docker installed.</li>
+</ol>
+<p>Clone the repo <a href="https://github.com/ewinnington/DevContainerTemplate.git">https://github.com/ewinnington/DevContainerTemplate.git</a>, then open it with VSCode. It should automatically detect the .devContainer and offer to rebuild the container image and open it up in the IDE for you.</p>
+<p>Once that is done, you should have access to a complete environment at the state you specified.</p>
+<h2 id="whats-the-use-for-developers-at-corporations-where-computers-are-locked-down">What's the use for Developers at corporations where computers are locked down?</h2>
+<p>I think that providing developer windows machine with Git, Docker, WSL2 installed and using VS Code or another IDE that supports DevContainers is an excellent way forwards in providing a good fast and stable environment for developers to work faster and more efficiently. Using this configuration, any person showing up to a Hackathon would be able to start working in minutes after cloning a repository. It would really simplify daily operations, since every repo can provide the correct .DevContainer configuration, or teams can share a DevContainer basic configuration.</p>
+<p>This all simplifies operations, makes developer experience more consistent and increases productivity since you can move faster from one development environment to another in minutes. OnPrem → Remote VM → Cloudspace and back in minutes, without any friction.</p>
+<p>All in all, I'm convinced it is a tool that both IT support must understand and master how to best provide access to, and for developers to understand the devContainer to benefit from it.</p>
+<p>Have you used DevContainers? What is your experience?</p>
+
+
+<hr>
+					</div>
+				</div>
+			</div>
+
+			<!-- Footer -->
+			<footer id="footer">
+				<div class="inner">
+    <section>
+        <h2>Feeds</h2>
+        <ul class="actions small vertical">
+            <li><a href="/feed.rss" class="button small"><i class="fa fa-rss"></i> RSS Feed</a></li>
+                        <li><a href="/feed.atom" class="button small"><i class="fa fa-rss"></i> Atom Feed</a></li>
+        </ul>
+    </section>
+    <section>
+    </section>
+    <ul class="copyright">
+        <li>Copyright © 2023</li>
+        <li>Design: <a href="http://html5up.net">HTML5 UP</a></li>
+        <li><a href="https://wyam.io">Generated by Wyam</a></li>
+    </ul>
+</div>
+
+			</footer>
+
+		</div>
+		
+		
+
+		<!-- Scripts -->
+		<script>hljs.initHighlightingOnLoad();</script>
+		<script src="/assets/js/jquery.min.js"></script>
+		<script src="/assets/js/skel.min.js"></script>
+		<script src="/assets/js/util.js"></script>
+		<!--[if lte IE 8]><script src="/assets/js/ie/respond.min.js"></script><![endif]-->
+		<script src="/assets/js/main.js"></script>
+
+	</body>
+
+</html>

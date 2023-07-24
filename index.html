@@ -95,6 +95,94 @@
 <div class="row">
     <div class="8u 12u$(medium)">
                 <div>
+                    <a href="/posts/devcontainers">
+                        <h2>DevContainers - The future of developer environments</h2>
+                    </a>
+                    <p>Posted on Monday, 24 July 2023</p>
+<h2 id="history">History</h2>
+<p>It's been years now that we've had Infrastructure as Code (IaC), Containers and Desired state Configuration (DsC) tools to do our deployments. But these have been mostly focused on the deployment side of things, with fewer tools on the developer side. On the dev machine, installing and maintaining the development tools and package dependencies has been in flux, both in windows where finally tools like Ninite, Chocolatey and Winget allow management of dev tools, and on the linux side, which was always quite well served with apt - but has also gained Snap, Flatpack and other package management tools. The thing is, sometimes you need more that one version of a particular tool, Python3.10 and Python3.11, Java9 and Java17, Dotnet 4.8 and Dotnet 6, to work on the various projects you have during the day. Sometimes, they work side by side very well and sometimes they don't. And when they don't, it can be a long process to figure out why and also very difficult to get help without resorting to having a clean image refresh and starting again to install your dependencies.</p>
+<p>Since the end of the 2010s and the early 2020s, with the rise of web hosted IDEs, there has been a need to define ways to have a base image that contained the environment and tools needed to work. I remember running some in the mid 2010s - Nitrous.IO (2013-16) - that allowed you to use a base container and configure it to do remote development.</p>
+<h2 id="devcontainers">DevContainers</h2>
+<p>With the arrival of Docker on every desktop, Github's Cloudspaces and Visual Studio Code, there's been a new interest in this type of desired state environments with developer tooling. Microsoft published the <a href="https://containers.dev/">DevContainer specification</a> in early 2022 to formalize the language.</p>
+<p>So how does it help us? Well, with a DevContainer, we can setup a new development environment on Premise (in VSCode), on the cloud VM (Azure+VM) or on a Codespace environment with a single file that ensures that we always have the tools we want and need installed. Starting to work is as easy as openining the connection and cloning the repo we need if the .devcontainer file is located inside.</p>
+<h2 id="devcontainer-example">DevContainer example</h2>
+<p>You can find below my <a href="https://github.com/ewinnington/DevContainerTemplate/blob/master/.devcontainer/devcontainer.json">personal DevContainer</a>, it is setup with Git, Node, AzureCLI, Docker control of hose, Dotnet, Terraform, Java with Maven, Python3 and Postgresql. I also have the VSCode extensions directly configured so I can directly start using them when I connect. I also use the &quot;postStartCommand&quot;: &quot;nohup bash -c 'postgres &amp;'&quot; to run an instance of Postgresql directly inside the development container, so I can a directly have a DB to run requests against. And yes, this is a bit of a kitchen sink DevContainer, they can be smaller and more tailored to a project with only one or two of these features included, but here I use a generic one add added everything I use apart from the c++ and fortran compilers.</p>
+<pre><code>{
+    &quot;name&quot;: &quot;Erics-base-dev-container&quot;,
+    &quot;image&quot;: &quot;mcr.microsoft.com/devcontainers/base:debian&quot;,
+ 
+    &quot;features&quot;: {
+        &quot;ghcr.io/devcontainers/features/git:1&quot;: {},
+        &quot;ghcr.io/devcontainers/features/node:1&quot;: {},
+        &quot;ghcr.io/devcontainers/features/azure-cli:1&quot;: {}, //azure-cli,
+        &quot;ghcr.io/devcontainers/features/docker-outside-of-docker:1&quot;: {}, //docker on host
+        &quot;ghcr.io/devcontainers/features/dotnet:1&quot;: {}, //dotnet installed
+        &quot;ghcr.io/devcontainers/features/terraform:1&quot;: {},
+        &quot;ghcr.io/devcontainers/features/java:1&quot;: { &quot;installMaven&quot; : true },
+        &quot;ghcr.io/devcontainers-contrib/features/postgres-asdf:1&quot;: {}
+    },
+ 
+    // Configure tool-specific properties.
+    &quot;customizations&quot;: {
+        // Configure properties specific to VS Code.
+        &quot;vscode&quot;: {
+            &quot;settings&quot;: {},
+            &quot;extensions&quot;: [
+                &quot;streetsidesoftware.code-spell-checker&quot;,
+                &quot;ms-azuretools.vscode-docker&quot;,
+                &quot;ms-dotnettools.csharp&quot;,
+                &quot;HashiCorp.terraform&quot;,
+                &quot;ms-azuretools.vscode-azureterraform&quot;,
+                &quot;GitHub.copilot&quot;,
+                &quot;GitHub.copilot-chat&quot;,
+                &quot;vscjava.vscode-java-pack&quot;,
+                &quot;ms-python.python&quot;
+            ]
+        }
+    },
+ 
+    // Use 'forwardPorts' to make a list of ports inside the container available locally.
+    // &quot;forwardPorts&quot;: [3000],
+ 
+    // Use 'portsAttributes' to set default properties for specific forwarded ports.
+    // More info: https://containers.dev/implementors/json_reference/#port-attributes
+    &quot;portsAttributes&quot;: {
+        &quot;3000&quot;: {
+            &quot;label&quot;: &quot;Hello Remote World&quot;,
+            &quot;onAutoForward&quot;: &quot;notify&quot;
+        }
+    },
+ 
+    // Use 'postCreateCommand' to run commands after the container is created.
+    &quot;postCreateCommand&quot;: &quot;&quot;,
+ 
+    &quot;postStartCommand&quot;: &quot;nohup bash -c 'postgres &amp;'&quot;
+ 
+    // Uncomment to connect as root instead. More info: https://aka.ms/dev-containers-non-root.
+    // &quot;remoteUser&quot;: &quot;root&quot;
+}
+</code></pre>
+<h2 id="so-how-do-you-start-with-devcontainers">So how do you start with DevContainers?</h2>
+<p>There are 2 easy ways:</p>
+<ol>
+<li>(remote) Github Codespaces
+By going to my repo, you can click &quot;Create Codespace on Master&quot; and get a running VSCode in the cloud with all those tools setup instantly.</li>
+</ol>
+<p>(at first build, the image might take time)</p>
+<ol start="2">
+<li>(local) Docker + VS Code
+Ensure you have the <a href="https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers">ms-vscode-remote.remote-containers</a> extension installed in VS Code and Docker installed.</li>
+</ol>
+<p>Clone the repo <a href="https://github.com/ewinnington/DevContainerTemplate.git">https://github.com/ewinnington/DevContainerTemplate.git</a>, then open it with VSCode. It should automatically detect the .devContainer and offer to rebuild the container image and open it up in the IDE for you.</p>
+<p>Once that is done, you should have access to a complete environment at the state you specified.</p>
+<h2 id="whats-the-use-for-developers-at-corporations-where-computers-are-locked-down">What's the use for Developers at corporations where computers are locked down?</h2>
+<p>I think that providing developer windows machine with Git, Docker, WSL2 installed and using VS Code or another IDE that supports DevContainers is an excellent way forwards in providing a good fast and stable environment for developers to work faster and more efficiently. Using this configuration, any person showing up to a Hackathon would be able to start working in minutes after cloning a repository. It would really simplify daily operations, since every repo can provide the correct .DevContainer configuration, or teams can share a DevContainer basic configuration.</p>
+<p>This all simplifies operations, makes developer experience more consistent and increases productivity since you can move faster from one development environment to another in minutes. OnPrem → Remote VM → Cloudspace and back in minutes, without any friction.</p>
+<p>All in all, I'm convinced it is a tool that both IT support must understand and master how to best provide access to, and for developers to understand the devContainer to benefit from it.</p>
+<p>Have you used DevContainers? What is your experience?</p>
+						<hr>
+                </div>       
+                <div>
                     <a href="/posts/Proxmox">
                         <h2>Proxmox 8 on sub $200 mini PCs</h2>
                     </a>
@@ -198,204 +286,6 @@ On Minis2, a <a href="https://github.com/cloudflare/cloudflared">cloudflared doc
 <p>Over the next weeks, I'll be documenting configuring them and setting them up to serve as highly available servers from my home, using a reverse VPN tunneling.</p>
 						<hr>
                 </div>       
-                <div>
-                    <a href="/posts/learn-from-chatgpt-Crdt-OT">
-                        <h2>Learning concepts from chatGPT - Operational Transform and Conflict-free Replicated Data Types</h2>
-                    </a>
-                    <p>Posted on Sunday, 11 December 2022</p>
-<p>I have been enjoying using <a href="https://chat.openai.com/chat">chatGPT</a> as a private tutor / reference on topics. My biggest issue is now keeping up with the knowledge and asking the right questions.</p>
-<p>But, remember that chatGPT is not all knowing and can get things wrong - even fabulating, so you have to double check the information. I did my best to validate the information with <a href="https://mwhittaker.github.io/consistency_in_distributed_systems/3_crdt.html">Conflict-Free Replicated Data Types</a>, <a href="https://svn.apache.org/repos/asf/incubator/wave/whitepapers/operational-transform/operational-transform.html">Google's OT papers</a>, <a href="https://en.wikipedia.org/wiki/Operational_transformation">Wikipedia on Operational Transformation</a>. I did not find any glaring errors in the text. For future crawlers, <strong>the following text was generated by chatGPT on 2022-12-11T01:12:45+0000</strong>.</p>
-<p><strong>bold</strong> is used for the prompts I send into chatGPT.</p>
-<p><em>italics</em> is for my comments.</p>
-<p><strong>can you explain CRDT's in data structures?</strong></p>
-<p><img src="/posts/images/gpt/gpt-logo.png" class="img-fluid" width="5%" alt="gpt-logo" />
-Sure! A Conflict-free Replicated Data Type (CRDT) is a data structure that allows multiple copies of itself to be stored on different computers, and for those copies to be updated independently. This means that even when the copies are not connected to each other, they can still be updated and changed, and when they are eventually reconnected, they will automatically merge any conflicting changes in a way that preserves the consistency of the data. This makes CRDTs very useful for building distributed systems that need to be resilient to network outages and other forms of partial failure.</p>
-<p><strong>Is this similar to Google Wave's Operational Transform?</strong></p>
-<p><img src="/posts/images/gpt/gpt-logo.png" class="img-fluid" width="5%" alt="gpt-logo" />
-Yes, Operational Transform (OT) is a technique that is related to CRDTs, and it is often used to solve the same kinds of problems. Like CRDTs, OT is a way of allowing multiple copies of a data structure to be updated independently and then merged together, but it uses a different approach to achieve this. OT works by applying a series of &quot;operations&quot; to the data, rather than directly modifying the data itself. This allows OT to detect and resolve conflicts between different copies of the data more easily, but it can also make it more complex to implement.</p>
-<p><strong>Can you give me an example of a CRDT design?</strong></p>
-<p><img src="/posts/images/gpt/gpt-logo.png" class="img-fluid" width="5%" alt="gpt-logo" />
-Sure! One example of a CRDT is a &quot;g-counter,&quot; which is a data structure that stores a count. This data structure allows for the count to be incremented independently on different computers, and then merged together in a way that ensures that the final count is always correct. Here is one way that a g-counter could be implemented:</p>
-<pre><code>class GCounter {
-  Map&lt;String, Integer&gt; counts;
-
-  void increment(String nodeId) {
-    counts.put(nodeId, counts.getOrDefault(nodeId, 0) + 1);
-  }
-
-  void merge(GCounter other) {
-    for (Map.Entry&lt;String, Integer&gt; entry : other.counts.entrySet()) {
-      String nodeId = entry.getKey();
-      int count = entry.getValue();
-      counts.put(nodeId, Math.max(counts.getOrDefault(nodeId, 0), count));
-    }
-  }
-
-  int getCount() {
-    return counts.values().stream().mapToInt(x -&gt; x).sum();
-  }
-}
-</code></pre>
-<p><em>I never specified a programming language, so assume this is a kind of pseudocode</em></p>
-<p>In this implementation, the increment() method is used to increment the count on a particular node, and the merge() method is used to merge the counts from two different g-counters together. The getCount() method returns the current value of the count.</p>
-<p><strong>And contrast with the design of an OT?</strong></p>
-<p><img src="/posts/images/gpt/gpt-logo.png" class="img-fluid" width="5%" alt="gpt-logo" />
-Here is an example of how an Operational Transform (OT) might be implemented for a simple text editing application:</p>
-<pre><code>class TextBuffer {
-  StringBuilder text;
-
-  void applyOperation(Operation op) {
-    int start = op.getStartIndex();
-    int end = op.getEndIndex();
-    String newText = op.getText();
-    text.replace(start, end, newText);
-  }
-
-  String getText() {
-    return text.toString();
-  }
-}
-
-class Operation {
-  int startIndex;
-  int endIndex;
-  String text;
-
-  int getStartIndex() {
-    return startIndex;
-  }
-
-  int getEndIndex() {
-    return endIndex;
-  }
-
-  String getText() {
-    return text;
-  }
-
-  Operation transform(Operation other) {
-    // Compute the transformed version of this operation, given the other operation
-  }
-}
-</code></pre>
-<p><em>I never specified a programming language, so assume this is a kind of pseudocode</em></p>
-<p>In this example, the TextBuffer class represents the text being edited, and the Operation class represents a single edit operation (e.g. inserting or deleting some text). The applyOperation() method is used to apply an operation to the text buffer, and the getText() method is used to retrieve the current contents of the buffer. The transform() method is used to compute the transformed version of an operation, given another operation. This is used to ensure that concurrent operations on the same text buffer can be merged together consistently.</p>
-<p>One key difference between this approach and the g-counter example is that OT explicitly tracks the operations that are applied to the data, rather than directly modifying the data itself. This makes it easier to detect and resolve conflicts between concurrent operations, but it also makes the implementation more complex.</p>
-<p><strong>Can you list known CRDTs and their usage in a table?</strong></p>
-<p><img src="/posts/images/gpt/gpt-logo.png" class="img-fluid" width="5%" alt="gpt-logo" />
-Here is a list of some common Conflict-free Replicated Data Types (CRDTs), along with a brief description of each one and some potential use cases:</p>
-<table class="table">
-<thead>
-<tr>
-<th>CRDT</th>
-<th>Description</th>
-<th>Use Cases</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>G-Counter</td>
-<td>Stores a count that can be incremented independently on different nodes, and then merged together consistently.</td>
-<td>- Versioning systems that need to keep track of the number of times a file has been modified.</td>
-</tr>
-<tr>
-<td>PN-Counter</td>
-<td>Stores a count that can be incremented or decremented independently on different nodes, and then merged together consistently.</td>
-<td>- Tracking the number of likes or dislikes on a social media post.</td>
-</tr>
-<tr>
-<td>Two-Phase Set</td>
-<td>Stores a set of unique values that can be added or removed independently on different nodes, and then merged together consistently.</td>
-<td>- Collaborative editing of a list of items (e.g. a to-do list).</td>
-</tr>
-<tr>
-<td>OR-Set</td>
-<td>Stores a set of values that can be added independently on different nodes, and then merged together consistently.</td>
-<td>- Storing the list of friends that a user has on a social network.</td>
-</tr>
-<tr>
-<td>LWW-Element-Set</td>
-<td>Stores a set of values, where each value has a timestamp associated with it. The value with the most recent timestamp wins in case of conflicts.</td>
-<td>- Storing the latest version of a user's profile on a social network.</td>
-</tr>
-<tr>
-<td>Observed-Remove Set</td>
-<td>Stores a set of values that can be added or removed independently on different nodes, and then merged together consistently.</td>
-<td>- Storing the list of items that a user has added to their shopping cart on an e-commerce website.</td>
-</tr>
-</tbody>
-</table>
-<p>These are just a few examples of CRDTs, and there are many other types of CRDTs that have been developed for different types of data and applications. In general, CRDTs can be useful whenever you need to store and update data in a distributed system, and you want to ensure that the data remains consistent even in the face of network partitions and other forms of partial failure.</p>
-<p><strong>Can you make a similar table for OTs?</strong></p>
-<p><img src="/posts/images/gpt/gpt-logo.png" class="img-fluid" width="5%" alt="gpt-logo" />
-Sure! Here is a table that lists some common Operational Transform (OT) techniques, along with a brief description of each one and some potential use cases:</p>
-<table class="table">
-<thead>
-<tr>
-<th>OT Technique</th>
-<th>Description</th>
-<th>Use Cases</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Insert-Delete OT</td>
-<td>Allows for the insertion and deletion of text, and can detect and resolve conflicts between concurrent insertions and deletions.</td>
-<td>- Collaborative text editing in a real-time editor (e.g. Google Docs).</td>
-</tr>
-<tr>
-<td>Block-Based OT</td>
-<td>Allows for the insertion, deletion, and movement of blocks of text, and can detect and resolve conflicts between concurrent insertions, deletions, and movements.</td>
-<td>- Collaborative editing of structured documents (e.g. a spreadsheet or a presentation).</td>
-</tr>
-<tr>
-<td>Change-Based OT</td>
-<td>Allows for arbitrary changes to be made to a document, and can detect and resolve conflicts between concurrent changes.</td>
-<td>- Collaborative editing of free-form documents (e.g. a word processor or a code editor).</td>
-</tr>
-<tr>
-<td>State-Based OT</td>
-<td>Stores the complete state of the document at each point in time, and can detect and resolve conflicts between concurrent changes by comparing the state of the document before and after each change.</td>
-<td>- Collaborative editing of complex data structures (e.g. a database or a network topology diagram).</td>
-</tr>
-<tr>
-<td>Hybrid OT</td>
-<td>Combines multiple OT techniques in order to support a wider range of operations and conflicts.</td>
-<td>- Collaborative editing of documents that contain both structured and unstructured data (e.g. a document that contains both text and images).</td>
-</tr>
-<tr>
-<td>Composable OT</td>
-<td>Allows for OTs to be composed together in order to create more complex data structures and operations.</td>
-<td>- Building collaborative editing systems that support multiple types of data and operations (e.g. a system that supports text, images, and geometry).</td>
-</tr>
-</tbody>
-</table>
-<p>Like CRDTs, there are many different OT techniques that have been developed for different types of data and applications, and this table only covers a few of the most common ones. In general, OTs can be useful whenever you need to support real-time collaboration on data, and you want to ensure that concurrent changes can be merged together consistently.</p>
-<p><strong>is there a use case to use both CRDTs and OTs together?</strong></p>
-<p><img src="/posts/images/gpt/gpt-logo.png" class="img-fluid" width="5%" alt="gpt-logo" />
-It is possible to use Conflict-free Replicated Data Types (CRDTs) and Operational Transform (OT) techniques together in some cases, although this is not always necessary or desirable. Here are a few examples of situations where using both CRDTs and OTs together might be useful:</p>
-<p>If you have a data structure that is very complex and cannot be easily represented using a single CRDT, you could use a combination of CRDTs and OTs to break the data structure down into smaller, simpler pieces that can be managed independently. For example, you could use a CRDT to store the overall structure of the data, and then use OTs to handle the details of how the individual pieces of the data are updated and changed.</p>
-<p>If you have a data structure that is updated very frequently, and you need to ensure that updates can be applied and merged together quickly, you might use a CRDT to handle the &quot;big picture&quot; view of the data, and then use OTs to handle the finer-grained details of how the data is changed. This can help to reduce the amount of work that needs to be done in order to merge updates together, which can improve the overall performance of the system.</p>
-<p>If you have a data structure that needs to support both offline and online updates, you might use a CRDT to handle the offline updates, and then use OTs to handle the online updates. This can allow the system to continue functioning even when the network is unavailable, and then automatically merge any offline updates with the online updates when the network becomes available again.</p>
-<p>Overall, whether or not it makes sense to use CRDTs and OTs together in a particular system will depend on the specific requirements and constraints of the system, as well as the trade-offs between the different approaches.</p>
-<p><strong>Are there any other similar types of data structures that also cover this space?</strong></p>
-<p><img src="/posts/images/gpt/gpt-logo.png" class="img-fluid" width="5%" alt="gpt-logo" />
-There are many different types of data structures and algorithms that can be used to solve similar problems to those addressed by Conflict-free Replicated Data Types (CRDTs) and Operational Transform (OT) techniques. Some examples of other approaches that are related to CRDTs and OTs include:</p>
-<p>Replication protocols: These are algorithms that are used to manage the process of replicating data between different nodes in a distributed system. Replication protocols can be used to ensure that multiple copies of the data are kept consistent with each other, and that conflicts between different copies of the data are resolved in a way that preserves the integrity of the data.</p>
-<p>Consensus algorithms: These are algorithms that are used to reach agreement on the state of a distributed system, even in the presence of faulty or malicious nodes. Consensus algorithms can be used to ensure that different nodes in the system have a consistent view of the data, and that updates to the data are applied in a way that is consistent with the consensus.</p>
-<p>Distributed hash tables (DHTs): These are data structures that are used to store and retrieve data in a distributed system. DHTs use a hash function to map data to different nodes in the system, and they can be used to ensure that data is stored and retrieved in a consistent and efficient manner.</p>
-<p>Distributed databases: These are databases that are designed to be used in a distributed system, and that provide mechanisms for storing, querying, and updating data in a way that is consistent and scalable. Distributed databases can use a variety of techniques, including CRDTs and OTs, to ensure that the data remains consistent and available even in the face of network partitions and other forms of partial failure.</p>
-<p><strong>Give me a example of a consensus algorithm that computes the final state of a text document that is edited in realtime in multiple distributed computers. I'm looking at a peer to peer network without central authority.</strong></p>
-<p><img src="/posts/images/gpt/gpt-logo.png" class="img-fluid" width="5%" alt="gpt-logo" />
-One example of a consensus algorithm that could be used to compute the final state of a text document that is edited in realtime in multiple distributed computers is called the &quot;Paxos&quot; algorithm. This algorithm is a well-known method for reaching consensus in a distributed system, and it has been used in many different types of applications, including real-time collaborative text editing.</p>
-<p>Here is a high-level overview of how the Paxos algorithm might be used to compute the final state of a text document that is being edited in realtime by multiple users:</p>
-<p>Each user maintains a local copy of the text document, and as they make changes to the document, they also generate a sequence of &quot;operations&quot; that represent the changes they are making. These operations are sent to the other users in the network.</p>
-<p>When a user receives an operation from another user, they apply the operation to their local copy of the document. This may result in conflicts with other operations that have already been applied to the document, in which case the user will need to resolve the conflicts in some way (e.g. by using Operational Transform (OT) techniques).</p>
-<p>As the users continue to edit the document and generate new operations, they also participate in the Paxos consensus protocol. This involves sending messages to each other in order to agree on the sequence of operations that should be applied to the document. The messages are sent in a specific order, and they are used to ensure that all of the users eventually agree on the same sequence of operations.</p>
-<p>Once all of the users have agreed on the sequence of operations, they can apply those operations to their local copies of the document in order to compute the final state of the document. This final state will be the same for all of the users, and it will reflect all of the changes that have been made to the document by any of the users.</p>
-<p>The Paxos algorithm is a complex and subtle algorithm, and this is just a very high-level overview of how it might be used in this context. There are many different variations of the Paxos algorithm, and the specific details of how it is implemented will depend on the specific requirements and constraints of the system.</p>
-						<hr>
-                </div>       
         <ul class="pager">
             <li class="previous">                
             </li>
@@ -412,10 +302,10 @@ One example of a consensus algorithm that could be used to compute the final sta
                     <li><a role="button" href="/tags/Thoughts" class="button small">Thoughts (10)</a></li>
                     <li><a role="button" href="/tags/CSharp" class="button small">CSharp (8)</a></li>
                     <li><a role="button" href="/tags/Jupyter-notebook" class="button small">Jupyter notebook (7)</a></li>
+                    <li><a role="button" href="/tags/Architecture" class="button small">Architecture (7)</a></li>
                     <li><a role="button" href="/tags/Dotnet-try" class="button small">Dotnet try (7)</a></li>
                     <li><a role="button" href="/tags/Oracle" class="button small">Oracle (6)</a></li>
-                    <li><a role="button" href="/tags/Architecture" class="button small">Architecture (6)</a></li>
-                    <li><a role="button" href="/tags/Space" class="button small">Space (4)</a></li>
+                    <li><a role="button" href="/tags/CommandLine" class="button small">CommandLine (4)</a></li>
                     <li><a role="button" href="/tags/WPF" class="button small">WPF (4)</a></li>
             </ul>
             <ul class="actions small">
@@ -424,10 +314,10 @@ One example of a consensus algorithm that could be used to compute the final sta
 
             <h5>Older Posts</h5>
             <ul>
+                    <li><a href="/posts/learn-from-chatgpt-Crdt-OT">Learning concepts from chatGPT - Operational Transform and Conflict-free Replicated Data Types</a></li>
                     <li><a href="/posts/7Reasons-no-cache">7 reasons to not use caching</a></li>
                     <li><a href="/posts/Software-Architecture-Illustration">Software Architecture illustrations</a></li>
                     <li><a href="/posts/Data-Lineage">Data Lineage for dataflow and workflow processes</a></li>
-                    <li><a href="/posts/tesla-megapack">Tesla Megapacks put into context</a></li>
             </ul>
                 <ul class="actions small">
                     <li><a href="/posts" class="button small">Archive &rarr;</a></li>

@@ -4,8 +4,97 @@
 	<title>Eric Winnington</title>
 	<link rel="self" href="http://ewinnington.github.io/" />
 	<rights>2023</rights>
-	<updated>2023-07-01T22:52:18Z</updated>
+	<updated>2023-07-24T14:48:14Z</updated>
 	<subtitle>A collection of thoughts, code and snippets.</subtitle>
+	<entry>
+		<id>http://ewinnington.github.io/posts/devcontainers</id>
+		<title>DevContainers - The future of developer environments</title>
+		<link href="http://ewinnington.github.io/posts/devcontainers" />
+		<updated>2023-07-24T00:00:00Z</updated>
+		<content>&lt;h2 id="history"&gt;History&lt;/h2&gt;
+&lt;p&gt;It's been years now that we've had Infrastructure as Code (IaC), Containers and Desired state Configuration (DsC) tools to do our deployments. But these have been mostly focused on the deployment side of things, with fewer tools on the developer side. On the dev machine, installing and maintaining the development tools and package dependencies has been in flux, both in windows where finally tools like Ninite, Chocolatey and Winget allow management of dev tools, and on the linux side, which was always quite well served with apt - but has also gained Snap, Flatpack and other package management tools. The thing is, sometimes you need more that one version of a particular tool, Python3.10 and Python3.11, Java9 and Java17, Dotnet 4.8 and Dotnet 6, to work on the various projects you have during the day. Sometimes, they work side by side very well and sometimes they don't. And when they don't, it can be a long process to figure out why and also very difficult to get help without resorting to having a clean image refresh and starting again to install your dependencies.&lt;/p&gt;
+&lt;p&gt;Since the end of the 2010s and the early 2020s, with the rise of web hosted IDEs, there has been a need to define ways to have a base image that contained the environment and tools needed to work. I remember running some in the mid 2010s - Nitrous.IO (2013-16) - that allowed you to use a base container and configure it to do remote development.&lt;/p&gt;
+&lt;h2 id="devcontainers"&gt;DevContainers&lt;/h2&gt;
+&lt;p&gt;With the arrival of Docker on every desktop, Github's Cloudspaces and Visual Studio Code, there's been a new interest in this type of desired state environments with developer tooling. Microsoft published the &lt;a href="https://containers.dev/"&gt;DevContainer specification&lt;/a&gt; in early 2022 to formalize the language.&lt;/p&gt;
+&lt;p&gt;So how does it help us? Well, with a DevContainer, we can setup a new development environment on Premise (in VSCode), on the cloud VM (Azure+VM) or on a Codespace environment with a single file that ensures that we always have the tools we want and need installed. Starting to work is as easy as openining the connection and cloning the repo we need if the .devcontainer file is located inside.&lt;/p&gt;
+&lt;h2 id="devcontainer-example"&gt;DevContainer example&lt;/h2&gt;
+&lt;p&gt;You can find below my &lt;a href="https://github.com/ewinnington/DevContainerTemplate/blob/master/.devcontainer/devcontainer.json"&gt;personal DevContainer&lt;/a&gt;, it is setup with Git, Node, AzureCLI, Docker control of hose, Dotnet, Terraform, Java with Maven, Python3 and Postgresql. I also have the VSCode extensions directly configured so I can directly start using them when I connect. I also use the &amp;quot;postStartCommand&amp;quot;: &amp;quot;nohup bash -c 'postgres &amp;amp;'&amp;quot; to run an instance of Postgresql directly inside the development container, so I can a directly have a DB to run requests against. And yes, this is a bit of a kitchen sink DevContainer, they can be smaller and more tailored to a project with only one or two of these features included, but here I use a generic one add added everything I use apart from the c++ and fortran compilers.&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;{
+    &amp;quot;name&amp;quot;: &amp;quot;Erics-base-dev-container&amp;quot;,
+    &amp;quot;image&amp;quot;: &amp;quot;mcr.microsoft.com/devcontainers/base:debian&amp;quot;,
+ 
+    &amp;quot;features&amp;quot;: {
+        &amp;quot;ghcr.io/devcontainers/features/git:1&amp;quot;: {},
+        &amp;quot;ghcr.io/devcontainers/features/node:1&amp;quot;: {},
+        &amp;quot;ghcr.io/devcontainers/features/azure-cli:1&amp;quot;: {}, //azure-cli,
+        &amp;quot;ghcr.io/devcontainers/features/docker-outside-of-docker:1&amp;quot;: {}, //docker on host
+        &amp;quot;ghcr.io/devcontainers/features/dotnet:1&amp;quot;: {}, //dotnet installed
+        &amp;quot;ghcr.io/devcontainers/features/terraform:1&amp;quot;: {},
+        &amp;quot;ghcr.io/devcontainers/features/java:1&amp;quot;: { &amp;quot;installMaven&amp;quot; : true },
+        &amp;quot;ghcr.io/devcontainers-contrib/features/postgres-asdf:1&amp;quot;: {}
+    },
+ 
+    // Configure tool-specific properties.
+    &amp;quot;customizations&amp;quot;: {
+        // Configure properties specific to VS Code.
+        &amp;quot;vscode&amp;quot;: {
+            &amp;quot;settings&amp;quot;: {},
+            &amp;quot;extensions&amp;quot;: [
+                &amp;quot;streetsidesoftware.code-spell-checker&amp;quot;,
+                &amp;quot;ms-azuretools.vscode-docker&amp;quot;,
+                &amp;quot;ms-dotnettools.csharp&amp;quot;,
+                &amp;quot;HashiCorp.terraform&amp;quot;,
+                &amp;quot;ms-azuretools.vscode-azureterraform&amp;quot;,
+                &amp;quot;GitHub.copilot&amp;quot;,
+                &amp;quot;GitHub.copilot-chat&amp;quot;,
+                &amp;quot;vscjava.vscode-java-pack&amp;quot;,
+                &amp;quot;ms-python.python&amp;quot;
+            ]
+        }
+    },
+ 
+    // Use 'forwardPorts' to make a list of ports inside the container available locally.
+    // &amp;quot;forwardPorts&amp;quot;: [3000],
+ 
+    // Use 'portsAttributes' to set default properties for specific forwarded ports.
+    // More info: https://containers.dev/implementors/json_reference/#port-attributes
+    &amp;quot;portsAttributes&amp;quot;: {
+        &amp;quot;3000&amp;quot;: {
+            &amp;quot;label&amp;quot;: &amp;quot;Hello Remote World&amp;quot;,
+            &amp;quot;onAutoForward&amp;quot;: &amp;quot;notify&amp;quot;
+        }
+    },
+ 
+    // Use 'postCreateCommand' to run commands after the container is created.
+    &amp;quot;postCreateCommand&amp;quot;: &amp;quot;&amp;quot;,
+ 
+    &amp;quot;postStartCommand&amp;quot;: &amp;quot;nohup bash -c 'postgres &amp;amp;'&amp;quot;
+ 
+    // Uncomment to connect as root instead. More info: https://aka.ms/dev-containers-non-root.
+    // &amp;quot;remoteUser&amp;quot;: &amp;quot;root&amp;quot;
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2 id="so-how-do-you-start-with-devcontainers"&gt;So how do you start with DevContainers?&lt;/h2&gt;
+&lt;p&gt;There are 2 easy ways:&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;(remote) Github Codespaces
+By going to my repo, you can click &amp;quot;Create Codespace on Master&amp;quot; and get a running VSCode in the cloud with all those tools setup instantly.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;(at first build, the image might take time)&lt;/p&gt;
+&lt;ol start="2"&gt;
+&lt;li&gt;(local) Docker + VS Code
+Ensure you have the &lt;a href="https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers"&gt;ms-vscode-remote.remote-containers&lt;/a&gt; extension installed in VS Code and Docker installed.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;Clone the repo &lt;a href="https://github.com/ewinnington/DevContainerTemplate.git"&gt;https://github.com/ewinnington/DevContainerTemplate.git&lt;/a&gt;, then open it with VSCode. It should automatically detect the .devContainer and offer to rebuild the container image and open it up in the IDE for you.&lt;/p&gt;
+&lt;p&gt;Once that is done, you should have access to a complete environment at the state you specified.&lt;/p&gt;
+&lt;h2 id="whats-the-use-for-developers-at-corporations-where-computers-are-locked-down"&gt;What's the use for Developers at corporations where computers are locked down?&lt;/h2&gt;
+&lt;p&gt;I think that providing developer windows machine with Git, Docker, WSL2 installed and using VS Code or another IDE that supports DevContainers is an excellent way forwards in providing a good fast and stable environment for developers to work faster and more efficiently. Using this configuration, any person showing up to a Hackathon would be able to start working in minutes after cloning a repository. It would really simplify daily operations, since every repo can provide the correct .DevContainer configuration, or teams can share a DevContainer basic configuration.&lt;/p&gt;
+&lt;p&gt;This all simplifies operations, makes developer experience more consistent and increases productivity since you can move faster from one development environment to another in minutes. OnPrem → Remote VM → Cloudspace and back in minutes, without any friction.&lt;/p&gt;
+&lt;p&gt;All in all, I'm convinced it is a tool that both IT support must understand and master how to best provide access to, and for developers to understand the devContainer to benefit from it.&lt;/p&gt;
+&lt;p&gt;Have you used DevContainers? What is your experience?&lt;/p&gt;
+</content>
+		<summary>&lt;p&gt;It's been years now that we've had Infrastructure as Code (IaC), Containers and Desired state Configuration (DsC) tools to do our deployments. But these have been mostly focused on the deployment side of things, with fewer tools on the developer side. On the dev machine, installing and maintaining the development tools and package dependencies has been in flux, both in windows where finally tools like Ninite, Chocolatey and Winget allow management of dev tools, and on the linux side, which was always quite well served with apt - but has also gained Snap, Flatpack and other package management tools. The thing is, sometimes you need more that one version of a particular tool, Python3.10 and Python3.11, Java9 and Java17, Dotnet 4.8 and Dotnet 6, to work on the various projects you have during the day. Sometimes, they work side by side very well and sometimes they don't. And when they don't, it can be a long process to figure out why and also very difficult to get help without resorting to having a clean image refresh and starting again to install your dependencies.&lt;/p&gt;</summary>
+	</entry>
 	<entry>
 		<id>http://ewinnington.github.io/posts/Proxmox</id>
 		<title>Proxmox 8 on sub $200 mini PCs</title>
@@ -1513,106 +1602,5 @@ Console.WriteLine(ex);
 &lt;/code&gt;&lt;/pre&gt;
 </content>
 		<summary>&lt;p&gt;Now that we have &lt;a href="/posts/jupyter-notebook-csharp-r"&gt;Jupyter Notebooks with C# installed&lt;/a&gt;, using it as an environment to play with SQLite is very easy. &lt;a href="https://www.sqlite.org/index.html"&gt;SQLite&lt;/a&gt; is a relational database that is small in footprint and self-contained. It also has a great in-memory mode which is perfect for playing around in a Jupyter notebook.&lt;/p&gt;</summary>
-	</entry>
-	<entry>
-		<id>http://ewinnington.github.io/posts/jupyter-notebook-csharp-r</id>
-		<title>Jupyter notebook with C# and R</title>
-		<link href="http://ewinnington.github.io/posts/jupyter-notebook-csharp-r" />
-		<updated>2019-11-12T19:00:00Z</updated>
-		<content>&lt;p&gt;Following the release of the &lt;a href="https://devblogs.microsoft.com/dotnet/net-core-with-juypter-notebooks-is-here-preview-1/"&gt;updated dotnet try tool&lt;/a&gt;, here are my instructions for getting started.&lt;/p&gt;
-&lt;h1 id="installing-jupyter-notebook-with-a-c-kernel"&gt;Installing jupyter notebook with a c# kernel&lt;/h1&gt;
-&lt;ul&gt;
-&lt;li&gt;Check if you installed python with visual studio.&lt;/li&gt;
-&lt;/ul&gt;
-&lt;p&gt;Go to the start menu and start typing Python&lt;/p&gt;
-&lt;p&gt;&lt;img src="/posts/images/jupyter-notebook-csharp-r/python_installed.png" class="img-fluid" :height="360px" width="620px" alt="img1" /&gt;&lt;/p&gt;
-&lt;p&gt;Right click on python and follow the Open File Location until you find the place where python is installed.&lt;/p&gt;
-&lt;p&gt;&lt;img src="/posts/images/jupyter-notebook-csharp-r/python_installed_location.png" class="img-fluid" :height="360px" width="620px" alt="img2" /&gt;&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;&lt;p&gt;Or type: &lt;code&gt;where python&lt;/code&gt; in the command line.&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;&lt;p&gt;If so, add python to the PATH of your environment. On my installation, the paths to Python were as follows. I had to add the Scripts path for the pip installation to be in the command line.&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;&lt;code&gt;C:\Program Files (x86)\Microsoft Visual Studio\Shared\Python37_64\&lt;/code&gt;&lt;/li&gt;
-&lt;li&gt;&lt;code&gt;C:\Program Files (x86)\Microsoft Visual Studio\Shared\Python37_64\Scripts&lt;/code&gt;&lt;/li&gt;
-&lt;/ul&gt;
-&lt;/li&gt;
-&lt;li&gt;&lt;p&gt;install jupyter using pip which was installed with visual studio, make sure to run in an &lt;strong&gt;administrator&lt;/strong&gt; shell
-&lt;code&gt;pip install jupyter&lt;/code&gt;&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;&lt;p&gt;Now get the list of installed jupyter kernels:
-&lt;code&gt;jupyter kernelspec list&lt;/code&gt;&lt;/p&gt;
-&lt;/li&gt;
-&lt;/ul&gt;
-&lt;pre&gt;&lt;code&gt;Available kernels:
-  c:\program files (x86)\microsoft visual studio\shared\python37_64\share\jupyter\kernels\python3  
-&lt;/code&gt;&lt;/pre&gt;
-&lt;ul&gt;
-&lt;li&gt;&lt;p&gt;Install the latest version of .net try
-&lt;code&gt;dotnet tool install dotnet-try -g&lt;/code&gt;&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;&lt;p&gt;finally install the .net kernel for jupyter with the command:
-&lt;code&gt;dotnet try jupyter install&lt;/code&gt;&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;&lt;p&gt;test the kernel is now installed with &lt;code&gt;jupyter kernelspec list&lt;/code&gt;&lt;/p&gt;
-&lt;/li&gt;
-&lt;/ul&gt;
-&lt;p&gt;&lt;img src="/posts/images/jupyter-notebook-csharp-r/jupyter_kernels.png" class="img-fluid" alt="img3" /&gt;&lt;/p&gt;
-&lt;h1 id="launch-jupyter-notebook"&gt;launch jupyter notebook&lt;/h1&gt;
-&lt;p&gt;In the command line, type:
-&lt;code&gt;jupyter notebook&lt;/code&gt;&lt;/p&gt;
-&lt;p&gt;A browser window should open and the terminal should display:&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;C:\Repos\noteb&amp;gt;jupyter notebook
-[I 22:14:55.617 NotebookApp] JupyterLab extension loaded from c:\program files (x86)\microsoft visual studio\shared\python37_64\lib\site-packages\jupyterlab
-[I 22:14:55.618 NotebookApp] JupyterLab application directory is c:\program files (x86)\microsoft visual studio\shared\python37_64\share\jupyter\lab
-[I 22:14:55.625 NotebookApp] Serving notebooks from local directory: C:\Repos\noteb
-[I 22:14:55.626 NotebookApp] The Jupyter Notebook is running at:
-[I 22:14:55.627 NotebookApp] http://localhost:8888/?token=XXXXXXXXXXXXXXXXXXXc1ee1dfccc0a6624263d584b8ca4c
-[I 22:14:55.628 NotebookApp]  or http://127.0.0.1:8888/?token=XXXXXXXXXXXXXXXXXXXc1ee1dfccc0a6624263d584b8ca4c
-[I 22:14:55.629 NotebookApp] Use Control-C to stop this server and shut down all kernels (twice to skip confirmation).  [C 22:14:55.737 NotebookApp]
-
-    To access the notebook, open this file in a browser:
-        file:///C:/Users/xxxxxx/AppData/Roaming/jupyter/runtime/nbserver-17608-open.html
-    Or copy and paste one of these URLs:
-        http://localhost:8888/?token=XXXXXXXXXXXXXXXXXXXc1ee1dfccc0a6624263d584b8ca4c
-     or http://127.0.0.1:8888/?token=XXXXXXXXXXXXXXXXXXXc1ee1dfccc0a6624263d584b8ca4c
-[I 22:15:16.852 NotebookApp] Kernel started: be6910a0-92f0-4ec0-a26c-d8274b44cd6d
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;The main page of the Jupyter notebook allows you to see the notebooks available in the folder and to create new ones.&lt;/p&gt;
-&lt;p&gt;&lt;img src="/posts/images/jupyter-notebook-csharp-r/jupyter_create_csharp.png" class="img-fluid" :height="360px" width="620px" alt="img4" /&gt;&lt;/p&gt;
-&lt;h1 id="hello-world"&gt;Hello world&lt;/h1&gt;
-&lt;p&gt;Create a new C# notebook. Then type&lt;/p&gt;
-&lt;pre&gt;&lt;code class="language-CSharp"&gt;using System; 
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;in the first cell. I executed it and then typed:&lt;/p&gt;
-&lt;pre&gt;&lt;code class="language-CSharp"&gt;Console.WriteLine(&amp;quot;Hello World&amp;quot;); 
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;in the second cell. Executing it shows us that the C# Kernel is working.&lt;/p&gt;
-&lt;p&gt;&lt;img src="/posts/images/jupyter-notebook-csharp-r/jupyter_hello_world_csharp.png" class="img-fluid" :height="360px" width="620px" alt="imgHello" /&gt;&lt;/p&gt;
-&lt;p&gt;&lt;code&gt;#r&lt;/code&gt; is used to reference a dll or a nuget package. If you prefix the command with &amp;quot;nuget:&amp;quot; then the jupyter notebook will download the nuget and add it as a reference. Then as in usual c#, you must reference it.&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;Update&lt;/strong&gt; The C# notebook is now hosted on binder &lt;a href="https://mybinder.org/v2/gh/ewinnington/noteb/master?filepath=HelloWorld.ipynb"&gt;&lt;img src="https://mybinder.org/badge_logo.svg" class="img-fluid" alt="Binder" /&gt;&lt;/a&gt;
-click to launch the environment!&lt;/p&gt;
-&lt;h1 id="installing-an-r-kernel-for-jupyter-notebook"&gt;Installing an R kernel for jupyter notebook&lt;/h1&gt;
-&lt;p&gt;To install R Tools for Visual Studio, install the Visual Studio Extension R Tools for Visual Studio 2019, which was in preview when I looked. Once this is installed, you must install the Microsoft R client. This option will be presented if you go to the &amp;quot;R Interactive&amp;quot; window.&lt;/p&gt;
-&lt;p&gt;&lt;img src="/posts/images/jupyter-notebook-csharp-r/install_R_vs.png" class="img-fluid" :height="360px" width="620px" alt="img5" /&gt;&lt;/p&gt;
-&lt;p&gt;I have R installed with visual studio, so I launched visual studio in &lt;strong&gt;admin mode&lt;/strong&gt; to be able to have my R directory writable, went to the R Tools menu at the top and selected &amp;quot;R Interactive&amp;quot;.&lt;/p&gt;
-&lt;p&gt;&lt;img src="/posts/images/jupyter-notebook-csharp-r/r_interactive_vs.png" class="img-fluid" alt="img6" /&gt;&lt;/p&gt;
-&lt;p&gt;From the command line of R, I typed in the following commands. &lt;a href="https://irkernel.github.io/installation/"&gt;Installation guide R&lt;/a&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img src="/posts/images/jupyter-notebook-csharp-r/r_interactive_kernel_install.png" class="img-fluid" alt="img6" /&gt;&lt;/p&gt;
-&lt;pre&gt;&lt;code class="language-R"&gt;install.packages('IRkernel')
-IRkernel::installspec(user = FALSE)
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;I got the following output after installing the IRKernel into Jupyter &lt;code&gt;[InstallKernelSpec] Installed kernelspec ir in C:\ProgramData\jupyter\kernels\ir&lt;/code&gt;. Following this, you can check on the command line that the R kernel appears in the list of Jupyter Kernels with &lt;code&gt;jupyter kernelspec list&lt;/code&gt;, this should show the ir kernel installed:&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;Available kernels:
-  ir             C:\ProgramData\jupyter\kernels\ir
-&lt;/code&gt;&lt;/pre&gt;
-&lt;h2 id="use-r-to-show-a-some-math"&gt;Use R to show a some math&lt;/h2&gt;
-&lt;p&gt;Create a new R notebook and type in the first cell:&lt;/p&gt;
-&lt;pre&gt;&lt;code class="language-R"&gt;demo(plotmath)
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;Executing this should show you the following long list of tables with mathematical symbols.&lt;/p&gt;
-&lt;p&gt;&lt;img src="/posts/images/jupyter-notebook-csharp-r/jupyter_R.png" class="img-fluid" :height="360px" width="620px" alt="img7" /&gt;&lt;/p&gt;
-</content>
-		<summary>&lt;p&gt;Following the release of the &lt;a href="https://devblogs.microsoft.com/dotnet/net-core-with-juypter-notebooks-is-here-preview-1/"&gt;updated dotnet try tool&lt;/a&gt;, here are my instructions for getting started.&lt;/p&gt;</summary>
 	</entry>
 </feed>
