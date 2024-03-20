@@ -5,8 +5,8 @@
 		<link>http://ewinnington.github.io/</link>
 		<description>A collection of thoughts, code and snippets.</description>
 		<copyright>2024</copyright>
-		<pubDate>Wed, 20 Mar 2024 12:54:01 GMT</pubDate>
-		<lastBuildDate>Wed, 20 Mar 2024 12:54:01 GMT</lastBuildDate>
+		<pubDate>Wed, 20 Mar 2024 13:01:41 GMT</pubDate>
+		<lastBuildDate>Wed, 20 Mar 2024 13:01:41 GMT</lastBuildDate>
 		<item>
 			<title>Receiving compressed data from an http(s) endpoint</title>
 			<link>http://ewinnington.github.io/posts/HttpClientCompression</link>
