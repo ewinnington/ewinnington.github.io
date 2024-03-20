@@ -1,6 +1,6 @@
 Title: Receiving compressed data from an http(s) endpoint
 Published: 20/03/2024 11:00:00
-Tags: [DotNet, R, Python, JavaScript] 
+Tags: [CSharp, R, Python, JavaScript] 
 ---
 With the amount of data that we are passing around across services, it is often beneficial to use compression on the data to reduce the transmission time. Modern platforms and algorithms are now very efficient at compressing regular data, particularly if that data is text or json data. 
 
