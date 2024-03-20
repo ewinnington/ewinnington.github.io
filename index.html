@@ -95,6 +95,84 @@
 <div class="row">
     <div class="8u 12u$(medium)">
                 <div>
+                    <a href="/posts/HttpClientCompression">
+                        <h2>Receiving compressed data from an http(s) endpoint</h2>
+                    </a>
+                    <p>Posted on Wednesday, 20 March 2024</p>
+<p>With the amount of data that we are passing around across services, it is often beneficial to use compression on the data to reduce the transmission time. Modern platforms and algorithms are now very efficient at compressing regular data, particularly if that data is text or json data. </p>
+<p>If the developer of the endpoint has prepared their service for compression, the client must still indicate that they are ready to receive the compressed data. Luckily, most implementations of modern http clients in R, Python, JavaScript and Dotnet support compression / decompression and are seamless for the client. This means that you can set the compression headers on and simply benefit from compressed data being received. </p>
+<p>We can also check in the Content-Encoding header which compression was used. I've found that example.com is sending responses compressed with gzip.</p>
+<h2 id="python">Python</h2>
+<pre><code class="language-python">import requests
+
+url = &quot;http://example.com&quot;  # Replace with the actual URL you want to request
+
+# Specify the accepted encoding methods in the headers
+headers = {
+    'Accept-Encoding': 'gzip, br',
+}
+
+response = requests.get(url, headers=headers)
+print(response.text)
+
+# In case you want to see if it was compressed, you can check via the headers
+#if 'Content-Encoding' in response.headers:
+#    print(f&quot;Response was compressed using: {response.headers['Content-Encoding']}&quot;)
+#else:
+#    print(&quot;Response was not compressed.&quot;)
+</code></pre>
+<h2 id="r">R</h2>
+<pre><code class="language-R">library(httr)
+
+# The URL to which you're sending the request
+url &lt;- &quot;http://example.com&quot;
+
+# Setting the Accept-Encoding header
+response &lt;- GET(url, add_headers(`Accept-Encoding` = 'gzip, br'))
+
+# The content of the response will be automatically decompressed by httr, so you can access it directly.
+content(response, &quot;text&quot;)
+</code></pre>
+<h2 id="c">C#</h2>
+<p>In C#, for some ungodly strange reason, the standard HTTP endpoint doesn't decompress for you automatically unless you add a decompression handler - see handler <a href="https://learn.microsoft.com/en-us/dotnet/api/system.net.http.httpclienthandler.automaticdecompression?view=net-8.0#system-net-http-httpclienthandler-automaticdecompression">HttpClientHandler.AutomaticDecompression</a></p>
+<pre><code class="language-Csharp">using System;
+using System.Net.Http;
+using System.Net.Http.Headers;
+using System.Threading.Tasks;
+using System.Text;
+
+class Program
+{
+    static async Task Main(string[] args)
+    {
+        HttpClientHandler handler = new HttpClientHandler();
+        handler.AutomaticDecompression = System.Net.DecompressionMethods.GZip; //Adding automatic Decompression means that the accept headers are added automatically
+
+        using (var client = new HttpClient(handler))
+        {
+            string url = &quot;http://example.com&quot;;
+            HttpResponseMessage response = await client.GetAsync(url);
+            response.EnsureSuccessStatusCode();
+
+            Console.WriteLine(await response.Content.ReadAsStringAsync());
+		}
+	}
+}
+</code></pre>
+<h2 id="javascript">JavaScript</h2>
+<p>it is so easy that you don't even need to do anything else than setting the gzip: true for the support</p>
+<pre><code class="language-JS">const request = require('request');
+const requestOptions = {
+  url: 'http://example.com',
+  gzip: true, // This is all that is required
+};
+request(requestOptions, (error, response, body) =&gt; {
+  // Handle the response here
+});
+</code></pre>
+						<hr>
+                </div>       
+                <div>
                     <a href="/posts/devcontainers">
                         <h2>DevContainers - The future of developer environments</h2>
                     </a>
@@ -272,20 +350,6 @@ On Minis2, a <a href="https://github.com/cloudflare/cloudflared">cloudflared doc
 <p><img src="/posts/images/network/network2.drawio.svg" class="img-fluid" width="100%" alt="Network" /></p>
 						<hr>
                 </div>       
-                <div>
-                    <a href="/posts/mini-pc">
-                        <h2>The era of the sub $200 PC</h2>
-                    </a>
-                    <p>Posted on Wednesday, 5 April 2023</p>
-<p>I recently purchased (arrived yesterday!) two mini PCs, for 170.- CHF each (~$187). They sport the latest low power CPU from Intel, the N95, which is amazingly efficient, powerful and cheap.</p>
-<p>The Beelink Mini S12 with the N95 intel CPU 4c, 16 GB Ram, 512 GB NVME storage drive, with space for an additional 2.5&quot; SSD inside too. Amazingly small and light to carry around.</p>
-<p><img src="/posts/images/minipc.jpg" class="img-fluid" width="80%" alt="" />
-(coffee cup for scale)</p>
-<p>I just got two of these to put in a Kubernetes cluster, and I've been playing around with them and they are super impressive. They pack a punch and sip power at 9-20W. The internal video card does 4k youtube playback without any issue.</p>
-<p>Windows 11 comes included with the machine for the price. I've already put ubuntu server on one of them. These machines are powerful enough for family members to do all their online activities, zoom (with a webcam), or use as a media machine.</p>
-<p>Over the next weeks, I'll be documenting configuring them and setting them up to serve as highly available servers from my home, using a reverse VPN tunneling.</p>
-						<hr>
-                </div>       
         <ul class="pager">
             <li class="previous">                
             </li>
@@ -298,15 +362,15 @@ On Minis2, a <a href="https://github.com/cloudflare/cloudflared">cloudflared doc
             <h5>Tags</h5>
             <ul class="actions small">
                     <li><a role="button" href="/tags/Migrated" class="button small">Migrated (38)</a></li>
-                    <li><a role="button" href="/tags/Database" class="button small">Database (10)</a></li>
                     <li><a role="button" href="/tags/Thoughts" class="button small">Thoughts (10)</a></li>
+                    <li><a role="button" href="/tags/Database" class="button small">Database (10)</a></li>
                     <li><a role="button" href="/tags/CSharp" class="button small">CSharp (8)</a></li>
                     <li><a role="button" href="/tags/Jupyter-notebook" class="button small">Jupyter notebook (7)</a></li>
-                    <li><a role="button" href="/tags/Architecture" class="button small">Architecture (7)</a></li>
                     <li><a role="button" href="/tags/Dotnet-try" class="button small">Dotnet try (7)</a></li>
+                    <li><a role="button" href="/tags/Architecture" class="button small">Architecture (7)</a></li>
                     <li><a role="button" href="/tags/Oracle" class="button small">Oracle (6)</a></li>
-                    <li><a role="button" href="/tags/CommandLine" class="button small">CommandLine (4)</a></li>
-                    <li><a role="button" href="/tags/WPF" class="button small">WPF (4)</a></li>
+                    <li><a role="button" href="/tags/Space" class="button small">Space (4)</a></li>
+                    <li><a role="button" href="/tags/R" class="button small">R (4)</a></li>
             </ul>
             <ul class="actions small">
                 <li><a href="/tags" class="button small">View All Tags &rarr;</a></li>
@@ -314,10 +378,10 @@ On Minis2, a <a href="https://github.com/cloudflare/cloudflared">cloudflared doc
 
             <h5>Older Posts</h5>
             <ul>
+                    <li><a href="/posts/mini-pc">The era of the sub $200 PC</a></li>
                     <li><a href="/posts/learn-from-chatgpt-Crdt-OT">Learning concepts from chatGPT - Operational Transform and Conflict-free Replicated Data Types</a></li>
                     <li><a href="/posts/7Reasons-no-cache">7 reasons to not use caching</a></li>
                     <li><a href="/posts/Software-Architecture-Illustration">Software Architecture illustrations</a></li>
-                    <li><a href="/posts/Data-Lineage">Data Lineage for dataflow and workflow processes</a></li>
             </ul>
                 <ul class="actions small">
                     <li><a href="/posts" class="button small">Archive &rarr;</a></li>
@@ -343,7 +407,7 @@ On Minis2, a <a href="https://github.com/cloudflare/cloudflared">cloudflared doc
     <section>
     </section>
     <ul class="copyright">
-        <li>Copyright © 2023</li>
+        <li>Copyright © 2024</li>
         <li>Design: <a href="http://html5up.net">HTML5 UP</a></li>
         <li><a href="https://wyam.io">Generated by Wyam</a></li>
     </ul>

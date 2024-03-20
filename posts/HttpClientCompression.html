@@ -1,0 +1,217 @@
+﻿
+<!DOCTYPE html>
+<!--
+	Phantom by HTML5 UP
+	html5up.net | @ajlkn
+	Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
+-->
+<html lang="en">
+
+	<head>
+		<title>Eric Winnington - Receiving compressed data from an http(s) endpoint</title>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1" />		
+        <link href="/assets/css/highlight.css" rel="stylesheet">
+		<!--[if lte IE 8]><script src="/assets/js/ie/html5shiv.js"></script><![endif]-->
+		<link rel="stylesheet" href="/assets/css/main.css" />
+		<!--[if lte IE 9]><link rel="stylesheet" href="/assets/css/ie9.css" /><![endif]-->
+		<!--[if lte IE 8]><link rel="stylesheet" href="/assets/css/ie8.css" /><![endif]-->
+        <link href="/assets/css/override.css" rel="stylesheet" />
+
+		<meta name="description" content="A collection of thoughts, code and snippets." />
+		<link type="application/rss+xml" rel="alternate" title="Eric Winnington" href="/feed.rss" />
+				<link type="application/atom+xml" rel="alternate" title="Eric Winnington" href="/feed.atom" />
+		<link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+		<link rel="icon" href="/favicon.ico" type="image/x-icon">
+
+		<meta name="application-name" content="Eric Winnington" />
+		<meta name="msapplication-tooltip" content="Eric Winnington" />
+		<meta name="msapplication-starturl" content="/" />
+
+		<meta property="og:title" content="Eric Winnington - Receiving compressed data from an http(s) endpoint" /> 
+		<meta property="og:type" content="website" />
+		<meta property="og:url" content="http://ewinnington.github.io/posts/HttpClientCompression" />
+		<!-- TODO: More social graph meta tags -->
+
+        <script src="/assets/js/highlight.pack.js"></script>   
+		
+        <meta name="twitter:card" content="summary" />
+<meta name="twitter:site" content="@ewinnington" />
+<meta name="twitter:title" content="Eric Winnington - Receiving compressed data from an http(s) endpoint" />
+<meta name="twitter:description" content="A collection of thoughts, code and snippets." />
+
+<script type="text/javascript" id="MathJax-script" async
+  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
+</script>
+		
+	</head>
+
+	<body>
+		<!-- Wrapper -->
+		<div id="wrapper">
+
+			<!-- Header -->
+			<header id="header">
+				<div class="inner">
+
+					<!-- Logo -->
+					<a href="/" class="logo">
+						<span class="title">Eric Winnington</span>
+					</a>
+
+					<!-- Nav -->
+					<nav>
+						<ul>
+							<li><a href="#menu">Menu</a></li>
+						</ul>
+					</nav>
+
+				</div>
+			</header>
+
+			<!-- Menu -->
+			<nav id="menu">
+				<h2>Menu</h2>
+				<ul>
+					        <li><a href="/posts">Archive</a></li>
+        <li><a href="/tags">Tags</a></li>
+        <li><a href="/about">About Me</a></li>
+        <li><a href="/videos">Videos on programming</a></li>
+
+				</ul>
+			</nav>
+
+			<!-- Main -->
+			<div id="main">
+				<div class="inner">
+
+    
+<header>
+    <h1>Receiving compressed data from an http(s) endpoint</h1>
+            <p><em>Published on Wednesday, 20 March 2024</em></p>
+            <ul class="actions small">
+                    <li><a role="button" href="/tags/DotNet" class="button small">DotNet</a></li>
+                    <li><a role="button" href="/tags/JavaScript" class="button small">JavaScript</a></li>
+                    <li><a role="button" href="/tags/Python" class="button small">Python</a></li>
+                    <li><a role="button" href="/tags/R" class="button small">R</a></li>
+        </ul>     
+</header>
+
+					
+					<div id="content">
+						
+
+<p>With the amount of data that we are passing around across services, it is often beneficial to use compression on the data to reduce the transmission time. Modern platforms and algorithms are now very efficient at compressing regular data, particularly if that data is text or json data. </p>
+<p>If the developer of the endpoint has prepared their service for compression, the client must still indicate that they are ready to receive the compressed data. Luckily, most implementations of modern http clients in R, Python, JavaScript and Dotnet support compression / decompression and are seamless for the client. This means that you can set the compression headers on and simply benefit from compressed data being received. </p>
+<p>We can also check in the Content-Encoding header which compression was used. I've found that example.com is sending responses compressed with gzip.</p>
+<h2 id="python">Python</h2>
+<pre><code class="language-python">import requests
+
+url = &quot;http://example.com&quot;  # Replace with the actual URL you want to request
+
+# Specify the accepted encoding methods in the headers
+headers = {
+    'Accept-Encoding': 'gzip, br',
+}
+
+response = requests.get(url, headers=headers)
+print(response.text)
+
+# In case you want to see if it was compressed, you can check via the headers
+#if 'Content-Encoding' in response.headers:
+#    print(f&quot;Response was compressed using: {response.headers['Content-Encoding']}&quot;)
+#else:
+#    print(&quot;Response was not compressed.&quot;)
+</code></pre>
+<h2 id="r">R</h2>
+<pre><code class="language-R">library(httr)
+
+# The URL to which you're sending the request
+url &lt;- &quot;http://example.com&quot;
+
+# Setting the Accept-Encoding header
+response &lt;- GET(url, add_headers(`Accept-Encoding` = 'gzip, br'))
+
+# The content of the response will be automatically decompressed by httr, so you can access it directly.
+content(response, &quot;text&quot;)
+</code></pre>
+<h2 id="c">C#</h2>
+<p>In C#, for some ungodly strange reason, the standard HTTP endpoint doesn't decompress for you automatically unless you add a decompression handler - see handler <a href="https://learn.microsoft.com/en-us/dotnet/api/system.net.http.httpclienthandler.automaticdecompression?view=net-8.0#system-net-http-httpclienthandler-automaticdecompression">HttpClientHandler.AutomaticDecompression</a></p>
+<pre><code class="language-Csharp">using System;
+using System.Net.Http;
+using System.Net.Http.Headers;
+using System.Threading.Tasks;
+using System.Text;
+
+class Program
+{
+    static async Task Main(string[] args)
+    {
+        HttpClientHandler handler = new HttpClientHandler();
+        handler.AutomaticDecompression = System.Net.DecompressionMethods.GZip; //Adding automatic Decompression means that the accept headers are added automatically
+
+        using (var client = new HttpClient(handler))
+        {
+            string url = &quot;http://example.com&quot;;
+            HttpResponseMessage response = await client.GetAsync(url);
+            response.EnsureSuccessStatusCode();
+
+            Console.WriteLine(await response.Content.ReadAsStringAsync());
+		}
+	}
+}
+</code></pre>
+<h2 id="javascript">JavaScript</h2>
+<p>it is so easy that you don't even need to do anything else than setting the gzip: true for the support</p>
+<pre><code class="language-JS">const request = require('request');
+const requestOptions = {
+  url: 'http://example.com',
+  gzip: true, // This is all that is required
+};
+request(requestOptions, (error, response, body) =&gt; {
+  // Handle the response here
+});
+</code></pre>
+
+
+<hr>
+					</div>
+				</div>
+			</div>
+
+			<!-- Footer -->
+			<footer id="footer">
+				<div class="inner">
+    <section>
+        <h2>Feeds</h2>
+        <ul class="actions small vertical">
+            <li><a href="/feed.rss" class="button small"><i class="fa fa-rss"></i> RSS Feed</a></li>
+                        <li><a href="/feed.atom" class="button small"><i class="fa fa-rss"></i> Atom Feed</a></li>
+        </ul>
+    </section>
+    <section>
+    </section>
+    <ul class="copyright">
+        <li>Copyright © 2024</li>
+        <li>Design: <a href="http://html5up.net">HTML5 UP</a></li>
+        <li><a href="https://wyam.io">Generated by Wyam</a></li>
+    </ul>
+</div>
+
+			</footer>
+
+		</div>
+		
+		
+
+		<!-- Scripts -->
+		<script>hljs.initHighlightingOnLoad();</script>
+		<script src="/assets/js/jquery.min.js"></script>
+		<script src="/assets/js/skel.min.js"></script>
+		<script src="/assets/js/util.js"></script>
+		<!--[if lte IE 8]><script src="/assets/js/ie/respond.min.js"></script><![endif]-->
+		<script src="/assets/js/main.js"></script>
+
+	</body>
+
+</html>
