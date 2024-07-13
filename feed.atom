@@ -4,8 +4,58 @@
 	<title>Eric Winnington</title>
 	<link rel="self" href="http://ewinnington.github.io/" />
 	<rights>2024</rights>
-	<updated>2024-03-20T13:01:41Z</updated>
+	<updated>2024-07-13T16:48:46Z</updated>
 	<subtitle>A collection of thoughts, code and snippets.</subtitle>
+	<entry>
+		<id>http://ewinnington.github.io/posts/HowToUpdateWritebook</id>
+		<title>Adding LaTeX Maths to Writebook</title>
+		<link href="http://ewinnington.github.io/posts/HowToUpdateWritebook" />
+		<updated>2024-07-13T15:00:00Z</updated>
+		<content>&lt;h1 id="how-to-add-latex-maths-to-writebook"&gt;How to add LaTeX maths to Writebook&lt;/h1&gt;
+&lt;p&gt;I've started using ONCE &lt;a href="https://once.com/writebook"&gt;Writebook&lt;/a&gt; to host some markdown documents, including my book on Optimization applied to energy products. But that book contains tons of Markdown LaTeX formatted mathematics, which Writebook does not support at this time.&lt;/p&gt;
+&lt;p&gt;So I patched support for it into the docker image.&lt;/p&gt;
+&lt;h2 id="copy-out-the-app-layout-file"&gt;Copy out the app layout file&lt;/h2&gt;
+&lt;p&gt;Assuming your docker image is named writebook.&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;sudo docker cp writebook:/rails/app/views/layouts/application.html.erb .
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2 id="modify-the-application-erb-to-add-support"&gt;Modify the application erb to add support&lt;/h2&gt;
+&lt;p&gt;In the Head Section add&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt; &amp;lt;script type=&amp;quot;text/javascript&amp;quot;&amp;gt;
+      window.MathJax = {
+        tex: {
+          inlineMath: [['$', '$']],
+          displayMath: [['$$', '$$']],
+          processEscapes: true
+        }
+      };
+    &amp;lt;/script&amp;gt;
+      
+    &amp;lt;script src=&amp;quot;https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.js&amp;quot;&amp;gt;&amp;lt;/script&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Thing is, it doesn't render the first time round, so I have to refresh the page to render, but it's not too much of an issue right now, I actually like to see the LaTeX maths code before I see the rendered version.&lt;/p&gt;
+&lt;!--
+Not working right now ! 
+
+## How to add a render on end of page load to ensure it typesets first time
+
+Above the ```&lt;/Body&gt;``` tag at the bottom of the page, add
+```
+    &lt;script type="text/javascript"&gt;
+    document.addEventListener("DOMContentLoaded", function() {
+      MathJax.typeset();
+    });
+  &lt;/script&gt;
+```
+
+--&gt;
+&lt;h2 id="save-and-copy-the-file-back"&gt;Save and copy the file back&lt;/h2&gt;
+&lt;p&gt;Then finally copy the file back into the docker image and restart the image&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;sudo docker cp application.html.erb writebook:/rails/app/views/layouts/application.html.erb
+sudo docker restart writebook
+&lt;/code&gt;&lt;/pre&gt;
+</content>
+		<summary>&lt;p&gt;I've started using ONCE &lt;a href="https://once.com/writebook"&gt;Writebook&lt;/a&gt; to host some markdown documents, including my book on Optimization applied to energy products. But that book contains tons of Markdown LaTeX formatted mathematics, which Writebook does not support at this time.&lt;/p&gt;</summary>
+	</entry>
 	<entry>
 		<id>http://ewinnington.github.io/posts/HttpClientCompression</id>
 		<title>Receiving compressed data from an http(s) endpoint</title>
@@ -1573,38 +1623,5 @@ src=&amp;quot;https://cdn.jsdelivr.net/npm/mathjax&amp;#64;3/es5/tex-mml-chtml.j
 &lt;/div&gt;
 </content>
 		<summary>&lt;p&gt;&lt;a href="https://mybinder.org/v2/gh/ewinnington/noteb/master?filepath=IntroToLP.ipynb"&gt;&lt;img src="https://mybinder.org/badge_logo.svg" class="img-fluid" alt="Binder"&gt;&lt;/a&gt;&lt;/p&gt;</summary>
-	</entry>
-	<entry>
-		<id>http://ewinnington.github.io/posts/jupyter-docker-csharp-postgres</id>
-		<title>Docker controlled from Jupyter Notebook C# with PostgresDB</title>
-		<link href="http://ewinnington.github.io/posts/jupyter-docker-csharp-postgres" />
-		<updated>2019-11-12T23:18:00Z</updated>
-		<content>&lt;p&gt;In the context of Docker and Jupyter Notebook, it's interesting to note that there exists a Nuget that allows C# to control docker. So, yes, it is possible to launch a Postgresql database, on docker, inside a Jupyter notebook!&lt;/p&gt;
-&lt;p&gt;This assumes you have &lt;a href="https://hub.docker.com/?overlay=onboarding"&gt;Docker&lt;/a&gt;, &lt;a href="https://github.com/dotnet/try/blob/master/DotNetTryLocal.md"&gt;Dotnet try&lt;/a&gt;, &lt;a href="https://jupyter.org/"&gt;Jupyter notebook&lt;/a&gt; and follow the setup of the &lt;a href="/posts/jupyter-notebook-csharp-r"&gt;C# kernel for Jupyter&lt;/a&gt;.&lt;/p&gt;
-&lt;p&gt;If you don't want to wait, you can find my &lt;a href="https://github.com/ewinnington/noteb/blob/master/DockerInteraction.ipynb"&gt;complete notebook here&lt;/a&gt;.&lt;/p&gt;
-&lt;p&gt;Microsoft has created a &lt;a href="https://github.com/microsoft/Docker.DotNet"&gt;C# Client library for talking to Docker&lt;/a&gt;, so we will be taking advantage of it. Much of the magic docker code is pulled from the Docker.DotNet repository.
-I'm using the &lt;a href="https://www.npgsql.org/index.html"&gt;Npgsql drivers&lt;/a&gt; for accessing the PostgreSQL database.
-&lt;img src="/posts/images/jupyter-notebook-csharp-r/docker-pg-01.png" class="img-fluid" alt="pgsql01" /&gt;&lt;/p&gt;
-&lt;p&gt;The real magic moment is when you access the Docker instance, if it is on your local machine on windows, you can use the &lt;code&gt;npipe://./pipe/docker_engine&lt;/code&gt; Uri. If you are on Linux, use &lt;code&gt;unix:///var/run/docker.sock&lt;/code&gt; (at this time, I haven't tried it on linux, but if you do, please tell me).
-&lt;img src="/posts/images/jupyter-notebook-csharp-r/docker-pg-02.png" class="img-fluid" alt="pgsql02" /&gt;&lt;/p&gt;
-&lt;p&gt;In block 3, we select a random port to host the pgSQL database. Then list the local image names that are available (you should get postgres:latest on your machine to run this). We create and start up the container, passing the environment variables for the password, user and initial schema. Once the container is started, we detach ourselves from it, so it runs in the background. Finally, I wait until I'm pretty sure the container and database is ready (10s sleep at the end). You can reduce that sleep time. On my Surface laptop 1, I sometimes have an issue when I've got too many other containers running.
-&lt;img src="/posts/images/jupyter-notebook-csharp-r/docker-pg-03.png" class="img-fluid" alt="pgsql03" /&gt;&lt;/p&gt;
-&lt;p&gt;I'm connecting to the database and validating the connection name.
-&lt;img src="/posts/images/jupyter-notebook-csharp-r/docker-pg-04.png" class="img-fluid" alt="pgsql04" /&gt;&lt;/p&gt;
-&lt;p&gt;I'm creating a database schema and a user for this particular schema, then reconning with the new user.
-&lt;img src="/posts/images/jupyter-notebook-csharp-r/docker-pg-05.png" class="img-fluid" alt="pgsql05" /&gt;&lt;/p&gt;
-&lt;p&gt;Creating a table and inserting two rows using direct strings and string concatenation. In production, you should never be using string concatenation for your SQL statements. Please always use Bound variables as described below.
-&lt;img src="/posts/images/jupyter-notebook-csharp-r/docker-pg-06.png" class="img-fluid" alt="pgsql06" /&gt;&lt;/p&gt;
-&lt;p&gt;This is how you should interact with the PostgreSQL database if you are using direct SQL statements. You should be using Bound commands with parameters.
-&lt;img src="/posts/images/jupyter-notebook-csharp-r/docker-pg-07.png" class="img-fluid" alt="pgsql07" /&gt;&lt;/p&gt;
-&lt;p&gt;Finally, I check that all three insertions were successful.
-&lt;img src="/posts/images/jupyter-notebook-csharp-r/docker-pg-08.png" class="img-fluid" alt="pgsql08" /&gt;&lt;/p&gt;
-&lt;p&gt;You can watch the container run in the &lt;a href="https://marketplace.visualstudio.com/items?itemName=ms-azuretools.vscode-docker"&gt;docker extension&lt;/a&gt; of &lt;a href="https://code.visualstudio.com/"&gt;Visual studio Code&lt;/a&gt;. It's a great way of monitoring what is currently running, as well as deleting old containers that might be still present.
-&lt;img src="/posts/images/jupyter-notebook-csharp-r/docker-pg-10.png" class="img-fluid" alt="pgsql10" /&gt;&lt;/p&gt;
-&lt;p&gt;Talking of deleting old containers, this is how you shut them down and delete them at the end of the notebook. I first close the Db connection and dispose of it before asking Docker.DotNet to stop the containers.
-&lt;img src="/posts/images/jupyter-notebook-csharp-r/docker-pg-09.png" class="img-fluid" alt="pgsql09" /&gt;&lt;/p&gt;
-&lt;p&gt;It would be cleaner if I knew how to enfore a &lt;code&gt;Finally&lt;/code&gt; in Jupyter Notebook, but at this time, I don't know. If you do, drop me a line on &lt;a href="https://twitter.com/ThrowATwit"&gt;twitter&lt;/a&gt; or a pull request on this blog post.&lt;/p&gt;
-</content>
-		<summary>&lt;p&gt;In the context of Docker and Jupyter Notebook, it's interesting to note that there exists a Nuget that allows C# to control docker. So, yes, it is possible to launch a Postgresql database, on docker, inside a Jupyter notebook!&lt;/p&gt;</summary>
 	</entry>
 </feed>

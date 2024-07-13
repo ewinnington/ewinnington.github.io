@@ -1,0 +1,186 @@
+﻿
+<!DOCTYPE html>
+<!--
+	Phantom by HTML5 UP
+	html5up.net | @ajlkn
+	Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
+-->
+<html lang="en">
+
+	<head>
+		<title>Eric Winnington - Adding LaTeX Maths to Writebook</title>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1" />		
+        <link href="/assets/css/highlight.css" rel="stylesheet">
+		<!--[if lte IE 8]><script src="/assets/js/ie/html5shiv.js"></script><![endif]-->
+		<link rel="stylesheet" href="/assets/css/main.css" />
+		<!--[if lte IE 9]><link rel="stylesheet" href="/assets/css/ie9.css" /><![endif]-->
+		<!--[if lte IE 8]><link rel="stylesheet" href="/assets/css/ie8.css" /><![endif]-->
+        <link href="/assets/css/override.css" rel="stylesheet" />
+
+		<meta name="description" content="A collection of thoughts, code and snippets." />
+		<link type="application/rss+xml" rel="alternate" title="Eric Winnington" href="/feed.rss" />
+				<link type="application/atom+xml" rel="alternate" title="Eric Winnington" href="/feed.atom" />
+		<link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+		<link rel="icon" href="/favicon.ico" type="image/x-icon">
+
+		<meta name="application-name" content="Eric Winnington" />
+		<meta name="msapplication-tooltip" content="Eric Winnington" />
+		<meta name="msapplication-starturl" content="/" />
+
+		<meta property="og:title" content="Eric Winnington - Adding LaTeX Maths to Writebook" /> 
+		<meta property="og:type" content="website" />
+		<meta property="og:url" content="http://ewinnington.github.io/posts/HowToUpdateWritebook" />
+		<!-- TODO: More social graph meta tags -->
+
+        <script src="/assets/js/highlight.pack.js"></script>   
+		
+        <meta name="twitter:card" content="summary" />
+<meta name="twitter:site" content="@ewinnington" />
+<meta name="twitter:title" content="Eric Winnington - Adding LaTeX Maths to Writebook" />
+<meta name="twitter:description" content="A collection of thoughts, code and snippets." />
+
+<script type="text/javascript" id="MathJax-script" async
+  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
+</script>
+		
+	</head>
+
+	<body>
+		<!-- Wrapper -->
+		<div id="wrapper">
+
+			<!-- Header -->
+			<header id="header">
+				<div class="inner">
+
+					<!-- Logo -->
+					<a href="/" class="logo">
+						<span class="title">Eric Winnington</span>
+					</a>
+
+					<!-- Nav -->
+					<nav>
+						<ul>
+							<li><a href="#menu">Menu</a></li>
+						</ul>
+					</nav>
+
+				</div>
+			</header>
+
+			<!-- Menu -->
+			<nav id="menu">
+				<h2>Menu</h2>
+				<ul>
+					        <li><a href="/posts">Archive</a></li>
+        <li><a href="/tags">Tags</a></li>
+        <li><a href="/about">About Me</a></li>
+        <li><a href="/videos">Videos on programming</a></li>
+
+				</ul>
+			</nav>
+
+			<!-- Main -->
+			<div id="main">
+				<div class="inner">
+
+    
+<header>
+    <h1>Adding LaTeX Maths to Writebook</h1>
+            <p><em>Published on Saturday, 13 July 2024</em></p>
+            <ul class="actions small">
+                    <li><a role="button" href="/tags/markdown" class="button small">markdown</a></li>
+                    <li><a role="button" href="/tags/Writebook" class="button small">Writebook</a></li>
+        </ul>     
+</header>
+
+					
+					<div id="content">
+						
+
+<h1 id="how-to-add-latex-maths-to-writebook">How to add LaTeX maths to Writebook</h1>
+<p>I've started using ONCE <a href="https://once.com/writebook">Writebook</a> to host some markdown documents, including my book on Optimization applied to energy products. But that book contains tons of Markdown LaTeX formatted mathematics, which Writebook does not support at this time.</p>
+<p>So I patched support for it into the docker image.</p>
+<h2 id="copy-out-the-app-layout-file">Copy out the app layout file</h2>
+<p>Assuming your docker image is named writebook.</p>
+<pre><code>sudo docker cp writebook:/rails/app/views/layouts/application.html.erb .
+</code></pre>
+<h2 id="modify-the-application-erb-to-add-support">Modify the application erb to add support</h2>
+<p>In the Head Section add</p>
+<pre><code> &lt;script type=&quot;text/javascript&quot;&gt;
+      window.MathJax = {
+        tex: {
+          inlineMath: [['$', '$']],
+          displayMath: [['$$', '$$']],
+          processEscapes: true
+        }
+      };
+    &lt;/script&gt;
+      
+    &lt;script src=&quot;https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.js&quot;&gt;&lt;/script&gt;
+</code></pre>
+<p>Thing is, it doesn't render the first time round, so I have to refresh the page to render, but it's not too much of an issue right now, I actually like to see the LaTeX maths code before I see the rendered version.</p>
+<!--
+Not working right now ! 
+
+## How to add a render on end of page load to ensure it typesets first time
+
+Above the ```</Body>``` tag at the bottom of the page, add
+```
+    <script type="text/javascript">
+    document.addEventListener("DOMContentLoaded", function() {
+      MathJax.typeset();
+    });
+  </script>
+```
+
+-->
+<h2 id="save-and-copy-the-file-back">Save and copy the file back</h2>
+<p>Then finally copy the file back into the docker image and restart the image</p>
+<pre><code>sudo docker cp application.html.erb writebook:/rails/app/views/layouts/application.html.erb
+sudo docker restart writebook
+</code></pre>
+
+
+<hr>
+					</div>
+				</div>
+			</div>
+
+			<!-- Footer -->
+			<footer id="footer">
+				<div class="inner">
+    <section>
+        <h2>Feeds</h2>
+        <ul class="actions small vertical">
+            <li><a href="/feed.rss" class="button small"><i class="fa fa-rss"></i> RSS Feed</a></li>
+                        <li><a href="/feed.atom" class="button small"><i class="fa fa-rss"></i> Atom Feed</a></li>
+        </ul>
+    </section>
+    <section>
+    </section>
+    <ul class="copyright">
+        <li>Copyright © 2024</li>
+        <li>Design: <a href="http://html5up.net">HTML5 UP</a></li>
+        <li><a href="https://wyam.io">Generated by Wyam</a></li>
+    </ul>
+</div>
+
+			</footer>
+
+		</div>
+		
+		
+
+		<!-- Scripts -->
+		<script>hljs.initHighlightingOnLoad();</script>
+		<script src="/assets/js/jquery.min.js"></script>
+		<script src="/assets/js/skel.min.js"></script>
+		<script src="/assets/js/util.js"></script>
+		<!--[if lte IE 8]><script src="/assets/js/ie/respond.min.js"></script><![endif]-->
+		<script src="/assets/js/main.js"></script>
+
+	</body>
+
+</html>
