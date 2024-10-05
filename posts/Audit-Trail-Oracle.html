@@ -108,7 +108,7 @@
 <h2 id="solution-overview">Solution Overview</h2>
 <p>We introduce an audit table that records every change made to the database. The audit table will store serialized JSON representations of operations like <code>update</code>, <code>insert</code>, and <code>delete</code>. We'll also provide C# code to apply and revert these changes, effectively creating an undo stack.</p>
 <p>Let's use the following DB Schema for illustration:</p>
-<p><img src="/posts/images/audit-trail/TableStructureBlog.png" class="img-fluid" alt="TableVide" /></p>
+<p><img src="/posts/images/audit-trail/TableStructureBlog.png" class="img-fluid" width="60%" alt="TableSchema" /></p>
 <ul>
 <li>Primary Keys: Each table has a primary key (e.g., <code>ProjectID</code>, <code>InstrumentID</code>).</li>
 <li>Foreign Keys: Child tables reference their parent via foreign keys (e.g., <code>instruments.ProjectID</code> references <code>projects.ProjectID</code>).</li>
