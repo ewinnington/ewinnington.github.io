@@ -20,7 +20,7 @@ We introduce an audit table that records every change made to the database. The 
 Let's use the following DB Schema for illustration: 
 
 
-![TableVide](/posts/images/audit-trail/TableStructureBlog.png)
+![TableSchema](/posts/images/audit-trail/TableStructureBlog.png){ width = 60% }
 
 - Primary Keys: Each table has a primary key (e.g., ```ProjectID```, ```InstrumentID```).
 - Foreign Keys: Child tables reference their parent via foreign keys (e.g., ```instruments.ProjectID``` references ```projects.ProjectID```).
