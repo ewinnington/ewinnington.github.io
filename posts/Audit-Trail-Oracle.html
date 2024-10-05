@@ -8,7 +8,7 @@
 <html lang="en">
 
 	<head>
-		<title>Eric Winnington</title>
+		<title>Eric Winnington - Using an audit trail table on Oracle</title>
 		<meta charset="utf-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1" />		
         <link href="/assets/css/highlight.css" rel="stylesheet">
@@ -28,16 +28,16 @@
 		<meta name="msapplication-tooltip" content="Eric Winnington" />
 		<meta name="msapplication-starturl" content="/" />
 
-		<meta property="og:title" content="Eric Winnington" /> 
+		<meta property="og:title" content="Eric Winnington - Using an audit trail table on Oracle" /> 
 		<meta property="og:type" content="website" />
-		<meta property="og:url" content="http://ewinnington.github.io/" />
+		<meta property="og:url" content="http://ewinnington.github.io/posts/Audit-Trail-Oracle" />
 		<!-- TODO: More social graph meta tags -->
 
         <script src="/assets/js/highlight.pack.js"></script>   
 		
         <meta name="twitter:card" content="summary" />
 <meta name="twitter:site" content="@ewinnington" />
-<meta name="twitter:title" content="Eric Winnington" />
+<meta name="twitter:title" content="Eric Winnington - Using an audit trail table on Oracle" />
 <meta name="twitter:description" content="A collection of thoughts, code and snippets." />
 
 <script type="text/javascript" id="MathJax-script" async
@@ -85,20 +85,21 @@
 			<div id="main">
 				<div class="inner">
 
-    <header>
-        <h1>A collection of thoughts, code and snippets.</h1>
-    </header>
+    
+<header>
+    <h1>Using an audit trail table on Oracle</h1>
+            <p><em>Published on Saturday, 5 October 2024</em></p>
+            <ul class="actions small">
+                    <li><a role="button" href="/tags/CSharp" class="button small">CSharp</a></li>
+                    <li><a role="button" href="/tags/Database" class="button small">Database</a></li>
+                    <li><a role="button" href="/tags/Oracle" class="button small">Oracle</a></li>
+        </ul>     
+</header>
 
 					
 					<div id="content">
 						
-<div class="row">
-    <div class="8u 12u$(medium)">
-                <div>
-                    <a href="/posts/Audit-Trail-Oracle">
-                        <h2>Using an audit trail table on Oracle</h2>
-                    </a>
-                    <p>Posted on Saturday, 5 October 2024</p>
+
 <h1 id="implementing-auditable-updates-in-a-relational-database">Implementing Auditable Updates in a Relational Database</h1>
 <p>In modern applications, maintaining an audit trail of changes to data is crucial for compliance, debugging, and data integrity. This blog post explores a straightforward approach to implementing auditable updates in a relational database system, specifically focusing on a project management scenario with hierarchical data.</p>
 <h2 id="problem-description">Problem Description</h2>
@@ -548,204 +549,9 @@ BuildPrimaryKeyCondition: Constructs the WHERE clause for SQL commands.</li>
 }
 </code></pre>
 <p>Note: OpenAI's <code>o1-preview</code> was used to assist in the creation of the post.</p>
-						<hr>
-                </div>       
-                <div>
-                    <a href="/posts/snippets-in-vscode">
-                        <h2>VSCode Snippets</h2>
-                    </a>
-                    <p>Posted on Thursday, 18 July 2024</p>
-<p>I use Visual Studio Code to write markdown notes of my meetings. I datetime every meeting to be able to find it afterwards. One of the shorthands I use is 'dt'. I always forget how to set it up when I reinstall my vscode, so here's the instructions from github copilot chat, which explained how to set it up again!</p>
-<p>So now I know I can ask Copilot how to do it, but I still want to document it, so here it is:</p>
-<h3 id="github-copilot-instructions">Github Copilot Instructions</h3>
-<p>To recreate the shorthand command in Visual Studio Code for inserting the current date and time in a Markdown file using <code>ctrl-space</code>, you can use a snippet. Here's how to set it up:</p>
-<ol>
-<li>Open the Command Palette with <code>Ctrl+Shift+P</code>.</li>
-<li>Type <code>Configure User Snippets</code> and select it.</li>
-<li>Choose <code>markdown.json</code> for Markdown files.</li>
-<li>Insert the following snippet configuration:</li>
-</ol>
-<pre><code class="language-json">&quot;Insert Current Date and Time&quot;: {
-    &quot;prefix&quot;: &quot;dt&quot;,
-    &quot;body&quot;: [
-        &quot;### $CURRENT_YEAR.$CURRENT_MONTH.$CURRENT_DATE $CURRENT_HOUR:$CURRENT_MINUTE:$CURRENT_SECOND&quot;
-    ],
-    &quot;description&quot;: &quot;Inserts the current date and time&quot;
-}
-</code></pre>
-<ol start="5">
-<li>Save the <code>markdown.json</code> file.</li>
-</ol>
-<p>Now, when you type <code>dt</code> in a Markdown file and press <code>Ctrl+Space</code>, it should suggest your snippet. Selecting it will insert the current date and time formatted as you described.</p>
-						<hr>
-                </div>       
-                <div>
-                    <a href="/posts/HowToUpdateWritebook">
-                        <h2>Adding LaTeX Maths to Writebook</h2>
-                    </a>
-                    <p>Posted on Saturday, 13 July 2024</p>
-<h1 id="how-to-add-latex-maths-to-writebook">How to add LaTeX maths to Writebook</h1>
-<p>I've started using ONCE <a href="https://once.com/writebook">Writebook</a> to host some markdown documents, including my book on Optimization applied to energy products. But that book contains tons of Markdown LaTeX formatted mathematics, which Writebook does not support at this time.</p>
-<p>So I patched support for it into the docker image.</p>
-<h2 id="copy-out-the-app-layout-file">Copy out the app layout file</h2>
-<p>Assuming your docker image is named writebook.</p>
-<pre><code>sudo docker cp writebook:/rails/app/views/layouts/application.html.erb .
-</code></pre>
-<h2 id="modify-the-application-erb-to-add-support">Modify the application erb to add support</h2>
-<p>In the Head Section add</p>
-<pre><code> &lt;script type=&quot;text/javascript&quot;&gt;
-      window.MathJax = {
-        tex: {
-          inlineMath: [['$', '$']],
-          displayMath: [['$$', '$$']],
-          processEscapes: true
-        }
-      };
-    &lt;/script&gt;
-      
-    &lt;script src=&quot;https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.js&quot;&gt;&lt;/script&gt;
-</code></pre>
-<p>Thing is, it doesn't render the first time round, so I have to refresh the page to render, but it's not too much of an issue right now, I actually like to see the LaTeX maths code before I see the rendered version.</p>
-<!--
-Not working right now ! 
 
-## How to add a render on end of page load to ensure it typesets first time
 
-Above the ```</Body>``` tag at the bottom of the page, add
-```
-    <script type="text/javascript">
-    document.addEventListener("DOMContentLoaded", function() {
-      MathJax.typeset();
-    });
-  </script>
-```
-
--->
-<h2 id="save-and-copy-the-file-back">Save and copy the file back</h2>
-<p>Then finally copy the file back into the docker image and restart the image</p>
-<pre><code>sudo docker cp application.html.erb writebook:/rails/app/views/layouts/application.html.erb
-sudo docker restart writebook
-</code></pre>
-						<hr>
-                </div>       
-                <div>
-                    <a href="/posts/HttpClientCompression">
-                        <h2>Receiving compressed data from an http(s) endpoint</h2>
-                    </a>
-                    <p>Posted on Wednesday, 20 March 2024</p>
-<p>With the amount of data that we are passing around across services, it is often beneficial to use compression on the data to reduce the transmission time. Modern platforms and algorithms are now very efficient at compressing regular data, particularly if that data is text or json data. </p>
-<p>If the developer of the endpoint has prepared their service for compression, the client must still indicate that they are ready to receive the compressed data. Luckily, most implementations of modern http clients in R, Python, JavaScript and Dotnet support compression / decompression and are seamless for the client. This means that you can set the compression headers on and simply benefit from compressed data being received. </p>
-<p>We can also check in the Content-Encoding header which compression was used. I've found that example.com is sending responses compressed with gzip.</p>
-<h2 id="python">Python</h2>
-<pre><code class="language-python">import requests
-
-url = &quot;http://example.com&quot;  # Replace with the actual URL you want to request
-
-# Specify the accepted encoding methods in the headers
-headers = {
-    'Accept-Encoding': 'gzip, br',
-}
-
-response = requests.get(url, headers=headers)
-print(response.text)
-
-# In case you want to see if it was compressed, you can check via the headers
-#if 'Content-Encoding' in response.headers:
-#    print(f&quot;Response was compressed using: {response.headers['Content-Encoding']}&quot;)
-#else:
-#    print(&quot;Response was not compressed.&quot;)
-</code></pre>
-<h2 id="r">R</h2>
-<pre><code class="language-R">library(httr)
-
-# The URL to which you're sending the request
-url &lt;- &quot;http://example.com&quot;
-
-# Setting the Accept-Encoding header
-response &lt;- GET(url, add_headers(`Accept-Encoding` = 'gzip, br'))
-
-# The content of the response will be automatically decompressed by httr, so you can access it directly.
-content(response, &quot;text&quot;)
-</code></pre>
-<h2 id="c">C#</h2>
-<p>In C#, for some ungodly strange reason, the standard HTTP endpoint doesn't decompress for you automatically unless you add a decompression handler - see handler <a href="https://learn.microsoft.com/en-us/dotnet/api/system.net.http.httpclienthandler.automaticdecompression?view=net-8.0#system-net-http-httpclienthandler-automaticdecompression">HttpClientHandler.AutomaticDecompression</a></p>
-<pre><code class="language-Csharp">using System;
-using System.Net.Http;
-using System.Net.Http.Headers;
-using System.Threading.Tasks;
-using System.Text;
-
-class Program
-{
-    static async Task Main(string[] args)
-    {
-        HttpClientHandler handler = new HttpClientHandler();
-        handler.AutomaticDecompression = System.Net.DecompressionMethods.GZip; //Adding automatic Decompression means that the accept headers are added automatically
-
-        using (var client = new HttpClient(handler))
-        {
-            string url = &quot;http://example.com&quot;;
-            HttpResponseMessage response = await client.GetAsync(url);
-            response.EnsureSuccessStatusCode();
-
-            Console.WriteLine(await response.Content.ReadAsStringAsync());
-		}
-	}
-}
-</code></pre>
-<h2 id="javascript">JavaScript</h2>
-<p>it is so easy that you don't even need to do anything else than setting the gzip: true for the support</p>
-<pre><code class="language-JS">const request = require('request');
-const requestOptions = {
-  url: 'http://example.com',
-  gzip: true, // This is all that is required
-};
-request(requestOptions, (error, response, body) =&gt; {
-  // Handle the response here
-});
-</code></pre>
-						<hr>
-                </div>       
-        <ul class="pager">
-            <li class="previous">                
-            </li>
-            <li class="next">
-            </li>
-        </ul>
-    </div>
-    <div class="4u 12u$(medium)">
-
-            <h5>Tags</h5>
-            <ul class="actions small">
-                    <li><a role="button" href="/tags/Migrated" class="button small">Migrated (38)</a></li>
-                    <li><a role="button" href="/tags/Database" class="button small">Database (11)</a></li>
-                    <li><a role="button" href="/tags/CSharp" class="button small">CSharp (10)</a></li>
-                    <li><a role="button" href="/tags/Thoughts" class="button small">Thoughts (10)</a></li>
-                    <li><a role="button" href="/tags/Oracle" class="button small">Oracle (7)</a></li>
-                    <li><a role="button" href="/tags/Jupyter-notebook" class="button small">Jupyter notebook (7)</a></li>
-                    <li><a role="button" href="/tags/Dotnet-try" class="button small">Dotnet try (7)</a></li>
-                    <li><a role="button" href="/tags/Architecture" class="button small">Architecture (7)</a></li>
-                    <li><a role="button" href="/tags/CommandLine" class="button small">CommandLine (4)</a></li>
-                    <li><a role="button" href="/tags/Space" class="button small">Space (4)</a></li>
-            </ul>
-            <ul class="actions small">
-                <li><a href="/tags" class="button small">View All Tags &rarr;</a></li>
-            </ul>    
-
-            <h5>Older Posts</h5>
-            <ul>
-                    <li><a href="/posts/devcontainers">DevContainers - The future of developer environments</a></li>
-                    <li><a href="/posts/Proxmox">Proxmox 8 on sub $200 mini PCs</a></li>
-                    <li><a href="/posts/network-vpn">Network planning and VPN</a></li>
-                    <li><a href="/posts/mini-pc">The era of the sub $200 PC</a></li>
-            </ul>
-                <ul class="actions small">
-                    <li><a href="/posts" class="button small">Archive &rarr;</a></li>
-                </ul>
-
-        
-    </div> 
-</div>
+<hr>
 					</div>
 				</div>
 			</div>

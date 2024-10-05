@@ -5,8 +5,465 @@
 		<link>http://ewinnington.github.io/</link>
 		<description>A collection of thoughts, code and snippets.</description>
 		<copyright>2024</copyright>
-		<pubDate>Thu, 18 Jul 2024 11:23:36 GMT</pubDate>
-		<lastBuildDate>Thu, 18 Jul 2024 11:23:36 GMT</lastBuildDate>
+		<pubDate>Sat, 05 Oct 2024 08:57:06 GMT</pubDate>
+		<lastBuildDate>Sat, 05 Oct 2024 08:57:06 GMT</lastBuildDate>
+		<item>
+			<title>Using an audit trail table on Oracle</title>
+			<link>http://ewinnington.github.io/posts/Audit-Trail-Oracle</link>
+			<description>&lt;p&gt;In modern applications, maintaining an audit trail of changes to data is crucial for compliance, debugging, and data integrity. This blog post explores a straightforward approach to implementing auditable updates in a relational database system, specifically focusing on a project management scenario with hierarchical data.&lt;/p&gt;</description>
+			<guid>http://ewinnington.github.io/posts/Audit-Trail-Oracle</guid>
+			<pubDate>Sat, 05 Oct 2024 08:00:00 GMT</pubDate>
+			<content:encoded>&lt;h1 id="implementing-auditable-updates-in-a-relational-database"&gt;Implementing Auditable Updates in a Relational Database&lt;/h1&gt;
+&lt;p&gt;In modern applications, maintaining an audit trail of changes to data is crucial for compliance, debugging, and data integrity. This blog post explores a straightforward approach to implementing auditable updates in a relational database system, specifically focusing on a project management scenario with hierarchical data.&lt;/p&gt;
+&lt;h2 id="problem-description"&gt;Problem Description&lt;/h2&gt;
+&lt;p&gt;We have a relational database containing &lt;code&gt;Projects&lt;/code&gt;, each of which includes &lt;code&gt;Instruments&lt;/code&gt;, &lt;code&gt;Markets&lt;/code&gt;, and &lt;code&gt;Valuations&lt;/code&gt;. These entities form a tree structure, adhering to the third normal form (3NF). Previously, any update to a project involved downloading the entire project tree, making changes, and uploading a new project under a new ID to ensure complete auditability.&lt;/p&gt;
+&lt;p&gt;This approach is inefficient for small updates and doesn't allow for granular tracking of changes. The goal is to enable small, precise updates to projects while maintaining a comprehensive audit trail of all changes.&lt;/p&gt;
+&lt;h2 id="solution-overview"&gt;Solution Overview&lt;/h2&gt;
+&lt;p&gt;We introduce an audit table that records every change made to the database. The audit table will store serialized JSON representations of operations like &lt;code&gt;update&lt;/code&gt;, &lt;code&gt;insert&lt;/code&gt;, and &lt;code&gt;delete&lt;/code&gt;. We'll also provide C# code to apply and revert these changes, effectively creating an undo stack.&lt;/p&gt;
+&lt;p&gt;Let's use the following DB Schema for illustration:&lt;/p&gt;
+&lt;p&gt;&lt;img src="/posts/images/audit-trail/TableStructureBlog.png" class="img-fluid" alt="TableVide" /&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Primary Keys: Each table has a primary key (e.g., &lt;code&gt;ProjectID&lt;/code&gt;, &lt;code&gt;InstrumentID&lt;/code&gt;).&lt;/li&gt;
+&lt;li&gt;Foreign Keys: Child tables reference their parent via foreign keys (e.g., &lt;code&gt;instruments.ProjectID&lt;/code&gt; references &lt;code&gt;projects.ProjectID&lt;/code&gt;).&lt;/li&gt;
+&lt;li&gt;Audit Table: The &lt;code&gt;change_audit&lt;/code&gt; table records changes with fields like &lt;code&gt;ChangeAuditID&lt;/code&gt;, &lt;code&gt;TimeApplied&lt;/code&gt;, and &lt;code&gt;ImpactJson&lt;/code&gt;.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;!-- 
+```d2
+projects: {
+  shape: sql_table
+  ProjectID: int {constraint: primary_key}
+  Name: varchar(100)
+  Description: text
+  LastUpdated: timestamp with time zone
+  VersionNumber: int
+}
+
+instruments: {
+  shape: sql_table
+  InstrumentID: int {constraint: primary_key}
+  ProjectID: int {constraint: foreign_key}
+  Name: varchar(100)
+  Type: varchar(50)
+  LastUpdated: timestamp with time zone
+}
+
+markets: {
+  shape: sql_table
+  MarketID: int {constraint: primary_key}
+  ProjectID: int {constraint: foreign_key}
+  Region: varchar(50)
+  MarketType: varchar(50)
+  LastUpdated: timestamp with time zone
+}
+
+valuations: {
+  shape: sql_table
+  ValuationID: int {constraint: primary_key}
+  ProjectID: int {constraint: foreign_key}
+  Value: decimal(10, 2)
+  Currency: varchar(10)
+  LastUpdated: timestamp with time zone
+}
+
+change_audit: {
+  shape: sql_table
+  ChangeAuditID: int {constraint: primary_key}
+  TimeApplied: timestamp with time zone
+  UserID: varchar(100)
+  ImpactJson: jsonb
+}
+
+instruments.ProjectID -&gt; projects.ProjectID
+markets.ProjectID -&gt; projects.ProjectID
+valuations.ProjectID -&gt; projects.ProjectID
+
+```
+--&gt;
+&lt;h2 id="implementing-change-auditing"&gt;Implementing Change Auditing&lt;/h2&gt;
+&lt;p&gt;The &lt;code&gt;change_audit&lt;/code&gt; table is designed to store all changes in a JSON format for flexibility and ease of storage.&lt;/p&gt;
+&lt;pre&gt;&lt;code class="language-sql"&gt;CREATE TABLE change_audit (
+  ChangeAuditID   NUMBER PRIMARY KEY,
+  TimeApplied     TIMESTAMP,
+  UserID          VARCHAR2(100),
+  ImpactJson      CLOB
+);
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2 id="json-structure-for-changes"&gt;JSON Structure for Changes&lt;/h2&gt;
+&lt;p&gt;Each change is recorded as a JSON object:&lt;/p&gt;
+&lt;pre&gt;&lt;code class="language-json"&gt;{
+  &amp;quot;Operation&amp;quot;: &amp;quot;update&amp;quot;,
+  &amp;quot;impact&amp;quot;: [
+    {
+      &amp;quot;Table&amp;quot;: &amp;quot;Instruments&amp;quot;,
+      &amp;quot;PrimaryKey&amp;quot;: {&amp;quot;ProjectID&amp;quot;: 4, &amp;quot;InstrumentID&amp;quot;: 2},
+      &amp;quot;Column&amp;quot;: &amp;quot;Name&amp;quot;,
+      &amp;quot;OldValue&amp;quot;: &amp;quot;Old Instrument Name&amp;quot;,
+      &amp;quot;NewValue&amp;quot;: &amp;quot;Updated Instrument Name&amp;quot;
+    }
+  ]
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2 id="csharp-to-apply-changes-given-an-operation"&gt;CSharp to apply changes given an operation&lt;/h2&gt;
+&lt;p&gt;To apply changes recorded in the JSON, we'll use C# code that parses the JSON and executes the corresponding SQL commands.&lt;/p&gt;
+&lt;p&gt;I assume you have the &lt;code&gt;_connectionString&lt;/code&gt; available somewhere as a constant in the code.&lt;/p&gt;
+&lt;pre&gt;&lt;code class="language-csharp"&gt;using Oracle.ManagedDataAccess.Client;
+using Newtonsoft.Json.Linq;
+using System;
+using System.Collections.Generic;
+
+public class ChangeApplier
+{
+
+    public void ApplyChanges(string jsonInput)
+    {
+        // Parse the JSON input
+        var operation = JObject.Parse(jsonInput);
+        string opType = operation[&amp;quot;Operation&amp;quot;].ToString();
+        var impactList = (JArray)operation[&amp;quot;impact&amp;quot;];
+
+        using (var conn = new OracleConnection(_connectionString))
+        {
+            conn.Open();
+            using (var transaction = conn.BeginTransaction())
+            {
+                try
+                {
+                    foreach (var impact in impactList)
+                    {
+                        string table = impact[&amp;quot;Table&amp;quot;].ToString();
+                        var primaryKey = (JObject)impact[&amp;quot;PrimaryKey&amp;quot;];
+                        string column = impact[&amp;quot;Column&amp;quot;]?.ToString();
+                        string newValue = impact[&amp;quot;NewValue&amp;quot;]?.ToString();
+
+                        switch (opType)
+                        {
+                            case &amp;quot;update&amp;quot;:
+                                ApplyUpdate(conn, table, primaryKey, column, newValue);
+                                break;
+                            case &amp;quot;insert&amp;quot;:
+                                ApplyInsert(conn, table, impact);
+                                break;
+                            case &amp;quot;delete&amp;quot;:
+                                ApplyDelete(conn, table, primaryKey);
+                                break;
+                        }
+                    }
+
+                    transaction.Commit();
+                }
+                catch (Exception ex)
+                {
+                    transaction.Rollback();
+                    Console.WriteLine($&amp;quot;Error applying changes: {ex.Message}&amp;quot;);
+                }
+            }
+        }
+    }
+
+    private void ApplyUpdate(OracleConnection conn, string table, JObject primaryKey, string column, string newValue)
+    {
+        var pkConditions = BuildPrimaryKeyCondition(primaryKey);
+        var query = $&amp;quot;UPDATE {table} SET {column} = :newValue WHERE {pkConditions}&amp;quot;;
+
+        using (var cmd = new OracleCommand(query, conn))
+        {
+            cmd.Parameters.Add(new OracleParameter(&amp;quot;newValue&amp;quot;, newValue));
+            cmd.ExecuteNonQuery();
+        }
+    }
+
+    private void ApplyInsert(OracleConnection conn, string table, JToken impact)
+    {
+        var primaryKey = (JObject)impact[&amp;quot;PrimaryKey&amp;quot;];
+        var newValues = (JObject)impact[&amp;quot;NewValues&amp;quot;];
+        var columns = new List&amp;lt;string&amp;gt;();
+        var values = new List&amp;lt;string&amp;gt;();
+
+        foreach (var property in primaryKey.Properties())
+        {
+            columns.Add(property.Name);
+            values.Add($&amp;quot;:{property.Name}&amp;quot;);
+        }
+
+        foreach (var property in newValues.Properties())
+        {
+            columns.Add(property.Name);
+            values.Add($&amp;quot;:{property.Name}&amp;quot;);
+        }
+
+        var query = $&amp;quot;INSERT INTO {table} ({string.Join(&amp;quot;, &amp;quot;, columns)}) VALUES ({string.Join(&amp;quot;, &amp;quot;, values)})&amp;quot;;
+
+        using (var cmd = new OracleCommand(query, conn))
+        {
+            foreach (var property in primaryKey.Properties())
+            {
+                cmd.Parameters.Add(new OracleParameter(property.Name, property.Value.ToString()));
+            }
+
+            foreach (var property in newValues.Properties())
+            {
+                cmd.Parameters.Add(new OracleParameter(property.Name, property.Value.ToString()));
+            }
+
+            cmd.ExecuteNonQuery();
+        }
+    }
+
+    private void ApplyDelete(OracleConnection conn, string table, JObject primaryKey)
+    {
+        var pkConditions = BuildPrimaryKeyCondition(primaryKey);
+        var query = $&amp;quot;DELETE FROM {table} WHERE {pkConditions}&amp;quot;;
+
+        using (var cmd = new OracleCommand(query, conn))
+        {
+            cmd.ExecuteNonQuery();
+        }
+    }
+
+    private string BuildPrimaryKeyCondition(JObject primaryKey)
+    {
+        var conditions = new List&amp;lt;string&amp;gt;();
+        foreach (var prop in primaryKey.Properties())
+        {
+            conditions.Add($&amp;quot;{prop.Name} = :{prop.Name}&amp;quot;);
+        }
+        return string.Join(&amp;quot; AND &amp;quot;, conditions);
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;ApplyChanges&lt;/strong&gt;: Parses the JSON input and determines the operation type.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;ApplyUpdate&lt;/strong&gt;: Executes an UPDATE SQL command using parameters to prevent SQL injection.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;ApplyInsert&lt;/strong&gt;: Executes an INSERT SQL command, constructing columns and values from the JSON.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;ApplyDelete&lt;/strong&gt;: Executes a DELETE SQL command based on the primary key.
+BuildPrimaryKeyCondition: Constructs the WHERE clause for SQL commands.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;A side note, for the insert, you'll have the challenge if you are using auto-incremented IDs, this will mean you don't know the new IDs until you have inserted the data, so you should make sure to capture the new IDs and then create the audit log. This is left as a simple exercise to the reader in case it is necessary.&lt;/p&gt;
+&lt;h2 id="csharp-to-revert-changes"&gt;CSharp to revert changes&lt;/h2&gt;
+&lt;p&gt;To revert changes (undo operations), we'll process the audit trail in reverse order. Here I give the processing of a list of operations as an example of unrolling. It is to note that the reverse delete does only one table, so if there was some connected information that was deleted via referential identity, it was the task of the audit table to keep that in the audit.&lt;/p&gt;
+&lt;pre&gt;&lt;code class="language-csharp"&gt;public class ChangeReverter
+{
+    public void RevertChanges(List&amp;lt;string&amp;gt; jsonOperations)
+    {
+        using (var conn = new OracleConnection(_connectionString))
+        {
+            conn.Open();
+            using (var transaction = conn.BeginTransaction())
+            {
+                try
+                {
+                    jsonOperations.Reverse(); // note: you could also have provided sorted by last time from the audit table instead of reversing them
+
+                    foreach (var operationJson in jsonOperations)
+                    {
+                        var operation = JObject.Parse(operationJson);
+                        string opType = operation[&amp;quot;Operation&amp;quot;].ToString();
+                        var impactList = (JArray)operation[&amp;quot;impact&amp;quot;];
+
+                        foreach (var impact in impactList)
+                        {
+                            string table = impact[&amp;quot;Table&amp;quot;].ToString();
+                            var primaryKey = (JObject)impact[&amp;quot;PrimaryKey&amp;quot;];
+                            string column = impact[&amp;quot;Column&amp;quot;]?.ToString();
+                            string oldValue = impact[&amp;quot;OldValue&amp;quot;]?.ToString();
+
+                            switch (opType)
+                            {
+                                case &amp;quot;update&amp;quot;:
+                                    RevertUpdate(conn, table, primaryKey, column, oldValue);
+                                    break;
+                                case &amp;quot;insert&amp;quot;:
+                                    ApplyDelete(conn, table, primaryKey);
+                                    break;
+                                case &amp;quot;delete&amp;quot;:
+                                    RevertDelete(conn, table, impact);
+                                    break;
+                            }
+                        }
+                    }
+
+                    transaction.Commit();
+                }
+                catch (Exception ex)
+                {
+                    transaction.Rollback();
+                    Console.WriteLine($&amp;quot;Error reverting changes: {ex.Message}&amp;quot;);
+                }
+            }
+        }
+    }
+
+    private void RevertUpdate(OracleConnection conn, string table, JObject primaryKey, string column, string oldValue)
+    {
+        var pkConditions = BuildPrimaryKeyCondition(primaryKey);
+        var query = $&amp;quot;UPDATE {table} SET {column} = :oldValue WHERE {pkConditions}&amp;quot;;
+
+        using (var cmd = new OracleCommand(query, conn))
+        {
+            cmd.Parameters.Add(new OracleParameter(&amp;quot;oldValue&amp;quot;, oldValue));
+            cmd.ExecuteNonQuery();
+        }
+    }
+
+    private void RevertDelete(OracleConnection conn, string table, JToken impact)
+    {
+        var primaryKey = (JObject)impact[&amp;quot;PrimaryKey&amp;quot;];
+        var oldValues = (JObject)impact[&amp;quot;OldValues&amp;quot;];
+        var columns = new List&amp;lt;string&amp;gt;();
+        var values = new List&amp;lt;string&amp;gt;();
+
+        foreach (var property in primaryKey.Properties())
+        {
+            columns.Add(property.Name);
+            values.Add($&amp;quot;:{property.Name}&amp;quot;);
+        }
+
+        foreach (var property in oldValues.Properties())
+        {
+            columns.Add(property.Name);
+            values.Add($&amp;quot;:{property.Name}&amp;quot;);
+        }
+
+        var query = $&amp;quot;INSERT INTO {table} ({string.Join(&amp;quot;, &amp;quot;, columns)}) VALUES ({string.Join(&amp;quot;, &amp;quot;, values)})&amp;quot;;
+
+        using (var cmd = new OracleCommand(query, conn))
+        {
+            foreach (var property in primaryKey.Properties())
+            {
+                cmd.Parameters.Add(new OracleParameter(property.Name, property.Value.ToString()));
+            }
+
+            foreach (var property in oldValues.Properties())
+            {
+                cmd.Parameters.Add(new OracleParameter(property.Name, property.Value.ToString()));
+            }
+
+            cmd.ExecuteNonQuery();
+        }
+    }
+
+    // Reuse BuildPrimaryKeyCondition and ApplyDelete methods from ChangeApplier
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;RevertChanges&lt;/strong&gt;: Processes the list of JSON operations in reverse order to undo changes.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;RevertUpdate&lt;/strong&gt;: Sets the column back to its old value.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;RevertDelete&lt;/strong&gt;: Re-inserts a deleted row using the old values stored in the audit trail.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;ApplyDelete&lt;/strong&gt;: Deletes a row, used here to undo an insert operation.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="json-schema"&gt;JSON schema&lt;/h2&gt;
+&lt;p&gt;The reason that I prefer to use the Json directly in the C# code is that actually making up the C# classes for this schema is actually more work that processing the json directly in the code.&lt;/p&gt;
+&lt;pre&gt;&lt;code class="language-json"&gt;{
+  &amp;quot;$schema&amp;quot;: &amp;quot;http://json-schema.org/draft-07/schema#&amp;quot;,
+  &amp;quot;title&amp;quot;: &amp;quot;ImpactJsonRoot&amp;quot;,
+  &amp;quot;type&amp;quot;: &amp;quot;object&amp;quot;,
+  &amp;quot;properties&amp;quot;: {
+    &amp;quot;Operation&amp;quot;: {
+      &amp;quot;type&amp;quot;: &amp;quot;string&amp;quot;,
+      &amp;quot;enum&amp;quot;: [&amp;quot;update&amp;quot;, &amp;quot;insert&amp;quot;, &amp;quot;delete&amp;quot;],
+      &amp;quot;description&amp;quot;: &amp;quot;Type of operation&amp;quot;
+    },
+    &amp;quot;Impact&amp;quot;: {
+      &amp;quot;type&amp;quot;: &amp;quot;array&amp;quot;,
+      &amp;quot;items&amp;quot;: {
+        &amp;quot;type&amp;quot;: &amp;quot;object&amp;quot;,
+        &amp;quot;properties&amp;quot;: {
+          &amp;quot;Table&amp;quot;: {
+            &amp;quot;type&amp;quot;: &amp;quot;string&amp;quot;,
+            &amp;quot;description&amp;quot;: &amp;quot;Name of the table affected&amp;quot;
+          },
+          &amp;quot;PrimaryKey&amp;quot;: {
+            &amp;quot;type&amp;quot;: &amp;quot;object&amp;quot;,
+            &amp;quot;description&amp;quot;: &amp;quot;Primary key fields and their values&amp;quot;,
+            &amp;quot;additionalProperties&amp;quot;: {
+              &amp;quot;type&amp;quot;: [&amp;quot;number&amp;quot;, &amp;quot;null&amp;quot;]
+            }
+          },
+          &amp;quot;Column&amp;quot;: {
+            &amp;quot;type&amp;quot;: &amp;quot;string&amp;quot;,
+            &amp;quot;description&amp;quot;: &amp;quot;Column affected (for updates)&amp;quot;
+          },
+          &amp;quot;OldValue&amp;quot;: {
+            &amp;quot;type&amp;quot;: [&amp;quot;string&amp;quot;, &amp;quot;number&amp;quot;, &amp;quot;boolean&amp;quot;, &amp;quot;null&amp;quot;],
+            &amp;quot;description&amp;quot;: &amp;quot;Previous value (for updates and deletes)&amp;quot;
+          },
+          &amp;quot;NewValue&amp;quot;: {
+            &amp;quot;type&amp;quot;: [&amp;quot;string&amp;quot;, &amp;quot;number&amp;quot;, &amp;quot;boolean&amp;quot;, &amp;quot;null&amp;quot;],
+            &amp;quot;description&amp;quot;: &amp;quot;New value (for updates and inserts)&amp;quot;
+          },
+          &amp;quot;OldValues&amp;quot;: {
+            &amp;quot;type&amp;quot;: &amp;quot;object&amp;quot;,
+            &amp;quot;description&amp;quot;: &amp;quot;All old values (for deletes)&amp;quot;,
+            &amp;quot;additionalProperties&amp;quot;: {
+              &amp;quot;type&amp;quot;: [&amp;quot;string&amp;quot;, &amp;quot;number&amp;quot;, &amp;quot;boolean&amp;quot;, &amp;quot;null&amp;quot;]
+            }
+          },
+          &amp;quot;NewValues&amp;quot;: {
+            &amp;quot;type&amp;quot;: &amp;quot;object&amp;quot;,
+            &amp;quot;description&amp;quot;: &amp;quot;All new values (for inserts)&amp;quot;,
+            &amp;quot;additionalProperties&amp;quot;: {
+              &amp;quot;type&amp;quot;: [&amp;quot;string&amp;quot;, &amp;quot;number&amp;quot;, &amp;quot;boolean&amp;quot;, &amp;quot;null&amp;quot;]
+            }
+          }
+        },
+        &amp;quot;required&amp;quot;: [&amp;quot;Table&amp;quot;, &amp;quot;PrimaryKey&amp;quot;]
+      }
+    }
+  },
+  &amp;quot;required&amp;quot;: [&amp;quot;Operation&amp;quot;, &amp;quot;Impact&amp;quot;]
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;and here are examples of operations:&lt;/p&gt;
+&lt;h3 id="update"&gt;update&lt;/h3&gt;
+&lt;pre&gt;&lt;code class="language-json"&gt;{
+  &amp;quot;Operation&amp;quot;: &amp;quot;update&amp;quot;,
+  &amp;quot;Impact&amp;quot;: [
+    {
+      &amp;quot;Table&amp;quot;: &amp;quot;Instruments&amp;quot;,
+      &amp;quot;PrimaryKey&amp;quot;: { &amp;quot;ProjectID&amp;quot;: 4, &amp;quot;InstrumentID&amp;quot;: 2 },
+      &amp;quot;Column&amp;quot;: &amp;quot;Name&amp;quot;,
+      &amp;quot;OldValue&amp;quot;: &amp;quot;Old Instrument Name&amp;quot;,
+      &amp;quot;NewValue&amp;quot;: &amp;quot;Updated Instrument Name&amp;quot;
+    }
+  ]
+}
+
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3 id="insert"&gt;insert&lt;/h3&gt;
+&lt;pre&gt;&lt;code class="language-json"&gt;{
+  &amp;quot;Operation&amp;quot;: &amp;quot;insert&amp;quot;,
+  &amp;quot;Impact&amp;quot;: [
+    {
+      &amp;quot;Table&amp;quot;: &amp;quot;Instruments&amp;quot;,
+      &amp;quot;PrimaryKey&amp;quot;: { &amp;quot;ProjectID&amp;quot;: 4, &amp;quot;InstrumentID&amp;quot;: 10 },
+      &amp;quot;NewValues&amp;quot;: {
+        &amp;quot;Name&amp;quot;: &amp;quot;New Instrument&amp;quot;,
+        &amp;quot;Type&amp;quot;: &amp;quot;Flexible Asset&amp;quot;,
+        &amp;quot;LastUpdated&amp;quot;: &amp;quot;2024-10-05T12:34:56Z&amp;quot;
+      }
+    }
+  ]
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3 id="delete"&gt;delete&lt;/h3&gt;
+&lt;pre&gt;&lt;code class="language-json"&gt;{
+  &amp;quot;Operation&amp;quot;: &amp;quot;delete&amp;quot;,
+  &amp;quot;Impact&amp;quot;: [
+    {
+      &amp;quot;Table&amp;quot;: &amp;quot;Instruments&amp;quot;,
+      &amp;quot;PrimaryKey&amp;quot;: { &amp;quot;ProjectID&amp;quot;: 4, &amp;quot;InstrumentID&amp;quot;: 5 },
+      &amp;quot;OldValues&amp;quot;: {
+        &amp;quot;Name&amp;quot;: &amp;quot;Obsolete Instrument&amp;quot;,
+        &amp;quot;Type&amp;quot;: &amp;quot;Flexible Asset&amp;quot;,
+        &amp;quot;LastUpdated&amp;quot;: &amp;quot;2024-10-01T09:15:00Z&amp;quot;
+      }
+    }
+  ]
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Note: OpenAI's &lt;code&gt;o1-preview&lt;/code&gt; was used to assist in the creation of the post.&lt;/p&gt;
+</content:encoded>
+		</item>
 		<item>
 			<title>VSCode Snippets</title>
 			<link>http://ewinnington.github.io/posts/snippets-in-vscode</link>
@@ -1398,109 +1855,6 @@ for(int i = 0; i &amp;lt; nItems; i++) c0.SetCoefficient(Items[i], weights[i]);
 SolveAndPrint(milp_solver, nItems, weights);
 &lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;There are many ways of solving the knapsack problem, using LP and MILP solvers as seen here or using Dynamic Programming. The Google OR-Tools have a specific solver for multi-dimensional knapsack problems, including one which uses Dynamic Programming.&lt;/p&gt;
-</content:encoded>
-		</item>
-		<item>
-			<title>Hosting your C# Jupyter notebook online by adding one file to your repo</title>
-			<link>http://ewinnington.github.io/posts/my-binder-jupyter-csharp</link>
-			<description>&lt;p&gt;&lt;a href="https://mybinder.org/"&gt;MyBinder.org&lt;/a&gt; in collaboration with &lt;a href="https://github.com/dotnet/try"&gt;Dotnet try&lt;/a&gt; allows you to host your .net notebooks online.&lt;/p&gt;</description>
-			<guid>http://ewinnington.github.io/posts/my-binder-jupyter-csharp</guid>
-			<pubDate>Thu, 14 Nov 2019 23:20:00 GMT</pubDate>
-			<content:encoded>&lt;p&gt;&lt;a href="https://mybinder.org/"&gt;MyBinder.org&lt;/a&gt; in collaboration with &lt;a href="https://github.com/dotnet/try"&gt;Dotnet try&lt;/a&gt; allows you to host your .net notebooks online.&lt;/p&gt;
-&lt;p&gt;&lt;a href="https://mybinder.org/v2/gh/ewinnington/noteb/master?filepath=SqliteInteraction.ipynb"&gt;SQLite example workbook: &lt;/a&gt;
-&lt;a href="https://mybinder.org/v2/gh/ewinnington/noteb/master?filepath=SqliteInteraction.ipynb"&gt;&lt;img src="https://mybinder.org/badge_logo.svg" class="img-fluid" alt="Binder" /&gt;&lt;/a&gt;&lt;/p&gt;
-&lt;p&gt;To light up this for your own hosted repositories, you will need a public github repo. Inside the repository, you will need to create a &lt;a href="https://www.docker.com/"&gt;Docker&lt;/a&gt; file that gives the setup required for MyBinder to setup the environment of the workbook.&lt;/p&gt;
-&lt;p&gt;The &lt;a href="https://github.com/dotnet/try/blob/master/CreateBinder.md"&gt;dotnet/try&lt;/a&gt; has the set of instrunctions.&lt;/p&gt;
-&lt;p&gt;For my repository, I used the following &lt;a href="https://github.com/ewinnington/noteb/blob/master/Dockerfile"&gt;Dockerfile&lt;/a&gt;&lt;/p&gt;
-&lt;p&gt;A list of my changes to the standard one proposed by dotnet/try:&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;I used a fixed docker image &lt;code&gt;jupyter/scipy-notebook:45f07a14b422&lt;/code&gt;&lt;/li&gt;
-&lt;li&gt;Since I have all my notebooks in the root of my repository I did &lt;code&gt;COPY . ${HOME}/Notebooks/&lt;/code&gt;&lt;/li&gt;
-&lt;li&gt;Since I am always importing the Nuget files at the top of my workbook, I did not need to have the docker deamon add a nuget config. So I commented out the COPY command &lt;code&gt;# COPY ./NuGet.config ${HOME}/nuget.config&lt;/code&gt;&lt;/li&gt;
-&lt;li&gt;I commented out the custom &lt;code&gt;--add-source &amp;quot;https://dotnet.myget.org/F/dotnet-try/api/v3/index.json&amp;quot;&lt;/code&gt; from the installation of the dotnet try tool, since I had issue with the nuget feed with the pre-release version. Installing with &lt;code&gt;RUN dotnet tool install -g dotnet-try&lt;/code&gt; will get you the latest released version.&lt;/li&gt;
-&lt;/ul&gt;
-&lt;pre&gt;&lt;code class="language-Skip"&gt;FROM jupyter/scipy-notebook:45f07a14b422
-
-# Install .NET CLI dependencies
-
-ARG NB_USER=jovyan
-ARG NB_UID=1000
-ENV USER ${NB_USER}
-ENV NB_UID ${NB_UID}
-ENV HOME /home/${NB_USER}
-
-WORKDIR ${HOME}
-
-USER root
-RUN apt-get update
-RUN apt-get install -y curl
-
-# Install .NET CLI dependencies
-RUN apt-get install -y --no-install-recommends \
-        libc6 \
-        libgcc1 \
-        libgssapi-krb5-2 \
-        libicu60 \
-        libssl1.1 \
-        libstdc++6 \
-        zlib1g 
-
-RUN rm -rf /var/lib/apt/lists/*
-
-# Install .NET Core SDK
-ENV DOTNET_SDK_VERSION 3.0.100
-
-RUN curl -SL --output dotnet.tar.gz https://dotnetcli.blob.core.windows.net/dotnet/Sdk/$DOTNET_SDK_VERSION/dotnet-sdk-$DOTNET_SDK_VERSION-linux-x64.tar.gz \
-    &amp;amp;&amp;amp; dotnet_sha512='766da31f9a0bcfbf0f12c91ea68354eb509ac2111879d55b656f19299c6ea1c005d31460dac7c2a4ef82b3edfea30232c82ba301fb52c0ff268d3e3a1b73d8f7' \
-    &amp;amp;&amp;amp; echo &amp;quot;$dotnet_sha512 dotnet.tar.gz&amp;quot; | sha512sum -c - \
-    &amp;amp;&amp;amp; mkdir -p /usr/share/dotnet \
-    &amp;amp;&amp;amp; tar -zxf dotnet.tar.gz -C /usr/share/dotnet \
-    &amp;amp;&amp;amp; rm dotnet.tar.gz \
-    &amp;amp;&amp;amp; ln -s /usr/share/dotnet/dotnet /usr/bin/dotnet
-
-# Enable detection of running in a container
-ENV DOTNET_RUNNING_IN_CONTAINER=true \
-    # Enable correct mode for dotnet watch (only mode supported in a container)
-    DOTNET_USE_POLLING_FILE_WATCHER=true \
-    # Skip extraction of XML docs - generally not useful within an image/container - helps performance
-    NUGET_XMLDOC_MODE=skip \
-    # Opt out of telemetry until after we install jupyter when building the image, this prevents caching of machine id
-    DOTNET_TRY_CLI_TELEMETRY_OPTOUT=true
-
-# Trigger first run experience by running arbitrary cmd
-RUN dotnet help
-
-# Copy notebooks
-
-COPY . ${HOME}/Notebooks/
-
-# Copy package sources
-
-# COPY ./NuGet.config ${HOME}/nuget.config
-
-RUN chown -R ${NB_UID} ${HOME}
-USER ${USER}
-
-# Install Microsoft.DotNet.Interactive
-RUN dotnet tool install -g dotnet-try 
-#--add-source &amp;quot;https://dotnet.myget.org/F/dotnet-try/api/v3/index.json&amp;quot;
-
-ENV PATH=&amp;quot;${PATH}:${HOME}/.dotnet/tools&amp;quot;
-RUN echo &amp;quot;$PATH&amp;quot;
-
-# Install kernel specs
-RUN dotnet try jupyter install
-
-# Enable telemetry once we install jupyter for the image
-ENV DOTNET_TRY_CLI_TELEMETRY_OPTOUT=false
-
-# Set root to Notebooks
-WORKDIR ${HOME}/Notebooks/
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;Once the Dockerfile is in the repository. Head over to &lt;a href="https://mybinder.org/"&gt;MyBinder.org&lt;/a&gt; and enter the link to your repository. Optionally, you can set an initial ipynb file to start when the link is clicked.&lt;/p&gt;
-&lt;p&gt;&lt;img src="/posts/images/my-binder/Binder-1.png" class="img-fluid" alt="MyBinder" /&gt;&lt;/p&gt;
-&lt;p&gt;When you click &amp;quot;launch&amp;quot;, MyBinder will download your repository and start the docker build, very soon you will be able to access your binders online. Fully shareable and totally awesome!&lt;/p&gt;
-&lt;p&gt;&lt;img src="/posts/images/my-binder/Binder-2.png" class="img-fluid" width="60%" alt="SQLite Running" /&gt;&lt;/p&gt;
 </content:encoded>
 		</item>
 	</channel>
