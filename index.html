@@ -95,6 +95,16 @@
 <div class="row">
     <div class="8u 12u$(medium)">
                 <div>
+                    <a href="/posts/Disposable-Software">
+                        <h2>Disposable software</h2>
+                    </a>
+                    <p>Posted on Monday, 9 December 2024</p>
+<h1 id="the-era-of-throw-away-software-is-upon-us">The era of throw away software is upon us</h1>
+<p>With the advent of LLMs and their capability to create quick programs (&quot;create me a flashcard app&quot;, &quot;I need a typing exercise software&quot;, &quot;make a dashboard to track my investments&quot;), we might see a lot more software being written, used and then discarded since it's trivial for a LLM to re-write it next time it is needed.</p>
+<p>Where perfection is not required, just good enough, there will be a whole slew of applications, websites and programs that are used and put into production that are never even reviewed by a human programmer, just tested for their outputs and/or visually checked by a human. Even, we might see lots of code that is only ever read by a machine for bugs and issues, to then be corrected by a machine.</p>
+						<hr>
+                </div>       
+                <div>
                     <a href="/posts/Audit-Trail-Oracle">
                         <h2>Using an audit trail table on Oracle</h2>
                     </a>
@@ -628,84 +638,6 @@ sudo docker restart writebook
 </code></pre>
 						<hr>
                 </div>       
-                <div>
-                    <a href="/posts/HttpClientCompression">
-                        <h2>Receiving compressed data from an http(s) endpoint</h2>
-                    </a>
-                    <p>Posted on Wednesday, 20 March 2024</p>
-<p>With the amount of data that we are passing around across services, it is often beneficial to use compression on the data to reduce the transmission time. Modern platforms and algorithms are now very efficient at compressing regular data, particularly if that data is text or json data. </p>
-<p>If the developer of the endpoint has prepared their service for compression, the client must still indicate that they are ready to receive the compressed data. Luckily, most implementations of modern http clients in R, Python, JavaScript and Dotnet support compression / decompression and are seamless for the client. This means that you can set the compression headers on and simply benefit from compressed data being received. </p>
-<p>We can also check in the Content-Encoding header which compression was used. I've found that example.com is sending responses compressed with gzip.</p>
-<h2 id="python">Python</h2>
-<pre><code class="language-python">import requests
-
-url = &quot;http://example.com&quot;  # Replace with the actual URL you want to request
-
-# Specify the accepted encoding methods in the headers
-headers = {
-    'Accept-Encoding': 'gzip, br',
-}
-
-response = requests.get(url, headers=headers)
-print(response.text)
-
-# In case you want to see if it was compressed, you can check via the headers
-#if 'Content-Encoding' in response.headers:
-#    print(f&quot;Response was compressed using: {response.headers['Content-Encoding']}&quot;)
-#else:
-#    print(&quot;Response was not compressed.&quot;)
-</code></pre>
-<h2 id="r">R</h2>
-<pre><code class="language-R">library(httr)
-
-# The URL to which you're sending the request
-url &lt;- &quot;http://example.com&quot;
-
-# Setting the Accept-Encoding header
-response &lt;- GET(url, add_headers(`Accept-Encoding` = 'gzip, br'))
-
-# The content of the response will be automatically decompressed by httr, so you can access it directly.
-content(response, &quot;text&quot;)
-</code></pre>
-<h2 id="c">C#</h2>
-<p>In C#, for some ungodly strange reason, the standard HTTP endpoint doesn't decompress for you automatically unless you add a decompression handler - see handler <a href="https://learn.microsoft.com/en-us/dotnet/api/system.net.http.httpclienthandler.automaticdecompression?view=net-8.0#system-net-http-httpclienthandler-automaticdecompression">HttpClientHandler.AutomaticDecompression</a></p>
-<pre><code class="language-Csharp">using System;
-using System.Net.Http;
-using System.Net.Http.Headers;
-using System.Threading.Tasks;
-using System.Text;
-
-class Program
-{
-    static async Task Main(string[] args)
-    {
-        HttpClientHandler handler = new HttpClientHandler();
-        handler.AutomaticDecompression = System.Net.DecompressionMethods.GZip; //Adding automatic Decompression means that the accept headers are added automatically
-
-        using (var client = new HttpClient(handler))
-        {
-            string url = &quot;http://example.com&quot;;
-            HttpResponseMessage response = await client.GetAsync(url);
-            response.EnsureSuccessStatusCode();
-
-            Console.WriteLine(await response.Content.ReadAsStringAsync());
-		}
-	}
-}
-</code></pre>
-<h2 id="javascript">JavaScript</h2>
-<p>it is so easy that you don't even need to do anything else than setting the gzip: true for the support</p>
-<pre><code class="language-JS">const request = require('request');
-const requestOptions = {
-  url: 'http://example.com',
-  gzip: true, // This is all that is required
-};
-request(requestOptions, (error, response, body) =&gt; {
-  // Handle the response here
-});
-</code></pre>
-						<hr>
-                </div>       
         <ul class="pager">
             <li class="previous">                
             </li>
@@ -719,14 +651,14 @@ request(requestOptions, (error, response, body) =&gt; {
             <ul class="actions small">
                     <li><a role="button" href="/tags/Migrated" class="button small">Migrated (38)</a></li>
                     <li><a role="button" href="/tags/Database" class="button small">Database (11)</a></li>
-                    <li><a role="button" href="/tags/Thoughts" class="button small">Thoughts (10)</a></li>
+                    <li><a role="button" href="/tags/Thoughts" class="button small">Thoughts (11)</a></li>
                     <li><a role="button" href="/tags/CSharp" class="button small">CSharp (10)</a></li>
+                    <li><a role="button" href="/tags/Architecture" class="button small">Architecture (8)</a></li>
                     <li><a role="button" href="/tags/Dotnet-try" class="button small">Dotnet try (7)</a></li>
-                    <li><a role="button" href="/tags/Jupyter-notebook" class="button small">Jupyter notebook (7)</a></li>
-                    <li><a role="button" href="/tags/Architecture" class="button small">Architecture (7)</a></li>
                     <li><a role="button" href="/tags/Oracle" class="button small">Oracle (7)</a></li>
-                    <li><a role="button" href="/tags/Rpi" class="button small">Rpi (4)</a></li>
-                    <li><a role="button" href="/tags/CommandLine" class="button small">CommandLine (4)</a></li>
+                    <li><a role="button" href="/tags/Jupyter-notebook" class="button small">Jupyter notebook (7)</a></li>
+                    <li><a role="button" href="/tags/R" class="button small">R (4)</a></li>
+                    <li><a role="button" href="/tags/Space" class="button small">Space (4)</a></li>
             </ul>
             <ul class="actions small">
                 <li><a href="/tags" class="button small">View All Tags &rarr;</a></li>
@@ -734,10 +666,10 @@ request(requestOptions, (error, response, body) =&gt; {
 
             <h5>Older Posts</h5>
             <ul>
+                    <li><a href="/posts/HttpClientCompression">Receiving compressed data from an http(s) endpoint</a></li>
                     <li><a href="/posts/devcontainers">DevContainers - The future of developer environments</a></li>
                     <li><a href="/posts/Proxmox">Proxmox 8 on sub $200 mini PCs</a></li>
                     <li><a href="/posts/network-vpn">Network planning and VPN</a></li>
-                    <li><a href="/posts/mini-pc">The era of the sub $200 PC</a></li>
             </ul>
                 <ul class="actions small">
                     <li><a href="/posts" class="button small">Archive &rarr;</a></li>
@@ -763,7 +695,7 @@ request(requestOptions, (error, response, body) =&gt; {
     <section>
     </section>
     <ul class="copyright">
-        <li>Copyright © 2024</li>
+        <li>Copyright © 2025</li>
         <li>Design: <a href="http://html5up.net">HTML5 UP</a></li>
         <li><a href="https://wyam.io">Generated by Wyam</a></li>
     </ul>

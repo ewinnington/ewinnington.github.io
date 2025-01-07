@@ -4,9 +4,20 @@
 		<title>Eric Winnington</title>
 		<link>http://ewinnington.github.io/</link>
 		<description>A collection of thoughts, code and snippets.</description>
-		<copyright>2024</copyright>
-		<pubDate>Sat, 05 Oct 2024 09:06:06 GMT</pubDate>
-		<lastBuildDate>Sat, 05 Oct 2024 09:06:06 GMT</lastBuildDate>
+		<copyright>2025</copyright>
+		<pubDate>Tue, 07 Jan 2025 13:29:31 GMT</pubDate>
+		<lastBuildDate>Tue, 07 Jan 2025 13:29:31 GMT</lastBuildDate>
+		<item>
+			<title>Disposable software</title>
+			<link>http://ewinnington.github.io/posts/Disposable-Software</link>
+			<description>&lt;p&gt;With the advent of LLMs and their capability to create quick programs ("create me a flashcard app", "I need a typing exercise software", "make a dashboard to track my investments"), we might see a lot more software being written, used and then discarded since it's trivial for a LLM to re-write it next time it is needed.&lt;/p&gt;</description>
+			<guid>http://ewinnington.github.io/posts/Disposable-Software</guid>
+			<pubDate>Mon, 09 Dec 2024 00:00:00 GMT</pubDate>
+			<content:encoded>&lt;h1 id="the-era-of-throw-away-software-is-upon-us"&gt;The era of throw away software is upon us&lt;/h1&gt;
+&lt;p&gt;With the advent of LLMs and their capability to create quick programs (&amp;quot;create me a flashcard app&amp;quot;, &amp;quot;I need a typing exercise software&amp;quot;, &amp;quot;make a dashboard to track my investments&amp;quot;), we might see a lot more software being written, used and then discarded since it's trivial for a LLM to re-write it next time it is needed.&lt;/p&gt;
+&lt;p&gt;Where perfection is not required, just good enough, there will be a whole slew of applications, websites and programs that are used and put into production that are never even reviewed by a human programmer, just tested for their outputs and/or visually checked by a human. Even, we might see lots of code that is only ever read by a machine for bugs and issues, to then be corrected by a machine.&lt;/p&gt;
+</content:encoded>
+		</item>
 		<item>
 			<title>Using an audit trail table on Oracle</title>
 			<link>http://ewinnington.github.io/posts/Audit-Trail-Oracle</link>
@@ -1781,80 +1792,6 @@ chart.Width = 1200;
 chart.Height = 600;
 display(chart);
 &lt;/code&gt;&lt;/pre&gt;
-</content:encoded>
-		</item>
-		<item>
-			<title>Applications in LP and MILP with C# and OR-Tools inside Jupyter</title>
-			<link>http://ewinnington.github.io/posts/jupyter-lp-20</link>
-			<description>&lt;p&gt;Thanks to the integration of C# into &lt;a href="https://jupyter.org/"&gt;Jupyter notebooks&lt;/a&gt; with the &lt;a href="https://github.com/dotnet/try"&gt;kernel from Donet try&lt;/a&gt; and support from the &lt;a href="https://mybinder.org/"&gt;MyBinder.org&lt;/a&gt; hosting, it's easy to share with you runnable workbooks to illustrate how to use the &lt;a href="https://developers.google.com/optimization"&gt;Google OR-Tools&lt;/a&gt; to solve the &lt;a href="https://en.wikipedia.org/wiki/Linear_programming"&gt;linear&lt;/a&gt; (LP) and &lt;a href="https://en.wikipedia.org/wiki/Integer_programming"&gt;mixed-integer linear problems&lt;/a&gt; (MILP) .&lt;/p&gt;</description>
-			<guid>http://ewinnington.github.io/posts/jupyter-lp-20</guid>
-			<pubDate>Sat, 16 Nov 2019 23:30:00 GMT</pubDate>
-			<content:encoded>&lt;p&gt;Thanks to the integration of C# into &lt;a href="https://jupyter.org/"&gt;Jupyter notebooks&lt;/a&gt; with the &lt;a href="https://github.com/dotnet/try"&gt;kernel from Donet try&lt;/a&gt; and support from the &lt;a href="https://mybinder.org/"&gt;MyBinder.org&lt;/a&gt; hosting, it's easy to share with you runnable workbooks to illustrate how to use the &lt;a href="https://developers.google.com/optimization"&gt;Google OR-Tools&lt;/a&gt; to solve the &lt;a href="https://en.wikipedia.org/wiki/Linear_programming"&gt;linear&lt;/a&gt; (LP) and &lt;a href="https://en.wikipedia.org/wiki/Integer_programming"&gt;mixed-integer linear problems&lt;/a&gt; (MILP) .&lt;/p&gt;
-&lt;h1 id="applications-of-linear-programming"&gt;Applications of linear programming&lt;/h1&gt;
-&lt;h2 id="lp-problem-wire-production"&gt;LP Problem : Wire production&lt;/h2&gt;
-&lt;p&gt;A plant makes aluminium and copper wires. Each Kg of aluminium wire requires 10 kWh of electricity and &lt;span class="math"&gt;\(\frac{1}{2}\)&lt;/span&gt; hour of labour. Each Kg of Copper wire requires 4 kWh of electricity and $1$ hour of labour. Electricity is limited to 450 kWh/day, labour is limited to 42.5 hours/day at a cost of 11 € an hour, Electricity cost is 20 € / MWh, Aluminium cost is 1.8 €/Kg, Copper cost is 5.4 €/Kg. Total weight delivered to the plant daily is limited to 56 Kg. Aluminium wire sales price is 45 €/Kg, Copper wire sales price is 50 €/Kg.&lt;/p&gt;
-&lt;p&gt;What should be produced to maximise profit and what is the maximum profit?&lt;/p&gt;
-&lt;p&gt;&lt;a href="https://mybinder.org/v2/gh/ewinnington/noteb/master?filepath=Lp_WireProduction.ipynb"&gt;Launch the binder&lt;/a&gt;  &lt;a href="https://mybinder.org/v2/gh/ewinnington/noteb/master?filepath=Lp_WireProduction.ipynb"&gt;&lt;img src="https://mybinder.org/badge_logo.svg" class="img-fluid" alt="Binder" /&gt;&lt;/a&gt;&lt;/p&gt;
-&lt;pre&gt;&lt;code class="language-CSharp"&gt;Solver solver = Solver.CreateSolver(&amp;quot;LinearProgramming&amp;quot;, &amp;quot;CLP_LINEAR_PROGRAMMING&amp;quot;);
-
-//Setting up the variables and constants of the problem 
-Variable Al = solver.MakeNumVar(0.0, double.PositiveInfinity, &amp;quot;Al&amp;quot;);
-Variable Cu = solver.MakeNumVar(0.0, double.PositiveInfinity, &amp;quot;Cu&amp;quot;);
-double El_Price = 20.0; double El_Max = 450; 
-double La_Price = 11.0; double La_Max = 42.5; 
-double Weight_Max = 56.0; 
-double Al_Purchase = 1.8 ; double Al_Sale = 45.0;
-double Cu_Purchase = 5.4; double Cu_Sale = 50.0;
-
-// Maximize revenue 
-Objective objective = solver.Objective();
-objective.SetCoefficient(Al, Al_Sale-Al_Purchase-(La_Price * 1/2.0)-(El_Price * 10/1000.0));
-objective.SetCoefficient(Cu, Cu_Sale-Cu_Purchase-(La_Price * 1)-(El_Price * 4/1000.0));
-objective.SetMaximization();
-
-// Electricity usage limit
-Constraint c0 = solver.MakeConstraint(0, El_Max);
-c0.SetCoefficient(Al, 10);
-c0.SetCoefficient(Cu, 4);
-
-// Labour usage limit
-Constraint c1 = solver.MakeConstraint(0, La_Max);
-c1.SetCoefficient(Al, 1/2.0);
-c1.SetCoefficient(Cu, 1);
-
-// Weight limit
-Constraint c2 = solver.MakeConstraint(0, Weight_Max);
-c2.SetCoefficient(Al, 1);
-c2.SetCoefficient(Cu, 1);
-
-SolveAndPrint(solver);
-&lt;/code&gt;&lt;/pre&gt;
-&lt;h2 id="milp-problem-knapsack"&gt;MILP Problem : Knapsack&lt;/h2&gt;
-&lt;p&gt;The &lt;a href="https://en.wikipedia.org/wiki/Knapsack_problem"&gt;knapsack problem&lt;/a&gt; defines a bag that was a maximal weight of &lt;span class="math"&gt;\(W\)&lt;/span&gt;, we can take items from a set of items each with a weight of &lt;span class="math"&gt;\(w_i\)&lt;/span&gt; and a value of &lt;span class="math"&gt;\(v_i\)&lt;/span&gt;. Typically, the problem is defined with an &lt;span class="math"&gt;\(x_i \in \{0,1\}\)&lt;/span&gt; variable set to either 0 or 1 knapsack where each item is either taken or not.&lt;/p&gt;
-&lt;p&gt;Here we are going to allow fractional parts of the items to be taken so that we can solve it as a linear problem (also known as a linear relaxation), allowing &lt;span class="math"&gt;\(x_i \in [0,1]\)&lt;/span&gt;.&lt;/p&gt;
-&lt;p&gt;&lt;a href="https://mybinder.org/v2/gh/ewinnington/noteb/master?filepath=Knapsack_Lp_Milp.ipynb"&gt;Launch the binder&lt;/a&gt;  &lt;a href="https://mybinder.org/v2/gh/ewinnington/noteb/master?filepath=Knapsack_Lp_Milp.ipynb"&gt;&lt;img src="https://mybinder.org/badge_logo.svg" class="img-fluid" alt="Binder" /&gt;&lt;/a&gt;&lt;/p&gt;
-&lt;pre&gt;&lt;code class="language-CSharp"&gt;//Array of items, weights and totals
-int nItems = 10; 
-double maxWeight = 220; 
-double[] weights = {31, 27, 12, 39,  2, 69, 66, 29, 45, 58};
-double[] values =  {24, 27, 26, 15, 19, 33, 30, 28, 65, 42};
-
-Solver milp_solver = Solver.CreateSolver(&amp;quot;MILP&amp;quot;, &amp;quot;CBC_MIXED_INTEGER_PROGRAMMING&amp;quot;);
-
-Variable[] Items = milp_solver.MakeBoolVarArray(10, &amp;quot;Items&amp;quot;);
-
-// Maximize revenue 
-Objective objective = milp_solver.Objective();
-for(int i = 0; i &amp;lt; nItems; i++) objective.SetCoefficient(Items[i], values[i]);
-objective.SetMaximization();
-
-// Weight limit
-Constraint c0 = milp_solver.MakeConstraint(0, maxWeight);
-for(int i = 0; i &amp;lt; nItems; i++) c0.SetCoefficient(Items[i], weights[i]);
-
-SolveAndPrint(milp_solver, nItems, weights);
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;There are many ways of solving the knapsack problem, using LP and MILP solvers as seen here or using Dynamic Programming. The Google OR-Tools have a specific solver for multi-dimensional knapsack problems, including one which uses Dynamic Programming.&lt;/p&gt;
 </content:encoded>
 		</item>
 	</channel>

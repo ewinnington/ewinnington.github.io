@@ -8,7 +8,7 @@
 <html lang="en">
 
 	<head>
-		<title>Eric Winnington - 7 reasons to not use caching</title>
+		<title>Eric Winnington - Disposable software</title>
 		<meta charset="utf-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1" />		
         <link href="/assets/css/highlight.css" rel="stylesheet">
@@ -28,16 +28,16 @@
 		<meta name="msapplication-tooltip" content="Eric Winnington" />
 		<meta name="msapplication-starturl" content="/" />
 
-		<meta property="og:title" content="Eric Winnington - 7 reasons to not use caching" /> 
+		<meta property="og:title" content="Eric Winnington - Disposable software" /> 
 		<meta property="og:type" content="website" />
-		<meta property="og:url" content="http://ewinnington.github.io/posts/7Reasons-no-cache" />
+		<meta property="og:url" content="http://ewinnington.github.io/posts/Disposable-Software" />
 		<!-- TODO: More social graph meta tags -->
 
         <script src="/assets/js/highlight.pack.js"></script>   
 		
         <meta name="twitter:card" content="summary" />
 <meta name="twitter:site" content="@ewinnington" />
-<meta name="twitter:title" content="Eric Winnington - 7 reasons to not use caching" />
+<meta name="twitter:title" content="Eric Winnington - Disposable software" />
 <meta name="twitter:description" content="A collection of thoughts, code and snippets." />
 
 <script type="text/javascript" id="MathJax-script" async
@@ -87,12 +87,10 @@
 
     
 <header>
-    <h1>7 reasons to not use caching</h1>
-            <p><em>Published on Sunday, 4 December 2022</em></p>
+    <h1>Disposable software</h1>
+            <p><em>Published on Monday, 9 December 2024</em></p>
             <ul class="actions small">
                     <li><a role="button" href="/tags/Architecture" class="button small">Architecture</a></li>
-                    <li><a role="button" href="/tags/Caching" class="button small">Caching</a></li>
-                    <li><a role="button" href="/tags/Redis" class="button small">Redis</a></li>
                     <li><a role="button" href="/tags/Thoughts" class="button small">Thoughts</a></li>
         </ul>     
 </header>
@@ -101,31 +99,9 @@
 					<div id="content">
 						
 
-<p>Inspired by <a href="https://twitter.com/mjovanovictech">Milan Jovanović</a> tweet on <a href="https://twitter.com/mjovanovictech/status/1599124855542411264">5 reasons to use Redis for caching</a>,</p>
-<p><img src="/posts/images/caching/5reasonsCaching.png" class="img-fluid" width="80%" alt="" /></p>
-<p>and <a href="https://twitter.com/danielmarbach">Daniel Marbach's</a> response &quot;<a href="https://twitter.com/danielmarbach/status/1599352526888849408">Now I want to see five reasons to avoid caching ✋😂</a>&quot;</p>
-<p><img src="/posts/images/caching/5reasonsNoCaching.png" class="img-fluid" width="80%" alt="" /></p>
-<p>I found <a href="https://twitter.com/ThrowATwit/status/1599356806874427392">seven reasons to not introduce caching</a>:</p>
-<ol>
-<li><p>Caching can increase complexity in your application, as you need to manage the cached data and ensure it remains consistent with the underlying data store.</p>
-</li>
-<li><p>Caching can increase latency, as the cache itself introduces an additional lookup step.</p>
-</li>
-<li><p>Caching can be expensive, both in terms of the additional hardware and storage required for the cache, and the overhead of managing the cache itself.</p>
-</li>
-<li><p>Caching can be unreliable, as cached data can become stale or inconsistent if it is not adequately managed or invalidated.</p>
-</li>
-<li><p>Caching can be a security risk, as sensitive data that is stored in the cache may be vulnerable to unauthorized access or exposure. It takes additional effort to ensure that the correct authorizations are applied to cached data, increasing application complexity.</p>
-</li>
-<li><p>Caching can be harder to debug. To determine why a piece of data is not being retrieved from the cache or is being retrieved from the underlying data store instead is difficult. This can make it challenging to diagnose and fix performance issues related to caching.</p>
-</li>
-<li><p>Caching can create additional maintenance overhead, as you need to monitor the cache and ensure it is working properly. Monitoring cache hit and miss rates, ensuring that the cache is not getting too full, and periodically purging expired or stale data from the cache.</p>
-</li>
-</ol>
-<p>and a bonus <a href="https://mobile.twitter.com/joslat/status/1599518029649678336">8.</a> from <a href="https://mobile.twitter.com/joslat">Jose Luis Latorre</a>
-&quot;8. It should be also properly tested, and stress tested... without mention the security testing as well should include a check on this layer too... which would bring us to point 3. More expensive ;)&quot;</p>
-<p>Introducing Caching into any architecture is a decision that must be made with care. We have to ask if it helps us fulfill a business requirement (latency requirements), and improves quality or responsiveness for the end user. And we must ensure the solution is appropriate in terms of cost of operation and cost of monitoring and support. Additionally, the security aspects of a cache should be considered in the solution design.</p>
-<p>In software architecture, there are very few single answers, everything is a compromise. Caching is a great hammer and use it when it is appropriate, but remember not every problem is a nail.</p>
+<h1 id="the-era-of-throw-away-software-is-upon-us">The era of throw away software is upon us</h1>
+<p>With the advent of LLMs and their capability to create quick programs (&quot;create me a flashcard app&quot;, &quot;I need a typing exercise software&quot;, &quot;make a dashboard to track my investments&quot;), we might see a lot more software being written, used and then discarded since it's trivial for a LLM to re-write it next time it is needed.</p>
+<p>Where perfection is not required, just good enough, there will be a whole slew of applications, websites and programs that are used and put into production that are never even reviewed by a human programmer, just tested for their outputs and/or visually checked by a human. Even, we might see lots of code that is only ever read by a machine for bugs and issues, to then be corrected by a machine.</p>
 
 
 <hr>
