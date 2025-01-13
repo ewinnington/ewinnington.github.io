@@ -16,7 +16,7 @@ jobs:
     - name: Setup .NET Core
       uses: actions/setup-dotnet@v1
       with:
-        dotnet-version: 6.0.100
+        dotnet-version: 2.1.802
         
     - name: Install Wyam
       run: dotnet tool install --tool-path . wyam.tool
