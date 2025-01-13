@@ -11,7 +11,9 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v1
+    - uses: actions/checkout@v2
+    - name: Install libicu-dev
+      run: sudo apt-get update && sudo apt-get install -y libicu-dev
     - name: Setup .NET Core
       uses: actions/setup-dotnet@v1
       with:
