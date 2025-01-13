@@ -8,18 +8,16 @@ on:
 jobs:
   build:
 
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
 
     steps:
     - uses: actions/checkout@v2
-    - name: Install libicu-dev
-      run: sudo apt-get update && sudo apt-get install -y libicu-dev
+
     - name: Setup .NET Core
       uses: actions/setup-dotnet@v1
       with:
-        dotnet-version: 2.1.802
-    - name: Set DOTNET_SYSTEM_GLOBALIZATION_INVARIANT
-      run: echo "DOTNET_SYSTEM_GLOBALIZATION_INVARIANT=true" >> $GITHUB_ENV
+        dotnet-version: 6.0.100
+        
     - name: Install Wyam
       run: dotnet tool install --tool-path . wyam.tool
     - name: Publish blog
