@@ -5,8 +5,38 @@
 		<link>http://ewinnington.github.io/</link>
 		<description>A collection of thoughts, code and snippets.</description>
 		<copyright>2025</copyright>
-		<pubDate>Tue, 07 Jan 2025 13:29:31 GMT</pubDate>
-		<lastBuildDate>Tue, 07 Jan 2025 13:29:31 GMT</lastBuildDate>
+		<pubDate>Mon, 13 Jan 2025 19:58:14 GMT</pubDate>
+		<lastBuildDate>Mon, 13 Jan 2025 19:58:14 GMT</lastBuildDate>
+		<item>
+			<title>Network with Tailscale</title>
+			<link>http://ewinnington.github.io/posts/network-tailscale</link>
+			<description>&lt;p&gt;I updated my OpenVPN based network to use Tailscale instead in 2023 and it is game changing. I have used Tailscale ever since. I simply did not update my blog and network diagram.&lt;/p&gt;</description>
+			<guid>http://ewinnington.github.io/posts/network-tailscale</guid>
+			<pubDate>Mon, 13 Jan 2025 10:40:00 GMT</pubDate>
+			<content:encoded>&lt;p&gt;I updated my OpenVPN based network to use Tailscale instead in 2023 and it is game changing. I have used Tailscale ever since. I simply did not update my blog and network diagram.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/posts/images/network/network-update.png" class="img-fluid" width="100%" alt="Network" /&gt;&lt;/p&gt;
+&lt;p&gt;With &lt;a href="https://tailscale.com/"&gt;Tailscale&lt;/a&gt;, all my machines appear seamlessly on a single control pane and I can reach any of them from any device.&lt;/p&gt;
+&lt;h2 id="zone-z"&gt;Zone Z&lt;/h2&gt;
+&lt;p&gt;Z has a single fiber connection via Swisscom to internet.&lt;/p&gt;
+&lt;h3 id="inventory"&gt;Inventory&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;DeepThread is an AMD Threadripper 1920x running Windows 10.&lt;/li&gt;
+&lt;li&gt;Minis4 is the Beelink MiniS12 N95s running Ubuntu Server 24.10.&lt;/li&gt;
+&lt;li&gt;NAS is an an older QNAP TS-269L&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="zone-n"&gt;Zone N&lt;/h2&gt;
+&lt;p&gt;N has two connections, a Starlink (v1 round) with only the powerbrick router and Sosh as a backup DSL provider (with an ADSL Router) both connected to a Ubiquity UDM-PRO-SE in Failover mode.&lt;/p&gt;
+&lt;h3 id="inventory-1"&gt;Inventory&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;Minis1 is the Beelink MiniS12 N95s running Windows 11, enjoying it VESA mounted behind a screen in the office currently. I originally thought I would also put Ubuntu, but a windows machine is useful.&lt;/li&gt;
+&lt;li&gt;Minis2 and Minis3 are  the Beelink MiniS12 N95s running Ubuntu Server  24.10. Currently rackmounted with the UDM-PRO.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id="vpn"&gt;VPN&lt;/h3&gt;
+&lt;p&gt;On the UDM-PRO, a VPN is configured with Ubiquity and I can use the iOS application WifiMan to access the network. It's really a backup of a backup solution to have Wifiman.&lt;/p&gt;
+&lt;p&gt;On Minis2 and minis4, a &lt;a href="https://github.com/cloudflare/cloudflared"&gt;cloudflared docker&lt;/a&gt; is running, reaching up to Cloudflare and providing an Zero trust tunnel to expose several dockerized websites hosted on it.&lt;/p&gt;
+&lt;p&gt;I made a &lt;a href="https://suno.com/song/fb47c594-b22d-4504-83a1-75d8df705194"&gt;Suno song on how awesome&lt;/a&gt; it is.&lt;/p&gt;
+</content:encoded>
+		</item>
 		<item>
 			<title>Disposable software</title>
 			<link>http://ewinnington.github.io/posts/Disposable-Software</link>
@@ -1634,164 +1664,6 @@ aaa &amp;gt; eee
 &lt;p&gt;Humanity needs to expand beyond earth to realize how precious earth is. Every person who has been to space has come back profoundly changed and humbled by the experience. A little distance is needed to appreciate the view and realize how lucky we all are.&lt;/p&gt;
 &lt;p&gt;The science benefits us all: Solar panels and microwaves to medical innovations. Theory of ecology in closed systems, advanced recycling  and so many more.&lt;/p&gt;
 &lt;p&gt;Mars and the moon are but a stepping stone to the solar system. And hopefully to the milky way and beyond. We need to answer the question &amp;quot;Is there life out there?&amp;quot;, or at least I do.&lt;/p&gt;
-</content:encoded>
-		</item>
-		<item>
-			<title>Tips and tricks for C# Jupyter notebook</title>
-			<link>http://ewinnington.github.io/posts/jupyter-tips-csharp</link>
-			<description>&lt;p&gt;As I use the Jupyter notebook with C# integration, I'll add to this list of tricks as I discover them.&lt;/p&gt;</description>
-			<guid>http://ewinnington.github.io/posts/jupyter-tips-csharp</guid>
-			<pubDate>Sun, 17 Nov 2019 01:30:00 GMT</pubDate>
-			<content:encoded>&lt;p&gt;As I use the Jupyter notebook with C# integration, I'll add to this list of tricks as I discover them.&lt;/p&gt;
-&lt;h2 id="adding-collapsed-details-to-jupyter-notebooks"&gt;Adding collapsed details to jupyter notebooks&lt;/h2&gt;
-&lt;p&gt;I wanted to show hints and answers to questions in the jupyter notebook, but I didn't want them to be directly visible without interaction.&lt;/p&gt;
-&lt;p&gt;&lt;img src="/posts/images/jupyter-notebook-tips/collapsed_details.png" class="img-fluid" alt="collapsed" /&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img src="/posts/images/jupyter-notebook-tips/expanded_details.png" class="img-fluid" alt="expanded" /&gt;&lt;/p&gt;
-&lt;p&gt;This was done by creating a markdown block with an HTML section inside. When interacted with, the section expands.&lt;/p&gt;
-&lt;pre&gt;&lt;code class="language-HTML"&gt;&amp;lt;details&amp;gt;
-&amp;lt;summary&amp;gt;Summary of the fold&amp;lt;/summary&amp;gt;
-  ... Content shown after the fold ...
-&amp;lt;/details&amp;gt;
-&lt;/code&gt;&lt;/pre&gt;
-&lt;details&gt;
-&lt;summary&gt;Summary of the fold&lt;/summary&gt;
-  ... Content shown after the fold ...
-&lt;/details&gt;
-&lt;p&gt;And since it's just HTML, it works anywere, including here.&lt;/p&gt;
-&lt;h2 id="display-function"&gt;display() function&lt;/h2&gt;
-&lt;p&gt;The C# kernel embedded in Jupyter has some functions that control the output to the cells of the notebook when executed. One of these functions is  &lt;code&gt;display()&lt;/code&gt;.&lt;/p&gt;
-&lt;h3 id="tables"&gt;Tables&lt;/h3&gt;
-&lt;p&gt;It shows properties of objects or lists in a table format. In my linear programming solver examples, I used this command to make a table with the name and value of each problem variable.&lt;/p&gt;
-&lt;pre&gt;&lt;code class="language-CSharp"&gt; display(solver.variables().Select(a =&amp;gt; new { Name  = a.Name(), Value = a.SolutionValue() })); 
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src="/posts/images/lp/10-6.png" class="img-fluid" alt="var_table" /&gt;&lt;/p&gt;
-&lt;p&gt;This is an ideal case for &lt;a href="https://docs.microsoft.com/en-us/dotnet/csharp/programming-guide/classes-and-structs/anonymous-types"&gt;C#'s anonymous objects&lt;/a&gt; and &lt;a href="https://docs.microsoft.com/en-us/dotnet/csharp/programming-guide/concepts/linq/data-transformations-with-linq"&gt;linq to select the object properties&lt;/a&gt; that you want to see in the table. Adding &lt;code&gt;using System.Linq;&lt;/code&gt; to your references will allow you to use the &lt;code&gt;.Select( x =&amp;gt; new { PropertyHeader = x.PropertyValue, ... })&lt;/code&gt; linq command.&lt;/p&gt;
-&lt;h3 id="svgs"&gt;SVGs&lt;/h3&gt;
-&lt;p&gt;I discovered the &lt;code&gt;display(HTML())&lt;/code&gt; function allows you to pass items such as SVGs from inside C# to be rendered below the block. Two examples are the SVG image triange and the bar chart. On top of that, the bar chart is stylable by CSS.&lt;/p&gt;
-&lt;p&gt;&lt;img src="/posts/images/jupyter-notebook-tips/svg_img.png" class="img-fluid" alt="expanded" /&gt;&lt;/p&gt;
-&lt;p&gt;The SVG code is generated inside C#, then the variable containing the SVG is displayed.&lt;/p&gt;
-&lt;p&gt;&lt;img src="/posts/images/jupyter-notebook-tips/bar_chart.png" class="img-fluid" alt="expanded" /&gt;&lt;/p&gt;
-&lt;p&gt;Finally, you can add create a cell containing some CSS (with &lt;code&gt;%%html&lt;/code&gt;) , which when executed will change the chart as shown.
-&lt;img src="/posts/images/jupyter-notebook-tips/bar_chart_with_css.png" class="img-fluid" alt="expanded" /&gt;
-&lt;img src="/posts/images/jupyter-notebook-tips/bar_chart_css.png" class="img-fluid" alt="expanded" /&gt;&lt;/p&gt;
-&lt;h2 id="magic"&gt;Magic&lt;/h2&gt;
-&lt;p&gt;The &lt;code&gt;%lsmagic&lt;/code&gt; command shows a list of commands available to use in code blocks.&lt;/p&gt;
-&lt;p&gt;&lt;img src="/posts/images/jupyter-notebook-tips/lsmagic.png" class="img-fluid" alt="expanded" /&gt;&lt;/p&gt;
-&lt;h3 id="javascript"&gt;%%javascript&lt;/h3&gt;
-&lt;p&gt;You can execute javascript with the &lt;code&gt;%%javascript&lt;/code&gt; magic.&lt;/p&gt;
-&lt;p&gt;&lt;img src="/posts/images/jupyter-notebook-tips/javascript_hello.png" class="img-fluid" alt="collapsed" /&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img src="/posts/images/jupyter-notebook-tips/javascript_hello_active.png" class="img-fluid" alt="collapsed" /&gt;&lt;/p&gt;
-&lt;h3 id="html"&gt;%%html&lt;/h3&gt;
-&lt;p&gt;As previously mentioned, the %%html command will allow you to add CSS blocks and any other HTML output directly into the Jupyter output cell.&lt;/p&gt;
-&lt;h3 id="time"&gt;%%time&lt;/h3&gt;
-&lt;p&gt;Gives you access to the wall time. Actual time took to execution of the cell.&lt;/p&gt;
-&lt;h3 id="whos"&gt;%whos&lt;/h3&gt;
-&lt;p&gt;Gives you access to the list of currently defined variable in the memory of the notebook. Also lists the type and value (as a &amp;quot;toString() representation) of the objects.&lt;/p&gt;
-&lt;h3 id="fsharp"&gt;%%fsharp&lt;/h3&gt;
-&lt;p&gt;You can intermingle C# and F# code inside one notebook, as long as they are in different cells. You can switch to F# by prefixing the cell with &lt;code&gt;%%fsharp&lt;/code&gt;&lt;/p&gt;
-&lt;pre&gt;&lt;code class="language-%%fsharp"&gt;let main argv =
-    display &amp;quot;Hello World from F#!&amp;quot;
-    0 
-main()
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src="/posts/images/jupyter-notebook-tips/f_sharp.png" class="img-fluid" alt="collapsed" /&gt;&lt;/p&gt;
-&lt;h2 id="graphing-from-c"&gt;Graphing from C#&lt;/h2&gt;
-&lt;p&gt;We can chart using &lt;code&gt;Xplot.Plotly&lt;/code&gt;.&lt;/p&gt;
-&lt;pre&gt;&lt;code class="language-CSharp"&gt;//Install XPlot package
-#r &amp;quot;nuget:XPlot.Plotly,2.0.0&amp;quot;
-using XPlot.Plotly;
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;Input data:&lt;/p&gt;
-&lt;pre&gt;&lt;code class="language-CSharp"&gt;DateTime now = DateTime.Now; 
-var imax = 8760; 
-var rand = new Random(); 
-double[] data = Enumerable.Range(1, imax).Select(x =&amp;gt; 20.0 + 15.0 * Math.Sin(x/60.0) + 12 * rand.NextDouble()).ToArray(); 
-DateTime[] tp = Enumerable.Range(1, imax).Select(x =&amp;gt; now.AddHours(x) ).ToArray(); 
-
-int totalNumberForBarChart = 3;
-double[] actualFares = new [] {3.4, 12.3, 20.42};
-double[] predictionFares = new [] {7.4, 14.3, 18.42};
-int[] elements = Enumerable.Range(0, totalNumberForBarChart).ToArray();
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;my samples are here &lt;a href="https://github.com/ewinnington/noteb/blob/master/Charts_CSharp.ipynb"&gt;C# charts&lt;/a&gt;&lt;/p&gt;
-&lt;h3 id="two-bar-plot"&gt;Two bar plot&lt;/h3&gt;
-&lt;p&gt;&lt;img src="/posts/images/jupyter-notebook-tips/bar.png" class="img-fluid" alt="bar" /&gt;&lt;/p&gt;
-&lt;pre&gt;&lt;code class="language-CSharp"&gt;// Define group for Actual values
-var ActualValuesGroupBarGraph = new Graph.Bar()
-{
-   x = elements,
-   y = actualFares,
-   name = &amp;quot;Actual&amp;quot;
-};
- 
-// Define group for Prediction values
-var PredictionValuesGroupBarGraph = new Graph.Bar()
-{
-   x = elements,
-   y = predictionFares,
-   name = &amp;quot;Predicted&amp;quot;
-};
- 
-var chart = Chart.Plot(new[] {ActualValuesGroupBarGraph, PredictionValuesGroupBarGraph});
-var layout = new Layout.Layout(){barmode = &amp;quot;group&amp;quot;, title=&amp;quot;Actual fares vs. Predicted fares Comparison&amp;quot;};
-chart.WithLayout(layout);
-chart.WithXTitle(&amp;quot;Cases&amp;quot;);
-chart.WithYTitle(&amp;quot;Fare&amp;quot;);
-chart.WithLegend(true);
-chart.Width = 700;
-chart.Height = 400;
- 
-display(chart);
-&lt;/code&gt;&lt;/pre&gt;
-&lt;h3 id="histogram"&gt;Histogram&lt;/h3&gt;
-&lt;p&gt;&lt;img src="/posts/images/jupyter-notebook-tips/histogram.png" class="img-fluid" alt="hist" /&gt;&lt;/p&gt;
-&lt;pre&gt;&lt;code class="language-CSharp"&gt;var faresHistogram = Chart.Plot(new Graph.Histogram(){x = data, autobinx = false, nbinsx = 20});
-var layout = new Layout.Layout(){title=&amp;quot;Distribution of taxi trips per cost&amp;quot;};
-faresHistogram.WithLayout(layout);
-
-display(faresHistogram);
-&lt;/code&gt;&lt;/pre&gt;
-&lt;h3 id="scatter"&gt;Scatter&lt;/h3&gt;
-&lt;p&gt;&lt;img src="/posts/images/jupyter-notebook-tips/scatter.png" class="img-fluid" alt="scatter" /&gt;&lt;/p&gt;
-&lt;pre&gt;&lt;code class="language-CSharp"&gt;var chart = Chart.Plot(
-    new Graph.Scatter()
-    {
-        x = actualFares,
-        y = predictionFares,
-        mode = &amp;quot;markers&amp;quot;,
-        marker = new Graph.Marker()
-        {
-            color = predictionFares,
-            colorscale = &amp;quot;Jet&amp;quot;
-        }
-    }
-);
-
-var layout = new Layout.Layout(){title=&amp;quot;Plot Time vs. Distance &amp;amp; color scale on Fares&amp;quot;};
-chart.WithLayout(layout);
-chart.Width = 500;
-chart.Height = 500;
-chart.WithLegend(true);
-
-display(chart);
-&lt;/code&gt;&lt;/pre&gt;
-&lt;h3 id="line-chart-with-scatter"&gt;Line chart with scatter&lt;/h3&gt;
-&lt;p&gt;&lt;img src="/posts/images/jupyter-notebook-tips/lines.png" class="img-fluid" alt="lines" /&gt;&lt;/p&gt;
-&lt;pre&gt;&lt;code class="language-CSharp"&gt;var linedUp = new Graph.Scatter()
-{
-    x = tp,
-    y = data,
-    mode = &amp;quot;lines&amp;quot;,
-};
-
-var chart = Chart.Plot(linedUp);
-chart.WithXTitle(&amp;quot;Date&amp;quot;);
-chart.WithYTitle(&amp;quot;Value&amp;quot;);
-chart.WithLegend(true);
-chart.Width = 1200;
-chart.Height = 600;
-display(chart);
-&lt;/code&gt;&lt;/pre&gt;
 </content:encoded>
 		</item>
 	</channel>
