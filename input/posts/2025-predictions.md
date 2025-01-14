@@ -1,3 +1,9 @@
+Title: On the Horizon - 2025 - My predictions
+Published: 13/01/2025
+Tags: [Thoughts] 
+---
+
+
 # On the Horizon - 2025 - My predictions
 
 In a way, predicting 2025 is somewhat harder and easier than 2024, a lot of what I see are the seeds of 2024 coming to bloom. But for what we will have by the end of the year is really unclear to me - but we will see some impact in research for sure - AI assisted research in fields will explode this year. 
