@@ -26,7 +26,8 @@ By agent, I define as a **application in which an AI model takes actions against
 - One company will announce an AI diagnostics companion for health - that is certified as a support tool for doctors. 
 
 ### AI in War 
-A-  semi-autonomous multi-agent AI will be used to control a tactical engagement in Ukraine. This has nearly happened due to the engagement of the first robot brigade ([dec 2024 : Ukraine’s All-Robot Assault Force Just Won Its First Battle](https://www.forbes.com/sites/davidaxe/2024/12/21/ukraines-first-all-robot-assault-force-just-won-its-first-battle/) ) - but without AI - using tele-operation. I think AI will be used at more levels than just terminal guidance of the FPV drones. 
+
+- A semi-autonomous multi-agent AI will be used to control a tactical engagement in Ukraine. This has nearly happened due to the engagement of the first robot brigade ([dec 2024 : Ukraine’s All-Robot Assault Force Just Won Its First Battle](https://www.forbes.com/sites/davidaxe/2024/12/21/ukraines-first-all-robot-assault-force-just-won-its-first-battle/) ) - but without AI - using tele-operation. I think AI will be used at more levels than just terminal guidance of the FPV drones. 
 
 ### AGI 
 
@@ -45,3 +46,8 @@ A-  semi-autonomous multi-agent AI will be used to control a tactical engagement
 
 ### Environment: 
 - 2025 beats 2024 as hottest year. 
+
+### Energy: 
+
+- Record installation of Solar, Wind and renewables (beating 2024 worldwide - despite the US's drop). 
+- Price spikes on Gas and Petrol due to US actions and disruption of Russian production. Unsure if that will continue throughout the year but we will have shocks from policy changes. 
