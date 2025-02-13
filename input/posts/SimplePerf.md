@@ -8,7 +8,7 @@ Tags: [Architecture, Cpp]
 Yesterday, at an Energy panel in Essen, I mentioned that some heavy calculations should be done in-memory. It is something that people have a tendency to dismiss because generally they are not aware of the capability and speed of modern CPUs and RAM. A 32GB dataset in memory can now be processed every second by a commodity cpu in your laptop. 
 
 [Living in the Future, by the numbers](https://tailscale.com/blog/living-in-the-future) is a great article on the progress we have had since 2004: 
-- CPU Compute us 1000x faster
+- CPU Compute is 1000x faster
 - Web servers are 100x faster
 - Ram is 16x to 750x larger
 - SSD can do 10'000x more transactions per second.
