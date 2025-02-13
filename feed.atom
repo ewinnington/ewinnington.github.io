@@ -4,7 +4,7 @@
 	<title>Eric Winnington</title>
 	<link rel="self" href="http://ewinnington.github.io/" />
 	<rights>2025</rights>
-	<updated>2025-02-13T10:28:43Z</updated>
+	<updated>2025-02-13T10:32:02Z</updated>
 	<subtitle>A collection of thoughts, code and snippets.</subtitle>
 	<entry>
 		<id>http://ewinnington.github.io/posts/SimplePerf</id>
@@ -180,7 +180,7 @@ Current bytes allocated:            9822202136 bytes
 &lt;h2 id="performance-vs-memory-bandwidth"&gt;Performance vs Memory bandwidth&lt;/h2&gt;
 &lt;p&gt;This completely unoptimized implementation is running at :&lt;/p&gt;
 &lt;p&gt;Data size (GB) / time (s) = bandwidth (GB/s) =&amp;gt; 9.8 GB / 0.241 s ≈ &lt;strong&gt;40.7 GB/s&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;My laptop has approx &lt;sub&gt;96 GB/s of memory bandwidth. I calculate it as follows: LPDDR5 at 6000 MT/s, 8 bytes, dual channel = 6000 * 8 * 2 =&lt;/sub&gt; 96 GB/s. My laptop has less than half bandwidth of the HC family on Azure (AMD EPYC™ 7003-series CPU) using CPUs that were released in 2021. Still impressive for my laptop, but it shows you could do much better.&lt;/p&gt;
+&lt;p&gt;My laptop has approx ~96 GB/s of memory bandwidth. I calculate it as follows: LPDDR5 at 6000 MT/s, 8 bytes, dual channel = 6000 * 8 * 2 =~ 96 GB/s. My laptop has less than half bandwidth of the HC family on Azure (AMD EPYC™ 7003-series CPU) using CPUs that were released in 2021. Still impressive for my laptop, but it shows you could do much better.&lt;/p&gt;
 &lt;p&gt;If I really needed to optimize, I would re-organise the data structures to improve the memory aligment as an initial step. With that, we should get closer to the theoretical bandwidth of the machine.&lt;/p&gt;
 </content>
 		<summary>&lt;p&gt;Yesterday, at an Energy panel in Essen, I mentioned that some heavy calculations should be done in-memory. It is something that people have a tendency to dismiss because generally they are not aware of the capability and speed of modern CPUs and RAM. A 32GB dataset in memory can now be processed every second by a commodity cpu in your laptop.&lt;/p&gt;</summary>
