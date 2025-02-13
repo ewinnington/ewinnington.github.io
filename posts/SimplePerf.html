@@ -8,7 +8,7 @@
 <html lang="en">
 
 	<head>
-		<title>Eric Winnington</title>
+		<title>Eric Winnington - Performance of in-memory in 2025</title>
 		<meta charset="utf-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1" />		
         <link href="/assets/css/highlight.css" rel="stylesheet">
@@ -28,16 +28,16 @@
 		<meta name="msapplication-tooltip" content="Eric Winnington" />
 		<meta name="msapplication-starturl" content="/" />
 
-		<meta property="og:title" content="Eric Winnington" /> 
+		<meta property="og:title" content="Eric Winnington - Performance of in-memory in 2025" /> 
 		<meta property="og:type" content="website" />
-		<meta property="og:url" content="http://ewinnington.github.io/" />
+		<meta property="og:url" content="http://ewinnington.github.io/posts/SimplePerf" />
 		<!-- TODO: More social graph meta tags -->
 
         <script src="/assets/js/highlight.pack.js"></script>   
 		
         <meta name="twitter:card" content="summary" />
 <meta name="twitter:site" content="@ewinnington" />
-<meta name="twitter:title" content="Eric Winnington" />
+<meta name="twitter:title" content="Eric Winnington - Performance of in-memory in 2025" />
 <meta name="twitter:description" content="A collection of thoughts, code and snippets." />
 
 <script type="text/javascript" id="MathJax-script" async
@@ -85,20 +85,20 @@
 			<div id="main">
 				<div class="inner">
 
-    <header>
-        <h1>A collection of thoughts, code and snippets.</h1>
-    </header>
+    
+<header>
+    <h1>Performance of in-memory in 2025</h1>
+            <p><em>Published on Thursday, 13 February 2025</em></p>
+            <ul class="actions small">
+                    <li><a role="button" href="/tags/Architecture" class="button small">Architecture</a></li>
+                    <li><a role="button" href="/tags/Cpp" class="button small">Cpp</a></li>
+        </ul>     
+</header>
 
 					
 					<div id="content">
 						
-<div class="row">
-    <div class="8u 12u$(medium)">
-                <div>
-                    <a href="/posts/SimplePerf">
-                        <h2>Performance of in-memory in 2025</h2>
-                    </a>
-                    <p>Posted on Thursday, 13 February 2025</p>
+
 <h1 id="performance-of-in-memory-software-in-2025">Performance of in-memory software in 2025</h1>
 <p>Yesterday, at an Energy panel in Essen, I mentioned that some heavy calculations should be done in-memory. It is something that people have a tendency to dismiss because generally they are not aware of the capability and speed of modern CPUs and RAM. A 32GB dataset in memory can now be processed every second by a commodity cpu in your laptop.</p>
 <p><a href="https://tailscale.com/blog/living-in-the-future">Living in the Future, by the numbers</a> is a great article on the progress we have had since 2004:</p>
@@ -263,146 +263,9 @@ Current bytes allocated:            9822202136 bytes
 <pre><code>Time for in-memory aggregation: 241 ms
 </code></pre>
 <p>So when you are doing large numerical aggregations or calculations, ask yourself - can I do this in RAM? If so, you might be surprised at how quickly and efficiently you can do it with modern cpp.</p>
-						<hr>
-                </div>       
-                <div>
-                    <a href="/posts/network-tailscale">
-                        <h2>Network with Tailscale</h2>
-                    </a>
-                    <p>Posted on Monday, 13 January 2025</p>
-<p>I updated my OpenVPN based network to use Tailscale instead in 2023 and it is game changing. I have used Tailscale ever since. I simply did not update my blog and network diagram.</p>
-<p><img src="/posts/images/network/network-update.png" class="img-fluid" width="100%" alt="Network" /></p>
-<p>With <a href="https://tailscale.com/">Tailscale</a>, all my machines appear seamlessly on a single control pane and I can reach any of them from any device.</p>
-<h2 id="zone-z">Zone Z</h2>
-<p>Z has a single fiber connection via Swisscom to internet.</p>
-<h3 id="inventory">Inventory</h3>
-<ul>
-<li>DeepThread is an AMD Threadripper 1920x running Windows 10.</li>
-<li>Minis4 is the Beelink MiniS12 N95s running Ubuntu Server 24.10.</li>
-<li>NAS is an an older QNAP TS-269L</li>
-</ul>
-<h2 id="zone-n">Zone N</h2>
-<p>N has two connections, a Starlink (v1 round) with only the powerbrick router and Sosh as a backup DSL provider (with an ADSL Router) both connected to a Ubiquity UDM-PRO-SE in Failover mode.</p>
-<h3 id="inventory-1">Inventory</h3>
-<ul>
-<li>Minis1 is the Beelink MiniS12 N95s running Windows 11, enjoying it VESA mounted behind a screen in the office currently. I originally thought I would also put Ubuntu, but a windows machine is useful.</li>
-<li>Minis2 and Minis3 are  the Beelink MiniS12 N95s running Ubuntu Server  24.10. Currently rackmounted with the UDM-PRO.</li>
-</ul>
-<h3 id="vpn">VPN</h3>
-<p>On the UDM-PRO, a VPN is configured with Ubiquity and I can use the iOS application WifiMan to access the network. It's really a backup of a backup solution to have Wifiman.</p>
-<p>On Minis2 and minis4, a <a href="https://github.com/cloudflare/cloudflared">cloudflared docker</a> is running, reaching up to Cloudflare and providing an Zero trust tunnel to expose several dockerized websites hosted on it.</p>
-<p>I made a <a href="https://suno.com/song/fb47c594-b22d-4504-83a1-75d8df705194">Suno song on how awesome</a> it is.</p>
-						<hr>
-                </div>       
-                <div>
-                    <a href="/posts/2025-predictions">
-                        <h2>On the Horizon - 2025 - My predictions</h2>
-                    </a>
-                    <p>Posted on Monday, 13 January 2025</p>
-<h1 id="on-the-horizon-2025-my-predictions">On the Horizon - 2025 - My predictions</h1>
-<p>In a way, predicting 2025 is somewhat harder and easier than 2024, a lot of what I see are the seeds of 2024 coming to bloom. But for what we will have by the end of the year is really unclear to me - but we will see some impact in research for sure - AI assisted research in fields will explode this year.</p>
-<h2 id="predictions">Predictions:</h2>
-<h3 id="ai-video-ai-audio">AI Video / AI Audio</h3>
-<ul>
-<li><strong>Cinema level visuals made on generative environments</strong> - not only creating a video, but creating the entire space so that the camera can be then moved in post production - will become available to the high end customers. This approach is a complement to the diffusion models, which only generate a few frames of temporal consistency - using this method will allow much better time coherence and consistency / object permanence. Nvidia Cosmos is closest to this and I think the next version of it will satisfy this point. I expect many video models to actually start using this method with temporal control nets to avoid the inconsistency of object permanence.</li>
-<li>AI Chatbots will be allowed to sing, make music and emote more. While some LLMs are already capable of such things, they are generally removed in post-training but I think these restrictions will be removed this year.  Suno's lead on AI Music gets folded into a leading model, meaning you'll be able to ask a ChatGPT competitor &quot;make me a song, with lyrics and background track&quot;.</li>
-<li>Visual understanding models will be commonly deployed - Meaning point your camera and get full descriptions of what you see, It's nearly there anyway.</li>
-</ul>
-<h3 id="ai-agents">AI Agents</h3>
-<p>By agent, I define as a <strong>application in which an AI model takes actions against external systems on behalf of a user in furtherance of a user's give task and goal</strong>.</p>
-<ul>
-<li>A desktop based agent will become available to use on the computer. Interacting with your browser and mail client automatically. (Probably Claude's Anthropic will be there soonest) - doesn't mean the LLM has to run on the desktop.</li>
-<li>AI Agents included in softwares (Teams, Github, ...) will start to become available in preview at least before the end of the year.</li>
-<li>Programming Agents will start to be useful (see AI Devin in 2024 being still completely unusable) - but in 2025 AI coders will be the focus and ship mid year.</li>
-</ul>
-<h3 id="ai-in-mathematics">AI in Mathematics</h3>
-<ul>
-<li>While the first theorem proof by an LLM has already been published, I expect 2025 to have a slew of progress on fundamental proofs rewritten by LLMs or LRMs, particularly towards automated proofing systems (Coq, ...) and several proofs generated by LLMs that humans did not independently derive.</li>
-</ul>
-<h3 id="ai-in-medicine">AI in Medicine</h3>
-<ul>
-<li>One company will announce an AI diagnostics companion for health - that is certified as a support tool for doctors.</li>
-</ul>
-<h3 id="ai-in-war">AI in War</h3>
-<ul>
-<li>A semi-autonomous multi-agent AI will be used to control a tactical engagement in Ukraine. This has nearly happened due to the engagement of the first robot brigade (<a href="https://www.forbes.com/sites/davidaxe/2024/12/21/ukraines-first-all-robot-assault-force-just-won-its-first-battle/">dec 2024 : Ukraine’s All-Robot Assault Force Just Won Its First Battle</a> ) - but without AI - using tele-operation. I think AI will be used at more levels than just terminal guidance of the FPV drones.</li>
-</ul>
-<h3 id="agi">AGI</h3>
-<ul>
-<li>One company claims their model has attained <strong>AGI</strong> - defined as a model that is as good as a reasoning human - <strong><em>in office work related tasks</em></strong>. There is a lot of disagreement if this constitutes AGI or not.</li>
-</ul>
-<h3 id="robotics">Robotics:</h3>
-<ul>
-<li>Humanoid robots become available in limited quantities to the general public, with at least 1 company shipping a home robot with AI onboard to do simple tasks (Unitree from 2024 does not count since the robots are <strong>only</strong> remote controlled). These first robots will be sometimes teleoperated for specific tasks. Pricing will be lower than 50k$ per robot.</li>
-<li>One company announces wide scale drone deliveries in US cities: While drone delivery companies already exist (<a href="https://builtin.com/articles/drone-delivery-companies">13 Drone Delivery Companies to Know | Built In</a>), one of them is going to break out as an early leader this year.</li>
-</ul>
-<h3 id="space">Space:</h3>
-<ul>
-<li>SpaceX demonstrates first ship to ship refueling.</li>
-<li>Blue Origin gets to orbit with New Glenn and proves the landing system, but is not able to send a reused first stage to orbit yet.</li>
-<li>The first part of a new space station gets deployed, probably commercial.</li>
-</ul>
-<h3 id="environment">Environment:</h3>
-<ul>
-<li>2025 beats 2024 as hottest year.</li>
-</ul>
-<h3 id="energy">Energy:</h3>
-<ul>
-<li>Record installation of Solar, Wind and renewables (beating 2024 worldwide - despite the US's drop).</li>
-<li>Price spikes on Gas and Petrol due to US actions and disruption of Russian production. Unsure if that will continue throughout the year but we will have shocks from policy changes.</li>
-</ul>
-						<hr>
-                </div>       
-                <div>
-                    <a href="/posts/Disposable-Software">
-                        <h2>Disposable software</h2>
-                    </a>
-                    <p>Posted on Monday, 9 December 2024</p>
-<h1 id="the-era-of-throw-away-software-is-upon-us">The era of throw away software is upon us</h1>
-<p>With the advent of LLMs and their capability to create quick programs (&quot;create me a flashcard app&quot;, &quot;I need a typing exercise software&quot;, &quot;make a dashboard to track my investments&quot;), we might see a lot more software being written, used and then discarded since it's trivial for a LLM to re-write it next time it is needed.</p>
-<p>Where perfection is not required, just good enough, there will be a whole slew of applications, websites and programs that are used and put into production that are never even reviewed by a human programmer, just tested for their outputs and/or visually checked by a human. Even, we might see lots of code that is only ever read by a machine for bugs and issues, to then be corrected by a machine.</p>
-						<hr>
-                </div>       
-        <ul class="pager">
-            <li class="previous">                
-            </li>
-            <li class="next">
-            </li>
-        </ul>
-    </div>
-    <div class="4u 12u$(medium)">
 
-            <h5>Tags</h5>
-            <ul class="actions small">
-                    <li><a role="button" href="/tags/Migrated" class="button small">Migrated (38)</a></li>
-                    <li><a role="button" href="/tags/Thoughts" class="button small">Thoughts (12)</a></li>
-                    <li><a role="button" href="/tags/Database" class="button small">Database (11)</a></li>
-                    <li><a role="button" href="/tags/CSharp" class="button small">CSharp (10)</a></li>
-                    <li><a role="button" href="/tags/Architecture" class="button small">Architecture (10)</a></li>
-                    <li><a role="button" href="/tags/Oracle" class="button small">Oracle (7)</a></li>
-                    <li><a role="button" href="/tags/Dotnet-try" class="button small">Dotnet try (7)</a></li>
-                    <li><a role="button" href="/tags/Jupyter-notebook" class="button small">Jupyter notebook (7)</a></li>
-                    <li><a role="button" href="/tags/WPF" class="button small">WPF (4)</a></li>
-                    <li><a role="button" href="/tags/Rpi" class="button small">Rpi (4)</a></li>
-            </ul>
-            <ul class="actions small">
-                <li><a href="/tags" class="button small">View All Tags &rarr;</a></li>
-            </ul>    
 
-            <h5>Older Posts</h5>
-            <ul>
-                    <li><a href="/posts/Audit-Trail-Oracle">Using an audit trail table on Oracle</a></li>
-                    <li><a href="/posts/snippets-in-vscode">VSCode Snippets</a></li>
-                    <li><a href="/posts/HowToUpdateWritebook">Adding LaTeX Maths to Writebook</a></li>
-                    <li><a href="/posts/HttpClientCompression">Receiving compressed data from an http(s) endpoint</a></li>
-            </ul>
-                <ul class="actions small">
-                    <li><a href="/posts" class="button small">Archive &rarr;</a></li>
-                </ul>
-
-        
-    </div> 
-</div>
+<hr>
 					</div>
 				</div>
 			</div>
