@@ -4,7 +4,7 @@
 	<title>Eric Winnington</title>
 	<link rel="self" href="http://ewinnington.github.io/" />
 	<rights>2025</rights>
-	<updated>2025-02-13T10:32:02Z</updated>
+	<updated>2025-02-13T11:11:20Z</updated>
 	<subtitle>A collection of thoughts, code and snippets.</subtitle>
 	<entry>
 		<id>http://ewinnington.github.io/posts/SimplePerf</id>
@@ -15,7 +15,7 @@
 &lt;p&gt;Yesterday, at an Energy panel in Essen, I mentioned that some heavy calculations should be done in-memory. It is something that people have a tendency to dismiss because generally they are not aware of the capability and speed of modern CPUs and RAM. A 32GB dataset in memory can now be processed every second by a commodity cpu in your laptop.&lt;/p&gt;
 &lt;p&gt;&lt;a href="https://tailscale.com/blog/living-in-the-future"&gt;Living in the Future, by the numbers&lt;/a&gt; is a great article on the progress we have had since 2004:&lt;/p&gt;
 &lt;ul&gt;
-&lt;li&gt;CPU Compute us 1000x faster&lt;/li&gt;
+&lt;li&gt;CPU Compute is 1000x faster&lt;/li&gt;
 &lt;li&gt;Web servers are 100x faster&lt;/li&gt;
 &lt;li&gt;Ram is 16x to 750x larger&lt;/li&gt;
 &lt;li&gt;SSD can do 10'000x more transactions per second.&lt;/li&gt;
