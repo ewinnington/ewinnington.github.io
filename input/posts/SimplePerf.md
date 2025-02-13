@@ -25,6 +25,8 @@ You can now run super-computer level problems on Azure!
 
 But what does that all mean? What can we do even on a commodity laptop? I have a Latitude 9440 laptop on my desk here, with a 13th gen i7-1365U with 32 GB of RAM. 
 
+## Energy Trade aggregation 
+
 Let's start with a small calculation from the world of Energy. I have 100'000 trades, these trades affect one or multiple quarter hours of one year (8'784 hours => 35'136 quarter hours). 
 
 Pulling out a little C++, completely unoptimized, how long does it take to aggregate them and how much RAM is used? 
@@ -163,6 +165,8 @@ Peak bytes allocated (concurrent):  9822202136 bytes
 Current bytes allocated:            9822202136 bytes
 ```
 
+## Parallelization
+
 Since we are running on a multicore CPU, we can use more than one core to do the aggregation. With OpenMP, it's extremely simple to setup some parallelization for the compute. At the beginning of the loop, we can define a parallel aggregation for reduction, meaning a final sum.
 ```cpp 
     // Parallel over trades
@@ -186,3 +190,12 @@ Time for in-memory aggregation: 241 ms
 ```
 
 So when you are doing large numerical aggregations or calculations, ask yourself - can I do this in RAM? If so, you might be surprised at how quickly and efficiently you can do it with modern cpp.
+
+## Performance vs Memory bandwidth 
+This completely unoptimized implementation is running at : 
+
+Data size (GB) / time (s) = bandwidth (GB/s) => 9.8 GB / 0.241 s ≈ **40.7 GB/s**  
+
+My laptop has approx ~96 GB/s of memory bandwidth. I calculate it as follows: LPDDR5 at 6000 MT/s, 8 bytes, dual channel = 6000 * 8 * 2 =~ 96 GB/s. My laptop has less than half bandwidth of the HC family on Azure (AMD EPYC™ 7003-series CPU) using CPUs that were released in 2021. Still impressive for my laptop, but it shows you could do much better. 
+
+If I really needed to optimize, I would re-organise the data structures to improve the memory aligment as an initial step. With that, we should get closer to the theoretical bandwidth of the machine. 
