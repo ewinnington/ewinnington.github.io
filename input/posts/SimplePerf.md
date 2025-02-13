@@ -196,6 +196,6 @@ This completely unoptimized implementation is running at :
 
 Data size (GB) / time (s) = bandwidth (GB/s) => 9.8 GB / 0.241 s ≈ **40.7 GB/s**  
 
-My laptop has approx ~96 GB/s of memory bandwidth. I calculate it as follows: LPDDR5 at 6000 MT/s, 8 bytes, dual channel = 6000 * 8 * 2 =~ 96 GB/s. My laptop has less than half bandwidth of the HC family on Azure (AMD EPYC™ 7003-series CPU) using CPUs that were released in 2021. Still impressive for my laptop, but it shows you could do much better. 
+My laptop has approx \~96 GB/s of memory bandwidth. I calculate it as follows: LPDDR5 at 6000 MT/s, 8 bytes, dual channel = 6000 * 8 * 2 =~ 96 GB/s. My laptop has less than half bandwidth of the HC family on Azure (AMD EPYC™ 7003-series CPU) using CPUs that were released in 2021. Still impressive for my laptop, but it shows you could do much better. 
 
 If I really needed to optimize, I would re-organise the data structures to improve the memory aligment as an initial step. With that, we should get closer to the theoretical bandwidth of the machine. 
