@@ -1,0 +1,353 @@
+﻿
+<!DOCTYPE html>
+<!--
+	Phantom by HTML5 UP
+	html5up.net | @ajlkn
+	Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
+-->
+<html lang="en">
+
+	<head>
+		<title>Eric Winnington - In-memory software design 2025 - Applied to energy</title>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1" />		
+        <link href="/assets/css/highlight.css" rel="stylesheet">
+		<!--[if lte IE 8]><script src="/assets/js/ie/html5shiv.js"></script><![endif]-->
+		<link rel="stylesheet" href="/assets/css/main.css" />
+		<!--[if lte IE 9]><link rel="stylesheet" href="/assets/css/ie9.css" /><![endif]-->
+		<!--[if lte IE 8]><link rel="stylesheet" href="/assets/css/ie8.css" /><![endif]-->
+        <link href="/assets/css/override.css" rel="stylesheet" />
+
+		<meta name="description" content="A collection of thoughts, code and snippets." />
+		<link type="application/rss+xml" rel="alternate" title="Eric Winnington" href="/feed.rss" />
+				<link type="application/atom+xml" rel="alternate" title="Eric Winnington" href="/feed.atom" />
+		<link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+		<link rel="icon" href="/favicon.ico" type="image/x-icon">
+
+		<meta name="application-name" content="Eric Winnington" />
+		<meta name="msapplication-tooltip" content="Eric Winnington" />
+		<meta name="msapplication-starturl" content="/" />
+
+		<meta property="og:title" content="Eric Winnington - In-memory software design 2025 - Applied to energy" /> 
+		<meta property="og:type" content="website" />
+		<meta property="og:url" content="http://ewinnington.github.io/posts/SimplePerf2" />
+		<!-- TODO: More social graph meta tags -->
+
+        <script src="/assets/js/highlight.pack.js"></script>   
+		
+        <meta name="twitter:card" content="summary" />
+<meta name="twitter:site" content="@ewinnington" />
+<meta name="twitter:title" content="Eric Winnington - In-memory software design 2025 - Applied to energy" />
+<meta name="twitter:description" content="A collection of thoughts, code and snippets." />
+
+<script type="text/javascript" id="MathJax-script" async
+  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
+</script>
+		
+	</head>
+
+	<body>
+		<!-- Wrapper -->
+		<div id="wrapper">
+
+			<!-- Header -->
+			<header id="header">
+				<div class="inner">
+
+					<!-- Logo -->
+					<a href="/" class="logo">
+						<span class="title">Eric Winnington</span>
+					</a>
+
+					<!-- Nav -->
+					<nav>
+						<ul>
+							<li><a href="#menu">Menu</a></li>
+						</ul>
+					</nav>
+
+				</div>
+			</header>
+
+			<!-- Menu -->
+			<nav id="menu">
+				<h2>Menu</h2>
+				<ul>
+					        <li><a href="/posts">Archive</a></li>
+        <li><a href="/tags">Tags</a></li>
+        <li><a href="/about">About Me</a></li>
+        <li><a href="/videos">Videos on programming</a></li>
+
+				</ul>
+			</nav>
+
+			<!-- Main -->
+			<div id="main">
+				<div class="inner">
+
+    
+<header>
+    <h1>In-memory software design 2025 - Applied to energy</h1>
+            <p><em>Published on Saturday, 15 February 2025</em></p>
+            <ul class="actions small">
+                    <li><a role="button" href="/tags/Architecture" class="button small">Architecture</a></li>
+                    <li><a role="button" href="/tags/Cpp" class="button small">Cpp</a></li>
+        </ul>     
+</header>
+
+					
+					<div id="content">
+						
+
+<h1 id="in-memory-software-design">In-memory software design</h1>
+<p>In the last blog, <a href="https://ewinnington.github.io/posts/SimplePerf">In-memory performance in 2025</a> we looked at a simple design for an energy aggregation system to aggregate 9.8 GB of 100'000 trades rolled out and saw we got about 40 GB/s performance.</p>
+<p>I upped the numbers of trades to 500'000 trades (rolled out over quarter hours, with average trade length of 120 days in quarter hours) and validated that on a ~50 GB dataset, we are running at ~1200 ms for the complete aggregation, confirming a linear scaling of the compute time.</p>
+<p>But this brings us to a point where on commodity hardware, we are running our aggregations over 1 second in duration. So how can we improve this? This time, instead of trying to brute force, let's bring in some other techniques from databases: Indexes!</p>
+<h2 id="simple-indexes-for-in-memory-aggregations">Simple indexes for in-memory aggregations</h2>
+<p>For our use case, we are going to look at two meta-data properties on our trades, Trader and Delivery area, but the concept scales efficiently to large collections of meta-data, because we are dealing with such a small amounts of Trades (500k).</p>
+<h3 id="building-the-index">Building the index</h3>
+<p>We can generate at insertion a set for each meta-data, trader and delivery area.</p>
+<pre><code class="language-cpp">    // =================
+    // 2) Build Indexes
+    // =================
+    // We'll do single-attribute indexes: trader -&gt; set of tradeIDs, area -&gt; set of tradeIDs
+    // For large data, consider using std::vector&lt;size_t&gt; sorted, or some other structure.
+
+    std::unordered_map&lt;std::string, std::unordered_set&lt;size_t&gt;&gt; traderIndex;
+    traderIndex.reserve(10);  // if you know approx how many traders you have to avoid resizing continuously
+
+    std::unordered_map&lt;std::string, std::unordered_set&lt;size_t&gt;&gt; areaIndex;
+    areaIndex.reserve(10);
+</code></pre>
+<p>I'm using an unordered set, but could also use an ordered set, this might be more efficient.</p>
+<p>As keys, I'm using the string data of the meta-data on the trade - in production this would probably be integer keys, but for this use case is sufficient.</p>
+<pre><code class="language-cpp">    for (size_t i = 0; i &lt; trades.size(); ++i)
+    {
+        const auto&amp; t = trades[i];
+        traderIndex[t.trader].trades(i);
+        areaIndex[t.deliveryArea].trades(i);
+    }
+</code></pre>
+<p>When we insert a set of trades, we can add them to the set index.</p>
+<p>As a linear pass, it's extremely efficient to build this index and cheap to keep it updated as we insert new trades.</p>
+<h3 id="using-the-index">Using the index</h3>
+<p>If we have a search query on a single attribute, we can now use the simple index and have directly the result.</p>
+<p>But if we are doing a query on two (or more), we are going to take use the smallest index first and match with the largest index. The unordered_set gives an acceptable performance for <code>bigger.find(id)</code> but you can probably do even better with a set structure that is optimized for intersections. You can benchmark using <code>std::set_intersection</code> against my simple implementation if you are using sorted sets.</p>
+<pre><code class="language-cpp">// ===================================
+    // 3) Use the indexes for filtering
+    // ===================================
+    // For instance, let's do a query: TraderX, Area2
+    // We'll find the intersection of (all trades for TraderX) and (all trades for Area2).
+
+    std::string queryTrader = &quot;TraderX&quot;;
+    std::string queryArea   = &quot;Area2&quot;;
+
+    // Get sets from the index
+    // (handle the case if the key doesn't exist -&gt; empty set)
+    auto itT = traderIndex.find(queryTrader);
+    auto itA = areaIndex.find(queryArea);
+
+    if (itT == traderIndex.end() || itA == areaIndex.end()) {
+        std::cout &lt;&lt; &quot;No trades found for &quot; &lt;&lt; queryTrader &lt;&lt; &quot; AND &quot; &lt;&lt; queryArea &lt;&lt; &quot;\n&quot;;
+        return 0;
+    }
+
+    const auto&amp; traderSet = itT-&gt;second;
+    const auto&amp; areaSet   = itA-&gt;second;
+
+    // Intersection
+    // We'll create a vector of trade IDs that are in both sets
+    // For speed, we can iterate over the smaller set and check membership in the larger set.
+    const auto&amp; smaller = (traderSet.size() &lt; areaSet.size()) ? traderSet : areaSet;
+    const auto&amp; bigger  = (traderSet.size() &lt; areaSet.size()) ? areaSet   : traderSet;
+
+    std::vector&lt;size_t&gt; intersection;
+    intersection.reserve(smaller.size());  // a safe upper bound if all the smaller set is selected, to avoid resizing
+
+    for (auto id : smaller)
+    {
+        if (bigger.find(id) != bigger.end())
+        {
+            intersection.push_back(id);
+        }
+    }
+</code></pre>
+<p>This gives us the intersection and we iterate it to do the summation - again, here we are summing up over the entire year into a single value, but we could just as easily be doing daily, weekly or monthly sums.</p>
+<pre><code class="language-cpp">    // ====================================
+    // 4) Aggregate deliveries for matches
+    // ====================================
+    // Let's sum up total power / total value for the intersection set.
+
+    long long totalPower = 0;
+    long long totalValue = 0;
+
+    #ifdef _OPENMP
+    #pragma omp parallel for num_threads(4) reduction(+:totalPower, totalValue)
+    #endif
+    for (auto id : intersection)
+    {
+        const Trade&amp; t = trades[id];
+        // sum up all deliveries
+        for (const auto&amp; dd : t.dailyDeliveries)
+        {
+            for (int slot = 0; slot &lt; 100; ++slot)
+            {
+                totalPower += dd.power[slot];
+                totalValue += dd.value[slot];
+            }
+        }
+    }
+</code></pre>
+<p>This addition here is single threaded, but you can also use OpenMP to accelerate it - this will require some tuning, you don't want to use too many threads for these smaller aggregations, the <code>omp parallel for num_threads(4)</code> can be added to example limit to 4 threads. (note: I added the openMP in the code above).</p>
+<p>Generally you get a 10x or more acceleration in single core, depending on how selective the indexes you are using are- In parallel, I'm getting 40-50x acceleration in multi-core with a num_threads to 4.</p>
+<h2 id="why-arrayint100">Why array&lt;int,100&gt; ?</h2>
+<p>In my last post, I used an array of 100 points in a day. I'm using it because it's simplest to have all days have the same &quot;size&quot; for memory alignment, therefore if I am calculating days in local time I have a 25h and 23h hour day once a year. I would generally prefer to work in UTC and have constant 24h days -- but for some reason humans prefer local time so it aligns with expectations.</p>
+<p>Just be clear with the developer if you use an internal UTC or Local time representation. If using local make sure to:</p>
+<ul>
+<li>Properly sanitize your inputs, check trades fill the 96 quarter hours only for all days apart from the short (92) and long day (100) and zero fill the remainder.</li>
+<li>Keep summing on all 100 hours for summations, the 4% extra index length is not worth an if statement in the inner loop of the code - try to keep loops jump free.</li>
+</ul>
+<h2 id="how-to-deal-with-canceled-amended-recalled-trades">How to deal with Canceled / Amended / Recalled trades ?</h2>
+<p>My first answer is don't! Let me explain: Normal trades should represent the 99.9% or 99.99% of your deals - unless there's something you haven't told me about the way you are trading!</p>
+<p>We can design this by having a tradeStatus on the trade.</p>
+<p>int TradeStatus:</p>
+<ul>
+<li>0 : trade is valid</li>
+<li>1 : trade is canceled</li>
+<li>2 : trade is amended (ie. replaced by a new one)</li>
+<li>... : any other status necessary</li>
+</ul>
+<p>When a trade is canceled, we leave it in the trade vector, but simply set the tradeStatus to a non-zero value, and skip it with a test at the beginning of the aggregation.</p>
+<pre><code class="language-cpp">    #ifdef _OPENMP
+    #pragma omp parallel for num_threads(4) reduction(+:totalPower, totalValue)
+    #endif
+    for (auto id : intersection)
+    {
+        const Trade&amp; t = trades[id];
+        if(t.tradeStatus != 0) continue;  // skip canceled/amended trades
+</code></pre>
+<p>If the trade is amended, same thing, we add a new trade to our list of trades and set the previous one to amended status. Generally, the this is not using up much memory. If it ever becomes a problem, we could:</p>
+<ol type="a">
+<li>have a &quot;trade compression&quot; which removes all non-zero trade status from the vector.</li>
+<li>flush the entire trade vector and reload the whole set.</li>
+</ol>
+<p>Depending on your implementation, the flushing and reloading might be just as fast - not every program needs to stay resident in memory all the time.</p>
+<h2 id="snapshot-state-to-disk-for-recovery-or-storage-fork-as-in-redis">Snapshot state to disk for recovery or storage - Fork() as in Redis</h2>
+<p>If we want to take snapshots of the state,  we can get inspired from Redis' famous <a href="https://architecturenotes.co/i/143231289/forking">fork() snapshotting technique</a>.</p>
+<p>Use this when needing to snapshot a large data structure in RAM to disk (serialize the entire state), without blocking our main process from accepting new trades for the entire duration of the write.</p>
+<h3 id="how-fork-helps">How fork() helps</h3>
+<p>On Linux, calling fork() creates a child process that initially shares the same physical memory pages as the parent.</p>
+<p>Copy-on-write (CoW): If either the parent or the child writes to a page after the fork, the kernel duplicates that page so each process sees consistent data.</p>
+<p>The child process can serialize the in-memory data (in a consistent state from the moment of forking) to disk, while the parent continues to run to accept new trades. New trades arriving in the parent process after the fork will not affect the child’s view of memory. The child effectively sees a snapshot as of the fork().</p>
+<p>You want the data structure to be in a consistent state at the instant of fork().
+A brief lock (or pause writes) just before the fork() is triggered, ensuring no partial updates. Immediately after fork() returns, you can unlock, letting the parent continue. Meanwhile, the child proceeds to write out the data.</p>
+<p>We can store an atomic counter value in the program that represents the last tradeid inserted or a state version. This gives you a “version” or “stamp” number for the dataset.</p>
+<p>I won't put the full code for that here, since the design is a little more involved, but the basics are:</p>
+<pre><code>static std::atomic&lt;long&gt; g_version{0}; //snapshot version id 
+static std::mutex g_tradeMutex;  // protect g_trades from concurrent modification - lock on write to 
+
+// ---------------------------------------------------
+// fork() to create a child that writes the snapshot
+// ---------------------------------------------------
+int snapshotNow(const char* filename) {
+    // 1) Acquire short lock to ensure no partial updates in progress
+    g_tradeMutex.lock();
+    long snapVer = g_version.load(std::memory_order_relaxed);
+
+    // 2) Fork
+    pid_t pid = fork();
+    if(pid &lt; 0) {
+        // error
+        std::cerr &lt;&lt; &quot;fork() failed\n&quot;;
+        g_tradeMutex.unlock();
+        return -1;
+    }
+
+    if(pid == 0) {
+        // child
+        // We have a consistent view of memory as of the fork.
+        // release the lock in the child
+        g_tradeMutex.unlock();
+
+        // write the snapshot
+        writeSnapshotToDisk(filename, snapVer);
+
+        // exit child
+        _exit(0);
+    } else {
+        // parent
+        // release the lock and continue
+        g_tradeMutex.unlock();
+        std::cout &lt;&lt; &quot;[Parent] Snapshot child pid=&quot; &lt;&lt; pid 
+                  &lt;&lt; &quot;, version=&quot; &lt;&lt; snapVer &lt;&lt; &quot;\n&quot;;
+        return 0;
+    }
+}
+</code></pre>
+<p>In essence we have two processes continuing from the same command fork() return, each taking one branch.</p>
+<h2 id="data-io">Data I/O</h2>
+<p>To integrate your cpp aggregation software into the rest of your stack depends on the software running around it.</p>
+<p>You can run the application as an on-demand aggregation, loading everything to memory, doing the aggregation and exiting - leaving the server to do something else - this can be worth it if you only do aggregations on-demand and can afford the load time of a second or two from your NVME storage.</p>
+<p>You can keep the cpp program running either :</p>
+<ul>
+<li>exposing an http RestAPI (<a href="https://github.com/microsoft/cpprestsdk">https://github.com/microsoft/cpprestsdk</a> is a good library for that, I've used it before).</li>
+<li>having a GRPC endpoint for performance</li>
+<li>receiving data from a Kafka stream - I'm sure Confluent can give you a good example of that.</li>
+</ul>
+<h2 id="summary">Summary</h2>
+<p>In-memory data aggregation using cpp is relatively easy to write and maintain. Cpp is no longer the terrible monster it was - auto pointers help and using std:: components makes everything simple. OpenMP is an easy win to add to compute or memory intensive sections.</p>
+<h4 id="sidenotes">Sidenotes</h4>
+<p>On Windows you can get everything you need to compile cpp by installing:</p>
+<pre><code>winget install LLVM.LLVM
+</code></pre>
+<p>On Linux (or wsl), you need to install the following:</p>
+<pre><code>sudo apt-get update
+sudo apt-get install clang
+sudo apt-get install libomp-dev 
+</code></pre>
+<p>Then in both os, you can usually run a compilation on your source file (inmem_agg_omp.cpp) using:</p>
+<pre><code>clang++ -O3 -march=native -flto -ffast-math -fopenmp -o inmem_agg_omp inmem_agg_omp.cpp
+</code></pre>
+
+
+<hr>
+					</div>
+				</div>
+			</div>
+
+			<!-- Footer -->
+			<footer id="footer">
+				<div class="inner">
+    <section>
+        <h2>Feeds</h2>
+        <ul class="actions small vertical">
+            <li><a href="/feed.rss" class="button small"><i class="fa fa-rss"></i> RSS Feed</a></li>
+                        <li><a href="/feed.atom" class="button small"><i class="fa fa-rss"></i> Atom Feed</a></li>
+        </ul>
+    </section>
+    <section>
+    </section>
+    <ul class="copyright">
+        <li>Copyright © 2025</li>
+        <li>Design: <a href="http://html5up.net">HTML5 UP</a></li>
+        <li><a href="https://wyam.io">Generated by Wyam</a></li>
+    </ul>
+</div>
+
+			</footer>
+
+		</div>
+		
+		
+
+		<!-- Scripts -->
+		<script>hljs.initHighlightingOnLoad();</script>
+		<script src="/assets/js/jquery.min.js"></script>
+		<script src="/assets/js/skel.min.js"></script>
+		<script src="/assets/js/util.js"></script>
+		<!--[if lte IE 8]><script src="/assets/js/ie/respond.min.js"></script><![endif]-->
+		<script src="/assets/js/main.js"></script>
+
+	</body>
+
+</html>

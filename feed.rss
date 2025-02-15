@@ -5,8 +5,225 @@
 		<link>http://ewinnington.github.io/</link>
 		<description>A collection of thoughts, code and snippets.</description>
 		<copyright>2025</copyright>
-		<pubDate>Thu, 13 Feb 2025 11:11:20 GMT</pubDate>
-		<lastBuildDate>Thu, 13 Feb 2025 11:11:20 GMT</lastBuildDate>
+		<pubDate>Sat, 15 Feb 2025 14:47:03 GMT</pubDate>
+		<lastBuildDate>Sat, 15 Feb 2025 14:47:03 GMT</lastBuildDate>
+		<item>
+			<title>In-memory software design 2025 - Applied to energy</title>
+			<link>http://ewinnington.github.io/posts/SimplePerf2</link>
+			<description>&lt;p&gt;In the last blog, &lt;a href="https://ewinnington.github.io/posts/SimplePerf"&gt;In-memory performance in 2025&lt;/a&gt; we looked at a simple design for an energy aggregation system to aggregate 9.8 GB of 100'000 trades rolled out and saw we got about 40 GB/s performance.&lt;/p&gt;</description>
+			<guid>http://ewinnington.github.io/posts/SimplePerf2</guid>
+			<pubDate>Sat, 15 Feb 2025 08:00:00 GMT</pubDate>
+			<content:encoded>&lt;h1 id="in-memory-software-design"&gt;In-memory software design&lt;/h1&gt;
+&lt;p&gt;In the last blog, &lt;a href="https://ewinnington.github.io/posts/SimplePerf"&gt;In-memory performance in 2025&lt;/a&gt; we looked at a simple design for an energy aggregation system to aggregate 9.8 GB of 100'000 trades rolled out and saw we got about 40 GB/s performance.&lt;/p&gt;
+&lt;p&gt;I upped the numbers of trades to 500'000 trades (rolled out over quarter hours, with average trade length of 120 days in quarter hours) and validated that on a ~50 GB dataset, we are running at ~1200 ms for the complete aggregation, confirming a linear scaling of the compute time.&lt;/p&gt;
+&lt;p&gt;But this brings us to a point where on commodity hardware, we are running our aggregations over 1 second in duration. So how can we improve this? This time, instead of trying to brute force, let's bring in some other techniques from databases: Indexes!&lt;/p&gt;
+&lt;h2 id="simple-indexes-for-in-memory-aggregations"&gt;Simple indexes for in-memory aggregations&lt;/h2&gt;
+&lt;p&gt;For our use case, we are going to look at two meta-data properties on our trades, Trader and Delivery area, but the concept scales efficiently to large collections of meta-data, because we are dealing with such a small amounts of Trades (500k).&lt;/p&gt;
+&lt;h3 id="building-the-index"&gt;Building the index&lt;/h3&gt;
+&lt;p&gt;We can generate at insertion a set for each meta-data, trader and delivery area.&lt;/p&gt;
+&lt;pre&gt;&lt;code class="language-cpp"&gt;    // =================
+    // 2) Build Indexes
+    // =================
+    // We'll do single-attribute indexes: trader -&amp;gt; set of tradeIDs, area -&amp;gt; set of tradeIDs
+    // For large data, consider using std::vector&amp;lt;size_t&amp;gt; sorted, or some other structure.
+
+    std::unordered_map&amp;lt;std::string, std::unordered_set&amp;lt;size_t&amp;gt;&amp;gt; traderIndex;
+    traderIndex.reserve(10);  // if you know approx how many traders you have to avoid resizing continuously
+
+    std::unordered_map&amp;lt;std::string, std::unordered_set&amp;lt;size_t&amp;gt;&amp;gt; areaIndex;
+    areaIndex.reserve(10);
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;I'm using an unordered set, but could also use an ordered set, this might be more efficient.&lt;/p&gt;
+&lt;p&gt;As keys, I'm using the string data of the meta-data on the trade - in production this would probably be integer keys, but for this use case is sufficient.&lt;/p&gt;
+&lt;pre&gt;&lt;code class="language-cpp"&gt;    for (size_t i = 0; i &amp;lt; trades.size(); ++i)
+    {
+        const auto&amp;amp; t = trades[i];
+        traderIndex[t.trader].trades(i);
+        areaIndex[t.deliveryArea].trades(i);
+    }
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;When we insert a set of trades, we can add them to the set index.&lt;/p&gt;
+&lt;p&gt;As a linear pass, it's extremely efficient to build this index and cheap to keep it updated as we insert new trades.&lt;/p&gt;
+&lt;h3 id="using-the-index"&gt;Using the index&lt;/h3&gt;
+&lt;p&gt;If we have a search query on a single attribute, we can now use the simple index and have directly the result.&lt;/p&gt;
+&lt;p&gt;But if we are doing a query on two (or more), we are going to take use the smallest index first and match with the largest index. The unordered_set gives an acceptable performance for &lt;code&gt;bigger.find(id)&lt;/code&gt; but you can probably do even better with a set structure that is optimized for intersections. You can benchmark using &lt;code&gt;std::set_intersection&lt;/code&gt; against my simple implementation if you are using sorted sets.&lt;/p&gt;
+&lt;pre&gt;&lt;code class="language-cpp"&gt;// ===================================
+    // 3) Use the indexes for filtering
+    // ===================================
+    // For instance, let's do a query: TraderX, Area2
+    // We'll find the intersection of (all trades for TraderX) and (all trades for Area2).
+
+    std::string queryTrader = &amp;quot;TraderX&amp;quot;;
+    std::string queryArea   = &amp;quot;Area2&amp;quot;;
+
+    // Get sets from the index
+    // (handle the case if the key doesn't exist -&amp;gt; empty set)
+    auto itT = traderIndex.find(queryTrader);
+    auto itA = areaIndex.find(queryArea);
+
+    if (itT == traderIndex.end() || itA == areaIndex.end()) {
+        std::cout &amp;lt;&amp;lt; &amp;quot;No trades found for &amp;quot; &amp;lt;&amp;lt; queryTrader &amp;lt;&amp;lt; &amp;quot; AND &amp;quot; &amp;lt;&amp;lt; queryArea &amp;lt;&amp;lt; &amp;quot;\n&amp;quot;;
+        return 0;
+    }
+
+    const auto&amp;amp; traderSet = itT-&amp;gt;second;
+    const auto&amp;amp; areaSet   = itA-&amp;gt;second;
+
+    // Intersection
+    // We'll create a vector of trade IDs that are in both sets
+    // For speed, we can iterate over the smaller set and check membership in the larger set.
+    const auto&amp;amp; smaller = (traderSet.size() &amp;lt; areaSet.size()) ? traderSet : areaSet;
+    const auto&amp;amp; bigger  = (traderSet.size() &amp;lt; areaSet.size()) ? areaSet   : traderSet;
+
+    std::vector&amp;lt;size_t&amp;gt; intersection;
+    intersection.reserve(smaller.size());  // a safe upper bound if all the smaller set is selected, to avoid resizing
+
+    for (auto id : smaller)
+    {
+        if (bigger.find(id) != bigger.end())
+        {
+            intersection.push_back(id);
+        }
+    }
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;This gives us the intersection and we iterate it to do the summation - again, here we are summing up over the entire year into a single value, but we could just as easily be doing daily, weekly or monthly sums.&lt;/p&gt;
+&lt;pre&gt;&lt;code class="language-cpp"&gt;    // ====================================
+    // 4) Aggregate deliveries for matches
+    // ====================================
+    // Let's sum up total power / total value for the intersection set.
+
+    long long totalPower = 0;
+    long long totalValue = 0;
+
+    #ifdef _OPENMP
+    #pragma omp parallel for num_threads(4) reduction(+:totalPower, totalValue)
+    #endif
+    for (auto id : intersection)
+    {
+        const Trade&amp;amp; t = trades[id];
+        // sum up all deliveries
+        for (const auto&amp;amp; dd : t.dailyDeliveries)
+        {
+            for (int slot = 0; slot &amp;lt; 100; ++slot)
+            {
+                totalPower += dd.power[slot];
+                totalValue += dd.value[slot];
+            }
+        }
+    }
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;This addition here is single threaded, but you can also use OpenMP to accelerate it - this will require some tuning, you don't want to use too many threads for these smaller aggregations, the &lt;code&gt;omp parallel for num_threads(4)&lt;/code&gt; can be added to example limit to 4 threads. (note: I added the openMP in the code above).&lt;/p&gt;
+&lt;p&gt;Generally you get a 10x or more acceleration in single core, depending on how selective the indexes you are using are- In parallel, I'm getting 40-50x acceleration in multi-core with a num_threads to 4.&lt;/p&gt;
+&lt;h2 id="why-arrayint100"&gt;Why array&amp;lt;int,100&amp;gt; ?&lt;/h2&gt;
+&lt;p&gt;In my last post, I used an array of 100 points in a day. I'm using it because it's simplest to have all days have the same &amp;quot;size&amp;quot; for memory alignment, therefore if I am calculating days in local time I have a 25h and 23h hour day once a year. I would generally prefer to work in UTC and have constant 24h days -- but for some reason humans prefer local time so it aligns with expectations.&lt;/p&gt;
+&lt;p&gt;Just be clear with the developer if you use an internal UTC or Local time representation. If using local make sure to:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Properly sanitize your inputs, check trades fill the 96 quarter hours only for all days apart from the short (92) and long day (100) and zero fill the remainder.&lt;/li&gt;
+&lt;li&gt;Keep summing on all 100 hours for summations, the 4% extra index length is not worth an if statement in the inner loop of the code - try to keep loops jump free.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="how-to-deal-with-canceled-amended-recalled-trades"&gt;How to deal with Canceled / Amended / Recalled trades ?&lt;/h2&gt;
+&lt;p&gt;My first answer is don't! Let me explain: Normal trades should represent the 99.9% or 99.99% of your deals - unless there's something you haven't told me about the way you are trading!&lt;/p&gt;
+&lt;p&gt;We can design this by having a tradeStatus on the trade.&lt;/p&gt;
+&lt;p&gt;int TradeStatus:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;0 : trade is valid&lt;/li&gt;
+&lt;li&gt;1 : trade is canceled&lt;/li&gt;
+&lt;li&gt;2 : trade is amended (ie. replaced by a new one)&lt;/li&gt;
+&lt;li&gt;... : any other status necessary&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;When a trade is canceled, we leave it in the trade vector, but simply set the tradeStatus to a non-zero value, and skip it with a test at the beginning of the aggregation.&lt;/p&gt;
+&lt;pre&gt;&lt;code class="language-cpp"&gt;    #ifdef _OPENMP
+    #pragma omp parallel for num_threads(4) reduction(+:totalPower, totalValue)
+    #endif
+    for (auto id : intersection)
+    {
+        const Trade&amp;amp; t = trades[id];
+        if(t.tradeStatus != 0) continue;  // skip canceled/amended trades
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;If the trade is amended, same thing, we add a new trade to our list of trades and set the previous one to amended status. Generally, the this is not using up much memory. If it ever becomes a problem, we could:&lt;/p&gt;
+&lt;ol type="a"&gt;
+&lt;li&gt;have a &amp;quot;trade compression&amp;quot; which removes all non-zero trade status from the vector.&lt;/li&gt;
+&lt;li&gt;flush the entire trade vector and reload the whole set.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;Depending on your implementation, the flushing and reloading might be just as fast - not every program needs to stay resident in memory all the time.&lt;/p&gt;
+&lt;h2 id="snapshot-state-to-disk-for-recovery-or-storage-fork-as-in-redis"&gt;Snapshot state to disk for recovery or storage - Fork() as in Redis&lt;/h2&gt;
+&lt;p&gt;If we want to take snapshots of the state,  we can get inspired from Redis' famous &lt;a href="https://architecturenotes.co/i/143231289/forking"&gt;fork() snapshotting technique&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;Use this when needing to snapshot a large data structure in RAM to disk (serialize the entire state), without blocking our main process from accepting new trades for the entire duration of the write.&lt;/p&gt;
+&lt;h3 id="how-fork-helps"&gt;How fork() helps&lt;/h3&gt;
+&lt;p&gt;On Linux, calling fork() creates a child process that initially shares the same physical memory pages as the parent.&lt;/p&gt;
+&lt;p&gt;Copy-on-write (CoW): If either the parent or the child writes to a page after the fork, the kernel duplicates that page so each process sees consistent data.&lt;/p&gt;
+&lt;p&gt;The child process can serialize the in-memory data (in a consistent state from the moment of forking) to disk, while the parent continues to run to accept new trades. New trades arriving in the parent process after the fork will not affect the child’s view of memory. The child effectively sees a snapshot as of the fork().&lt;/p&gt;
+&lt;p&gt;You want the data structure to be in a consistent state at the instant of fork().
+A brief lock (or pause writes) just before the fork() is triggered, ensuring no partial updates. Immediately after fork() returns, you can unlock, letting the parent continue. Meanwhile, the child proceeds to write out the data.&lt;/p&gt;
+&lt;p&gt;We can store an atomic counter value in the program that represents the last tradeid inserted or a state version. This gives you a “version” or “stamp” number for the dataset.&lt;/p&gt;
+&lt;p&gt;I won't put the full code for that here, since the design is a little more involved, but the basics are:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;static std::atomic&amp;lt;long&amp;gt; g_version{0}; //snapshot version id 
+static std::mutex g_tradeMutex;  // protect g_trades from concurrent modification - lock on write to 
+
+// ---------------------------------------------------
+// fork() to create a child that writes the snapshot
+// ---------------------------------------------------
+int snapshotNow(const char* filename) {
+    // 1) Acquire short lock to ensure no partial updates in progress
+    g_tradeMutex.lock();
+    long snapVer = g_version.load(std::memory_order_relaxed);
+
+    // 2) Fork
+    pid_t pid = fork();
+    if(pid &amp;lt; 0) {
+        // error
+        std::cerr &amp;lt;&amp;lt; &amp;quot;fork() failed\n&amp;quot;;
+        g_tradeMutex.unlock();
+        return -1;
+    }
+
+    if(pid == 0) {
+        // child
+        // We have a consistent view of memory as of the fork.
+        // release the lock in the child
+        g_tradeMutex.unlock();
+
+        // write the snapshot
+        writeSnapshotToDisk(filename, snapVer);
+
+        // exit child
+        _exit(0);
+    } else {
+        // parent
+        // release the lock and continue
+        g_tradeMutex.unlock();
+        std::cout &amp;lt;&amp;lt; &amp;quot;[Parent] Snapshot child pid=&amp;quot; &amp;lt;&amp;lt; pid 
+                  &amp;lt;&amp;lt; &amp;quot;, version=&amp;quot; &amp;lt;&amp;lt; snapVer &amp;lt;&amp;lt; &amp;quot;\n&amp;quot;;
+        return 0;
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;In essence we have two processes continuing from the same command fork() return, each taking one branch.&lt;/p&gt;
+&lt;h2 id="data-io"&gt;Data I/O&lt;/h2&gt;
+&lt;p&gt;To integrate your cpp aggregation software into the rest of your stack depends on the software running around it.&lt;/p&gt;
+&lt;p&gt;You can run the application as an on-demand aggregation, loading everything to memory, doing the aggregation and exiting - leaving the server to do something else - this can be worth it if you only do aggregations on-demand and can afford the load time of a second or two from your NVME storage.&lt;/p&gt;
+&lt;p&gt;You can keep the cpp program running either :&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;exposing an http RestAPI (&lt;a href="https://github.com/microsoft/cpprestsdk"&gt;https://github.com/microsoft/cpprestsdk&lt;/a&gt; is a good library for that, I've used it before).&lt;/li&gt;
+&lt;li&gt;having a GRPC endpoint for performance&lt;/li&gt;
+&lt;li&gt;receiving data from a Kafka stream - I'm sure Confluent can give you a good example of that.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="summary"&gt;Summary&lt;/h2&gt;
+&lt;p&gt;In-memory data aggregation using cpp is relatively easy to write and maintain. Cpp is no longer the terrible monster it was - auto pointers help and using std:: components makes everything simple. OpenMP is an easy win to add to compute or memory intensive sections.&lt;/p&gt;
+&lt;h4 id="sidenotes"&gt;Sidenotes&lt;/h4&gt;
+&lt;p&gt;On Windows you can get everything you need to compile cpp by installing:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;winget install LLVM.LLVM
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;On Linux (or wsl), you need to install the following:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;sudo apt-get update
+sudo apt-get install clang
+sudo apt-get install libomp-dev 
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Then in both os, you can usually run a compilation on your source file (inmem_agg_omp.cpp) using:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;clang++ -O3 -march=native -flto -ffast-math -fopenmp -o inmem_agg_omp inmem_agg_omp.cpp
+&lt;/code&gt;&lt;/pre&gt;
+</content:encoded>
+		</item>
 		<item>
 			<title>Performance of in-memory in 2025</title>
 			<link>http://ewinnington.github.io/posts/SimplePerf</link>
@@ -1863,16 +2080,6 @@ aaa &amp;gt; eee
 &lt;a href="https://minutemanmissile.com/abl.html"&gt;https://minutemanmissile.com/abl.html&lt;/a&gt;&lt;/p&gt;
 &lt;h2 id="discussion"&gt;Discussion&lt;/h2&gt;
 &lt;p&gt;A &lt;a href="https://www.reddit.com/r/SpaceXLounge/comments/xj8bjh/the_case_for_a_spacex_starship_laser_ablation/"&gt;discussion thread on reddit about this post&lt;/a&gt; has provided some feedback and the post has been updated.&lt;/p&gt;
-</content:encoded>
-		</item>
-		<item>
-			<title>We can leave viruses behind on Earth as we leave the gravity well</title>
-			<link>http://ewinnington.github.io/posts/Viruses-left-behind</link>
-			<description>&lt;p&gt;As humanity left for the stars, bacteria hitched a ride with us. They were on us, in us and around us - as much part of us as our own cells. Viruses, on the other hand, due to careful screening programs, quarantines and selective breeding programs of the few animals that took to the stars, were confined to the gravity well of Earth. Without hosts, they could not follow us. We had left our ancient enemy behind.&lt;/p&gt;</description>
-			<guid>http://ewinnington.github.io/posts/Viruses-left-behind</guid>
-			<pubDate>Fri, 14 Jan 2022 00:00:00 GMT</pubDate>
-			<content:encoded>&lt;p&gt;As humanity left for the stars, bacteria hitched a ride with us. They were on us, in us and around us - as much part of us as our own cells. Viruses, on the other hand, due to careful screening programs, quarantines and selective breeding programs of the few animals that took to the stars, were confined to the gravity well of Earth. Without hosts, they could not follow us. We had left our ancient enemy behind.&lt;/p&gt;
-&lt;p&gt;Within two generations, the space born growing up on the O’Neill colony cylinders - even those who lived at 0.9 to 1g - realised that earth was going to be a forbidden planet for them. They had no defences against the viruses that continued to permeate the planet. A visit to earth required them to live in an isolation suit and sterile quarters - limiting contact with the earthers and fauna.&lt;/p&gt;
 </content:encoded>
 		</item>
 	</channel>
