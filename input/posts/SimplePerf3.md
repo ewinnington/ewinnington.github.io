@@ -62,7 +62,7 @@ Now with this information, we can directly index into the area based on the trad
         all_totalValue += sumValue;
 ```
 
-When running with this configuration, my time to aggregation on the laptop improves to **178ms** a 37% improvement in speed - which get us to **55 GB/s** on a commodity laptop (using OpenMP of course). 
+When running with this configuration, my time to aggregation on the laptop improves from **241ms** to **178ms** a 37% improvement in speed - which get us to **55 GB/s** on a commodity laptop (using OpenMP of course). 
 
 ## Limits 
 
