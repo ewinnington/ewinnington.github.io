@@ -140,7 +140,7 @@
         all_totalPower += sumPower;
         all_totalValue += sumValue;
 </code></pre>
-<p>When running with this configuration, my time to aggregation on the laptop improves to <strong>178ms</strong> a 37% improvement in speed - which get us to <strong>55 GB/s</strong> on a commodity laptop (using OpenMP of course).</p>
+<p>When running with this configuration, my time to aggregation on the laptop improves from <strong>241ms</strong> to <strong>178ms</strong> a 37% improvement in speed - which get us to <strong>55 GB/s</strong> on a commodity laptop (using OpenMP of course).</p>
 <h2 id="limits">Limits</h2>
 <p>But as you scale to larger and larger amounts of trades and delivery days, you will really find that the vector<int> allocator will not be able to handle that in a single bloc.</p>
 <p>At that point, we'll start running our own custom allocation, keeping our own block memory via a custom allocator. By creating blocks of 64 to 256MB that we allocate as needed and indexing our trade deliveries into it, we can then scale to more of the the entire memory of your machine.</p>
@@ -586,15 +586,15 @@ Current bytes allocated:            9822202136 bytes
             <h5>Tags</h5>
             <ul class="actions small">
                     <li><a role="button" href="/tags/Migrated" class="button small">Migrated (38)</a></li>
-                    <li><a role="button" href="/tags/Thoughts" class="button small">Thoughts (12)</a></li>
                     <li><a role="button" href="/tags/Architecture" class="button small">Architecture (12)</a></li>
+                    <li><a role="button" href="/tags/Thoughts" class="button small">Thoughts (12)</a></li>
                     <li><a role="button" href="/tags/Database" class="button small">Database (11)</a></li>
                     <li><a role="button" href="/tags/CSharp" class="button small">CSharp (10)</a></li>
-                    <li><a role="button" href="/tags/Dotnet-try" class="button small">Dotnet try (7)</a></li>
                     <li><a role="button" href="/tags/Jupyter-notebook" class="button small">Jupyter notebook (7)</a></li>
                     <li><a role="button" href="/tags/Oracle" class="button small">Oracle (7)</a></li>
+                    <li><a role="button" href="/tags/Dotnet-try" class="button small">Dotnet try (7)</a></li>
+                    <li><a role="button" href="/tags/R" class="button small">R (4)</a></li>
                     <li><a role="button" href="/tags/WPF" class="button small">WPF (4)</a></li>
-                    <li><a role="button" href="/tags/CommandLine" class="button small">CommandLine (4)</a></li>
             </ul>
             <ul class="actions small">
                 <li><a href="/tags" class="button small">View All Tags &rarr;</a></li>

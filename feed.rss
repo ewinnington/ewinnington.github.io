@@ -5,8 +5,8 @@
 		<link>http://ewinnington.github.io/</link>
 		<description>A collection of thoughts, code and snippets.</description>
 		<copyright>2025</copyright>
-		<pubDate>Sun, 16 Feb 2025 15:42:26 GMT</pubDate>
-		<lastBuildDate>Sun, 16 Feb 2025 15:42:26 GMT</lastBuildDate>
+		<pubDate>Sun, 16 Feb 2025 15:52:54 GMT</pubDate>
+		<lastBuildDate>Sun, 16 Feb 2025 15:52:54 GMT</lastBuildDate>
 		<item>
 			<title>In-memory software design 2025 ? - from 40GB/s to 55GB/s</title>
 			<link>http://ewinnington.github.io/posts/SimplePerf3</link>
@@ -54,7 +54,7 @@
         all_totalPower += sumPower;
         all_totalValue += sumValue;
 &lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;When running with this configuration, my time to aggregation on the laptop improves to &lt;strong&gt;178ms&lt;/strong&gt; a 37% improvement in speed - which get us to &lt;strong&gt;55 GB/s&lt;/strong&gt; on a commodity laptop (using OpenMP of course).&lt;/p&gt;
+&lt;p&gt;When running with this configuration, my time to aggregation on the laptop improves from &lt;strong&gt;241ms&lt;/strong&gt; to &lt;strong&gt;178ms&lt;/strong&gt; a 37% improvement in speed - which get us to &lt;strong&gt;55 GB/s&lt;/strong&gt; on a commodity laptop (using OpenMP of course).&lt;/p&gt;
 &lt;h2 id="limits"&gt;Limits&lt;/h2&gt;
 &lt;p&gt;But as you scale to larger and larger amounts of trades and delivery days, you will really find that the vector&lt;int&gt; allocator will not be able to handle that in a single bloc.&lt;/p&gt;
 &lt;p&gt;At that point, we'll start running our own custom allocation, keeping our own block memory via a custom allocator. By creating blocks of 64 to 256MB that we allocate as needed and indexing our trade deliveries into it, we can then scale to more of the the entire memory of your machine.&lt;/p&gt;
