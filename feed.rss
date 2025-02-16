@@ -5,8 +5,66 @@
 		<link>http://ewinnington.github.io/</link>
 		<description>A collection of thoughts, code and snippets.</description>
 		<copyright>2025</copyright>
-		<pubDate>Sat, 15 Feb 2025 14:47:03 GMT</pubDate>
-		<lastBuildDate>Sat, 15 Feb 2025 14:47:03 GMT</lastBuildDate>
+		<pubDate>Sun, 16 Feb 2025 15:42:26 GMT</pubDate>
+		<lastBuildDate>Sun, 16 Feb 2025 15:42:26 GMT</lastBuildDate>
+		<item>
+			<title>In-memory software design 2025 ? - from 40GB/s to 55GB/s</title>
+			<link>http://ewinnington.github.io/posts/SimplePerf3</link>
+			<description>&lt;p&gt;In the last blog, we looked at techniques for improving when we were doing partial sums and to reduce the scanned trades we used in-memory indexes using sets.&lt;/p&gt;</description>
+			<guid>http://ewinnington.github.io/posts/SimplePerf3</guid>
+			<pubDate>Sun, 16 Feb 2025 08:00:00 GMT</pubDate>
+			<content:encoded>&lt;h1 id="in-memory-software-design-in-2025-from-40gbs-to-55gbs"&gt;In-memory software design in 2025 - from 40GB/s to 55GB/s&lt;/h1&gt;
+&lt;p&gt;In the last blog, we looked at techniques for improving when we were doing partial sums and to reduce the scanned trades we used in-memory indexes using sets.&lt;/p&gt;
+&lt;p&gt;But what if we simply &lt;em&gt;want to go faster&lt;/em&gt; for the complete aggregation?&lt;/p&gt;
+&lt;p&gt;Up to now, we've been programming &lt;strong&gt;for the programmer&lt;/strong&gt; making the program easy to write and understand, but what if we make the program &lt;strong&gt;easy to run for the cpu&lt;/strong&gt;?&lt;/p&gt;
+&lt;p&gt;How do we do that? By improving memory locality and structures.&lt;/p&gt;
+&lt;h2 id="memory-locality"&gt;Memory locality&lt;/h2&gt;
+&lt;p&gt;The initial implementation uses a &lt;code&gt;std::vector&amp;lt;Trade&amp;gt; trades;&lt;/code&gt; with each trade maintaining a &lt;code&gt;std::vector&amp;lt;DailyDelivery&amp;gt; dailyDeliveries;&lt;/code&gt; that contains the two vectors of power and value &lt;code&gt;std::array&amp;lt;int, 100&amp;gt; power; std::array&amp;lt;int, 100&amp;gt; value;&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/posts/images/in-mem/TradeInMemory.png" class="img-fluid" width="80%" alt="TradeInMemory" /&gt;&lt;/p&gt;
+&lt;p&gt;While &lt;code&gt;vector&lt;/code&gt; does a great job at trying to get the memory allocated to it to be continuous in cpp, when you nest vectors in vectors and you allocate the sub-vectors, you are creating fragmented memory. This means the CPU's memory controller has to jump around a lot to get the next bloc and there's a high probability that adjacent will not be in the cache for the other cores of the CPU to be able to use.&lt;/p&gt;
+&lt;p&gt;The best architecture for locality will be always dependent on the access patters to the data. In our case here, we are going to optimize for maximum speed when doing complete aggregations.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/posts/images/in-mem/TradeCompressed.png" class="img-fluid" width="80%" alt="TradeCompressed" /&gt;&lt;/p&gt;
+&lt;p&gt;This is done by creating an specific area for the Power and Value data of each delivery day is allocated to. Trades point to the beginning and end of this data. If you need to move inside this area, because you know exactly the start delivery date of the trade and the size of the delivery day vector (100 ints), you can immediately index into the large array.&lt;/p&gt;
+&lt;p&gt;Now, if you are dealing with a small amount of trades (~50'000 with an average of 120 days of delivery ~~ 4.9 GB of RAM for 600 million quarter hours), you can get away with a single coherent bloc of RAM for your delivery vector. But see later for a more practical production discussion:&lt;/p&gt;
+&lt;pre&gt;&lt;code class="language-cpp"&gt;    // Each daily delivery contributes 100 ints for power and 100 ints for value.
+    std::vector&amp;lt;int&amp;gt; flatPower(totalDailyDeliveries * 100);
+    std::vector&amp;lt;int&amp;gt; flatValue(totalDailyDeliveries * 100);
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Now with this information, we can directly index into the area based on the trades data:&lt;/p&gt;
+&lt;pre&gt;&lt;code class="language-cpp"&gt;#ifdef _OPENMP
+#pragma omp parallel for reduction(+: all_totalPower, all_totalValue, \
+                                     traderX_totalPower, traderX_totalValue, \
+                                     traderX_area1_totalPower, traderX_area1_totalValue, \
+                                     traderX_area2_totalPower, traderX_area2_totalValue)
+#endif
+    for (std::size_t i = 0; i &amp;lt; flatTrades.size(); ++i)
+    {
+        const auto&amp;amp; ft = flatTrades[i];
+        // Each trade's deliveries are stored in a contiguous block.
+        size_t startIndex = ft.deliveriesOffset * 100;
+        size_t numInts = ft.numDeliveries * 100;
+        long long sumPower = 0;
+        long long sumValue = 0;
+        for (size_t j = 0; j &amp;lt; numInts; ++j)
+        {
+            sumPower += flatPower[startIndex + j];
+            sumValue += flatValue[startIndex + j];
+        }
+        // (a) All trades
+        all_totalPower += sumPower;
+        all_totalValue += sumValue;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;When running with this configuration, my time to aggregation on the laptop improves to &lt;strong&gt;178ms&lt;/strong&gt; a 37% improvement in speed - which get us to &lt;strong&gt;55 GB/s&lt;/strong&gt; on a commodity laptop (using OpenMP of course).&lt;/p&gt;
+&lt;h2 id="limits"&gt;Limits&lt;/h2&gt;
+&lt;p&gt;But as you scale to larger and larger amounts of trades and delivery days, you will really find that the vector&lt;int&gt; allocator will not be able to handle that in a single bloc.&lt;/p&gt;
+&lt;p&gt;At that point, we'll start running our own custom allocation, keeping our own block memory via a custom allocator. By creating blocks of 64 to 256MB that we allocate as needed and indexing our trade deliveries into it, we can then scale to more of the the entire memory of your machine.&lt;/p&gt;
+&lt;p&gt;Two good references on that are &lt;a href="https://johnfarrier.com/custom-allocators-in-c-high-performance-memory-management/"&gt;Custom Allocators in C++: High Performance Memory Management&lt;/a&gt; and &lt;a href="https://www.youtube.com/watch?v=kSWfushlvB8"&gt;CppCon 2017: Bob Steagall “How to Write a Custom Allocator”&lt;/a&gt;.&lt;/p&gt;
+&lt;h2 id="next-steps"&gt;Next steps?&lt;/h2&gt;
+&lt;p&gt;Going from a simple data structure to a memory adapted structure allowed us to go from &lt;strong&gt;40GB/s&lt;/strong&gt; (42% of laptop bandwidth) to &lt;strong&gt;55GB/s&lt;/strong&gt; (57% of laptop's 96 GB/s bandwidth).&lt;/p&gt;
+&lt;p&gt;If you still need more performance, you must further adapt your data structures and locality to the access patterns. Then start looking in depth at where the stalls are in the execution trace. There's other approaches such as looking at AVX instructions in more detail to find some perf, loop unrolling, and so on. Get a real cpp expert to consult on it.&lt;/p&gt;
+&lt;p&gt;Or just get a machine with more bandwidth! An example of that is the M2, M4 Max and Ultra family of chips from Apple, with memory bandwidth of over 800GB/s - over 8x what my laptop has. Or just run on a server, as noted in the first article, Azure has now a machine with 6'900 GB/s of bandwidth.&lt;/p&gt;
+</content:encoded>
+		</item>
 		<item>
 			<title>In-memory software design 2025 - Applied to energy</title>
 			<link>http://ewinnington.github.io/posts/SimplePerf2</link>
@@ -2053,33 +2111,6 @@ aaa &amp;gt; eee
 &lt;p&gt;Stock tracking? an SQLite Db with Transactions and a roll-up Inventory table.&lt;/p&gt;
 &lt;p&gt;In fact, even when sending data around from one system to another, we should even embrace the simplicity of SQLite over CSV files. See &lt;a href="https://berthub.eu/articles/posts/big-data-storage/"&gt;https://berthub.eu/articles/posts/big-data-storage/&lt;/a&gt; for his views and performance tests.&lt;/p&gt;
 &lt;p&gt;Now I have micro data-stores, I can add a service on top which contains the CRUD commands I need to interact with them and show them in a personal dashboard.&lt;/p&gt;
-</content:encoded>
-		</item>
-		<item>
-			<title>The case for a SpaceX Starship laser ablation platform for orbital debris management</title>
-			<link>http://ewinnington.github.io/posts/Starship-laser-ablation</link>
-			<description>&lt;p&gt;SpaceX’s Starship program as a platform for specialised load-outs has many potential applications: Tanker variants for orbital refuelling, Crew variant for Dear Moon mission and dedicated satellite launcher for the Starlink satellite constellation deployment being the variants we already know about.&lt;/p&gt;</description>
-			<guid>http://ewinnington.github.io/posts/Starship-laser-ablation</guid>
-			<pubDate>Sun, 18 Sep 2022 00:00:00 GMT</pubDate>
-			<content:encoded>&lt;p&gt;SpaceX’s Starship program as a platform for specialised load-outs has many potential applications: Tanker variants for orbital refuelling, Crew variant for Dear Moon mission and dedicated satellite launcher for the Starlink satellite constellation deployment being the variants we already know about.&lt;/p&gt;
-&lt;p&gt;With the latest discussion about Orbital debris fields, I suggest it is time to discuss about another variant: a dedicated laser ablation Starship variant for de-orbiting or destroying 1 to 10 cm sized debris.&lt;/p&gt;
-&lt;p&gt;To deorbit or destroy debris in Earth’s orbit, laser ablation is one of the ideal techniques to use since it can directly burn up small debris or  deorbit larger ones via plasma propulsion (in effect, burning up the target object and causing it to be propelled by the plasma generated by the laser hitting the target).&lt;/p&gt;
-&lt;p&gt;To be able to make orbital cleanup affordable, we need to have a cheap to fly, high power laser with a sufficient burn time and have the ability to choose the orbit of our laser platform.&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;Cheap to fly: The launch costs of a SpaceX starship is estimated to be at least one order of magnitude less in dollar per kilo to orbit.&lt;/li&gt;
-&lt;li&gt;High power laser: The high power of chemical lasers along with their high mass requirements make them a good fit for integration into a Starship. With sufficient mass for the chemicals to supply the laser, the lasers could be used long enough to clear the coplanar orbit. Once the chemicals are depleted, the starship can be landed and the laser refuelled for another mission. Other types of lasers, which have been developed recently, are also candidates: Solid state lasers, fiber lasers, diode lasers - with these the mass capability of Starship would be used for large batteries and potentially hydrogen fuel cells to provide enough power for the application.&lt;/li&gt;
-&lt;li&gt;Ability to choose orbit: Laser ablation is most effective when the platform if shooting from a “same altitude and coplanar” orbit. Different launches are then the most effective way of reaching these orbits to get maximal efficiency.&lt;/li&gt;
-&lt;/ul&gt;
-&lt;p&gt;If the &lt;a href="https://www.fastcompany.com/90789865/orbits-act-what-to-know-about-congress-effort-to-clean-up-space-debris"&gt;US government decides to start paying for orbital clearing services&lt;/a&gt; with the Orbital Clearance with the Orbital Sustainability (ORBITS) Act, it would be a clear case to develop such a Starship variant. Without other incentives, it might still be profitable by selling “deorbiting and clearance services” to other satellite providers. This remains to be seen how much “good citizenship” is to be expected from satellite constructors, launchers and operators.&lt;/p&gt;
-&lt;h2 id="references-to-laser-ablation-papers"&gt;References to laser ablation papers&lt;/h2&gt;
-&lt;p&gt;Space based -
-&lt;a href="https://conference.sdo.esoc.esa.int/proceedings/sdc8/paper/43/SDC8-paper43.pdf"&gt;https://conference.sdo.esoc.esa.int/proceedings/sdc8/paper/43/SDC8-paper43.pdf&lt;/a&gt;&lt;/p&gt;
-&lt;p&gt;Ground based -
-&lt;a href="https://conference.sdo.esoc.esa.int/proceedings/sdc6/paper/29/SDC6-paper29.pdf"&gt;https://conference.sdo.esoc.esa.int/proceedings/sdc6/paper/29/SDC6-paper29.pdf&lt;/a&gt;&lt;/p&gt;
-&lt;p&gt;Air based Anti ballistic missile chemical laser - a lower powered could be used in Starsjip for de-orbiting, but this shows the feasibility.
-&lt;a href="https://minutemanmissile.com/abl.html"&gt;https://minutemanmissile.com/abl.html&lt;/a&gt;&lt;/p&gt;
-&lt;h2 id="discussion"&gt;Discussion&lt;/h2&gt;
-&lt;p&gt;A &lt;a href="https://www.reddit.com/r/SpaceXLounge/comments/xj8bjh/the_case_for_a_spacex_starship_laser_ablation/"&gt;discussion thread on reddit about this post&lt;/a&gt; has provided some feedback and the post has been updated.&lt;/p&gt;
 </content:encoded>
 		</item>
 	</channel>
