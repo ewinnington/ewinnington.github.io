@@ -1,5 +1,5 @@
 Title: It’s a proportional allocation - how hard can it be? Going from Water filling to QP
-Published: 4/16/2025 10:00
+Published: 16/4/2025 10:00
 Tags: [MIQP, MILP, LinearProgramming] 
 ---
 
