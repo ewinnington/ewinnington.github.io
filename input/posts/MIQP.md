@@ -111,7 +111,8 @@ $$\min \sum_i (x_i - w_i T)^2$$
 
 #### (I) Basic allocation limits
 
-$$\forall i \quad x_i \geq 0 \quad (a)$$
+$$\forall i \quad x_i \geq 0 \quad (a)$$  
+
 $$\forall i \quad x_i \leq M_i \quad (b)$$
 
 #### (II) Total allocation constraint
@@ -120,17 +121,21 @@ $$\sum_i x_i \leq T$$
 
 #### (III) Saturation constraints $\forall i$
 
-$$x_i = w_i \cdot v_i + M_i \cdot d_i \quad (a)$$
-$$v_i \leq U \cdot (1 - d_i) \quad (b) \quad \text{with } v_i = 0 \text{ when saturated}$$
-$$v_i \geq 0 \quad (c)$$
-$$v_i \leq \frac{M_i}{w_i} \cdot (1 - d_i) + U \cdot d_i \quad (d)$$
+$$x_i = w_i \cdot v_i + M_i \cdot d_i \quad (a)$$  
+
+$$v_i \leq U \cdot (1 - d_i) \quad (b) \quad \text{with } v_i = 0 \text{ when saturated}$$  
+
+$$v_i \geq 0 \quad (c)$$  
+
+$$v_i \leq \frac{M_i}{w_i} \cdot (1 - d_i) + U \cdot d_i \quad (d)$$  
 
 #### (IV) Water level equality constraints across unsaturated products
 
 $$\forall i (1 \rightarrow n), \quad \forall j (i+1 \rightarrow n)$$
 
-$$v_i - v_j \leq U \cdot (d_i + d_j)$$
-$$v_j - v_i \leq U \cdot (d_i + d_j)$$
+$$v_i - v_j \leq U \cdot (d_i + d_j)$$  
+
+$$v_j - v_i \leq U \cdot (d_i + d_j)$$  
 
 *If both are unsaturated, it means $d_i = d_j = 0$, thus forcing $v_i = v_j$.*
 
@@ -140,10 +145,14 @@ $$v_j - v_i \leq U \cdot (d_i + d_j)$$
 
 This set of equations sets up $v_i$ as a shared value $z$ across all unsaturated products.
 
-$$40 + (w_1 + w_2) \cdot z = 100$$
-$$(0.3 + 0.2) z = 60$$
-$$z = 120$$
-$$x_1 = 0.3 \cdot 120 = 36$$
+$$40 + (w_1 + w_2) \cdot z = 100$$  
+
+$$(0.3 + 0.2) z = 60$$  
+
+$$z = 120$$  
+
+$$x_1 = 0.3 \cdot 120 = 36$$  
+
 $$x_2 = 0.2 \cdot 120 = 24$$
 
 ### Implementation in Python 
