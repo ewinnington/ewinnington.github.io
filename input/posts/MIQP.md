@@ -1,6 +1,6 @@
 Title: It’s a proportional allocation - how hard can it be? Going from Water filling to QP
 Published: 4/16/2025 10:00
-Tags: [MIQP, MILP] 
+Tags: [MIQP, MILP, LinearProgramming] 
 ---
 
 # It’s a proportional allocation - how hard can it be? MIQP
