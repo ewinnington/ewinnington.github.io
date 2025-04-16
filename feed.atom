@@ -4,8 +4,217 @@
 	<title>Eric Winnington</title>
 	<link rel="self" href="http://ewinnington.github.io/" />
 	<rights>2025</rights>
-	<updated>2025-04-16T11:00:59Z</updated>
+	<updated>2025-04-16T11:05:47Z</updated>
 	<subtitle>A collection of thoughts, code and snippets.</subtitle>
+	<entry>
+		<id>http://ewinnington.github.io/posts/MIQP</id>
+		<title>It’s a proportional allocation - how hard can it be? Going from Water filling to QP</title>
+		<link href="http://ewinnington.github.io/posts/MIQP" />
+		<updated>2025-04-16T10:00:00Z</updated>
+		<content>&lt;h1 id="its-a-proportional-allocation-how-hard-can-it-be-miqp"&gt;It’s a proportional allocation - how hard can it be? MIQP&lt;/h1&gt;
+&lt;p&gt;Alice, Bob and Charlie buy a pizza and they each put down a part of the price, respectively 50%, 30% and 20%. Pizza arrives and they slice it up and eat it. But Alice gets full after eating 40% of her 50% slice, how do we allocate the remaining 10% slice to Bob and Charlie? Her 10% can be cut up into 2% slices and we proportionally give 3 to Bob (total 36%) and 2 to Charlie (total 24%).&lt;/p&gt;
+&lt;p&gt;We have a total allocation of 100 MW of power to allocate to three products, in the ideal allocation with (0.5, 0.3, 0.2) ratio and each product has a maximum of 40MW.&lt;/p&gt;
+&lt;p&gt;These two problems are the same.&lt;/p&gt;
+&lt;h2 id="waterfilling-algorithm"&gt;Waterfilling algorithm&lt;/h2&gt;
+&lt;p&gt;There exists a well known algorithm for solving this problem, the water filling algorithm.&lt;/p&gt;
+&lt;p&gt;In essence, we are looking at finding the level of water across three containers that is flat along the allocation amount.&lt;/p&gt;
+&lt;h3 id="definitions"&gt;definitions:&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;span class="math"&gt;\(w_i\)&lt;/span&gt; is the weight from product i&lt;/li&gt;
+&lt;li&gt;&lt;span class="math"&gt;\(w'_i\)&lt;/span&gt; is the updated weight when we have fewer products due to saturation&lt;/li&gt;
+&lt;li&gt;&lt;span class="math"&gt;\(M_i\)&lt;/span&gt; is the maximum of product i&lt;/li&gt;
+&lt;li&gt;&lt;span class="math"&gt;\(x'_i\)&lt;/span&gt; is the initial / ideal allocation in case the products are not saturated&lt;/li&gt;
+&lt;li&gt;&lt;span class="math"&gt;\(x_i\)&lt;/span&gt; is the current allocation to the product&lt;/li&gt;
+&lt;li&gt;&lt;span class="math"&gt;\(T\)&lt;/span&gt; is total allocation amount to spread over the products&lt;/li&gt;
+&lt;li&gt;&lt;span class="math"&gt;\(T_r\)&lt;/span&gt; is the remaining allocation to spread over products after the saturated products are removed from T&lt;/li&gt;
+&lt;li&gt;&lt;span class="math"&gt;\(saturated\)&lt;/span&gt; : means that the allocation is &amp;gt;= max on the product.&lt;/li&gt;
+&lt;li&gt;&lt;span class="math"&gt;\(unsaturated\)&lt;/span&gt; : means that the allocation is &amp;lt; max on the product&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id="water-filling-iterative-algorithm"&gt;Water-Filling (Iterative) Algorithm:&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;Step 1: Compute the ideal allocations &lt;span class="math"&gt;\(x'_i = w_i \cdot T\)&lt;/span&gt;&lt;/li&gt;
+&lt;li&gt;Step 2: For any product i for which &lt;span class="math"&gt;\(x'_i &amp;gt;= M_i\)&lt;/span&gt; (saturated), set &lt;span class="math"&gt;\(x_i =M_i\)&lt;/span&gt;, otherwise &lt;span class="math"&gt;\(x_i = x'_i\)&lt;/span&gt;.&lt;/li&gt;
+&lt;li&gt;Step 3: Compute the remaining capacity by removing the capacity of saturated &lt;span class="math"&gt;\(x_i\)&lt;/span&gt; : &lt;span class="math"&gt;\(T_r = T − \sum_{i_{\text{saturated}}} M_i\)&lt;/span&gt;.&lt;/li&gt;
+&lt;li&gt;Step 4: For the remaining (unsaturated) products, redistribute &lt;span class="math"&gt;\(T_r\)&lt;/span&gt; proportionally based on their weights normalized over the unsaturated set &lt;span class="math"&gt;\(x_i = w^{\prime}_i \cdot T_r\)&lt;/span&gt; where &lt;span class="math"&gt;\(w^{\prime}_i = \frac{w_i}{\sum_j w_j}\)&lt;/span&gt; with &lt;span class="math"&gt;\(j\)&lt;/span&gt; representing the unsaturated products&lt;/li&gt;
+&lt;li&gt;Step 5: Repeat the process if additional products get saturated during the redistribution, ie. from Step 2.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;The reason this terminates is that because we remove saturated products from the list, the next products get allocated and the set gets reduced, either a new product is saturated and the cycle continues or the final allocation is done and terminates.&lt;/p&gt;
+&lt;pre&gt;&lt;code class="language-python"&gt;import numpy as np
+
+def iterative_waterfilling(T, weights, max_allocations):
+    n = len(weights)
+    allocations = np.zeros(n)
+    unsaturated = np.array([True] * n)
+    remaining_T = T
+
+    while True:
+        # Calculate proportional weights for unsaturated products
+        current_weights = np.array(weights) * unsaturated
+        total_current_weight = np.sum(current_weights)
+        
+        # Calculate ideal allocation for unsaturated products
+        ideal_allocations = (current_weights / total_current_weight) * remaining_T
+
+        # Check for saturation
+        newly_saturated = ideal_allocations &amp;gt;= max_allocations
+        
+        # Update allocations and saturation status
+        if not np.any(newly_saturated &amp;amp; unsaturated):
+            allocations[unsaturated] = ideal_allocations[unsaturated]
+            break
+        
+        for i in range(n):
+            if unsaturated[i] and newly_saturated[i]:
+                allocations[i] = max_allocations[i]
+                unsaturated[i] = False
+                remaining_T -= allocations[i]
+
+    return allocations
+
+T = 100
+weights = [0.5, 0.3, 0.2]
+max_allocations = [40, 40, 40]
+
+allocations_result = iterative_waterfilling(T, weights, max_allocations)
+print(&amp;quot;Iterative Waterfilling Result:&amp;quot;, allocations_result)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3 id="examples"&gt;Examples&lt;/h3&gt;
+&lt;p&gt;Example 1 - total 100, allocation (0.5,0.3,0.2), maximum (40,40,40), result (40,36,24)&lt;/p&gt;
+&lt;p&gt;Example 2 - total 100, allocation (0.5,0.3,0.2), maximum (40,34,40), result (40,34,26)&lt;/p&gt;
+&lt;p&gt;The problem of this algorithm is that while it works wonderfully for simple proportional problems, as soon as you start adding more constraints (minimums) and relations between the allocations, this iterative algorithm doesn’t work that great.&lt;/p&gt;
+&lt;p&gt;So how do we solve this as an optimization problem? We want to find a solution that when unconstrained (unsaturated) falls back to the proportional allocation and when constrained (saturated maximum) falls back to the waterfilling algorithm.&lt;/p&gt;
+&lt;h2 id="from-waterfilling-to-qp-mixed-integer-quadratic-programming"&gt;From Waterfilling to QP : Mixed integer quadratic programming&lt;/h2&gt;
+&lt;p&gt;While the iterative waterfilling algorithm effectively solves basic proportional allocation problems, it struggles under more complex scenarios involving additional constraints, such as minimum allocation limits or relational constraints between allocations. To robustly handle these real-world complexities, we leverage Mixed Integer Quadratic Programming (MIQP). MIQP elegantly generalizes the waterfilling logic into an optimization framework, allowing precise specification of constraints and objectives. By translating allocation decisions into a mathematical optimization problem, we ensure optimal, constraint-respecting allocations, making it suitable for applications demanding reliability and flexibility.&lt;/p&gt;
+&lt;h3 id="definitions-1"&gt;Definitions:&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;span class="math"&gt;\(T\)&lt;/span&gt;: total&lt;/li&gt;
+&lt;li&gt;&lt;span class="math"&gt;\(w_i\)&lt;/span&gt;: weight&lt;/li&gt;
+&lt;li&gt;&lt;span class="math"&gt;\(M_i\)&lt;/span&gt;: Maximum of allocation&lt;/li&gt;
+&lt;li&gt;&lt;span class="math"&gt;\(d_i\)&lt;/span&gt;: product saturated marker ($\in \mathbb, binary \in \lbrace 0,1 \rbrace $), 0 unsaturated, 1 saturated&lt;/li&gt;
+&lt;li&gt;&lt;span class="math"&gt;\(x_i\)&lt;/span&gt;: allocation amount&lt;/li&gt;
+&lt;li&gt;&lt;span class="math"&gt;\(v_i\)&lt;/span&gt;: target water level for unsaturated product (shared identity)&lt;/li&gt;
+&lt;li&gt;&lt;span class="math"&gt;\(U\)&lt;/span&gt;: upper large bound&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id="objective"&gt;Objective:&lt;/h3&gt;
+&lt;p&gt;&lt;span class="math"&gt;\(\min \sum_i (x_i - w_i T)^2\)&lt;/span&gt;&lt;/p&gt;
+&lt;h3 id="constraints"&gt;Constraints:&lt;/h3&gt;
+&lt;h4 id="i-basic-allocation-limits"&gt;(I) Basic allocation limits&lt;/h4&gt;
+&lt;p&gt;&lt;span class="math"&gt;\(\forall i \quad x_i \geq 0 \quad (a)\)&lt;/span&gt;
+&lt;span class="math"&gt;\(\forall i \quad x_i \leq M_i \quad (b)\)&lt;/span&gt;&lt;/p&gt;
+&lt;h4 id="ii-total-allocation-constraint"&gt;(II) Total allocation constraint&lt;/h4&gt;
+&lt;p&gt;&lt;span class="math"&gt;\(\sum_i x_i \leq T\)&lt;/span&gt;&lt;/p&gt;
+&lt;h4 id="iii-saturation-constraints"&gt;(III) Saturation constraints &lt;span class="math"&gt;\(\forall i\)&lt;/span&gt;&lt;/h4&gt;
+&lt;p&gt;&lt;span class="math"&gt;\(x_i = w_i \cdot v_i + M_i \cdot d_i \quad (a)\)&lt;/span&gt;
+&lt;span class="math"&gt;\(v_i \leq U \cdot (1 - d_i) \quad (b) \quad \text{with } v_i = 0 \text{ when saturated}\)&lt;/span&gt;
+&lt;span class="math"&gt;\(v_i \geq 0 \quad (c)\)&lt;/span&gt;
+&lt;span class="math"&gt;\(v_i \leq \frac{M_i}{w_i} \cdot (1 - d_i) + U \cdot d_i \quad (d)\)&lt;/span&gt;&lt;/p&gt;
+&lt;h4 id="iv-water-level-equality-constraints-across-unsaturated-products"&gt;(IV) Water level equality constraints across unsaturated products&lt;/h4&gt;
+&lt;p&gt;&lt;span class="math"&gt;\(\forall i (1 \rightarrow n), \quad \forall j (i+1 \rightarrow n)\)&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span class="math"&gt;\(v_i - v_j \leq U \cdot (d_i + d_j)\)&lt;/span&gt;
+&lt;span class="math"&gt;\(v_j - v_i \leq U \cdot (d_i + d_j)\)&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;If both are unsaturated, it means &lt;span class="math"&gt;\(d_i = d_j = 0\)&lt;/span&gt;, thus forcing &lt;span class="math"&gt;\(v_i = v_j\)&lt;/span&gt;.&lt;/em&gt;&lt;/p&gt;
+&lt;h3 id="explanation-of"&gt;Explanation of &lt;span class="math"&gt;\(v_i\)&lt;/span&gt;&lt;/h3&gt;
+&lt;p&gt;This set of equations sets up &lt;span class="math"&gt;\(v_i\)&lt;/span&gt; as a shared value &lt;span class="math"&gt;\(z\)&lt;/span&gt; across all unsaturated products.&lt;/p&gt;
+&lt;p&gt;$$40 + (w_1 + w_2) \cdot z = 100$$
+&lt;span class="math"&gt;\((0.3 + 0.2) z = 60\)&lt;/span&gt;
+&lt;span class="math"&gt;\(z = 120\)&lt;/span&gt;
+&lt;span class="math"&gt;\(x_1 = 0.3 \cdot 120 = 36\)&lt;/span&gt;
+&lt;span class="math"&gt;\(x_2 = 0.2 \cdot 120 = 24\)&lt;/span&gt;&lt;/p&gt;
+&lt;h3 id="implementation-in-python"&gt;Implementation in Python&lt;/h3&gt;
+&lt;pre&gt;&lt;code class="language-python"&gt;#pip install numpy
+#pip install cvxpy
+#pip install ecos
+
+import cvxpy as cp
+import numpy as np
+
+# Problem parameters
+T = 100.0
+w = [0.5, 0.3, 0.2]          # target weights for products 1, 2, and 3
+M_max = [40.0, 40.0, 40.0]     # maximum allocation for each product
+
+# Number of products
+n = len(w)
+
+# A sufficiently large constant U (big-M) for enforcing water-level equality.
+U = 500.0
+
+# Decision variables:
+# x: allocation amounts
+x = cp.Variable(n)
+# v: auxiliary &amp;quot;water-level&amp;quot; variables for unsaturated products
+v = cp.Variable(n)
+# delta: binary variables; delta[i] = 1 means product i is saturated (x[i] = M_max[i])
+delta = cp.Variable(n, boolean=True)
+
+constraints = []
+
+# For each product, define the allocation as the sum of the unsaturated part and the saturation term.
+for i in range(n):
+    # If not saturated (delta[i] = 0) then x[i] = w[i]*v[i].
+    # If saturated (delta[i] = 1) then x[i] = M_max[i].
+    constraints.append(x[i] == w[i] * v[i] + M_max[i] * delta[i])
+    
+    # Force v[i] = 0 when saturated, by bounding v[i] to 0 when delta[i]=1.
+    constraints.append(v[i] &amp;lt;= U * (1 - delta[i]))
+    # Ensure nonnegativity of v.
+    constraints.append(v[i] &amp;gt;= 0)
+    # When unsaturated (delta[i]=0), we must have x[i] = w[i]*v[i] ≤ M_max[i]. 
+    # Throught: Why not T here instead of M_max[i]? -&amp;gt; it would be correct, but M_max[i] is a more restrictive boundary so helps convergence
+    constraints.append(v[i] &amp;lt;= (M_max[i] / w[i]) * (1 - delta[i]) + U * delta[i])
+
+# Enforce that all unsaturated products share the same water-level.
+# For every pair (i,j), if both are unsaturated (delta[i] = delta[j] = 0) then v[i] must equal v[j].
+for i in range(n):
+    for j in range(i+1, n):
+        constraints.append(v[i] - v[j] &amp;lt;= U * (delta[i] + delta[j]))
+        constraints.append(v[j] - v[i] &amp;lt;= U * (delta[i] + delta[j]))
+
+# Total allocation constraint: the sum of all allocations must equal the available capacity.
+constraints.append(cp.sum(x) == T)
+
+# Ensure each x[i] does not exceed its maximum. (These could be built in via the definition of x.)
+for i in range(n):
+    constraints.append(x[i] &amp;gt;= 0)
+    constraints.append(x[i] &amp;lt;= M_max[i])
+
+# Define the target allocation for each product (unconstrained ideals)
+target = np.array([w_i * T for w_i in w])
+
+# Objective: minimize squared deviation from the ideal allocation.
+objective = cp.Minimize(cp.sum_squares(x - target))
+
+# Define and solve the MIQP.
+# Use a MIQP-capable solver such as GUROBI, CPLEX, ECOS_BB, etc.
+prob = cp.Problem(objective, constraints)
+result = prob.solve(solver=cp.ECOS_BB)
+
+
+print(&amp;quot;Status:&amp;quot;, prob.status)
+print(&amp;quot;Optimal value:&amp;quot;, result)
+print(&amp;quot;Optimal allocations:&amp;quot;)
+for i in range(n):
+    print(f&amp;quot;  x[{i+1}] = {x.value[i]:.4f}&amp;quot;)
+print(&amp;quot;Water-level (v) values:&amp;quot;)
+for i in range(n):
+    print(f&amp;quot;  v[{i+1}] = {v.value[i]:.4f}&amp;quot;)
+print(&amp;quot;Saturation indicators (delta) values:&amp;quot;)
+for i in range(n):
+    print(f&amp;quot;  delta[{i+1}] = {delta.value[i]:.4f}&amp;quot;)
+
+# Expected behavior for this example:
+# - For product 1, the unconstrained target is 50 but M_max[0]=40, so we expect it to be saturated (delta[0]=1, x[0]=40).
+# - For products 2 and 3 (unsaturated, delta = 0), they share the same water-level z.
+#   The total allocation constraint becomes: 40 + (w[1] + w[2]) * z = 100  --&amp;gt;  (0.3+0.2)*z = 60, so z = 120.
+#   Hence, x[2] = 0.3 * 120 = 36 and x[3] = 0.2 * 120 = 24.
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2 id="summary"&gt;Summary&lt;/h2&gt;
+&lt;p&gt;In business applications, we often see allocations that should be &amp;quot;preference based&amp;quot; if unconstrained, but then with different constraints it becomes complicated to tease out the preferences in an optimal way. This QP application shows a way to have an allocation identical to the water filling, but with the flexibility of QP.&lt;/p&gt;
+&lt;p&gt;If you were simplifying the QP constraints to remove the equations (IV), the output would be (40, 35, 25) since that minimises the objective function.&lt;/p&gt;
+&lt;p&gt;This example here is taken out of an abstration of a practical problem of allocating ancillary service capacity to a series of contracts, with trader preferences. This chapter is part of my book &amp;quot;Energy - From Asset to Cashflow&amp;quot; (not yet published).&lt;/p&gt;
+</content>
+		<summary>&lt;p&gt;Alice, Bob and Charlie buy a pizza and they each put down a part of the price, respectively 50%, 30% and 20%. Pizza arrives and they slice it up and eat it. But Alice gets full after eating 40% of her 50% slice, how do we allocate the remaining 10% slice to Bob and Charlie? Her 10% can be cut up into 2% slices and we proportionally give 3 to Bob (total 36%) and 2 to Charlie (total 24%).&lt;/p&gt;</summary>
+	</entry>
 	<entry>
 		<id>http://ewinnington.github.io/posts/SimplePerf3</id>
 		<title>In-memory software design 2025 ? - from 40GB/s to 55GB/s</title>
@@ -2096,20 +2305,5 @@ aaa &amp;gt; eee
 &lt;/ul&gt;
 </content>
 		<summary>&lt;p&gt;Tesla on Twitter announced: &lt;a href="https://t.co/aw85eHECXI"&gt;"Meet Megafactory, our new Megapack factory in Lathrop, CA 🔋🔋🔋"&lt;/a&gt;&lt;/p&gt;</summary>
-	</entry>
-	<entry>
-		<id>http://ewinnington.github.io/posts/sqlite-microstores</id>
-		<title>Embracing SQLite and living with micro-services</title>
-		<link href="http://ewinnington.github.io/posts/sqlite-microstores" />
-		<updated>2022-10-22T00:00:00Z</updated>
-		<content>&lt;p&gt;The idea of micro-services and their own single purpose data stores is easy to describe. But then to implement and live with it is a different story. So as a developer and architect, I’ve decided to do just that! Make micro-services and micro-data stores to cover the tiny and small stuff in my life I want to keep track of.&lt;/p&gt;
-&lt;p&gt;As an example, I read online comics, light novels and mangas. I had a continuous list of a couple hundred bookmarks that I tried to keep updated with the last position I was when I read the story. But I always forget to update the bookmark and have so many of them that I lose the last read chapter. My solution?&lt;/p&gt;
-&lt;p&gt;A SQLite db and some Python code to load it. Pass a single url on some command line Python and it gets added to the Db, a Request goes out, gets the title and chapter from the html, then adds it to the DB by title. Now I have a track of where I left off and I can get have last updated / last read records. Bonus, I can do a SELECT .. ORDER BY updated LIMIT 10 to check the last stories I was reading and pipe them to my browser to open up the chapters where I left them off.&lt;/p&gt;
-&lt;p&gt;To really embrace SQLite is to make everything in your life become a new micro database, even if there's only a couple of tables with a dozen or a hundred rows.&lt;/p&gt;
-&lt;p&gt;Stock tracking? an SQLite Db with Transactions and a roll-up Inventory table.&lt;/p&gt;
-&lt;p&gt;In fact, even when sending data around from one system to another, we should even embrace the simplicity of SQLite over CSV files. See &lt;a href="https://berthub.eu/articles/posts/big-data-storage/"&gt;https://berthub.eu/articles/posts/big-data-storage/&lt;/a&gt; for his views and performance tests.&lt;/p&gt;
-&lt;p&gt;Now I have micro data-stores, I can add a service on top which contains the CRUD commands I need to interact with them and show them in a personal dashboard.&lt;/p&gt;
-</content>
-		<summary>&lt;p&gt;The idea of micro-services and their own single purpose data stores is easy to describe. But then to implement and live with it is a different story. So as a developer and architect, I’ve decided to do just that! Make micro-services and micro-data stores to cover the tiny and small stuff in my life I want to keep track of.&lt;/p&gt;</summary>
 	</entry>
 </feed>
