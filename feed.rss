@@ -5,8 +5,8 @@
 		<link>http://ewinnington.github.io/</link>
 		<description>A collection of thoughts, code and snippets.</description>
 		<copyright>2025</copyright>
-		<pubDate>Wed, 16 Apr 2025 11:05:47 GMT</pubDate>
-		<lastBuildDate>Wed, 16 Apr 2025 11:05:47 GMT</lastBuildDate>
+		<pubDate>Wed, 16 Apr 2025 11:09:52 GMT</pubDate>
+		<lastBuildDate>Wed, 16 Apr 2025 11:09:52 GMT</lastBuildDate>
 		<item>
 			<title>It’s a proportional allocation - how hard can it be? Going from Water filling to QP</title>
 			<link>http://ewinnington.github.io/posts/MIQP</link>
@@ -101,27 +101,27 @@ print(&amp;quot;Iterative Waterfilling Result:&amp;quot;, allocations_result)
 &lt;p&gt;&lt;span class="math"&gt;\(\min \sum_i (x_i - w_i T)^2\)&lt;/span&gt;&lt;/p&gt;
 &lt;h3 id="constraints"&gt;Constraints:&lt;/h3&gt;
 &lt;h4 id="i-basic-allocation-limits"&gt;(I) Basic allocation limits&lt;/h4&gt;
-&lt;p&gt;&lt;span class="math"&gt;\(\forall i \quad x_i \geq 0 \quad (a)\)&lt;/span&gt;
-&lt;span class="math"&gt;\(\forall i \quad x_i \leq M_i \quad (b)\)&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span class="math"&gt;\(\forall i \quad x_i \geq 0 \quad (a)\)&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span class="math"&gt;\(\forall i \quad x_i \leq M_i \quad (b)\)&lt;/span&gt;&lt;/p&gt;
 &lt;h4 id="ii-total-allocation-constraint"&gt;(II) Total allocation constraint&lt;/h4&gt;
 &lt;p&gt;&lt;span class="math"&gt;\(\sum_i x_i \leq T\)&lt;/span&gt;&lt;/p&gt;
 &lt;h4 id="iii-saturation-constraints"&gt;(III) Saturation constraints &lt;span class="math"&gt;\(\forall i\)&lt;/span&gt;&lt;/h4&gt;
-&lt;p&gt;&lt;span class="math"&gt;\(x_i = w_i \cdot v_i + M_i \cdot d_i \quad (a)\)&lt;/span&gt;
-&lt;span class="math"&gt;\(v_i \leq U \cdot (1 - d_i) \quad (b) \quad \text{with } v_i = 0 \text{ when saturated}\)&lt;/span&gt;
-&lt;span class="math"&gt;\(v_i \geq 0 \quad (c)\)&lt;/span&gt;
-&lt;span class="math"&gt;\(v_i \leq \frac{M_i}{w_i} \cdot (1 - d_i) + U \cdot d_i \quad (d)\)&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span class="math"&gt;\(x_i = w_i \cdot v_i + M_i \cdot d_i \quad (a)\)&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span class="math"&gt;\(v_i \leq U \cdot (1 - d_i) \quad (b) \quad \text{with } v_i = 0 \text{ when saturated}\)&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span class="math"&gt;\(v_i \geq 0 \quad (c)\)&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span class="math"&gt;\(v_i \leq \frac{M_i}{w_i} \cdot (1 - d_i) + U \cdot d_i \quad (d)\)&lt;/span&gt;&lt;/p&gt;
 &lt;h4 id="iv-water-level-equality-constraints-across-unsaturated-products"&gt;(IV) Water level equality constraints across unsaturated products&lt;/h4&gt;
 &lt;p&gt;&lt;span class="math"&gt;\(\forall i (1 \rightarrow n), \quad \forall j (i+1 \rightarrow n)\)&lt;/span&gt;&lt;/p&gt;
-&lt;p&gt;&lt;span class="math"&gt;\(v_i - v_j \leq U \cdot (d_i + d_j)\)&lt;/span&gt;
-&lt;span class="math"&gt;\(v_j - v_i \leq U \cdot (d_i + d_j)\)&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span class="math"&gt;\(v_i - v_j \leq U \cdot (d_i + d_j)\)&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span class="math"&gt;\(v_j - v_i \leq U \cdot (d_i + d_j)\)&lt;/span&gt;&lt;/p&gt;
 &lt;p&gt;&lt;em&gt;If both are unsaturated, it means &lt;span class="math"&gt;\(d_i = d_j = 0\)&lt;/span&gt;, thus forcing &lt;span class="math"&gt;\(v_i = v_j\)&lt;/span&gt;.&lt;/em&gt;&lt;/p&gt;
 &lt;h3 id="explanation-of"&gt;Explanation of &lt;span class="math"&gt;\(v_i\)&lt;/span&gt;&lt;/h3&gt;
 &lt;p&gt;This set of equations sets up &lt;span class="math"&gt;\(v_i\)&lt;/span&gt; as a shared value &lt;span class="math"&gt;\(z\)&lt;/span&gt; across all unsaturated products.&lt;/p&gt;
-&lt;p&gt;$$40 + (w_1 + w_2) \cdot z = 100$$
-&lt;span class="math"&gt;\((0.3 + 0.2) z = 60\)&lt;/span&gt;
-&lt;span class="math"&gt;\(z = 120\)&lt;/span&gt;
-&lt;span class="math"&gt;\(x_1 = 0.3 \cdot 120 = 36\)&lt;/span&gt;
-&lt;span class="math"&gt;\(x_2 = 0.2 \cdot 120 = 24\)&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;$$40 + (w_1 + w_2) \cdot z = 100$$&lt;/p&gt;
+&lt;p&gt;&lt;span class="math"&gt;\((0.3 + 0.2) z = 60\)&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span class="math"&gt;\(z = 120\)&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span class="math"&gt;\(x_1 = 0.3 \cdot 120 = 36\)&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span class="math"&gt;\(x_2 = 0.2 \cdot 120 = 24\)&lt;/span&gt;&lt;/p&gt;
 &lt;h3 id="implementation-in-python"&gt;Implementation in Python&lt;/h3&gt;
 &lt;pre&gt;&lt;code class="language-python"&gt;#pip install numpy
 #pip install cvxpy

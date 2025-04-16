@@ -188,27 +188,27 @@ print(&quot;Iterative Waterfilling Result:&quot;, allocations_result)
 <p><span class="math">\(\min \sum_i (x_i - w_i T)^2\)</span></p>
 <h3 id="constraints">Constraints:</h3>
 <h4 id="i-basic-allocation-limits">(I) Basic allocation limits</h4>
-<p><span class="math">\(\forall i \quad x_i \geq 0 \quad (a)\)</span>
-<span class="math">\(\forall i \quad x_i \leq M_i \quad (b)\)</span></p>
+<p><span class="math">\(\forall i \quad x_i \geq 0 \quad (a)\)</span></p>
+<p><span class="math">\(\forall i \quad x_i \leq M_i \quad (b)\)</span></p>
 <h4 id="ii-total-allocation-constraint">(II) Total allocation constraint</h4>
 <p><span class="math">\(\sum_i x_i \leq T\)</span></p>
 <h4 id="iii-saturation-constraints">(III) Saturation constraints <span class="math">\(\forall i\)</span></h4>
-<p><span class="math">\(x_i = w_i \cdot v_i + M_i \cdot d_i \quad (a)\)</span>
-<span class="math">\(v_i \leq U \cdot (1 - d_i) \quad (b) \quad \text{with } v_i = 0 \text{ when saturated}\)</span>
-<span class="math">\(v_i \geq 0 \quad (c)\)</span>
-<span class="math">\(v_i \leq \frac{M_i}{w_i} \cdot (1 - d_i) + U \cdot d_i \quad (d)\)</span></p>
+<p><span class="math">\(x_i = w_i \cdot v_i + M_i \cdot d_i \quad (a)\)</span></p>
+<p><span class="math">\(v_i \leq U \cdot (1 - d_i) \quad (b) \quad \text{with } v_i = 0 \text{ when saturated}\)</span></p>
+<p><span class="math">\(v_i \geq 0 \quad (c)\)</span></p>
+<p><span class="math">\(v_i \leq \frac{M_i}{w_i} \cdot (1 - d_i) + U \cdot d_i \quad (d)\)</span></p>
 <h4 id="iv-water-level-equality-constraints-across-unsaturated-products">(IV) Water level equality constraints across unsaturated products</h4>
 <p><span class="math">\(\forall i (1 \rightarrow n), \quad \forall j (i+1 \rightarrow n)\)</span></p>
-<p><span class="math">\(v_i - v_j \leq U \cdot (d_i + d_j)\)</span>
-<span class="math">\(v_j - v_i \leq U \cdot (d_i + d_j)\)</span></p>
+<p><span class="math">\(v_i - v_j \leq U \cdot (d_i + d_j)\)</span></p>
+<p><span class="math">\(v_j - v_i \leq U \cdot (d_i + d_j)\)</span></p>
 <p><em>If both are unsaturated, it means <span class="math">\(d_i = d_j = 0\)</span>, thus forcing <span class="math">\(v_i = v_j\)</span>.</em></p>
 <h3 id="explanation-of">Explanation of <span class="math">\(v_i\)</span></h3>
 <p>This set of equations sets up <span class="math">\(v_i\)</span> as a shared value <span class="math">\(z\)</span> across all unsaturated products.</p>
-<p>$$40 + (w_1 + w_2) \cdot z = 100$$
-<span class="math">\((0.3 + 0.2) z = 60\)</span>
-<span class="math">\(z = 120\)</span>
-<span class="math">\(x_1 = 0.3 \cdot 120 = 36\)</span>
-<span class="math">\(x_2 = 0.2 \cdot 120 = 24\)</span></p>
+<p>$$40 + (w_1 + w_2) \cdot z = 100$$</p>
+<p><span class="math">\((0.3 + 0.2) z = 60\)</span></p>
+<p><span class="math">\(z = 120\)</span></p>
+<p><span class="math">\(x_1 = 0.3 \cdot 120 = 36\)</span></p>
+<p><span class="math">\(x_2 = 0.2 \cdot 120 = 24\)</span></p>
 <h3 id="implementation-in-python">Implementation in Python</h3>
 <pre><code class="language-python">#pip install numpy
 #pip install cvxpy
