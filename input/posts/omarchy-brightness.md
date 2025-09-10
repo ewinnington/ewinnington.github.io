@@ -1,4 +1,4 @@
-Title: Omarchy: Setting screen brightness over HDMI by terminal
+Title: Omarchy - Setting screen brightness over HDMI by terminal
 Published: 10/09/2025
 Tags: [Omarchy, Linux] 
 ---
