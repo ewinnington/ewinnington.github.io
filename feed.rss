@@ -5,8 +5,116 @@
 		<link>http://ewinnington.github.io/</link>
 		<description>A collection of thoughts, code and snippets.</description>
 		<copyright>2025</copyright>
-		<pubDate>Wed, 10 Sep 2025 05:15:09 GMT</pubDate>
-		<lastBuildDate>Wed, 10 Sep 2025 05:15:09 GMT</lastBuildDate>
+		<pubDate>Wed, 10 Sep 2025 12:55:20 GMT</pubDate>
+		<lastBuildDate>Wed, 10 Sep 2025 12:55:20 GMT</lastBuildDate>
+		<item>
+			<title>Omarchy - Integrating screen brightness via key binds</title>
+			<link>http://ewinnington.github.io/posts/omarchy-brightness2</link>
+			<description>&lt;p&gt;As a follow-up to the previous entry on how to get the &lt;a href="https://ewinnington.github.io/posts/omarchy-brightness"&gt;brightness adapted by ddcutil&lt;/a&gt;, I actually asked &lt;a href="https://openai.com/codex/"&gt;OpenAI's Codex&lt;/a&gt; to wire it up in my keyboard bindings. Once it succeeded and get the osd wired up, I asked it to document the process. Here is the Codex generated documentation.&lt;/p&gt;</description>
+			<guid>http://ewinnington.github.io/posts/omarchy-brightness2</guid>
+			<pubDate>Wed, 10 Sep 2025 00:00:00 GMT</pubDate>
+			<content:encoded>&lt;h1 id="controlling-external-monitor-brightness-ddcci-in-hyprland-with-a-real-osd"&gt;Controlling External Monitor Brightness (DDC/CI) in Hyprland with a Real OSD&lt;/h1&gt;
+&lt;p&gt;As a follow-up to the previous entry on how to get the &lt;a href="https://ewinnington.github.io/posts/omarchy-brightness"&gt;brightness adapted by ddcutil&lt;/a&gt;, I actually asked &lt;a href="https://openai.com/codex/"&gt;OpenAI's Codex&lt;/a&gt; to wire it up in my keyboard bindings. Once it succeeded and get the osd wired up, I asked it to document the process. Here is the Codex generated documentation.&lt;/p&gt;
+&lt;p&gt;As a side note I created a small script to increase or decrease the brightness on the command line, that is executable.&lt;/p&gt;
+&lt;pre&gt;&lt;code class="language-bash"&gt;#!/bin/bash
+# brightness up/down script using ddcutil
+STEP=10
+case &amp;quot;$1&amp;quot; in
+  up)   ddcutil setvcp 10 +$STEP ;;
+  down) ddcutil setvcp 10 -$STEP ;;
+  get)  ddcutil getvcp 10 ;;
+  *)    echo &amp;quot;Usage: $0 {up|down|get}&amp;quot; ;;
+esac
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h1 id="openai-codex-steps-and-explanations"&gt;OpenAI Codex steps and explanations&lt;/h1&gt;
+&lt;ul&gt;
+&lt;li&gt;Environment: Hyprland (Omarchy on Arch), SwayOSD, ddcutil&lt;/li&gt;
+&lt;li&gt;Goal: Make hardware brightness keys and Alt+F1/F2 control HDMI monitor brightness via DDC/CI, with a correct on-screen display (OSD).&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="the-problem"&gt;The Problem&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;Omarchy’s default media bindings show the OSD and call brightnessctl, which targets laptop backlights—not external HDMI displays.&lt;/li&gt;
+&lt;li&gt;My script ~/bin/hdmi-brightness already adjusts HDMI brightness using ddcutil, but Hyprland wasn’t calling it from brightness keys.&lt;/li&gt;
+&lt;li&gt;Bonus ask: show an OSD reflecting the real HDMI brightness level.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="solution-summary"&gt;Solution Summary&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;Unbind default brightness keys.&lt;/li&gt;
+&lt;li&gt;Bind brightness keys and Alt+F1/F2 to the hdmi-brightness script.&lt;/li&gt;
+&lt;li&gt;After each adjustment, read the real brightness via ddcutil getvcp 10 and display an OSD using SwayOSD’s custom-progress mode.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="keybindings"&gt;Keybindings&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;File: ~/.config/hypr/bindings.conf&lt;/li&gt;
+&lt;li&gt;Unbind defaults:
+&lt;ul&gt;
+&lt;li&gt;unbind = , XF86MonBrightnessUp&lt;/li&gt;
+&lt;li&gt;unbind = , XF86MonBrightnessDown&lt;/li&gt;
+&lt;li&gt;unbind = ALT, XF86MonBrightnessUp&lt;/li&gt;
+&lt;li&gt;unbind = ALT, XF86MonBrightnessDown&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;Bind to DDC/CI script + OSD:
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;bindeld = , XF86MonBrightnessUp, HDMI Brightness up, exec, bash -lc &amp;quot;~/bin/hdmi-brightness raise; read P R &amp;lt;&amp;lt;&amp;lt; $(ddcutil getvcp 10 2&amp;gt;/dev/null | awk 'BEGIN{FS=\&amp;quot;[=,]\&amp;quot;} /current value/ {cv=$2+0; mv=$4+0; if(mv&amp;lt;=0){p=0;r=0}else{p=int((cv*100+mv/2)/mv); r=cv/mv}; if(r&amp;lt;0) r=0; if(r&amp;gt;1) r=1; printf(\&amp;quot;%d %.2f\&amp;quot;, p, r)}'); $osdclient --custom-icon display-brightness --custom-progress-text \&amp;quot;Brightness: $P%\&amp;quot; --custom-progress \&amp;quot;$R\&amp;quot;&amp;quot;&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;bindeld = , XF86MonBrightnessDown, HDMI Brightness down, exec, bash -lc &amp;quot;~/bin/hdmi-brightness lower; read P R &amp;lt;&amp;lt;&amp;lt; $(ddcutil getvcp 10 2&amp;gt;/dev/null | awk 'BEGIN{FS=\&amp;quot;[=,]\&amp;quot;} /current value/ {cv=$2+0; mv=$4+0; if(mv&amp;lt;=0){p=0;r=0}else{p=int((cv*100+mv/2)/mv); r=cv/mv}; if(r&amp;lt;0) r=0; if(r&amp;gt;1) r=1; printf(\&amp;quot;%d %.2f\&amp;quot;, p, r)}'); $osdclient --custom-icon display-brightness --custom-progress-text \&amp;quot;Brightness: $P%\&amp;quot; --custom-progress \&amp;quot;$R\&amp;quot;&amp;quot;&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;bindeld = ALT, F2, HDMI Brightness up, exec, [same as above with raise]&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;bindeld = ALT, F1, HDMI Brightness down, exec, [same as above with lower]&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;$osdclient comes from Omarchy’s defaults and shows OSD on the focused monitor:
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;swayosd-client --monitor &amp;quot;$(hyprctl monitors -j | jq -r '.[] | select(.focused == true).name')&amp;quot;&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="osd-integration"&gt;OSD Integration&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;ddcutil getvcp 10 returns a line containing “current value” and “maximum value”.&lt;/li&gt;
+&lt;li&gt;We parse it to get:
+&lt;ul&gt;
+&lt;li&gt;P (percent, e.g., 72)&lt;/li&gt;
+&lt;li&gt;R (ratio 0.00–1.00 for a progress bar)&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;SwayOSD’s --custom-progress shows a clean bar without changing any backlight devices:
+&lt;ul&gt;
+&lt;li&gt;--custom-progress &amp;quot;$R&amp;quot;&lt;/li&gt;
+&lt;li&gt;--custom-progress-text &amp;quot;Brightness: $P%&amp;quot;&lt;/li&gt;
+&lt;li&gt;--custom-icon display-brightness&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="testing"&gt;Testing&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;Ensure the script is executable: chmod +x ~/bin/hdmi-brightness&lt;/li&gt;
+&lt;li&gt;Reload Hyprland: hyprctl reload&lt;/li&gt;
+&lt;li&gt;Press brightness keys and Alt+F1/F2:
+&lt;ul&gt;
+&lt;li&gt;External monitor brightness changes (DDC/CI)&lt;/li&gt;
+&lt;li&gt;OSD shows an accurate bar and percentage&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;If no OSD appears:
+&lt;ul&gt;
+&lt;li&gt;systemctl --user enable --now swayosd&lt;/li&gt;
+&lt;li&gt;Keep a window on the monitor you want the OSD (defaults to focused)&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="troubleshooting"&gt;Troubleshooting&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;No brightness change: confirm ddcutil works (ddcutil detect, ddcutil getvcp 10), user in i2c group, and i2c-dev is loaded.&lt;/li&gt;
+&lt;li&gt;Different keycodes: use wev to check actual keysyms and update the binds accordingly.&lt;/li&gt;
+&lt;li&gt;OSD on the wrong output: we can pin $osdclient to a specific monitor name (e.g., --monitor &amp;quot;HDMI-A-1&amp;quot;).&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="why-this-works"&gt;Why This Works&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;It replaces backlight-centric controls with DDC/CI, which external monitors use.&lt;/li&gt;
+&lt;li&gt;The OSD is decoupled from any system backlight and directly reflects DDC/CI state, so it’s always accurate.&lt;/li&gt;
+&lt;/ul&gt;
+</content:encoded>
+		</item>
 		<item>
 			<title>Omarchy - Setting screen brightness over HDMI by terminal</title>
 			<link>http://ewinnington.github.io/posts/omarchy-brightness</link>
@@ -2151,244 +2259,6 @@ with Diagram(&amp;quot;Composed Docker&amp;quot;, show=False):
 &lt;p&gt;I highly recommend generating some charts in mermaid from your own database ER-Diagram (easy to do!) or using it to make pie charts like &lt;a href="https://youtu.be/IXRGa5m-Lbo"&gt;Microsoft Polyglot notebooks demonstrates at 15:05 onwards&lt;/a&gt; in their &lt;a href="https://github.com/dotnet/interactive/blob/main/samples/notebooks/polyglot/github%20repo%20milestone%20report.ipynb"&gt;GitHub demo notebook&lt;/a&gt;.&lt;/p&gt;
 &lt;p&gt;If you have other recommendations for me, do feel free to reach out and I’ll see if they make to cut to get added to this list. :) You can even pull request this actual blog post on GitHub.&lt;/p&gt;
 &lt;p&gt;Finally, if someone has a recommendation for a WAN/LAN topology visualisation or charting tool, I’d be happy to hear about it and your experience with it!&lt;/p&gt;
-</content:encoded>
-		</item>
-		<item>
-			<title>Data Lineage for dataflow and workflow processes</title>
-			<link>http://ewinnington.github.io/posts/Data-Lineage</link>
-			<description>&lt;p&gt;When working with large amounts of data, extraction, transforms and loads procedures can hide the source of the original data and make inquiries on "where did this data come from and what happened to it?" difficult to answer.&lt;/p&gt;</description>
-			<guid>http://ewinnington.github.io/posts/Data-Lineage</guid>
-			<pubDate>Sat, 12 Nov 2022 22:10:00 GMT</pubDate>
-			<content:encoded>&lt;h1 id="data-lineage"&gt;Data lineage&lt;/h1&gt;
-&lt;p&gt;When working with large amounts of data, extraction, transforms and loads procedures can hide the source of the original data and make inquiries on &amp;quot;where did this data come from and what happened to it?&amp;quot; difficult to answer.&lt;/p&gt;
-&lt;p&gt;A data lineage is &amp;quot;the process of understanding, recording, and visualizing data as it flows from data sources to consumption&lt;a id="fnref:1" href="#fn:1" class="footnote-ref"&gt;&lt;sup&gt;1&lt;/sup&gt;&lt;/a&gt;&amp;quot; and tries to answer that question.&lt;/p&gt;
-&lt;p&gt;Using dataflow and ETL orchestration tools such as &lt;a href="https://airflow.apache.org/"&gt;Airflow&lt;/a&gt;, &lt;a href="https://www.prefect.io"&gt;Prefect&lt;/a&gt;, &lt;a href="https://nifi.apache.org/"&gt;NiFi&lt;/a&gt;, we move and transform data, but also lose the reference as to how the data was transformed.&lt;/p&gt;
-&lt;p&gt;In this document, we will approach one open source tool OpenLineage and one &amp;quot;hand built&amp;quot; approach to capturing and storing data lineage information.&lt;/p&gt;
-&lt;h1 id="openlineage-and-marquez-open-source-tools"&gt;OpenLineage and Marquez - Open source tools&lt;/h1&gt;
-&lt;p&gt;&lt;a href="https://openlineage.io/"&gt;OpenLineage&lt;/a&gt; is an open source project and framework for data lineage collection and analysis that helps collect lineage metadata from the data  processing applications. At its core, OpenLineage exposes a standard API for metadata collection - a single API call: &lt;a href="https://openlineage.io/apidocs/openapi/"&gt;&lt;strong&gt;postRunEvent&lt;/strong&gt;&lt;/a&gt;.&lt;/p&gt;
-&lt;p&gt;To simplify its implementation with AirFlow, Open Lineage has an &lt;a href="https://github.com/OpenLineage/OpenLineage/tree/main/integration/airflow/openlineage/airflow"&gt;airflow connection module&lt;/a&gt; already available.&lt;/p&gt;
-&lt;p&gt;On the back-end, the storage of run meta-data has a reference implementation named Marquez. The data model is illustrated here.&lt;/p&gt;
-&lt;p&gt;&lt;a href="https://lucid.app/lucidchart/f918ce01-9eb4-4900-b266-49935da271b8/view?page=8xAE.zxyknLQ#"&gt;Marquez data model&lt;/a&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img src="/posts/images/data-lineage/Marquez-Data-Model.png" class="img-fluid" width="80%" alt="" /&gt;&lt;/p&gt;
-&lt;p&gt;But it is also possible to implement one's own storage for metadata in case there is a need or added value, but adopting the open source solution will be an advantage for integration later.&lt;/p&gt;
-&lt;h1 id="locally-grown-alternatives"&gt;Locally grown alternatives&lt;/h1&gt;
-&lt;p&gt;Data correlation and lineage information can be generated via the emission of events while processing input data. Additionally, input data can be fingerprinted via a fast hash function to check for duplicate imports, so as to enable idempotent processing.&lt;/p&gt;
-&lt;h3 id="input-dataset-fingerprinting-via-non-cryptographic-hash-function"&gt;Input dataset fingerprinting via non-cryptographic hash function&lt;/h3&gt;
-&lt;p&gt;We can use a fast non-cryptographic hash function such as &lt;a href="https://github.com/backtrace-labs/umash"&gt;umash&lt;/a&gt; to generate a hash of the input data or xxhash &lt;code&gt;sudo apt-get install xxhash&lt;/code&gt;. xxhash is capable of taking streaming STDIN data from compressed files to generate a fast hash.&lt;/p&gt;
-&lt;pre&gt;&lt;code class="language-bash"&gt;time gunzip -c /mnt/d/smart_meter_data/ckw_opendata_smartmeter_dataset_a_202101.csv.gz | /usr/bin/xxhsum
-&lt;/code&gt;&lt;/pre&gt;
-&lt;h3 id="correlation-ids-with-uuids"&gt;Correlation IDs with UUIDs&lt;/h3&gt;
-&lt;p&gt;Generating uuid for correlations identifiers along &lt;a href="https://www.rfc-editor.org/rfc/rfc4122.html"&gt;rfc4122&lt;/a&gt; gives us multiple variant generation algorithms to give us sortable UUIDs which minimize collision possibilities even with a high UUID generation rate.&lt;/p&gt;
-&lt;h3 id="hierarchical-correlation-ids-using-closure-tables"&gt;Hierarchical correlation IDs using closure tables&lt;/h3&gt;
-&lt;p&gt;When inputs contain a dataset that is composed of multiple data points that identify unique sets in our final processed dataset, it becomes necessary to be able to trace their lineage back to the initial input. A recursive search through a table of entries to find the parent correlation identifier of a child time-series is quite inefficient.&lt;/p&gt;
-&lt;p&gt;To have fast search over deep hierarchies of correlations IDs in relational databases, we can turn to the concept of closure tables.&lt;/p&gt;
-&lt;table class="table"&gt;
-&lt;thead&gt;
-&lt;tr&gt;
-&lt;th style="text-align: left;"&gt;Field&lt;/th&gt;
-&lt;th style="text-align: left;"&gt;Type&lt;/th&gt;
-&lt;/tr&gt;
-&lt;/thead&gt;
-&lt;tbody&gt;
-&lt;tr&gt;
-&lt;td style="text-align: left;"&gt;ParentId&lt;/td&gt;
-&lt;td style="text-align: left;"&gt;UUID&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr&gt;
-&lt;td style="text-align: left;"&gt;ChildId&lt;/td&gt;
-&lt;td style="text-align: left;"&gt;UUID&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr&gt;
-&lt;td style="text-align: left;"&gt;Depth&lt;/td&gt;
-&lt;td style="text-align: left;"&gt;integer&lt;/td&gt;
-&lt;/tr&gt;
-&lt;/tbody&gt;
-&lt;/table&gt;
-&lt;p&gt;This table structure allows to query in one query all parent or children of an identifier in one non-recursive sql query. This is done at the cost of having to insert the entire hierarchy of the correlationIDs upon insertion.&lt;/p&gt;
-&lt;p&gt;Here we are representing the two hierarchies&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;aaa &amp;gt; bbb &amp;gt; ccc
-aaa &amp;gt; eee 
-&lt;/code&gt;&lt;/pre&gt;
-&lt;table class="table"&gt;
-&lt;thead&gt;
-&lt;tr&gt;
-&lt;th style="text-align: left;"&gt;ParentId&lt;/th&gt;
-&lt;th style="text-align: left;"&gt;ChildId&lt;/th&gt;
-&lt;th style="text-align: right;"&gt;Depth&lt;/th&gt;
-&lt;/tr&gt;
-&lt;/thead&gt;
-&lt;tbody&gt;
-&lt;tr&gt;
-&lt;td style="text-align: left;"&gt;aaa&lt;/td&gt;
-&lt;td style="text-align: left;"&gt;aaa&lt;/td&gt;
-&lt;td style="text-align: right;"&gt;0&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr&gt;
-&lt;td style="text-align: left;"&gt;bbb&lt;/td&gt;
-&lt;td style="text-align: left;"&gt;bbb&lt;/td&gt;
-&lt;td style="text-align: right;"&gt;0&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr&gt;
-&lt;td style="text-align: left;"&gt;ccc&lt;/td&gt;
-&lt;td style="text-align: left;"&gt;ccc&lt;/td&gt;
-&lt;td style="text-align: right;"&gt;0&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr&gt;
-&lt;td style="text-align: left;"&gt;eee&lt;/td&gt;
-&lt;td style="text-align: left;"&gt;eee&lt;/td&gt;
-&lt;td style="text-align: right;"&gt;0&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr&gt;
-&lt;td style="text-align: left;"&gt;aaa&lt;/td&gt;
-&lt;td style="text-align: left;"&gt;bbb&lt;/td&gt;
-&lt;td style="text-align: right;"&gt;1&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr&gt;
-&lt;td style="text-align: left;"&gt;bbb&lt;/td&gt;
-&lt;td style="text-align: left;"&gt;ccc&lt;/td&gt;
-&lt;td style="text-align: right;"&gt;1&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr&gt;
-&lt;td style="text-align: left;"&gt;aaa&lt;/td&gt;
-&lt;td style="text-align: left;"&gt;ccc&lt;/td&gt;
-&lt;td style="text-align: right;"&gt;2&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr&gt;
-&lt;td style="text-align: left;"&gt;aaa&lt;/td&gt;
-&lt;td style="text-align: left;"&gt;eee&lt;/td&gt;
-&lt;td style="text-align: right;"&gt;1&lt;/td&gt;
-&lt;/tr&gt;
-&lt;/tbody&gt;
-&lt;/table&gt;
-&lt;p&gt;&lt;em&gt;note&lt;/em&gt;: &lt;em&gt;if desired the initial 0 depth nodes can be neglected from the insertion process without losing functionality, but can be useful in certain modeling processes (eg. rights, groups)&lt;/em&gt;&lt;/p&gt;
-&lt;p&gt;If we need to find all children of &lt;strong&gt;aaa&lt;/strong&gt;, we can do a&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;SELECT ChildId, Depth FROM Closure_Table WHERE ParentId = &amp;quot;aaa&amp;quot; ORDER BY Depth;
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;which returns the following&lt;/p&gt;
-&lt;table class="table"&gt;
-&lt;thead&gt;
-&lt;tr&gt;
-&lt;th style="text-align: left;"&gt;ChildId&lt;/th&gt;
-&lt;th style="text-align: left;"&gt;Depth&lt;/th&gt;
-&lt;/tr&gt;
-&lt;/thead&gt;
-&lt;tbody&gt;
-&lt;tr&gt;
-&lt;td style="text-align: left;"&gt;aaa&lt;/td&gt;
-&lt;td style="text-align: left;"&gt;0&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr&gt;
-&lt;td style="text-align: left;"&gt;bbb&lt;/td&gt;
-&lt;td style="text-align: left;"&gt;1&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr&gt;
-&lt;td style="text-align: left;"&gt;eee&lt;/td&gt;
-&lt;td style="text-align: left;"&gt;1&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr&gt;
-&lt;td style="text-align: left;"&gt;ccc&lt;/td&gt;
-&lt;td style="text-align: left;"&gt;2&lt;/td&gt;
-&lt;/tr&gt;
-&lt;/tbody&gt;
-&lt;/table&gt;
-&lt;p&gt;If we need to find all parents of &lt;strong&gt;eee&lt;/strong&gt;, we can do a&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;SELECT ParentId, Depth FROM Closure_Table WHERE ChildId = &amp;quot;eee&amp;quot; ORDER BY Depth DESC;
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;which returns the following&lt;/p&gt;
-&lt;table class="table"&gt;
-&lt;thead&gt;
-&lt;tr&gt;
-&lt;th style="text-align: left;"&gt;ParentId&lt;/th&gt;
-&lt;th style="text-align: left;"&gt;Depth&lt;/th&gt;
-&lt;/tr&gt;
-&lt;/thead&gt;
-&lt;tbody&gt;
-&lt;tr&gt;
-&lt;td style="text-align: left;"&gt;aaa&lt;/td&gt;
-&lt;td style="text-align: left;"&gt;1&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr&gt;
-&lt;td style="text-align: left;"&gt;eee&lt;/td&gt;
-&lt;td style="text-align: left;"&gt;0&lt;/td&gt;
-&lt;/tr&gt;
-&lt;/tbody&gt;
-&lt;/table&gt;
-&lt;h3 id="table-structure-for-a-correlated-fingerprinted-hierarchical-data-lineage"&gt;Table structure for a Correlated, fingerprinted hierarchical data lineage&lt;/h3&gt;
-&lt;p&gt;With correlatedEvent and CorrelatedLineage tables, it becomes possible in a single request to generate a lineage graph for parents or descendants of correlated dataset.&lt;/p&gt;
-&lt;p&gt;&lt;img src="/posts/images/data-lineage/CorrelatedLineageDataModel.png" class="img-fluid" alt="" /&gt;&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;erDiagram
-    CorrelationEvent {
-        uuid     IdEvent
-        string   Process
-        string   Version
-        hash     Fingerprint
-        int      InputSize
-        datetime EventTime
-        int      Forced
-    }
-
-    CorrelationDetails {
-        uuid IdEvent
-        string Field
-        json Data 
-    }
-
-    CorrelationLineage {
-        uuid IdParent
-        uuid IdChild
-        integer Depth
-    }
-
-    CorrelationEvent ||--o{ CorrelationDetails : &amp;quot;&amp;quot;
-    CorrelationEvent ||--o{ CorrelationLineage : &amp;quot;parent&amp;quot;
-    CorrelationEvent ||--o{ CorrelationLineage : &amp;quot;child&amp;quot;
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;It would even be possible to generate the diagrams using mermaid automatically to trace the flows through the system&lt;a id="fnref:2" href="#fn:2" class="footnote-ref"&gt;&lt;sup&gt;2&lt;/sup&gt;&lt;/a&gt;.&lt;/p&gt;
-&lt;p&gt;&lt;img src="/posts/images/data-lineage/CorrelatedLineageFlow.png" class="img-fluid" alt="" /&gt;&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;flowchart LR
-    id1((&amp;quot;DSO Timeseries&amp;quot;)) --&amp;gt; id2[SFTP Download] --&amp;gt; id3[Split]
-    id3 --&amp;gt; TS01
-    id3 --&amp;gt; TS02
-    id3 --&amp;gt; TS03 
-    id3 --&amp;gt; TS04
-    id3 --&amp;gt; TS..
-    TS01 --&amp;gt; id4[Delivery point sum]
-    TS02 --&amp;gt; id4
-    id4 --&amp;gt; id5[Load]
-
-    met((Weather provider)) --&amp;gt; met2[API Download] --&amp;gt; met3[&amp;quot;Aggregate to hour&amp;quot;] --&amp;gt; met4[&amp;quot;delivery point history&amp;quot;]
-
-    met4 --&amp;gt; for1[forecast consumption]
-    id4 --&amp;gt; for1 --&amp;gt; for2[Load]
-&lt;/code&gt;&lt;/pre&gt;
-&lt;h3 id="solution-design"&gt;Solution design&lt;/h3&gt;
-&lt;p&gt;A rabbitMQ message queue to receive correlation events emitted by the tasks, with several consumer tasks receiving and committing to the database is a preferred approach over an HTTP 1.1 connection due the the scaling efficiency of AMQP over pure HTTP&lt;a id="fnref:3" href="#fn:3" class="footnote-ref"&gt;&lt;sup&gt;3&lt;/sup&gt;&lt;/a&gt;.&lt;/p&gt;
-&lt;p&gt;&lt;img src="/posts/images/data-lineage/CorrelatedApplicationFlow.png" class="img-fluid" width="80%" alt="" /&gt;&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;flowchart LR
-    a[Airflow] ---&amp;gt; b[AirFlowTask] --&amp;gt; c[[RabbitMQ Queue Events]] --&amp;gt; d[EventReceiver] -- success --&amp;gt; g[(Postgresql)] --&amp;gt; Monitoring
-    d -- failed --&amp;gt; e[[RabbitMQ Queue Deadletter]] --&amp;gt; f[DLQ processing and Reconciliation] --&amp;gt; g
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;A particular focus on the monitoring of the solution is necessary to truly have an operational system. The RabbitMQ should be a redundant, instrumented and reported to Graphana, with a queue length monitoring in place. The EventReceivers should employ a dead letter queue in case message are rejected by the database. These rejected messages could also also be a uuid collision - which can be treated by the daily reconciliation process and DeadLetter queue processing.&lt;/p&gt;
-&lt;p&gt;A high availability Postgresql is recommended, either as a local instance or as a cloud hosted service - which would facilitate operations.&lt;/p&gt;
-&lt;p&gt;The issue of Data retention should be discussed with Business. If we do not keep a time-series history in the time-series datastore, then the event correlation become actually an &lt;a href="https://microservices.io/patterns/data/event-sourcing.html"&gt;event sourcing pattern&lt;/a&gt;, enabling to re-create the history of how the time-series was updated.&lt;/p&gt;
-&lt;h2 id="conclusion"&gt;Conclusion&lt;/h2&gt;
-&lt;p&gt;Irrespective of the method chosen to capture and store the messages, the systems chosen must provide a high availability solution for data lineage - but must be sure to not block ingestion if the data lineage system is unresponsive. As long as the message queue is persistent and accessible, it can always be caught up later.&lt;/p&gt;
-&lt;p&gt;The main task is emitting the events with meaningful data and unique correlation IDs. A focus on the semantics of the events while developing the workflow / dataflows is primordial. A callable event library provides the best developer experience to maximize standardization of code&lt;/p&gt;
-&lt;p&gt;The design of idempotent imports into the system is important, it allows to replay events non-destructively and provides operational resilience.&lt;/p&gt;
-&lt;div class="footnotes"&gt;
-&lt;hr /&gt;
-&lt;ol&gt;
-&lt;li id="fn:1"&gt;
-&lt;p&gt;&lt;a href="https://www.imperva.com/learn/data-security/data-lineage/"&gt;https://www.imperva.com/learn/data-security/data-lineage/&lt;/a&gt;&lt;a href="#fnref:1" class="footnote-back-ref"&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
-&lt;/li&gt;
-&lt;li id="fn:2"&gt;
-&lt;p&gt;&lt;a href="https://github.com/dotnet/interactive/blob/main/samples/notebooks/polyglot/github%20repo%20milestone%20report.ipynb"&gt;https://github.com/dotnet/interactive/blob/main/samples/notebooks/polyglot/github%20repo%20milestone%20report.ipynb&lt;/a&gt; - See the PieWithMermaid C# task for a visualisation of such an interaction.&lt;a href="#fnref:2" class="footnote-back-ref"&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
-&lt;/li&gt;
-&lt;li id="fn:3"&gt;
-&lt;p&gt;This should be re-evaluated when HTTP/3 oneshot becomes available in the servers and languages used. The expected performance improvement are such that at that time HTTP/3 QUIC might outrace any other streaming solution. &lt;a href="https://blog.cloudflare.com/http3-the-past-present-and-future/"&gt;https://blog.cloudflare.com/http3-the-past-present-and-future/&lt;/a&gt;&lt;a href="#fnref:3" class="footnote-back-ref"&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
-&lt;/li&gt;
-&lt;/ol&gt;
-&lt;/div&gt;
 </content:encoded>
 		</item>
 	</channel>
