@@ -5,7 +5,7 @@ Tags: [Omarchy, Linux]
 
 # Omarchy
 
-Witht he coming arrival of the end of Windows10, I installed [Omarchy](https://omarchy.org/) on one my [Beelink MiniS12 N95](https://www.bee-link.com/products/beelink-mini-s12-n95), fully expecting just to play with it and revert back to Windows11 on the machine. Win11 was slow on the machine, but a decent cheap desktop to have connected to a screen. *Omarchy* on the Beelink, even on the tiny hardware, has been absolutely flying. To the point that it's now my main desktop for everything right now. 
+With the coming arrival of the end of Windows10, I installed [Omarchy](https://omarchy.org/) on one my [Beelink MiniS12 N95](https://www.bee-link.com/products/beelink-mini-s12-n95), fully expecting just to play with it and revert back to Windows11 on the machine. Win11 was slow on the machine, but a decent cheap desktop to have connected to a screen. *Omarchy* on the Beelink, even on the tiny hardware, has been absolutely flying. To the point that it's now my main desktop for everything right now. 
 
 One thing I needed to do is to handle the brightness of the screen, from the command line, so I could toggle the screen brightness from the command line. I discovered I could use `ddcutil` which I installed using the package manager on Omarchy.  
 
