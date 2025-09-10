@@ -4,7 +4,7 @@
 	<title>Eric Winnington</title>
 	<link rel="self" href="http://ewinnington.github.io/" />
 	<rights>2025</rights>
-	<updated>2025-09-10T05:09:04Z</updated>
+	<updated>2025-09-10T05:15:09Z</updated>
 	<subtitle>A collection of thoughts, code and snippets.</subtitle>
 	<entry>
 		<id>http://ewinnington.github.io/posts/omarchy-brightness</id>
@@ -12,7 +12,7 @@
 		<link href="http://ewinnington.github.io/posts/omarchy-brightness" />
 		<updated>2025-09-10T00:00:00Z</updated>
 		<content>&lt;h1 id="omarchy"&gt;Omarchy&lt;/h1&gt;
-&lt;p&gt;Witht he coming arrival of the end of Windows10, I installed &lt;a href="https://omarchy.org/"&gt;Omarchy&lt;/a&gt; on one my &lt;a href="https://www.bee-link.com/products/beelink-mini-s12-n95"&gt;Beelink MiniS12 N95&lt;/a&gt;, fully expecting just to play with it and revert back to Windows11 on the machine. Win11 was slow on the machine, but a decent cheap desktop to have connected to a screen. &lt;em&gt;Omarchy&lt;/em&gt; on the Beelink, even on the tiny hardware, has been absolutely flying. To the point that it's now my main desktop for everything right now.&lt;/p&gt;
+&lt;p&gt;With the coming arrival of the end of Windows10, I installed &lt;a href="https://omarchy.org/"&gt;Omarchy&lt;/a&gt; on one my &lt;a href="https://www.bee-link.com/products/beelink-mini-s12-n95"&gt;Beelink MiniS12 N95&lt;/a&gt;, fully expecting just to play with it and revert back to Windows11 on the machine. Win11 was slow on the machine, but a decent cheap desktop to have connected to a screen. &lt;em&gt;Omarchy&lt;/em&gt; on the Beelink, even on the tiny hardware, has been absolutely flying. To the point that it's now my main desktop for everything right now.&lt;/p&gt;
 &lt;p&gt;One thing I needed to do is to handle the brightness of the screen, from the command line, so I could toggle the screen brightness from the command line. I discovered I could use &lt;code&gt;ddcutil&lt;/code&gt; which I installed using the package manager on Omarchy.&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;sudo ddcutil detect
 Display 1
@@ -174,7 +174,7 @@ VCP Features:
 &lt;h2 id="next-steps"&gt;Next steps&lt;/h2&gt;
 &lt;p&gt;I need to figure out how to wire up these commands to the brightness up / down key commands on Omarchy - so I can control the brightness on the keyboard. Still not sure how to get that configuration working, since it doesn't work out of the box with my screen with the default tooling.&lt;/p&gt;
 </content>
-		<summary>&lt;p&gt;Witht he coming arrival of the end of Windows10, I installed &lt;a href="https://omarchy.org/"&gt;Omarchy&lt;/a&gt; on one my &lt;a href="https://www.bee-link.com/products/beelink-mini-s12-n95"&gt;Beelink MiniS12 N95&lt;/a&gt;, fully expecting just to play with it and revert back to Windows11 on the machine. Win11 was slow on the machine, but a decent cheap desktop to have connected to a screen. &lt;em&gt;Omarchy&lt;/em&gt; on the Beelink, even on the tiny hardware, has been absolutely flying. To the point that it's now my main desktop for everything right now.&lt;/p&gt;</summary>
+		<summary>&lt;p&gt;With the coming arrival of the end of Windows10, I installed &lt;a href="https://omarchy.org/"&gt;Omarchy&lt;/a&gt; on one my &lt;a href="https://www.bee-link.com/products/beelink-mini-s12-n95"&gt;Beelink MiniS12 N95&lt;/a&gt;, fully expecting just to play with it and revert back to Windows11 on the machine. Win11 was slow on the machine, but a decent cheap desktop to have connected to a screen. &lt;em&gt;Omarchy&lt;/em&gt; on the Beelink, even on the tiny hardware, has been absolutely flying. To the point that it's now my main desktop for everything right now.&lt;/p&gt;</summary>
 	</entry>
 	<entry>
 		<id>http://ewinnington.github.io/posts/MIQP</id>

@@ -5,16 +5,16 @@
 		<link>http://ewinnington.github.io/</link>
 		<description>A collection of thoughts, code and snippets.</description>
 		<copyright>2025</copyright>
-		<pubDate>Wed, 10 Sep 2025 05:09:04 GMT</pubDate>
-		<lastBuildDate>Wed, 10 Sep 2025 05:09:04 GMT</lastBuildDate>
+		<pubDate>Wed, 10 Sep 2025 05:15:09 GMT</pubDate>
+		<lastBuildDate>Wed, 10 Sep 2025 05:15:09 GMT</lastBuildDate>
 		<item>
 			<title>Omarchy - Setting screen brightness over HDMI by terminal</title>
 			<link>http://ewinnington.github.io/posts/omarchy-brightness</link>
-			<description>&lt;p&gt;Witht he coming arrival of the end of Windows10, I installed &lt;a href="https://omarchy.org/"&gt;Omarchy&lt;/a&gt; on one my &lt;a href="https://www.bee-link.com/products/beelink-mini-s12-n95"&gt;Beelink MiniS12 N95&lt;/a&gt;, fully expecting just to play with it and revert back to Windows11 on the machine. Win11 was slow on the machine, but a decent cheap desktop to have connected to a screen. &lt;em&gt;Omarchy&lt;/em&gt; on the Beelink, even on the tiny hardware, has been absolutely flying. To the point that it's now my main desktop for everything right now.&lt;/p&gt;</description>
+			<description>&lt;p&gt;With the coming arrival of the end of Windows10, I installed &lt;a href="https://omarchy.org/"&gt;Omarchy&lt;/a&gt; on one my &lt;a href="https://www.bee-link.com/products/beelink-mini-s12-n95"&gt;Beelink MiniS12 N95&lt;/a&gt;, fully expecting just to play with it and revert back to Windows11 on the machine. Win11 was slow on the machine, but a decent cheap desktop to have connected to a screen. &lt;em&gt;Omarchy&lt;/em&gt; on the Beelink, even on the tiny hardware, has been absolutely flying. To the point that it's now my main desktop for everything right now.&lt;/p&gt;</description>
 			<guid>http://ewinnington.github.io/posts/omarchy-brightness</guid>
 			<pubDate>Wed, 10 Sep 2025 00:00:00 GMT</pubDate>
 			<content:encoded>&lt;h1 id="omarchy"&gt;Omarchy&lt;/h1&gt;
-&lt;p&gt;Witht he coming arrival of the end of Windows10, I installed &lt;a href="https://omarchy.org/"&gt;Omarchy&lt;/a&gt; on one my &lt;a href="https://www.bee-link.com/products/beelink-mini-s12-n95"&gt;Beelink MiniS12 N95&lt;/a&gt;, fully expecting just to play with it and revert back to Windows11 on the machine. Win11 was slow on the machine, but a decent cheap desktop to have connected to a screen. &lt;em&gt;Omarchy&lt;/em&gt; on the Beelink, even on the tiny hardware, has been absolutely flying. To the point that it's now my main desktop for everything right now.&lt;/p&gt;
+&lt;p&gt;With the coming arrival of the end of Windows10, I installed &lt;a href="https://omarchy.org/"&gt;Omarchy&lt;/a&gt; on one my &lt;a href="https://www.bee-link.com/products/beelink-mini-s12-n95"&gt;Beelink MiniS12 N95&lt;/a&gt;, fully expecting just to play with it and revert back to Windows11 on the machine. Win11 was slow on the machine, but a decent cheap desktop to have connected to a screen. &lt;em&gt;Omarchy&lt;/em&gt; on the Beelink, even on the tiny hardware, has been absolutely flying. To the point that it's now my main desktop for everything right now.&lt;/p&gt;
 &lt;p&gt;One thing I needed to do is to handle the brightness of the screen, from the command line, so I could toggle the screen brightness from the command line. I discovered I could use &lt;code&gt;ddcutil&lt;/code&gt; which I installed using the package manager on Omarchy.&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;sudo ddcutil detect
 Display 1
