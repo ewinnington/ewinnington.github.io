@@ -1,0 +1,225 @@
+﻿
+<!DOCTYPE html>
+<!--
+	Phantom by HTML5 UP
+	html5up.net | @ajlkn
+	Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
+-->
+<html lang="en">
+
+	<head>
+		<title>Eric Winnington - Omarchy - Multi-monitor HDMI and Audio</title>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1" />		
+        <link href="/assets/css/highlight.css" rel="stylesheet">
+		<!--[if lte IE 8]><script src="/assets/js/ie/html5shiv.js"></script><![endif]-->
+		<link rel="stylesheet" href="/assets/css/main.css" />
+		<!--[if lte IE 9]><link rel="stylesheet" href="/assets/css/ie9.css" /><![endif]-->
+		<!--[if lte IE 8]><link rel="stylesheet" href="/assets/css/ie8.css" /><![endif]-->
+        <link href="/assets/css/override.css" rel="stylesheet" />
+
+		<meta name="description" content="A collection of thoughts, code and snippets." />
+		<link type="application/rss+xml" rel="alternate" title="Eric Winnington" href="/feed.rss" />
+				<link type="application/atom+xml" rel="alternate" title="Eric Winnington" href="/feed.atom" />
+		<link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+		<link rel="icon" href="/favicon.ico" type="image/x-icon">
+
+		<meta name="application-name" content="Eric Winnington" />
+		<meta name="msapplication-tooltip" content="Eric Winnington" />
+		<meta name="msapplication-starturl" content="/" />
+
+		<meta property="og:title" content="Eric Winnington - Omarchy - Multi-monitor HDMI and Audio" /> 
+		<meta property="og:type" content="website" />
+		<meta property="og:url" content="http://ewinnington.github.io/posts/omarchy-hdmi-audio" />
+		<!-- TODO: More social graph meta tags -->
+
+        <script src="/assets/js/highlight.pack.js"></script>   
+		
+        <meta name="twitter:card" content="summary" />
+<meta name="twitter:site" content="@ewinnington" />
+<meta name="twitter:title" content="Eric Winnington - Omarchy - Multi-monitor HDMI and Audio" />
+<meta name="twitter:description" content="A collection of thoughts, code and snippets." />
+
+<script type="text/javascript" id="MathJax-script" async
+  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
+</script>
+		
+	</head>
+
+	<body>
+		<!-- Wrapper -->
+		<div id="wrapper">
+
+			<!-- Header -->
+			<header id="header">
+				<div class="inner">
+
+					<!-- Logo -->
+					<a href="/" class="logo">
+						<span class="title">Eric Winnington</span>
+					</a>
+
+					<!-- Nav -->
+					<nav>
+						<ul>
+							<li><a href="#menu">Menu</a></li>
+						</ul>
+					</nav>
+
+				</div>
+			</header>
+
+			<!-- Menu -->
+			<nav id="menu">
+				<h2>Menu</h2>
+				<ul>
+					        <li><a href="/posts">Archive</a></li>
+        <li><a href="/tags">Tags</a></li>
+        <li><a href="/about">About Me</a></li>
+        <li><a href="/videos">Videos on programming</a></li>
+
+				</ul>
+			</nav>
+
+			<!-- Main -->
+			<div id="main">
+				<div class="inner">
+
+    
+<header>
+    <h1>Omarchy - Multi-monitor HDMI and Audio</h1>
+            <p><em>Published on Thursday, 16 October 2025</em></p>
+            <ul class="actions small">
+                    <li><a role="button" href="/tags/Audio" class="button small">Audio</a></li>
+                    <li><a role="button" href="/tags/Hyprland" class="button small">Hyprland</a></li>
+                    <li><a role="button" href="/tags/Omarchy" class="button small">Omarchy</a></li>
+        </ul>     
+</header>
+
+					
+					<div id="content">
+						
+
+<h1 id="configuring-multi-monitor-and-choosing-hdmi-sound-output-in-omarchy">Configuring multi-monitor and choosing HDMI sound output in Omarchy</h1>
+<p>I added a vertical monitor to my Omarchy desk. I have my BenQ horitontal and have added a Samsung as a vertical screen on the side.</p>
+<h2 id="video-setup">Video setup</h2>
+<p>Listing my monitors gives me the following:</p>
+<pre><code class="language-bash">hyprctl monitors
+
+Monitor HDMI-A-1 (ID 0):
+	3840x2160&#64;60.00000 at 0x0
+	description: Samsung Electric Company LS27A800U HNMW500048
+	make: Samsung Electric Company
+	model: LS27A800U
+	physical size (mm): 600x340
+	serial: -----------
+	active workspace: 1 (1)
+	special workspace: 0 ()
+	reserved: 0 26 0 0
+	scale: 1.50
+	transform: 1
+	focused: yes
+	dpmsStatus: 1
+	vrr: false
+	solitary: 0
+	solitaryBlockedBy: windowed mode,missing candidate
+	activelyTearing: false
+	tearingBlockedBy: next frame is not torn,user settings,missing candidate
+	directScanoutTo: 0
+	directScanoutBlockedBy: user settings,missing candidate
+	disabled: false
+	currentFormat: XRGB8888
+	mirrorOf: none
+	availableModes: 3840x2160&#64;60.00Hz ...
+
+Monitor HDMI-A-2 (ID 1):
+	3840x2160&#64;60.00100 at -2560x0
+	description: BNQ BenQ EL2870U TBK01026SL0
+	make: BNQ
+	model: BenQ EL2870U
+	physical size (mm): 620x340
+	serial: -----------
+	active workspace: 2 (2)
+	special workspace: 0 ()
+	reserved: 0 26 0 0
+	scale: 1.50
+	transform: 0
+	focused: no
+	dpmsStatus: 1
+	vrr: false
+	solitary: 0
+	solitaryBlockedBy: not opaque
+	activelyTearin#pactl list short sinks
+#pactl list cardsg: false
+	tearingBlockedBy: next frame is not torn,user settings,missing candidate
+	directScanoutTo: 0
+	directScanoutBlockedBy: user settings,missing candidate
+	disabled: false
+	currentFormat: XRGB8888
+	mirrorOf: none
+	availableModes: 3840x2160&#64;60.00Hz ...
+
+</code></pre>
+<p>I edited the monitors file to have <code>~/.config/hypr/monitors.conf</code></p>
+<pre><code class="language-bash">monitor=HDMI-A-2,preferred,auto-left,1.5
+monitor=HDMI-A-1,preferred,auto-right,1.5, transform, 1
+</code></pre>
+<p>so that the A-1 (Samsung) has the vertical transform. I might switch it to -1 and turn the monitor the other way, because I have less of a bezel on the top of the monitor, but this is the current setup. I'm still not sure which auto- command I need at minimum, but with these two commands - the screens align the way I want.</p>
+<h2 id="audio-setup">Audio setup</h2>
+<p>The next issue I have is that the audio output is connected from the back of the BenQ monitor to my speaker system, taking the audio along the HDMI channel. Sometimes, depending on which order the screens wake up, the audio output  switches to the Samsung. For the moment, I haven't yet fully figured out how to lock the audio output to a single HDMI output, so I have two scripts to run - checking which outputs where. I'll appreciate the help if someone has suggestions.</p>
+<p>I used these commands to list the cards and outputs:</p>
+<pre><code>pactl list short sinks
+pactl list cards
+</code></pre>
+<p>And depending on which screen woke up first, it's either running this one:</p>
+<pre><code>pactl set-card-profile alsa_card.pci-0000_00_1f.3 output:hdmi-stereo-extra1
+pactl set-default-sink alsa_output.pci-0000_00_1f.3.hdmi-stereo-extra1
+</code></pre>
+<p>or this one:</p>
+<pre><code>pactl set-card-profile alsa_card.pci-0000_00_1f.3 output:hdmi-stereo
+pactl set-default-sink alsa_output.pci-0000_00_1f.3.hdmi-stereo
+</code></pre>
+<p>I'm hoping to figure out how to pin the audio to the BenQ monitor soon.</p>
+
+
+<hr>
+					</div>
+				</div>
+			</div>
+
+			<!-- Footer -->
+			<footer id="footer">
+				<div class="inner">
+    <section>
+        <h2>Feeds</h2>
+        <ul class="actions small vertical">
+            <li><a href="/feed.rss" class="button small"><i class="fa fa-rss"></i> RSS Feed</a></li>
+                        <li><a href="/feed.atom" class="button small"><i class="fa fa-rss"></i> Atom Feed</a></li>
+        </ul>
+    </section>
+    <section>
+    </section>
+    <ul class="copyright">
+        <li>Copyright © 2025</li>
+        <li>Design: <a href="http://html5up.net">HTML5 UP</a></li>
+        <li><a href="https://wyam.io">Generated by Wyam</a></li>
+    </ul>
+</div>
+
+			</footer>
+
+		</div>
+		
+		
+
+		<!-- Scripts -->
+		<script>hljs.initHighlightingOnLoad();</script>
+		<script src="/assets/js/jquery.min.js"></script>
+		<script src="/assets/js/skel.min.js"></script>
+		<script src="/assets/js/util.js"></script>
+		<!--[if lte IE 8]><script src="/assets/js/ie/respond.min.js"></script><![endif]-->
+		<script src="/assets/js/main.js"></script>
+
+	</body>
+
+</html>

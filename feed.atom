@@ -4,8 +4,96 @@
 	<title>Eric Winnington</title>
 	<link rel="self" href="http://ewinnington.github.io/" />
 	<rights>2025</rights>
-	<updated>2025-09-10T12:55:20Z</updated>
+	<updated>2025-10-16T19:59:08Z</updated>
 	<subtitle>A collection of thoughts, code and snippets.</subtitle>
+	<entry>
+		<id>http://ewinnington.github.io/posts/omarchy-hdmi-audio</id>
+		<title>Omarchy - Multi-monitor HDMI and Audio</title>
+		<link href="http://ewinnington.github.io/posts/omarchy-hdmi-audio" />
+		<updated>2025-10-16T00:00:00Z</updated>
+		<content>&lt;h1 id="configuring-multi-monitor-and-choosing-hdmi-sound-output-in-omarchy"&gt;Configuring multi-monitor and choosing HDMI sound output in Omarchy&lt;/h1&gt;
+&lt;p&gt;I added a vertical monitor to my Omarchy desk. I have my BenQ horitontal and have added a Samsung as a vertical screen on the side.&lt;/p&gt;
+&lt;h2 id="video-setup"&gt;Video setup&lt;/h2&gt;
+&lt;p&gt;Listing my monitors gives me the following:&lt;/p&gt;
+&lt;pre&gt;&lt;code class="language-bash"&gt;hyprctl monitors
+
+Monitor HDMI-A-1 (ID 0):
+	3840x2160&amp;#64;60.00000 at 0x0
+	description: Samsung Electric Company LS27A800U HNMW500048
+	make: Samsung Electric Company
+	model: LS27A800U
+	physical size (mm): 600x340
+	serial: -----------
+	active workspace: 1 (1)
+	special workspace: 0 ()
+	reserved: 0 26 0 0
+	scale: 1.50
+	transform: 1
+	focused: yes
+	dpmsStatus: 1
+	vrr: false
+	solitary: 0
+	solitaryBlockedBy: windowed mode,missing candidate
+	activelyTearing: false
+	tearingBlockedBy: next frame is not torn,user settings,missing candidate
+	directScanoutTo: 0
+	directScanoutBlockedBy: user settings,missing candidate
+	disabled: false
+	currentFormat: XRGB8888
+	mirrorOf: none
+	availableModes: 3840x2160&amp;#64;60.00Hz ...
+
+Monitor HDMI-A-2 (ID 1):
+	3840x2160&amp;#64;60.00100 at -2560x0
+	description: BNQ BenQ EL2870U TBK01026SL0
+	make: BNQ
+	model: BenQ EL2870U
+	physical size (mm): 620x340
+	serial: -----------
+	active workspace: 2 (2)
+	special workspace: 0 ()
+	reserved: 0 26 0 0
+	scale: 1.50
+	transform: 0
+	focused: no
+	dpmsStatus: 1
+	vrr: false
+	solitary: 0
+	solitaryBlockedBy: not opaque
+	activelyTearin#pactl list short sinks
+#pactl list cardsg: false
+	tearingBlockedBy: next frame is not torn,user settings,missing candidate
+	directScanoutTo: 0
+	directScanoutBlockedBy: user settings,missing candidate
+	disabled: false
+	currentFormat: XRGB8888
+	mirrorOf: none
+	availableModes: 3840x2160&amp;#64;60.00Hz ...
+
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;I edited the monitors file to have &lt;code&gt;~/.config/hypr/monitors.conf&lt;/code&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code class="language-bash"&gt;monitor=HDMI-A-2,preferred,auto-left,1.5
+monitor=HDMI-A-1,preferred,auto-right,1.5, transform, 1
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;so that the A-1 (Samsung) has the vertical transform. I might switch it to -1 and turn the monitor the other way, because I have less of a bezel on the top of the monitor, but this is the current setup. I'm still not sure which auto- command I need at minimum, but with these two commands - the screens align the way I want.&lt;/p&gt;
+&lt;h2 id="audio-setup"&gt;Audio setup&lt;/h2&gt;
+&lt;p&gt;The next issue I have is that the audio output is connected from the back of the BenQ monitor to my speaker system, taking the audio along the HDMI channel. Sometimes, depending on which order the screens wake up, the audio output  switches to the Samsung. For the moment, I haven't yet fully figured out how to lock the audio output to a single HDMI output, so I have two scripts to run - checking which outputs where. I'll appreciate the help if someone has suggestions.&lt;/p&gt;
+&lt;p&gt;I used these commands to list the cards and outputs:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;pactl list short sinks
+pactl list cards
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;And depending on which screen woke up first, it's either running this one:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;pactl set-card-profile alsa_card.pci-0000_00_1f.3 output:hdmi-stereo-extra1
+pactl set-default-sink alsa_output.pci-0000_00_1f.3.hdmi-stereo-extra1
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;or this one:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;pactl set-card-profile alsa_card.pci-0000_00_1f.3 output:hdmi-stereo
+pactl set-default-sink alsa_output.pci-0000_00_1f.3.hdmi-stereo
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;I'm hoping to figure out how to pin the audio to the BenQ monitor soon.&lt;/p&gt;
+</content>
+		<summary>&lt;p&gt;I added a vertical monitor to my Omarchy desk. I have my BenQ horitontal and have added a Samsung as a vertical screen on the side.&lt;/p&gt;</summary>
+	</entry>
 	<entry>
 		<id>http://ewinnington.github.io/posts/omarchy-brightness2</id>
 		<title>Omarchy - Integrating screen brightness via key binds</title>
@@ -2091,173 +2179,5 @@ One example of a consensus algorithm that could be used to compute the final sta
 &lt;p&gt;In software architecture, there are very few single answers, everything is a compromise. Caching is a great hammer and use it when it is appropriate, but remember not every problem is a nail.&lt;/p&gt;
 </content>
 		<summary>&lt;p&gt;Inspired by &lt;a href="https://twitter.com/mjovanovictech"&gt;Milan Jovanović&lt;/a&gt; tweet on &lt;a href="https://twitter.com/mjovanovictech/status/1599124855542411264"&gt;5 reasons to use Redis for caching&lt;/a&gt;,&lt;/p&gt;</summary>
-	</entry>
-	<entry>
-		<id>http://ewinnington.github.io/posts/Software-Architecture-Illustration</id>
-		<title>Software Architecture illustrations</title>
-		<link href="http://ewinnington.github.io/posts/Software-Architecture-Illustration" />
-		<updated>2022-11-16T20:10:00Z</updated>
-		<content>&lt;h1 id="illustrations-in-software-architecture"&gt;Illustrations in Software architecture&lt;/h1&gt;
-&lt;p&gt;In software architecture, I find myself reaching more and more for tools that I can use to generate representations from a simple textual description, be it generated from a tool or hand written. And sometimes, nothing generated looks nice, so I have to do draw it myself!&lt;/p&gt;
-&lt;p&gt;Here are a few of the tools I have recently used, for different purposes:&lt;/p&gt;
-&lt;h2 id="diagrams-as-code"&gt;Diagrams as code:&lt;/h2&gt;
-&lt;h3 id="mermaid"&gt;Mermaid&lt;/h3&gt;
-&lt;p&gt;Mermaid is a language to generate flow charts, pie charts, entity relation diagrams and several other diagrams. I’ve used it in internal documentation and blog posts. The graph description language is simple enough that you can write code to generate charts, too.&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;&lt;a href="https://mermaid-js.github.io/mermaid/#/"&gt;https://mermaid-js.github.io/mermaid/#/&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;
-&lt;p&gt;A live editor is also available online:&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;&lt;a href="https://mermaid.live/"&gt;https://mermaid.live/&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;
-&lt;p&gt;Mermaid rendering has been integrated into several markdown renderers, GitHub markdown and VS Code both support it.&lt;/p&gt;
-&lt;div class="mermaid"&gt;flowchart LR
-    a[Airflow] ---&gt; b[AirFlowTask] --&gt; c[[RabbitMQ Queue Events]] --&gt; d[EventReceiver] --insert--&gt; e[(Postgresql)] --&gt; Monitoring
-    d --failed--&gt; g[[Deadletter queue]] --&gt; h[Reconciliation] --&gt; e
-&lt;/div&gt;
-&lt;p&gt;&lt;img src="/posts/images/SA-Illustrations/Mermaid-flow.png" class="img-fluid" alt="" /&gt;&lt;/p&gt;
-&lt;div class="mermaid"&gt;sequenceDiagram
-    autonumber
-
-    participant C as Client
-    participant S as Target
-
-    S --) C: Communicate API-Key
-    C -&gt;&gt; S: Send request with API-Key
-    activate S
-    S --&gt;&gt; S: Validate API-Key
-    S -X C: If not valid: Return 401 
-    S -&gt;&gt; C: If valid: Return 200
-    deactivate S
-&lt;/div&gt;
-&lt;p&gt;&lt;img src="/posts/images/SA-Illustrations/Mermaid-sequence.png" class="img-fluid" alt="" /&gt;&lt;/p&gt;
-&lt;h3 id="python-diagrams"&gt;Python Diagrams&lt;/h3&gt;
-&lt;p&gt;Python has a diagram library which has icons for most programming tools, from Airflow to ZeroMQ. You design the diagram with simple Python code and it uses the Graphviz library to render png images. Highly recommended for small architecture diagrams that just need a dozen or so elements.&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;&lt;a href="https://diagrams.mingrammer.com/"&gt;https://diagrams.mingrammer.com/&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;
-&lt;p&gt;I’ve also done some pull requests to add symbols to the library and I recommend you do so too if you have elements that are missing in your diagrams.&lt;/p&gt;
-&lt;pre&gt;&lt;code class="language-python"&gt;## pip install diagrams
-## winget install -e --id Graphviz.Graphviz
-## set PATH=C:\Program Files\Graphviz\bin;%PATH%
-#
-# Architecture of the docker-compose using a chart generated in py
-
-from diagrams import Diagram, Cluster
-from diagrams.onprem.inmemory import Redis
-from diagrams.onprem.database import Postgresql
-from diagrams.onprem.queue import Rabbitmq
-from diagrams.programming.language import PHP
-from diagrams.programming.language import Csharp
-from diagrams.onprem.client import Users
-from diagrams.onprem.network import Nginx
-
-with Diagram(&amp;quot;Composed Docker&amp;quot;, show=False):
-    users = Users(&amp;quot;users&amp;quot;)
-    
-    with Cluster(&amp;quot;Front-End&amp;quot;):
-        web = Nginx(&amp;quot;ngweb&amp;quot;)
-        php = PHP(&amp;quot;php&amp;quot;)
-
-    with Cluster(&amp;quot;Back-Ends&amp;quot;):
-        redis = Redis(&amp;quot;cache&amp;quot;)
-        rabbit = Rabbitmq(&amp;quot;rabbit&amp;quot;)
-        listener = Csharp(&amp;quot;listener&amp;quot;)
-        db = Postgresql(&amp;quot;db&amp;quot;)
-    
-    users &amp;gt;&amp;gt; web &amp;gt;&amp;gt; php &amp;gt;&amp;gt; rabbit &amp;gt;&amp;gt; listener &amp;gt;&amp;gt; db
-    php &amp;gt;&amp;gt; redis
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src="/posts/images/SA-Illustrations/composed_docker.png" class="img-fluid" width="80%" alt="" /&gt;&lt;/p&gt;
-&lt;h3 id="plantuml"&gt;PlantUML&lt;/h3&gt;
-&lt;p&gt;The big one! Plant UML has a ton of diagrams, the language is maybe a bit more obscure and complicated than mermaid, but you gain a lot from PlantUML when you actually need those features.&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;&lt;a href="https://plantuml.com/"&gt;https://plantuml.com/&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;
-&lt;p&gt;PlantUML also has a live editor online:&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;&lt;a href="https://www.plantuml.com/plantuml/uml/"&gt;https://www.plantuml.com/plantuml/uml/&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;
-&lt;p&gt;Actually, I’ve used it quite seldomly, being able to cover most requirements with Mermaid and Python Diagrams.&lt;/p&gt;
-&lt;h3 id="d2"&gt;D2&lt;/h3&gt;
-&lt;p&gt;D2 has recently been open-sourced and made available. I haven't yet had time to test it.&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;&lt;a href="https://d2lang.com/tour/intro/"&gt;https://d2lang.com/tour/intro/&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;
-&lt;h2 id="diagrams-as-drawing"&gt;Diagrams as Drawing:&lt;/h2&gt;
-&lt;h3 id="diagrams"&gt;Diagrams&lt;/h3&gt;
-&lt;p&gt;Diagrams.net has both an online and an offline version of a vector drawing software that works exceedingly well for software architecture illustrations. With symbols for most public cloud platforms included in their delectable libraries, you’ll be able to find the right symbol you need.&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;&lt;a href="https://www.diagrams.net/"&gt;https://www.diagrams.net/&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;
-&lt;p&gt;There’s even a Visual Studio Code extension for editing a diagram inside the IDE. Export can be done to PNG easily. Diagrams produced are easily embedded in Atlassian’s wiki and other wiki products.&lt;/p&gt;
-&lt;p&gt;Highly recommend if you need to place your architecture elements instead of relying on the auto layout of diagrams as code. Now I just wish that the diagrams as code tools could create a diagram baseline compatible with this tool to modify the layout.&lt;/p&gt;
-&lt;h3 id="archi-archimate-modelling"&gt;Archi (Archimate modelling)&lt;/h3&gt;
-&lt;p&gt;If you use the &lt;a href="https://en.m.wikipedia.org/wiki/ArchiMate"&gt;Archimate modelling language&lt;/a&gt;, then this is the tool for you to build your modelling concepts. The formalism is great for making something that everyone can “read” once trained on it, but the investment can be quite high to do the correct modelling of your infrastructure with this tool.&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;&lt;a href="https://www.archimatetool.com/"&gt;https://www.archimatetool.com/&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;
-&lt;p&gt;I used the Local application running on Windows.&lt;/p&gt;
-&lt;h4 id="online-architecture-repositories"&gt;Online architecture repositories&lt;/h4&gt;
-&lt;p&gt;There is also online hosted versions of architecture repository tools using Archimate &lt;a href="https://www.boc-group.com/en/adoit/"&gt;Adoit EA Suite&lt;/a&gt; and an associated community version too.&lt;/p&gt;
-&lt;p&gt;Alternatively, there's also:&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;&lt;a href="https://www.mega.com/hopex-platform"&gt;Hopex's MEGA&lt;/a&gt; which I only used as it was being decommissioned&lt;/li&gt;
-&lt;li&gt;&lt;a href="https://sparxsystems.com/products/ea/index.html"&gt;Sparx Systems’ Enterprise Architect&lt;/a&gt; which I used for a short amount of time before the company standardised on Adoit.&lt;/li&gt;
-&lt;/ul&gt;
-&lt;h3 id="yed"&gt;yEd&lt;/h3&gt;
-&lt;p&gt;In writing this article, I discovered the tool yEd and wanted to mention it for completeness, I haven't had the opportunity to use it yet. It does mention many of the illustration types that are useful (BPML, Flowcharts, UML, ...).&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;&lt;a href="https://www.yworks.com/products/yed"&gt;https://www.yworks.com/products/yed&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;
-&lt;h2 id="diagrams-from-programming"&gt;Diagrams from programming:&lt;/h2&gt;
-&lt;p&gt;Now these are more out there and not always directly applicable, but when you need a visualisation that the above tools cannot do, it’s time to break out these applications.&lt;/p&gt;
-&lt;h3 id="d3js"&gt;D3js&lt;/h3&gt;
-&lt;p&gt;Not sure if I need to introduce D3js,  it is probably one of the most commonly use and important is visualisation libraries. Used in everything from maps to genomics to economic data. It can do it all.&lt;/p&gt;
-&lt;p&gt;&lt;a href="https://d3js.org/"&gt;https://d3js.org/&lt;/a&gt;&lt;/p&gt;
-&lt;p&gt;I previously used d3js to embed charts of price curves generated from market data, overlapped with the delivery period of energy instruments.&lt;/p&gt;
-&lt;h3 id="processing.js"&gt;Processing.js&lt;/h3&gt;
-&lt;p&gt;Animated heart pulsating on a field of scintillating gold lace? Yes. That and many more things! Processing excels in the visual demos, animations and more. You’ll have to code it, but it’s no issue to get your custom Mandelbrot animated render and many more. Has interactions with sound and many more features. Does have a high bar of entry though and it takes a while to be productive with it.&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;&lt;a href="https://processing.org/"&gt;https://processing.org/&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;
-&lt;h3 id="graphviz"&gt;Graphviz&lt;/h3&gt;
-&lt;p&gt;I would be remiss if I didn’t mention Graphviz. It is the library used to generate diagrams from textual descriptions using one of their many languages, Dot being one of them.&lt;/p&gt;
-&lt;p&gt;Not something I use directly but more indirect usages via the Python diagrams library. You can learn it’s language and create charts.&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;&lt;a href="https://graphviz.org/"&gt;https://graphviz.org/&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;
-&lt;h2 id="online-services-collaborative"&gt;Online services (collaborative)&lt;/h2&gt;
-&lt;p&gt;When you need online collaboration, which the tools above do not cover, you can turn to the following services.&lt;/p&gt;
-&lt;h3 id="miro"&gt;Miro&lt;/h3&gt;
-&lt;p&gt;I’ve had the most experience with Miro while running large organisation meetings as a place to collect ideas, do feedback rounds and generally plan activities.&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;&lt;a href="https://miro.com"&gt;https://miro.com&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;
-&lt;h3 id="lucidspark-lucidchart-and-lucidscale"&gt;LucidSpark, LucidChart and LucidScale&lt;/h3&gt;
-&lt;p&gt;Both collaboration and vector illustration online software. Also their ability with lucid scale to connect and document your cloud infrastructure is very impressive and helps to keep you infrastructure maps updated.&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;&lt;a href="https://www.lucidspark.com/"&gt;https://www.lucidspark.com/&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href="https://www.lucidscale.com/"&gt;https://www.lucidscale.com/&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href="https://www.lucidchart.com/"&gt;https://www.lucidchart.com/&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;
-&lt;p&gt;Sadly, it’s one that I’ve not had the opportunity to use very often, usually because it was covered by other tools and no one else in the company was using it. But you should check it out to see if it does work for you and your team.&lt;/p&gt;
-&lt;h3 id="microsoft-whiteboard"&gt;Microsoft Whiteboard&lt;/h3&gt;
-&lt;p&gt;When all else fails, there’s Microsoft whiteboard. It works, there’s an online version, an integration in teams, a desktop app and even an iOS / iPadOS application. More suited to drawing with a pen, then it becomes a great collaborative whiteboard. I have given internal talks using a Microsoft Whiteboard as a backdrop. I really like to start small and progressively zoom out on these massive canvases.&lt;/p&gt;
-&lt;p&gt;&lt;a href="https://www.microsoft.com/en-us/microsoft-365/microsoft-whiteboard/digital-whiteboard-app"&gt;https://www.microsoft.com/en-us/microsoft-365/microsoft-whiteboard/digital-whiteboard-app&lt;/a&gt;&lt;/p&gt;
-&lt;h2 id="mind-maps"&gt;Mind maps&lt;/h2&gt;
-&lt;p&gt;I don't use mind maps very often anymore. I was taught to use them as a child, but haven't kept up the practice. I'm just adding a couple of references in case you are looking for them:&lt;/p&gt;
-&lt;h3 id="vscode-mindmap"&gt;vscode-mindmap&lt;/h3&gt;
-&lt;p&gt;I've used vscode-mindmap when I needed to create a quick hierarchy map.&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;&lt;a href="https://marketplace.visualstudio.com/items?itemName=pmcxs.vscode-mindmap"&gt;https://marketplace.visualstudio.com/items?itemName=pmcxs.vscode-mindmap&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;
-&lt;h2 id="conclusion"&gt;Conclusion&lt;/h2&gt;
-&lt;p&gt;There’s no one tool for everything in this day and age. Use what works for you and try out several to see if they stick!&lt;/p&gt;
-&lt;p&gt;I highly recommend generating some charts in mermaid from your own database ER-Diagram (easy to do!) or using it to make pie charts like &lt;a href="https://youtu.be/IXRGa5m-Lbo"&gt;Microsoft Polyglot notebooks demonstrates at 15:05 onwards&lt;/a&gt; in their &lt;a href="https://github.com/dotnet/interactive/blob/main/samples/notebooks/polyglot/github%20repo%20milestone%20report.ipynb"&gt;GitHub demo notebook&lt;/a&gt;.&lt;/p&gt;
-&lt;p&gt;If you have other recommendations for me, do feel free to reach out and I’ll see if they make to cut to get added to this list. :) You can even pull request this actual blog post on GitHub.&lt;/p&gt;
-&lt;p&gt;Finally, if someone has a recommendation for a WAN/LAN topology visualisation or charting tool, I’d be happy to hear about it and your experience with it!&lt;/p&gt;
-</content>
-		<summary>&lt;p&gt;In software architecture, I find myself reaching more and more for tools that I can use to generate representations from a simple textual description, be it generated from a tool or hand written. And sometimes, nothing generated looks nice, so I have to do draw it myself!&lt;/p&gt;</summary>
 	</entry>
 </feed>

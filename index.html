@@ -95,6 +95,93 @@
 <div class="row">
     <div class="8u 12u$(medium)">
                 <div>
+                    <a href="/posts/omarchy-hdmi-audio">
+                        <h2>Omarchy - Multi-monitor HDMI and Audio</h2>
+                    </a>
+                    <p>Posted on Thursday, 16 October 2025</p>
+<h1 id="configuring-multi-monitor-and-choosing-hdmi-sound-output-in-omarchy">Configuring multi-monitor and choosing HDMI sound output in Omarchy</h1>
+<p>I added a vertical monitor to my Omarchy desk. I have my BenQ horitontal and have added a Samsung as a vertical screen on the side.</p>
+<h2 id="video-setup">Video setup</h2>
+<p>Listing my monitors gives me the following:</p>
+<pre><code class="language-bash">hyprctl monitors
+
+Monitor HDMI-A-1 (ID 0):
+	3840x2160&#64;60.00000 at 0x0
+	description: Samsung Electric Company LS27A800U HNMW500048
+	make: Samsung Electric Company
+	model: LS27A800U
+	physical size (mm): 600x340
+	serial: -----------
+	active workspace: 1 (1)
+	special workspace: 0 ()
+	reserved: 0 26 0 0
+	scale: 1.50
+	transform: 1
+	focused: yes
+	dpmsStatus: 1
+	vrr: false
+	solitary: 0
+	solitaryBlockedBy: windowed mode,missing candidate
+	activelyTearing: false
+	tearingBlockedBy: next frame is not torn,user settings,missing candidate
+	directScanoutTo: 0
+	directScanoutBlockedBy: user settings,missing candidate
+	disabled: false
+	currentFormat: XRGB8888
+	mirrorOf: none
+	availableModes: 3840x2160&#64;60.00Hz ...
+
+Monitor HDMI-A-2 (ID 1):
+	3840x2160&#64;60.00100 at -2560x0
+	description: BNQ BenQ EL2870U TBK01026SL0
+	make: BNQ
+	model: BenQ EL2870U
+	physical size (mm): 620x340
+	serial: -----------
+	active workspace: 2 (2)
+	special workspace: 0 ()
+	reserved: 0 26 0 0
+	scale: 1.50
+	transform: 0
+	focused: no
+	dpmsStatus: 1
+	vrr: false
+	solitary: 0
+	solitaryBlockedBy: not opaque
+	activelyTearin#pactl list short sinks
+#pactl list cardsg: false
+	tearingBlockedBy: next frame is not torn,user settings,missing candidate
+	directScanoutTo: 0
+	directScanoutBlockedBy: user settings,missing candidate
+	disabled: false
+	currentFormat: XRGB8888
+	mirrorOf: none
+	availableModes: 3840x2160&#64;60.00Hz ...
+
+</code></pre>
+<p>I edited the monitors file to have <code>~/.config/hypr/monitors.conf</code></p>
+<pre><code class="language-bash">monitor=HDMI-A-2,preferred,auto-left,1.5
+monitor=HDMI-A-1,preferred,auto-right,1.5, transform, 1
+</code></pre>
+<p>so that the A-1 (Samsung) has the vertical transform. I might switch it to -1 and turn the monitor the other way, because I have less of a bezel on the top of the monitor, but this is the current setup. I'm still not sure which auto- command I need at minimum, but with these two commands - the screens align the way I want.</p>
+<h2 id="audio-setup">Audio setup</h2>
+<p>The next issue I have is that the audio output is connected from the back of the BenQ monitor to my speaker system, taking the audio along the HDMI channel. Sometimes, depending on which order the screens wake up, the audio output  switches to the Samsung. For the moment, I haven't yet fully figured out how to lock the audio output to a single HDMI output, so I have two scripts to run - checking which outputs where. I'll appreciate the help if someone has suggestions.</p>
+<p>I used these commands to list the cards and outputs:</p>
+<pre><code>pactl list short sinks
+pactl list cards
+</code></pre>
+<p>And depending on which screen woke up first, it's either running this one:</p>
+<pre><code>pactl set-card-profile alsa_card.pci-0000_00_1f.3 output:hdmi-stereo-extra1
+pactl set-default-sink alsa_output.pci-0000_00_1f.3.hdmi-stereo-extra1
+</code></pre>
+<p>or this one:</p>
+<pre><code>pactl set-card-profile alsa_card.pci-0000_00_1f.3 output:hdmi-stereo
+pactl set-default-sink alsa_output.pci-0000_00_1f.3.hdmi-stereo
+</code></pre>
+<p>I'm hoping to figure out how to pin the audio to the BenQ monitor soon.</p>
+						<hr>
+                </div>       
+                <div>
                     <a href="/posts/omarchy-brightness2">
                         <h2>Omarchy - Integrating screen brightness via key binds</h2>
                     </a>
@@ -578,63 +665,6 @@ for i in range(n):
 <p>This example here is taken out of an abstration of a practical problem of allocating ancillary service capacity to a series of contracts, with trader preferences. This chapter is part of my book &quot;Energy - From Asset to Cashflow&quot; (not yet published).</p>
 						<hr>
                 </div>       
-                <div>
-                    <a href="/posts/SimplePerf3">
-                        <h2>In-memory software design 2025 ? - from 40GB/s to 55GB/s</h2>
-                    </a>
-                    <p>Posted on Sunday, 16 February 2025</p>
-<h1 id="in-memory-software-design-in-2025-from-40gbs-to-55gbs">In-memory software design in 2025 - from 40GB/s to 55GB/s</h1>
-<p>In the last blog, we looked at techniques for improving when we were doing partial sums and to reduce the scanned trades we used in-memory indexes using sets.</p>
-<p>But what if we simply <em>want to go faster</em> for the complete aggregation?</p>
-<p>Up to now, we've been programming <strong>for the programmer</strong> making the program easy to write and understand, but what if we make the program <strong>easy to run for the cpu</strong>?</p>
-<p>How do we do that? By improving memory locality and structures.</p>
-<h2 id="memory-locality">Memory locality</h2>
-<p>The initial implementation uses a <code>std::vector&lt;Trade&gt; trades;</code> with each trade maintaining a <code>std::vector&lt;DailyDelivery&gt; dailyDeliveries;</code> that contains the two vectors of power and value <code>std::array&lt;int, 100&gt; power; std::array&lt;int, 100&gt; value;</code>.</p>
-<p><img src="/posts/images/in-mem/TradeInMemory.png" class="img-fluid" width="80%" alt="TradeInMemory" /></p>
-<p>While <code>vector</code> does a great job at trying to get the memory allocated to it to be continuous in cpp, when you nest vectors in vectors and you allocate the sub-vectors, you are creating fragmented memory. This means the CPU's memory controller has to jump around a lot to get the next bloc and there's a high probability that adjacent will not be in the cache for the other cores of the CPU to be able to use.</p>
-<p>The best architecture for locality will be always dependent on the access patters to the data. In our case here, we are going to optimize for maximum speed when doing complete aggregations.</p>
-<p><img src="/posts/images/in-mem/TradeCompressed.png" class="img-fluid" width="80%" alt="TradeCompressed" /></p>
-<p>This is done by creating an specific area for the Power and Value data of each delivery day is allocated to. Trades point to the beginning and end of this data. If you need to move inside this area, because you know exactly the start delivery date of the trade and the size of the delivery day vector (100 ints), you can immediately index into the large array.</p>
-<p>Now, if you are dealing with a small amount of trades (~50'000 with an average of 120 days of delivery ~~ 4.9 GB of RAM for 600 million quarter hours), you can get away with a single coherent bloc of RAM for your delivery vector. But see later for a more practical production discussion:</p>
-<pre><code class="language-cpp">    // Each daily delivery contributes 100 ints for power and 100 ints for value.
-    std::vector&lt;int&gt; flatPower(totalDailyDeliveries * 100);
-    std::vector&lt;int&gt; flatValue(totalDailyDeliveries * 100);
-</code></pre>
-<p>Now with this information, we can directly index into the area based on the trades data:</p>
-<pre><code class="language-cpp">#ifdef _OPENMP
-#pragma omp parallel for reduction(+: all_totalPower, all_totalValue, \
-                                     traderX_totalPower, traderX_totalValue, \
-                                     traderX_area1_totalPower, traderX_area1_totalValue, \
-                                     traderX_area2_totalPower, traderX_area2_totalValue)
-#endif
-    for (std::size_t i = 0; i &lt; flatTrades.size(); ++i)
-    {
-        const auto&amp; ft = flatTrades[i];
-        // Each trade's deliveries are stored in a contiguous block.
-        size_t startIndex = ft.deliveriesOffset * 100;
-        size_t numInts = ft.numDeliveries * 100;
-        long long sumPower = 0;
-        long long sumValue = 0;
-        for (size_t j = 0; j &lt; numInts; ++j)
-        {
-            sumPower += flatPower[startIndex + j];
-            sumValue += flatValue[startIndex + j];
-        }
-        // (a) All trades
-        all_totalPower += sumPower;
-        all_totalValue += sumValue;
-</code></pre>
-<p>When running with this configuration, my time to aggregation on the laptop improves from <strong>241ms</strong> to <strong>178ms</strong> a 37% improvement in speed - which get us to <strong>55 GB/s</strong> on a commodity laptop (using OpenMP of course).</p>
-<h2 id="limits">Limits</h2>
-<p>But as you scale to larger and larger amounts of trades and delivery days, you will really find that the vector<int> allocator will not be able to handle that in a single bloc.</p>
-<p>At that point, we'll start running our own custom allocation, keeping our own block memory via a custom allocator. By creating blocks of 64 to 256MB that we allocate as needed and indexing our trade deliveries into it, we can then scale to more of the the entire memory of your machine.</p>
-<p>Two good references on that are <a href="https://johnfarrier.com/custom-allocators-in-c-high-performance-memory-management/">Custom Allocators in C++: High Performance Memory Management</a> and <a href="https://www.youtube.com/watch?v=kSWfushlvB8">CppCon 2017: Bob Steagall “How to Write a Custom Allocator”</a>.</p>
-<h2 id="next-steps">Next steps?</h2>
-<p>Going from a simple data structure to a memory adapted structure allowed us to go from <strong>40GB/s</strong> (42% of laptop bandwidth) to <strong>55GB/s</strong> (57% of laptop's 96 GB/s bandwidth).</p>
-<p>If you still need more performance, you must further adapt your data structures and locality to the access patterns. Then start looking in depth at where the stalls are in the execution trace. There's other approaches such as looking at AVX instructions in more detail to find some perf, loop unrolling, and so on. Get a real cpp expert to consult on it.</p>
-<p>Or just get a machine with more bandwidth! An example of that is the M2, M4 Max and Ultra family of chips from Apple, with memory bandwidth of over 800GB/s - over 8x what my laptop has. Or just run on a server, as noted in the first article, Azure has now a machine with 6'900 GB/s of bandwidth.</p>
-						<hr>
-                </div>       
         <ul class="pager">
             <li class="previous">                
             </li>
@@ -651,11 +681,11 @@ for i in range(n):
                     <li><a role="button" href="/tags/Architecture" class="button small">Architecture (12)</a></li>
                     <li><a role="button" href="/tags/Database" class="button small">Database (11)</a></li>
                     <li><a role="button" href="/tags/CSharp" class="button small">CSharp (10)</a></li>
-                    <li><a role="button" href="/tags/Oracle" class="button small">Oracle (7)</a></li>
                     <li><a role="button" href="/tags/Jupyter-notebook" class="button small">Jupyter notebook (7)</a></li>
+                    <li><a role="button" href="/tags/Oracle" class="button small">Oracle (7)</a></li>
                     <li><a role="button" href="/tags/Dotnet-try" class="button small">Dotnet try (7)</a></li>
+                    <li><a role="button" href="/tags/Rpi" class="button small">Rpi (4)</a></li>
                     <li><a role="button" href="/tags/R" class="button small">R (4)</a></li>
-                    <li><a role="button" href="/tags/Space" class="button small">Space (4)</a></li>
             </ul>
             <ul class="actions small">
                 <li><a href="/tags" class="button small">View All Tags &rarr;</a></li>
@@ -663,10 +693,10 @@ for i in range(n):
 
             <h5>Older Posts</h5>
             <ul>
+                    <li><a href="/posts/SimplePerf3">In-memory software design 2025 ? - from 40GB/s to 55GB/s</a></li>
                     <li><a href="/posts/SimplePerf2">In-memory software design 2025 - Applied to energy</a></li>
                     <li><a href="/posts/SimplePerf">Performance of in-memory in 2025</a></li>
                     <li><a href="/posts/network-tailscale">Network with Tailscale</a></li>
-                    <li><a href="/posts/2025-predictions">On the Horizon - 2025 - My predictions</a></li>
             </ul>
                 <ul class="actions small">
                     <li><a href="/posts" class="button small">Archive &rarr;</a></li>
