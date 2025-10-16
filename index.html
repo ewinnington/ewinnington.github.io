@@ -100,7 +100,7 @@
                     </a>
                     <p>Posted on Thursday, 16 October 2025</p>
 <h1 id="configuring-multi-monitor-and-choosing-hdmi-sound-output-in-omarchy">Configuring multi-monitor and choosing HDMI sound output in Omarchy</h1>
-<p>I added a vertical monitor to my Omarchy desk. I have my BenQ horitontal and have added a Samsung as a vertical screen on the side.</p>
+<p>I added a vertical monitor to my Omarchy desk. I have my BenQ horizontal and have added a Samsung as a vertical screen on the side.</p>
 <h2 id="video-setup">Video setup</h2>
 <p>Listing my monitors gives me the following:</p>
 <pre><code class="language-bash">hyprctl monitors
@@ -179,113 +179,6 @@ pactl set-default-sink alsa_output.pci-0000_00_1f.3.hdmi-stereo-extra1
 pactl set-default-sink alsa_output.pci-0000_00_1f.3.hdmi-stereo
 </code></pre>
 <p>I'm hoping to figure out how to pin the audio to the BenQ monitor soon.</p>
-						<hr>
-                </div>       
-                <div>
-                    <a href="/posts/omarchy-brightness2">
-                        <h2>Omarchy - Integrating screen brightness via key binds</h2>
-                    </a>
-                    <p>Posted on Wednesday, 10 September 2025</p>
-<h1 id="controlling-external-monitor-brightness-ddcci-in-hyprland-with-a-real-osd">Controlling External Monitor Brightness (DDC/CI) in Hyprland with a Real OSD</h1>
-<p>As a follow-up to the previous entry on how to get the <a href="https://ewinnington.github.io/posts/omarchy-brightness">brightness adapted by ddcutil</a>, I actually asked <a href="https://openai.com/codex/">OpenAI's Codex</a> to wire it up in my keyboard bindings. Once it succeeded and get the osd wired up, I asked it to document the process. Here is the Codex generated documentation.</p>
-<p>As a side note I created a small script to increase or decrease the brightness on the command line, that is executable.</p>
-<pre><code class="language-bash">#!/bin/bash
-# brightness up/down script using ddcutil
-STEP=10
-case &quot;$1&quot; in
-  up)   ddcutil setvcp 10 +$STEP ;;
-  down) ddcutil setvcp 10 -$STEP ;;
-  get)  ddcutil getvcp 10 ;;
-  *)    echo &quot;Usage: $0 {up|down|get}&quot; ;;
-esac
-</code></pre>
-<h1 id="openai-codex-steps-and-explanations">OpenAI Codex steps and explanations</h1>
-<ul>
-<li>Environment: Hyprland (Omarchy on Arch), SwayOSD, ddcutil</li>
-<li>Goal: Make hardware brightness keys and Alt+F1/F2 control HDMI monitor brightness via DDC/CI, with a correct on-screen display (OSD).</li>
-</ul>
-<h2 id="the-problem">The Problem</h2>
-<ul>
-<li>Omarchy’s default media bindings show the OSD and call brightnessctl, which targets laptop backlights—not external HDMI displays.</li>
-<li>My script ~/bin/hdmi-brightness already adjusts HDMI brightness using ddcutil, but Hyprland wasn’t calling it from brightness keys.</li>
-<li>Bonus ask: show an OSD reflecting the real HDMI brightness level.</li>
-</ul>
-<h2 id="solution-summary">Solution Summary</h2>
-<ul>
-<li>Unbind default brightness keys.</li>
-<li>Bind brightness keys and Alt+F1/F2 to the hdmi-brightness script.</li>
-<li>After each adjustment, read the real brightness via ddcutil getvcp 10 and display an OSD using SwayOSD’s custom-progress mode.</li>
-</ul>
-<h2 id="keybindings">Keybindings</h2>
-<ul>
-<li>File: ~/.config/hypr/bindings.conf</li>
-<li>Unbind defaults:
-<ul>
-<li>unbind = , XF86MonBrightnessUp</li>
-<li>unbind = , XF86MonBrightnessDown</li>
-<li>unbind = ALT, XF86MonBrightnessUp</li>
-<li>unbind = ALT, XF86MonBrightnessDown</li>
-</ul>
-</li>
-<li>Bind to DDC/CI script + OSD:
-<ul>
-<li><code>bindeld = , XF86MonBrightnessUp, HDMI Brightness up, exec, bash -lc &quot;~/bin/hdmi-brightness raise; read P R &lt;&lt;&lt; $(ddcutil getvcp 10 2&gt;/dev/null | awk 'BEGIN{FS=\&quot;[=,]\&quot;} /current value/ {cv=$2+0; mv=$4+0; if(mv&lt;=0){p=0;r=0}else{p=int((cv*100+mv/2)/mv); r=cv/mv}; if(r&lt;0) r=0; if(r&gt;1) r=1; printf(\&quot;%d %.2f\&quot;, p, r)}'); $osdclient --custom-icon display-brightness --custom-progress-text \&quot;Brightness: $P%\&quot; --custom-progress \&quot;$R\&quot;&quot;</code></li>
-<li><code>bindeld = , XF86MonBrightnessDown, HDMI Brightness down, exec, bash -lc &quot;~/bin/hdmi-brightness lower; read P R &lt;&lt;&lt; $(ddcutil getvcp 10 2&gt;/dev/null | awk 'BEGIN{FS=\&quot;[=,]\&quot;} /current value/ {cv=$2+0; mv=$4+0; if(mv&lt;=0){p=0;r=0}else{p=int((cv*100+mv/2)/mv); r=cv/mv}; if(r&lt;0) r=0; if(r&gt;1) r=1; printf(\&quot;%d %.2f\&quot;, p, r)}'); $osdclient --custom-icon display-brightness --custom-progress-text \&quot;Brightness: $P%\&quot; --custom-progress \&quot;$R\&quot;&quot;</code></li>
-<li><code>bindeld = ALT, F2, HDMI Brightness up, exec, [same as above with raise]</code></li>
-<li><code>bindeld = ALT, F1, HDMI Brightness down, exec, [same as above with lower]</code></li>
-</ul>
-</li>
-<li>$osdclient comes from Omarchy’s defaults and shows OSD on the focused monitor:
-<ul>
-<li><code>swayosd-client --monitor &quot;$(hyprctl monitors -j | jq -r '.[] | select(.focused == true).name')&quot;</code></li>
-</ul>
-</li>
-</ul>
-<h2 id="osd-integration">OSD Integration</h2>
-<ul>
-<li>ddcutil getvcp 10 returns a line containing “current value” and “maximum value”.</li>
-<li>We parse it to get:
-<ul>
-<li>P (percent, e.g., 72)</li>
-<li>R (ratio 0.00–1.00 for a progress bar)</li>
-</ul>
-</li>
-<li>SwayOSD’s --custom-progress shows a clean bar without changing any backlight devices:
-<ul>
-<li>--custom-progress &quot;$R&quot;</li>
-<li>--custom-progress-text &quot;Brightness: $P%&quot;</li>
-<li>--custom-icon display-brightness</li>
-</ul>
-</li>
-</ul>
-<h2 id="testing">Testing</h2>
-<ul>
-<li>Ensure the script is executable: chmod +x ~/bin/hdmi-brightness</li>
-<li>Reload Hyprland: hyprctl reload</li>
-<li>Press brightness keys and Alt+F1/F2:
-<ul>
-<li>External monitor brightness changes (DDC/CI)</li>
-<li>OSD shows an accurate bar and percentage</li>
-</ul>
-</li>
-<li>If no OSD appears:
-<ul>
-<li>systemctl --user enable --now swayosd</li>
-<li>Keep a window on the monitor you want the OSD (defaults to focused)</li>
-</ul>
-</li>
-</ul>
-<h2 id="troubleshooting">Troubleshooting</h2>
-<ul>
-<li>No brightness change: confirm ddcutil works (ddcutil detect, ddcutil getvcp 10), user in i2c group, and i2c-dev is loaded.</li>
-<li>Different keycodes: use wev to check actual keysyms and update the binds accordingly.</li>
-<li>OSD on the wrong output: we can pin $osdclient to a specific monitor name (e.g., --monitor &quot;HDMI-A-1&quot;).</li>
-</ul>
-<h2 id="why-this-works">Why This Works</h2>
-<ul>
-<li>It replaces backlight-centric controls with DDC/CI, which external monitors use.</li>
-<li>The OSD is decoupled from any system backlight and directly reflects DDC/CI state, so it’s always accurate.</li>
-</ul>
 						<hr>
                 </div>       
                 <div>
@@ -455,6 +348,113 @@ VCP Features:
 </code></pre>
 <h2 id="next-steps">Next steps</h2>
 <p>I need to figure out how to wire up these commands to the brightness up / down key commands on Omarchy - so I can control the brightness on the keyboard. Still not sure how to get that configuration working, since it doesn't work out of the box with my screen with the default tooling.</p>
+						<hr>
+                </div>       
+                <div>
+                    <a href="/posts/omarchy-brightness2">
+                        <h2>Omarchy - Integrating screen brightness via key binds</h2>
+                    </a>
+                    <p>Posted on Wednesday, 10 September 2025</p>
+<h1 id="controlling-external-monitor-brightness-ddcci-in-hyprland-with-a-real-osd">Controlling External Monitor Brightness (DDC/CI) in Hyprland with a Real OSD</h1>
+<p>As a follow-up to the previous entry on how to get the <a href="https://ewinnington.github.io/posts/omarchy-brightness">brightness adapted by ddcutil</a>, I actually asked <a href="https://openai.com/codex/">OpenAI's Codex</a> to wire it up in my keyboard bindings. Once it succeeded and get the osd wired up, I asked it to document the process. Here is the Codex generated documentation.</p>
+<p>As a side note I created a small script to increase or decrease the brightness on the command line, that is executable.</p>
+<pre><code class="language-bash">#!/bin/bash
+# brightness up/down script using ddcutil
+STEP=10
+case &quot;$1&quot; in
+  up)   ddcutil setvcp 10 +$STEP ;;
+  down) ddcutil setvcp 10 -$STEP ;;
+  get)  ddcutil getvcp 10 ;;
+  *)    echo &quot;Usage: $0 {up|down|get}&quot; ;;
+esac
+</code></pre>
+<h1 id="openai-codex-steps-and-explanations">OpenAI Codex steps and explanations</h1>
+<ul>
+<li>Environment: Hyprland (Omarchy on Arch), SwayOSD, ddcutil</li>
+<li>Goal: Make hardware brightness keys and Alt+F1/F2 control HDMI monitor brightness via DDC/CI, with a correct on-screen display (OSD).</li>
+</ul>
+<h2 id="the-problem">The Problem</h2>
+<ul>
+<li>Omarchy’s default media bindings show the OSD and call brightnessctl, which targets laptop backlights—not external HDMI displays.</li>
+<li>My script ~/bin/hdmi-brightness already adjusts HDMI brightness using ddcutil, but Hyprland wasn’t calling it from brightness keys.</li>
+<li>Bonus ask: show an OSD reflecting the real HDMI brightness level.</li>
+</ul>
+<h2 id="solution-summary">Solution Summary</h2>
+<ul>
+<li>Unbind default brightness keys.</li>
+<li>Bind brightness keys and Alt+F1/F2 to the hdmi-brightness script.</li>
+<li>After each adjustment, read the real brightness via ddcutil getvcp 10 and display an OSD using SwayOSD’s custom-progress mode.</li>
+</ul>
+<h2 id="keybindings">Keybindings</h2>
+<ul>
+<li>File: ~/.config/hypr/bindings.conf</li>
+<li>Unbind defaults:
+<ul>
+<li>unbind = , XF86MonBrightnessUp</li>
+<li>unbind = , XF86MonBrightnessDown</li>
+<li>unbind = ALT, XF86MonBrightnessUp</li>
+<li>unbind = ALT, XF86MonBrightnessDown</li>
+</ul>
+</li>
+<li>Bind to DDC/CI script + OSD:
+<ul>
+<li><code>bindeld = , XF86MonBrightnessUp, HDMI Brightness up, exec, bash -lc &quot;~/bin/hdmi-brightness raise; read P R &lt;&lt;&lt; $(ddcutil getvcp 10 2&gt;/dev/null | awk 'BEGIN{FS=\&quot;[=,]\&quot;} /current value/ {cv=$2+0; mv=$4+0; if(mv&lt;=0){p=0;r=0}else{p=int((cv*100+mv/2)/mv); r=cv/mv}; if(r&lt;0) r=0; if(r&gt;1) r=1; printf(\&quot;%d %.2f\&quot;, p, r)}'); $osdclient --custom-icon display-brightness --custom-progress-text \&quot;Brightness: $P%\&quot; --custom-progress \&quot;$R\&quot;&quot;</code></li>
+<li><code>bindeld = , XF86MonBrightnessDown, HDMI Brightness down, exec, bash -lc &quot;~/bin/hdmi-brightness lower; read P R &lt;&lt;&lt; $(ddcutil getvcp 10 2&gt;/dev/null | awk 'BEGIN{FS=\&quot;[=,]\&quot;} /current value/ {cv=$2+0; mv=$4+0; if(mv&lt;=0){p=0;r=0}else{p=int((cv*100+mv/2)/mv); r=cv/mv}; if(r&lt;0) r=0; if(r&gt;1) r=1; printf(\&quot;%d %.2f\&quot;, p, r)}'); $osdclient --custom-icon display-brightness --custom-progress-text \&quot;Brightness: $P%\&quot; --custom-progress \&quot;$R\&quot;&quot;</code></li>
+<li><code>bindeld = ALT, F2, HDMI Brightness up, exec, [same as above with raise]</code></li>
+<li><code>bindeld = ALT, F1, HDMI Brightness down, exec, [same as above with lower]</code></li>
+</ul>
+</li>
+<li>$osdclient comes from Omarchy’s defaults and shows OSD on the focused monitor:
+<ul>
+<li><code>swayosd-client --monitor &quot;$(hyprctl monitors -j | jq -r '.[] | select(.focused == true).name')&quot;</code></li>
+</ul>
+</li>
+</ul>
+<h2 id="osd-integration">OSD Integration</h2>
+<ul>
+<li>ddcutil getvcp 10 returns a line containing “current value” and “maximum value”.</li>
+<li>We parse it to get:
+<ul>
+<li>P (percent, e.g., 72)</li>
+<li>R (ratio 0.00–1.00 for a progress bar)</li>
+</ul>
+</li>
+<li>SwayOSD’s --custom-progress shows a clean bar without changing any backlight devices:
+<ul>
+<li>--custom-progress &quot;$R&quot;</li>
+<li>--custom-progress-text &quot;Brightness: $P%&quot;</li>
+<li>--custom-icon display-brightness</li>
+</ul>
+</li>
+</ul>
+<h2 id="testing">Testing</h2>
+<ul>
+<li>Ensure the script is executable: chmod +x ~/bin/hdmi-brightness</li>
+<li>Reload Hyprland: hyprctl reload</li>
+<li>Press brightness keys and Alt+F1/F2:
+<ul>
+<li>External monitor brightness changes (DDC/CI)</li>
+<li>OSD shows an accurate bar and percentage</li>
+</ul>
+</li>
+<li>If no OSD appears:
+<ul>
+<li>systemctl --user enable --now swayosd</li>
+<li>Keep a window on the monitor you want the OSD (defaults to focused)</li>
+</ul>
+</li>
+</ul>
+<h2 id="troubleshooting">Troubleshooting</h2>
+<ul>
+<li>No brightness change: confirm ddcutil works (ddcutil detect, ddcutil getvcp 10), user in i2c group, and i2c-dev is loaded.</li>
+<li>Different keycodes: use wev to check actual keysyms and update the binds accordingly.</li>
+<li>OSD on the wrong output: we can pin $osdclient to a specific monitor name (e.g., --monitor &quot;HDMI-A-1&quot;).</li>
+</ul>
+<h2 id="why-this-works">Why This Works</h2>
+<ul>
+<li>It replaces backlight-centric controls with DDC/CI, which external monitors use.</li>
+<li>The OSD is decoupled from any system backlight and directly reflects DDC/CI state, so it’s always accurate.</li>
+</ul>
 						<hr>
                 </div>       
                 <div>
@@ -681,11 +681,11 @@ for i in range(n):
                     <li><a role="button" href="/tags/Architecture" class="button small">Architecture (12)</a></li>
                     <li><a role="button" href="/tags/Database" class="button small">Database (11)</a></li>
                     <li><a role="button" href="/tags/CSharp" class="button small">CSharp (10)</a></li>
-                    <li><a role="button" href="/tags/Jupyter-notebook" class="button small">Jupyter notebook (7)</a></li>
                     <li><a role="button" href="/tags/Oracle" class="button small">Oracle (7)</a></li>
+                    <li><a role="button" href="/tags/Jupyter-notebook" class="button small">Jupyter notebook (7)</a></li>
                     <li><a role="button" href="/tags/Dotnet-try" class="button small">Dotnet try (7)</a></li>
-                    <li><a role="button" href="/tags/Rpi" class="button small">Rpi (4)</a></li>
-                    <li><a role="button" href="/tags/R" class="button small">R (4)</a></li>
+                    <li><a role="button" href="/tags/Space" class="button small">Space (4)</a></li>
+                    <li><a role="button" href="/tags/WPF" class="button small">WPF (4)</a></li>
             </ul>
             <ul class="actions small">
                 <li><a href="/tags" class="button small">View All Tags &rarr;</a></li>

@@ -5,16 +5,16 @@
 		<link>http://ewinnington.github.io/</link>
 		<description>A collection of thoughts, code and snippets.</description>
 		<copyright>2025</copyright>
-		<pubDate>Thu, 16 Oct 2025 19:59:08 GMT</pubDate>
-		<lastBuildDate>Thu, 16 Oct 2025 19:59:08 GMT</lastBuildDate>
+		<pubDate>Thu, 16 Oct 2025 20:00:29 GMT</pubDate>
+		<lastBuildDate>Thu, 16 Oct 2025 20:00:29 GMT</lastBuildDate>
 		<item>
 			<title>Omarchy - Multi-monitor HDMI and Audio</title>
 			<link>http://ewinnington.github.io/posts/omarchy-hdmi-audio</link>
-			<description>&lt;p&gt;I added a vertical monitor to my Omarchy desk. I have my BenQ horitontal and have added a Samsung as a vertical screen on the side.&lt;/p&gt;</description>
+			<description>&lt;p&gt;I added a vertical monitor to my Omarchy desk. I have my BenQ horizontal and have added a Samsung as a vertical screen on the side.&lt;/p&gt;</description>
 			<guid>http://ewinnington.github.io/posts/omarchy-hdmi-audio</guid>
 			<pubDate>Thu, 16 Oct 2025 00:00:00 GMT</pubDate>
 			<content:encoded>&lt;h1 id="configuring-multi-monitor-and-choosing-hdmi-sound-output-in-omarchy"&gt;Configuring multi-monitor and choosing HDMI sound output in Omarchy&lt;/h1&gt;
-&lt;p&gt;I added a vertical monitor to my Omarchy desk. I have my BenQ horitontal and have added a Samsung as a vertical screen on the side.&lt;/p&gt;
+&lt;p&gt;I added a vertical monitor to my Omarchy desk. I have my BenQ horizontal and have added a Samsung as a vertical screen on the side.&lt;/p&gt;
 &lt;h2 id="video-setup"&gt;Video setup&lt;/h2&gt;
 &lt;p&gt;Listing my monitors gives me the following:&lt;/p&gt;
 &lt;pre&gt;&lt;code class="language-bash"&gt;hyprctl monitors
@@ -93,114 +93,6 @@ pactl set-default-sink alsa_output.pci-0000_00_1f.3.hdmi-stereo-extra1
 pactl set-default-sink alsa_output.pci-0000_00_1f.3.hdmi-stereo
 &lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;I'm hoping to figure out how to pin the audio to the BenQ monitor soon.&lt;/p&gt;
-</content:encoded>
-		</item>
-		<item>
-			<title>Omarchy - Integrating screen brightness via key binds</title>
-			<link>http://ewinnington.github.io/posts/omarchy-brightness2</link>
-			<description>&lt;p&gt;As a follow-up to the previous entry on how to get the &lt;a href="https://ewinnington.github.io/posts/omarchy-brightness"&gt;brightness adapted by ddcutil&lt;/a&gt;, I actually asked &lt;a href="https://openai.com/codex/"&gt;OpenAI's Codex&lt;/a&gt; to wire it up in my keyboard bindings. Once it succeeded and get the osd wired up, I asked it to document the process. Here is the Codex generated documentation.&lt;/p&gt;</description>
-			<guid>http://ewinnington.github.io/posts/omarchy-brightness2</guid>
-			<pubDate>Wed, 10 Sep 2025 00:00:00 GMT</pubDate>
-			<content:encoded>&lt;h1 id="controlling-external-monitor-brightness-ddcci-in-hyprland-with-a-real-osd"&gt;Controlling External Monitor Brightness (DDC/CI) in Hyprland with a Real OSD&lt;/h1&gt;
-&lt;p&gt;As a follow-up to the previous entry on how to get the &lt;a href="https://ewinnington.github.io/posts/omarchy-brightness"&gt;brightness adapted by ddcutil&lt;/a&gt;, I actually asked &lt;a href="https://openai.com/codex/"&gt;OpenAI's Codex&lt;/a&gt; to wire it up in my keyboard bindings. Once it succeeded and get the osd wired up, I asked it to document the process. Here is the Codex generated documentation.&lt;/p&gt;
-&lt;p&gt;As a side note I created a small script to increase or decrease the brightness on the command line, that is executable.&lt;/p&gt;
-&lt;pre&gt;&lt;code class="language-bash"&gt;#!/bin/bash
-# brightness up/down script using ddcutil
-STEP=10
-case &amp;quot;$1&amp;quot; in
-  up)   ddcutil setvcp 10 +$STEP ;;
-  down) ddcutil setvcp 10 -$STEP ;;
-  get)  ddcutil getvcp 10 ;;
-  *)    echo &amp;quot;Usage: $0 {up|down|get}&amp;quot; ;;
-esac
-&lt;/code&gt;&lt;/pre&gt;
-&lt;h1 id="openai-codex-steps-and-explanations"&gt;OpenAI Codex steps and explanations&lt;/h1&gt;
-&lt;ul&gt;
-&lt;li&gt;Environment: Hyprland (Omarchy on Arch), SwayOSD, ddcutil&lt;/li&gt;
-&lt;li&gt;Goal: Make hardware brightness keys and Alt+F1/F2 control HDMI monitor brightness via DDC/CI, with a correct on-screen display (OSD).&lt;/li&gt;
-&lt;/ul&gt;
-&lt;h2 id="the-problem"&gt;The Problem&lt;/h2&gt;
-&lt;ul&gt;
-&lt;li&gt;Omarchy’s default media bindings show the OSD and call brightnessctl, which targets laptop backlights—not external HDMI displays.&lt;/li&gt;
-&lt;li&gt;My script ~/bin/hdmi-brightness already adjusts HDMI brightness using ddcutil, but Hyprland wasn’t calling it from brightness keys.&lt;/li&gt;
-&lt;li&gt;Bonus ask: show an OSD reflecting the real HDMI brightness level.&lt;/li&gt;
-&lt;/ul&gt;
-&lt;h2 id="solution-summary"&gt;Solution Summary&lt;/h2&gt;
-&lt;ul&gt;
-&lt;li&gt;Unbind default brightness keys.&lt;/li&gt;
-&lt;li&gt;Bind brightness keys and Alt+F1/F2 to the hdmi-brightness script.&lt;/li&gt;
-&lt;li&gt;After each adjustment, read the real brightness via ddcutil getvcp 10 and display an OSD using SwayOSD’s custom-progress mode.&lt;/li&gt;
-&lt;/ul&gt;
-&lt;h2 id="keybindings"&gt;Keybindings&lt;/h2&gt;
-&lt;ul&gt;
-&lt;li&gt;File: ~/.config/hypr/bindings.conf&lt;/li&gt;
-&lt;li&gt;Unbind defaults:
-&lt;ul&gt;
-&lt;li&gt;unbind = , XF86MonBrightnessUp&lt;/li&gt;
-&lt;li&gt;unbind = , XF86MonBrightnessDown&lt;/li&gt;
-&lt;li&gt;unbind = ALT, XF86MonBrightnessUp&lt;/li&gt;
-&lt;li&gt;unbind = ALT, XF86MonBrightnessDown&lt;/li&gt;
-&lt;/ul&gt;
-&lt;/li&gt;
-&lt;li&gt;Bind to DDC/CI script + OSD:
-&lt;ul&gt;
-&lt;li&gt;&lt;code&gt;bindeld = , XF86MonBrightnessUp, HDMI Brightness up, exec, bash -lc &amp;quot;~/bin/hdmi-brightness raise; read P R &amp;lt;&amp;lt;&amp;lt; $(ddcutil getvcp 10 2&amp;gt;/dev/null | awk 'BEGIN{FS=\&amp;quot;[=,]\&amp;quot;} /current value/ {cv=$2+0; mv=$4+0; if(mv&amp;lt;=0){p=0;r=0}else{p=int((cv*100+mv/2)/mv); r=cv/mv}; if(r&amp;lt;0) r=0; if(r&amp;gt;1) r=1; printf(\&amp;quot;%d %.2f\&amp;quot;, p, r)}'); $osdclient --custom-icon display-brightness --custom-progress-text \&amp;quot;Brightness: $P%\&amp;quot; --custom-progress \&amp;quot;$R\&amp;quot;&amp;quot;&lt;/code&gt;&lt;/li&gt;
-&lt;li&gt;&lt;code&gt;bindeld = , XF86MonBrightnessDown, HDMI Brightness down, exec, bash -lc &amp;quot;~/bin/hdmi-brightness lower; read P R &amp;lt;&amp;lt;&amp;lt; $(ddcutil getvcp 10 2&amp;gt;/dev/null | awk 'BEGIN{FS=\&amp;quot;[=,]\&amp;quot;} /current value/ {cv=$2+0; mv=$4+0; if(mv&amp;lt;=0){p=0;r=0}else{p=int((cv*100+mv/2)/mv); r=cv/mv}; if(r&amp;lt;0) r=0; if(r&amp;gt;1) r=1; printf(\&amp;quot;%d %.2f\&amp;quot;, p, r)}'); $osdclient --custom-icon display-brightness --custom-progress-text \&amp;quot;Brightness: $P%\&amp;quot; --custom-progress \&amp;quot;$R\&amp;quot;&amp;quot;&lt;/code&gt;&lt;/li&gt;
-&lt;li&gt;&lt;code&gt;bindeld = ALT, F2, HDMI Brightness up, exec, [same as above with raise]&lt;/code&gt;&lt;/li&gt;
-&lt;li&gt;&lt;code&gt;bindeld = ALT, F1, HDMI Brightness down, exec, [same as above with lower]&lt;/code&gt;&lt;/li&gt;
-&lt;/ul&gt;
-&lt;/li&gt;
-&lt;li&gt;$osdclient comes from Omarchy’s defaults and shows OSD on the focused monitor:
-&lt;ul&gt;
-&lt;li&gt;&lt;code&gt;swayosd-client --monitor &amp;quot;$(hyprctl monitors -j | jq -r '.[] | select(.focused == true).name')&amp;quot;&lt;/code&gt;&lt;/li&gt;
-&lt;/ul&gt;
-&lt;/li&gt;
-&lt;/ul&gt;
-&lt;h2 id="osd-integration"&gt;OSD Integration&lt;/h2&gt;
-&lt;ul&gt;
-&lt;li&gt;ddcutil getvcp 10 returns a line containing “current value” and “maximum value”.&lt;/li&gt;
-&lt;li&gt;We parse it to get:
-&lt;ul&gt;
-&lt;li&gt;P (percent, e.g., 72)&lt;/li&gt;
-&lt;li&gt;R (ratio 0.00–1.00 for a progress bar)&lt;/li&gt;
-&lt;/ul&gt;
-&lt;/li&gt;
-&lt;li&gt;SwayOSD’s --custom-progress shows a clean bar without changing any backlight devices:
-&lt;ul&gt;
-&lt;li&gt;--custom-progress &amp;quot;$R&amp;quot;&lt;/li&gt;
-&lt;li&gt;--custom-progress-text &amp;quot;Brightness: $P%&amp;quot;&lt;/li&gt;
-&lt;li&gt;--custom-icon display-brightness&lt;/li&gt;
-&lt;/ul&gt;
-&lt;/li&gt;
-&lt;/ul&gt;
-&lt;h2 id="testing"&gt;Testing&lt;/h2&gt;
-&lt;ul&gt;
-&lt;li&gt;Ensure the script is executable: chmod +x ~/bin/hdmi-brightness&lt;/li&gt;
-&lt;li&gt;Reload Hyprland: hyprctl reload&lt;/li&gt;
-&lt;li&gt;Press brightness keys and Alt+F1/F2:
-&lt;ul&gt;
-&lt;li&gt;External monitor brightness changes (DDC/CI)&lt;/li&gt;
-&lt;li&gt;OSD shows an accurate bar and percentage&lt;/li&gt;
-&lt;/ul&gt;
-&lt;/li&gt;
-&lt;li&gt;If no OSD appears:
-&lt;ul&gt;
-&lt;li&gt;systemctl --user enable --now swayosd&lt;/li&gt;
-&lt;li&gt;Keep a window on the monitor you want the OSD (defaults to focused)&lt;/li&gt;
-&lt;/ul&gt;
-&lt;/li&gt;
-&lt;/ul&gt;
-&lt;h2 id="troubleshooting"&gt;Troubleshooting&lt;/h2&gt;
-&lt;ul&gt;
-&lt;li&gt;No brightness change: confirm ddcutil works (ddcutil detect, ddcutil getvcp 10), user in i2c group, and i2c-dev is loaded.&lt;/li&gt;
-&lt;li&gt;Different keycodes: use wev to check actual keysyms and update the binds accordingly.&lt;/li&gt;
-&lt;li&gt;OSD on the wrong output: we can pin $osdclient to a specific monitor name (e.g., --monitor &amp;quot;HDMI-A-1&amp;quot;).&lt;/li&gt;
-&lt;/ul&gt;
-&lt;h2 id="why-this-works"&gt;Why This Works&lt;/h2&gt;
-&lt;ul&gt;
-&lt;li&gt;It replaces backlight-centric controls with DDC/CI, which external monitors use.&lt;/li&gt;
-&lt;li&gt;The OSD is decoupled from any system backlight and directly reflects DDC/CI state, so it’s always accurate.&lt;/li&gt;
-&lt;/ul&gt;
 </content:encoded>
 		</item>
 		<item>
@@ -371,6 +263,114 @@ VCP Features:
 &lt;/code&gt;&lt;/pre&gt;
 &lt;h2 id="next-steps"&gt;Next steps&lt;/h2&gt;
 &lt;p&gt;I need to figure out how to wire up these commands to the brightness up / down key commands on Omarchy - so I can control the brightness on the keyboard. Still not sure how to get that configuration working, since it doesn't work out of the box with my screen with the default tooling.&lt;/p&gt;
+</content:encoded>
+		</item>
+		<item>
+			<title>Omarchy - Integrating screen brightness via key binds</title>
+			<link>http://ewinnington.github.io/posts/omarchy-brightness2</link>
+			<description>&lt;p&gt;As a follow-up to the previous entry on how to get the &lt;a href="https://ewinnington.github.io/posts/omarchy-brightness"&gt;brightness adapted by ddcutil&lt;/a&gt;, I actually asked &lt;a href="https://openai.com/codex/"&gt;OpenAI's Codex&lt;/a&gt; to wire it up in my keyboard bindings. Once it succeeded and get the osd wired up, I asked it to document the process. Here is the Codex generated documentation.&lt;/p&gt;</description>
+			<guid>http://ewinnington.github.io/posts/omarchy-brightness2</guid>
+			<pubDate>Wed, 10 Sep 2025 00:00:00 GMT</pubDate>
+			<content:encoded>&lt;h1 id="controlling-external-monitor-brightness-ddcci-in-hyprland-with-a-real-osd"&gt;Controlling External Monitor Brightness (DDC/CI) in Hyprland with a Real OSD&lt;/h1&gt;
+&lt;p&gt;As a follow-up to the previous entry on how to get the &lt;a href="https://ewinnington.github.io/posts/omarchy-brightness"&gt;brightness adapted by ddcutil&lt;/a&gt;, I actually asked &lt;a href="https://openai.com/codex/"&gt;OpenAI's Codex&lt;/a&gt; to wire it up in my keyboard bindings. Once it succeeded and get the osd wired up, I asked it to document the process. Here is the Codex generated documentation.&lt;/p&gt;
+&lt;p&gt;As a side note I created a small script to increase or decrease the brightness on the command line, that is executable.&lt;/p&gt;
+&lt;pre&gt;&lt;code class="language-bash"&gt;#!/bin/bash
+# brightness up/down script using ddcutil
+STEP=10
+case &amp;quot;$1&amp;quot; in
+  up)   ddcutil setvcp 10 +$STEP ;;
+  down) ddcutil setvcp 10 -$STEP ;;
+  get)  ddcutil getvcp 10 ;;
+  *)    echo &amp;quot;Usage: $0 {up|down|get}&amp;quot; ;;
+esac
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h1 id="openai-codex-steps-and-explanations"&gt;OpenAI Codex steps and explanations&lt;/h1&gt;
+&lt;ul&gt;
+&lt;li&gt;Environment: Hyprland (Omarchy on Arch), SwayOSD, ddcutil&lt;/li&gt;
+&lt;li&gt;Goal: Make hardware brightness keys and Alt+F1/F2 control HDMI monitor brightness via DDC/CI, with a correct on-screen display (OSD).&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="the-problem"&gt;The Problem&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;Omarchy’s default media bindings show the OSD and call brightnessctl, which targets laptop backlights—not external HDMI displays.&lt;/li&gt;
+&lt;li&gt;My script ~/bin/hdmi-brightness already adjusts HDMI brightness using ddcutil, but Hyprland wasn’t calling it from brightness keys.&lt;/li&gt;
+&lt;li&gt;Bonus ask: show an OSD reflecting the real HDMI brightness level.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="solution-summary"&gt;Solution Summary&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;Unbind default brightness keys.&lt;/li&gt;
+&lt;li&gt;Bind brightness keys and Alt+F1/F2 to the hdmi-brightness script.&lt;/li&gt;
+&lt;li&gt;After each adjustment, read the real brightness via ddcutil getvcp 10 and display an OSD using SwayOSD’s custom-progress mode.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="keybindings"&gt;Keybindings&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;File: ~/.config/hypr/bindings.conf&lt;/li&gt;
+&lt;li&gt;Unbind defaults:
+&lt;ul&gt;
+&lt;li&gt;unbind = , XF86MonBrightnessUp&lt;/li&gt;
+&lt;li&gt;unbind = , XF86MonBrightnessDown&lt;/li&gt;
+&lt;li&gt;unbind = ALT, XF86MonBrightnessUp&lt;/li&gt;
+&lt;li&gt;unbind = ALT, XF86MonBrightnessDown&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;Bind to DDC/CI script + OSD:
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;bindeld = , XF86MonBrightnessUp, HDMI Brightness up, exec, bash -lc &amp;quot;~/bin/hdmi-brightness raise; read P R &amp;lt;&amp;lt;&amp;lt; $(ddcutil getvcp 10 2&amp;gt;/dev/null | awk 'BEGIN{FS=\&amp;quot;[=,]\&amp;quot;} /current value/ {cv=$2+0; mv=$4+0; if(mv&amp;lt;=0){p=0;r=0}else{p=int((cv*100+mv/2)/mv); r=cv/mv}; if(r&amp;lt;0) r=0; if(r&amp;gt;1) r=1; printf(\&amp;quot;%d %.2f\&amp;quot;, p, r)}'); $osdclient --custom-icon display-brightness --custom-progress-text \&amp;quot;Brightness: $P%\&amp;quot; --custom-progress \&amp;quot;$R\&amp;quot;&amp;quot;&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;bindeld = , XF86MonBrightnessDown, HDMI Brightness down, exec, bash -lc &amp;quot;~/bin/hdmi-brightness lower; read P R &amp;lt;&amp;lt;&amp;lt; $(ddcutil getvcp 10 2&amp;gt;/dev/null | awk 'BEGIN{FS=\&amp;quot;[=,]\&amp;quot;} /current value/ {cv=$2+0; mv=$4+0; if(mv&amp;lt;=0){p=0;r=0}else{p=int((cv*100+mv/2)/mv); r=cv/mv}; if(r&amp;lt;0) r=0; if(r&amp;gt;1) r=1; printf(\&amp;quot;%d %.2f\&amp;quot;, p, r)}'); $osdclient --custom-icon display-brightness --custom-progress-text \&amp;quot;Brightness: $P%\&amp;quot; --custom-progress \&amp;quot;$R\&amp;quot;&amp;quot;&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;bindeld = ALT, F2, HDMI Brightness up, exec, [same as above with raise]&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;bindeld = ALT, F1, HDMI Brightness down, exec, [same as above with lower]&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;$osdclient comes from Omarchy’s defaults and shows OSD on the focused monitor:
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;swayosd-client --monitor &amp;quot;$(hyprctl monitors -j | jq -r '.[] | select(.focused == true).name')&amp;quot;&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="osd-integration"&gt;OSD Integration&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;ddcutil getvcp 10 returns a line containing “current value” and “maximum value”.&lt;/li&gt;
+&lt;li&gt;We parse it to get:
+&lt;ul&gt;
+&lt;li&gt;P (percent, e.g., 72)&lt;/li&gt;
+&lt;li&gt;R (ratio 0.00–1.00 for a progress bar)&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;SwayOSD’s --custom-progress shows a clean bar without changing any backlight devices:
+&lt;ul&gt;
+&lt;li&gt;--custom-progress &amp;quot;$R&amp;quot;&lt;/li&gt;
+&lt;li&gt;--custom-progress-text &amp;quot;Brightness: $P%&amp;quot;&lt;/li&gt;
+&lt;li&gt;--custom-icon display-brightness&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="testing"&gt;Testing&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;Ensure the script is executable: chmod +x ~/bin/hdmi-brightness&lt;/li&gt;
+&lt;li&gt;Reload Hyprland: hyprctl reload&lt;/li&gt;
+&lt;li&gt;Press brightness keys and Alt+F1/F2:
+&lt;ul&gt;
+&lt;li&gt;External monitor brightness changes (DDC/CI)&lt;/li&gt;
+&lt;li&gt;OSD shows an accurate bar and percentage&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;If no OSD appears:
+&lt;ul&gt;
+&lt;li&gt;systemctl --user enable --now swayosd&lt;/li&gt;
+&lt;li&gt;Keep a window on the monitor you want the OSD (defaults to focused)&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="troubleshooting"&gt;Troubleshooting&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;No brightness change: confirm ddcutil works (ddcutil detect, ddcutil getvcp 10), user in i2c group, and i2c-dev is loaded.&lt;/li&gt;
+&lt;li&gt;Different keycodes: use wev to check actual keysyms and update the binds accordingly.&lt;/li&gt;
+&lt;li&gt;OSD on the wrong output: we can pin $osdclient to a specific monitor name (e.g., --monitor &amp;quot;HDMI-A-1&amp;quot;).&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="why-this-works"&gt;Why This Works&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;It replaces backlight-centric controls with DDC/CI, which external monitors use.&lt;/li&gt;
+&lt;li&gt;The OSD is decoupled from any system backlight and directly reflects DDC/CI state, so it’s always accurate.&lt;/li&gt;
+&lt;/ul&gt;
 </content:encoded>
 		</item>
 		<item>
