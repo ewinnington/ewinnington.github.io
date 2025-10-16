@@ -5,7 +5,7 @@ Tags: [Omarchy, Hyprland, Audio]
 
 # Configuring multi-monitor and choosing HDMI sound output in Omarchy
 
-I added a vertical monitor to my Omarchy desk. I have my BenQ horitontal and have added a Samsung as a vertical screen on the side. 
+I added a vertical monitor to my Omarchy desk. I have my BenQ horizontal and have added a Samsung as a vertical screen on the side. 
 
 ## Video setup
 
