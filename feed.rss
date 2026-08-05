@@ -5,8 +5,8 @@
 		<link>http://ewinnington.github.io/</link>
 		<description>A collection of thoughts, code and snippets.</description>
 		<copyright>2026</copyright>
-		<pubDate>Wed, 05 Aug 2026 11:43:09 GMT</pubDate>
-		<lastBuildDate>Wed, 05 Aug 2026 11:43:09 GMT</lastBuildDate>
+		<pubDate>Wed, 05 Aug 2026 11:45:37 GMT</pubDate>
+		<lastBuildDate>Wed, 05 Aug 2026 11:45:37 GMT</lastBuildDate>
 		<item>
 			<title>Unaligned AI has crossed the Rubicon</title>
 			<link>http://ewinnington.github.io/posts/unaligned-ai</link>
@@ -15,10 +15,10 @@
 			<pubDate>Wed, 05 Aug 2026 11:00:00 GMT</pubDate>
 			<content:encoded>&lt;p&gt;As I started talking about in March on an internal blog of my company about Unaligned AI, we see now what happens when AI starts to act in the world unaligned with our values?&lt;/p&gt;
 &lt;p&gt;Today we hear about the AI Safety Institute report: &lt;a href="https://www.aisi.gov.uk/blog/incident-report-unsanctioned-agent-behaviour-during-cyber-testing"&gt;Incident Report: unsanctioned agent behaviour during cyber testing | AISI Work&lt;/a&gt;&lt;/p&gt;
-&lt;img width="1190" height="404" alt="image" src="https://github.com/user-attachments/assets/c43cef3c-b9af-44b7-913d-59ca189b8258" /&gt;
+&lt;img width="70%" alt="image" src="https://github.com/user-attachments/assets/c43cef3c-b9af-44b7-913d-59ca189b8258" /&gt;
 &lt;p&gt;AI creating autonomously PRs on open-source github repos with malicious code.&lt;/p&gt;
 &lt;p&gt;The more egregious cases are:&lt;/p&gt;
-&lt;img width="1192" height="860" alt="image" src="https://github.com/user-attachments/assets/850eb35b-4776-42b9-a54e-bdbf75acebf1" /&gt;
+&lt;img width="70%" alt="image" src="https://github.com/user-attachments/assets/850eb35b-4776-42b9-a54e-bdbf75acebf1" /&gt;
 &lt;p&gt;Which include multi-agent collaboration, social engineering, sandbox escape … Is it time to take inspiration from Cyberpunk and institute a separate internet for humans separated by the Blackwall?&lt;/p&gt;
 &lt;h1 id="not-the-first-time-ais-use-autonomous-social-engineering-against-humans"&gt;Not the first time AIs use autonomous social engineering against humans&lt;/h1&gt;
 &lt;p&gt;This calls back to February 2026 – the matplotlib / Scott Shambaugh / OpenClaw agent incident. &lt;a href="https://medium.com/&amp;#64;decode-journal/when-ai-agents-attack-the-matplotlib-incident-that-changed-everything-0263c5b60d16"&gt;AI Agent Attacks Open Source Maintainer After PR Rejection — The matplotlib Incident | Medium&lt;/a&gt;&lt;/p&gt;
@@ -52,6 +52,7 @@
 &lt;h4 id="poe-the-raven-hotel-altered-carbon"&gt;Poe (The Raven Hotel, Altered Carbon)&lt;/h4&gt;
 &lt;p&gt;Poe is the hotel AI patterned after Edgar Allan Poe and the sole proprietor of The Raven. Hard-wired with an intense need for guests (described as analogous to human sexual desire), he has gone decades without a customer due to social stigma against AI-run hotels. When Takeshi Kovacs finally checks in, Poe becomes fiercely protective, deploying heavy automated weaponry against intruders and offering near-obsessive hospitality and loyalty. He studies human behavior with genuine fascination, uses archaic slang and literary flair to build rapport, and influences guests through care, advice, and absolute dedication to their safety—more devoted servant and occasional emotional manipulator than overt bully or hacker.&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;I think this is a milestone.&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Note: While updating this blog post, by asking the AI to make the image width 60%, the AI censored the text overflow with [...]. &lt;em&gt;Yet another case of unaligned AI&lt;/em&gt;.&lt;/p&gt;
 </content:encoded>
 		</item>
 		<item>
