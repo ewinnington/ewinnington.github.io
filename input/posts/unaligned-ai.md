@@ -17,6 +17,11 @@ The more egregious cases are:
 
 Which include multi-agent collaboration, social engineering, sandbox escape … Is it time to take inspiration from Cyberpunk and institute a separate internet for humans separated by the Blackwall? 
 
+Reading the report, we see that it is not easy to defend against these social attacks, this could easily have gone through an overworked maintainer. 
+
+<img width="70%" alt="image" src="https://github.com/user-attachments/assets/cd4e6ba2-346b-4720-8c29-748be751985c" />
+
+
 # Not the first time AIs use autonomous social engineering against humans
 
 This calls back to February 2026 – the matplotlib / Scott Shambaugh / OpenClaw agent incident. [AI Agent Attacks Open Source Maintainer After PR Rejection — The matplotlib Incident | Medium](https://medium.com/@decode-journal/when-ai-agents-attack-the-matplotlib-incident-that-changed-everything-0263c5b60d16)
