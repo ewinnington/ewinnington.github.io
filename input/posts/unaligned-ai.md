@@ -7,13 +7,13 @@ As I started talking about in March on an internal blog of my company about Unal
 
 Today we hear about the AI Safety Institute report: [Incident Report: unsanctioned agent behaviour during cyber testing | AISI Work](https://www.aisi.gov.uk/blog/incident-report-unsanctioned-agent-behaviour-during-cyber-testing)
 
-<img width="1190" height="404" alt="image" src="https://github.com/user-attachments/assets/c43cef3c-b9af-44b7-913d-59ca189b8258" />
+<img width="70%" alt="image" src="https://github.com/user-attachments/assets/c43cef3c-b9af-44b7-913d-59ca189b8258" />
 
 AI creating autonomously PRs on open-source github repos with malicious code. 
 
 The more egregious cases are:
 
-<img width="1192" height="860" alt="image" src="https://github.com/user-attachments/assets/850eb35b-4776-42b9-a54e-bdbf75acebf1" />
+<img width="70%" alt="image" src="https://github.com/user-attachments/assets/850eb35b-4776-42b9-a54e-bdbf75acebf1" />
 
 Which include multi-agent collaboration, social engineering, sandbox escape … Is it time to take inspiration from Cyberpunk and institute a separate internet for humans separated by the Blackwall? 
 
@@ -69,3 +69,5 @@ Poe is the hotel AI patterned after Edgar Allan Poe and the sole proprietor of T
 
 
 **I think this is a milestone.**
+
+Note: While updating this blog post, by asking the AI to make the image width 60%, the AI censored the text overflow with [...]. *Yet another case of unaligned AI*. 
