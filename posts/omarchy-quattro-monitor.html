@@ -1,0 +1,195 @@
+﻿
+<!DOCTYPE html>
+<!--
+	Phantom by HTML5 UP
+	html5up.net | @ajlkn
+	Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
+-->
+<html lang="en">
+
+	<head>
+		<title>Eric Winnington - Omarchy - Quattro and the vertical monitor</title>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1" />		
+        <link href="/assets/css/highlight.css" rel="stylesheet">
+		<!--[if lte IE 8]><script src="/assets/js/ie/html5shiv.js"></script><![endif]-->
+		<link rel="stylesheet" href="/assets/css/main.css" />
+		<!--[if lte IE 9]><link rel="stylesheet" href="/assets/css/ie9.css" /><![endif]-->
+		<!--[if lte IE 8]><link rel="stylesheet" href="/assets/css/ie8.css" /><![endif]-->
+        <link href="/assets/css/override.css" rel="stylesheet" />
+
+		<meta name="description" content="A collection of thoughts, code and snippets." />
+		<link type="application/rss+xml" rel="alternate" title="Eric Winnington" href="/feed.rss" />
+				<link type="application/atom+xml" rel="alternate" title="Eric Winnington" href="/feed.atom" />
+		<link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+		<link rel="icon" href="/favicon.ico" type="image/x-icon">
+
+		<meta name="application-name" content="Eric Winnington" />
+		<meta name="msapplication-tooltip" content="Eric Winnington" />
+		<meta name="msapplication-starturl" content="/" />
+
+		<meta property="og:title" content="Eric Winnington - Omarchy - Quattro and the vertical monitor" /> 
+		<meta property="og:type" content="website" />
+		<meta property="og:url" content="http://ewinnington.github.io/posts/omarchy-quattro-monitor" />
+		<!-- TODO: More social graph meta tags -->
+
+        <script src="/assets/js/highlight.pack.js"></script>   
+		
+        <meta name="twitter:card" content="summary" />
+<meta name="twitter:site" content="@ewinnington" />
+<meta name="twitter:title" content="Eric Winnington - Omarchy - Quattro and the vertical monitor" />
+<meta name="twitter:description" content="A collection of thoughts, code and snippets." />
+
+<script type="text/javascript" id="MathJax-script" async
+  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
+</script>
+		
+	</head>
+
+	<body>
+		<!-- Wrapper -->
+		<div id="wrapper">
+
+			<!-- Header -->
+			<header id="header">
+				<div class="inner">
+
+					<!-- Logo -->
+					<a href="/" class="logo">
+						<span class="title">Eric Winnington</span>
+					</a>
+
+					<!-- Nav -->
+					<nav>
+						<ul>
+							<li><a href="#menu">Menu</a></li>
+						</ul>
+					</nav>
+
+				</div>
+			</header>
+
+			<!-- Menu -->
+			<nav id="menu">
+				<h2>Menu</h2>
+				<ul>
+					        <li><a href="/posts">Archive</a></li>
+        <li><a href="/tags">Tags</a></li>
+        <li><a href="/about">About Me</a></li>
+        <li><a href="/videos">Videos on programming</a></li>
+
+				</ul>
+			</nav>
+
+			<!-- Main -->
+			<div id="main">
+				<div class="inner">
+
+    
+<header>
+    <h1>Omarchy - Quattro and the vertical monitor</h1>
+            <p><em>Published on Friday, 14 August 2026</em></p>
+            <ul class="actions small">
+                    <li><a role="button" href="/tags/Hyprland" class="button small">Hyprland</a></li>
+                    <li><a role="button" href="/tags/Linux" class="button small">Linux</a></li>
+                    <li><a role="button" href="/tags/Omarchy" class="button small">Omarchy</a></li>
+        </ul>     
+</header>
+
+					
+					<div id="content">
+						
+
+<h1 id="rotating-a-portrait-screen-after-the-omarchy-quattro-update">Rotating a portrait screen after the Omarchy Quattro update</h1>
+<p>I updated this Beelink to <a href="https://omarchy.org/">Omarchy Quattro</a>. The update itself was fine — themes, bar, the new Display panel — but my Samsung vertical monitor came back in landscape. Typing a line grew from top to bottom down the physical screen. Same desk as in <a href="https://ewinnington.github.io/posts/omarchy-hdmi-audio">the multi-monitor post</a>: BenQ horizontal, Samsung on its side.</p>
+<p>I asked <a href="https://x.ai/grok">Grok 4.6</a> (high) to fix the screen config, then to put a rotation control in the new Display panel so I would not have to edit Hyprland files by hand the next time this happens. Below is what it did. Credit where it's due.</p>
+<h2 id="the-update-moved-monitor-config-to-lua">The update moved monitor config to Lua</h2>
+<p>Before Quattro I had this in <code>~/.config/hypr/monitors.conf</code>, which is what I wrote up last October:</p>
+<pre><code class="language-bash">monitor=HDMI-A-2,preferred,auto-left,1.5
+monitor=HDMI-A-1,preferred,auto-right,1.5, transform, 1
+</code></pre>
+<p><code>transform, 1</code> is 90° clockwise. That was the Samsung. After the update, Hyprland 0.56 is Lua-first. The live file is <code>~/.config/hypr/monitors.lua</code>, and the old <code>.conf</code> is ignored. <code>hyprctl monitors</code> showed the Samsung on <strong>HDMI-A-2</strong> with <code>transform: 0</code>.</p>
+<p>Quattro's default <code>monitors.lua</code> looks like this:</p>
+<pre><code class="language-lua">local omarchy_gdk_scale = 2
+local omarchy_monitor_scale = &quot;auto&quot;
+
+hl.env(&quot;GDK_SCALE&quot;, tostring(omarchy_gdk_scale))
+hl.monitor({ output = &quot;&quot;, mode = &quot;preferred&quot;, position = &quot;auto&quot;, scale = omarchy_monitor_scale })
+</code></pre>
+<p>No rotation. Grok added a specific rule for the Samsung (and the other HDMI port, in case I plug it there again):</p>
+<pre><code class="language-lua">hl.monitor({ output = &quot;HDMI-A-2&quot;, mode = &quot;preferred&quot;, position = &quot;auto-left&quot;, scale = omarchy_monitor_scale, transform = 1 })
+hl.monitor({ output = &quot;HDMI-A-1&quot;, mode = &quot;preferred&quot;, position = &quot;auto-right&quot;, scale = omarchy_monitor_scale, transform = 1 })
+</code></pre>
+<p><code>hyprctl reload</code>, then <code>hyprctl monitors</code> reported <code>transform: 1</code>. The desktop was portrait again. That was the immediate fix.</p>
+<h2 id="then-i-wanted-it-in-the-display-panel">Then I wanted it in the Display panel</h2>
+<p>Quattro ships a Display plugin on the bar — brightness, text size, scale, enable/disable extra monitors. No rotation. <code>Super+Ctrl+D</code> opens it.</p>
+<p>Grok found it as first-party plugin <code>omarchy.monitor</code>:</p>
+<pre><code>/usr/share/omarchy/shell/plugins/panels/monitor/
+  manifest.json
+  Model.js
+  Panel.qml
+</code></pre>
+<p>Editing that tree is a bad idea. The next <code>omarchy update</code> overwrites it. The supported way to change a built-in panel is to clone it into your own config:</p>
+<pre><code class="language-bash">omarchy plugin clone omarchy.monitor
+</code></pre>
+<p>That copied it to <code>~/.config/omarchy/plugins/ew.monitor/</code>, disabled the stock widget, and put <code>ew.monitor</code> on the bar. Existing IPC still answers as <code>omarchy.monitor</code>, so <code>Super+Ctrl+D</code> keeps working.</p>
+<h2 id="adding-a-rotation-row">Adding a Rotation row</h2>
+<p>The clone got a <strong>ROTATION</strong> section under Scale, four pills: <strong>0° / 90° / 180° / 270°</strong>. Click one (or <code>j/k</code> to the row, <code>h/l</code> to pick, Enter to apply).</p>
+<p>Two small scripts live next to the QML:</p>
+<ul>
+<li><code>state.sh</code> — wraps <code>omarchy-monitor-state</code> and adds each display's Hyprland <code>transform</code> so the panel knows which pill is active</li>
+<li><code>rotate.sh</code> — sets the focused monitor immediately via <code>hyprctl eval</code>, then writes <code>transform = N</code> into <code>~/.config/hypr/monitors.lua</code> so it survives a reload</li>
+</ul>
+<p>The apply call looks like this:</p>
+<pre><code class="language-bash">hyprctl eval &quot;hl.monitor({ output = \&quot;HDMI-A-2\&quot;, mode = \&quot;preferred\&quot;, position = \&quot;-1440x0\&quot;, scale = 1.5, transform = 1 })&quot;
+</code></pre>
+<p>I tried it. 90° is highlighted, the other three work, and the file on disk updates. It just works.</p>
+<img width="70%" alt="Display panel with the new Rotation row" src="/posts/images/omarchy-quattro-monitor/display-rotation.png" />
+<h2 id="why-this-survives-the-next-update">Why this survives the next update</h2>
+<p>User plugins live under <code>~/.config/omarchy/plugins/</code>. Omarchy does not touch that on update. To go back to stock:</p>
+<pre><code class="language-bash">omarchy plugin remove ew.monitor
+</code></pre>
+<p>Open it anytime with <code>Super+Ctrl+D</code>.</p>
+
+
+<hr>
+					</div>
+				</div>
+			</div>
+
+			<!-- Footer -->
+			<footer id="footer">
+				<div class="inner">
+    <section>
+        <h2>Feeds</h2>
+        <ul class="actions small vertical">
+            <li><a href="/feed.rss" class="button small"><i class="fa fa-rss"></i> RSS Feed</a></li>
+                        <li><a href="/feed.atom" class="button small"><i class="fa fa-rss"></i> Atom Feed</a></li>
+        </ul>
+    </section>
+    <section>
+    </section>
+    <ul class="copyright">
+        <li>Copyright © 2026</li>
+        <li>Design: <a href="http://html5up.net">HTML5 UP</a></li>
+        <li><a href="https://wyam.io">Generated by Wyam</a></li>
+    </ul>
+</div>
+
+			</footer>
+
+		</div>
+		
+		
+
+		<!-- Scripts -->
+		<script>hljs.initHighlightingOnLoad();</script>
+		<script src="/assets/js/jquery.min.js"></script>
+		<script src="/assets/js/skel.min.js"></script>
+		<script src="/assets/js/util.js"></script>
+		<!--[if lte IE 8]><script src="/assets/js/ie/respond.min.js"></script><![endif]-->
+		<script src="/assets/js/main.js"></script>
+
+	</body>
+
+</html>

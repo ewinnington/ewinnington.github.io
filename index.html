@@ -95,6 +95,63 @@
 <div class="row">
     <div class="8u 12u$(medium)">
                 <div>
+                    <a href="/posts/omarchy-quattro-monitor">
+                        <h2>Omarchy - Quattro and the vertical monitor</h2>
+                    </a>
+                    <p>Posted on Friday, 14 August 2026</p>
+<h1 id="rotating-a-portrait-screen-after-the-omarchy-quattro-update">Rotating a portrait screen after the Omarchy Quattro update</h1>
+<p>I updated this Beelink to <a href="https://omarchy.org/">Omarchy Quattro</a>. The update itself was fine — themes, bar, the new Display panel — but my Samsung vertical monitor came back in landscape. Typing a line grew from top to bottom down the physical screen. Same desk as in <a href="https://ewinnington.github.io/posts/omarchy-hdmi-audio">the multi-monitor post</a>: BenQ horizontal, Samsung on its side.</p>
+<p>I asked <a href="https://x.ai/grok">Grok 4.6</a> (high) to fix the screen config, then to put a rotation control in the new Display panel so I would not have to edit Hyprland files by hand the next time this happens. Below is what it did. Credit where it's due.</p>
+<h2 id="the-update-moved-monitor-config-to-lua">The update moved monitor config to Lua</h2>
+<p>Before Quattro I had this in <code>~/.config/hypr/monitors.conf</code>, which is what I wrote up last October:</p>
+<pre><code class="language-bash">monitor=HDMI-A-2,preferred,auto-left,1.5
+monitor=HDMI-A-1,preferred,auto-right,1.5, transform, 1
+</code></pre>
+<p><code>transform, 1</code> is 90° clockwise. That was the Samsung. After the update, Hyprland 0.56 is Lua-first. The live file is <code>~/.config/hypr/monitors.lua</code>, and the old <code>.conf</code> is ignored. <code>hyprctl monitors</code> showed the Samsung on <strong>HDMI-A-2</strong> with <code>transform: 0</code>.</p>
+<p>Quattro's default <code>monitors.lua</code> looks like this:</p>
+<pre><code class="language-lua">local omarchy_gdk_scale = 2
+local omarchy_monitor_scale = &quot;auto&quot;
+
+hl.env(&quot;GDK_SCALE&quot;, tostring(omarchy_gdk_scale))
+hl.monitor({ output = &quot;&quot;, mode = &quot;preferred&quot;, position = &quot;auto&quot;, scale = omarchy_monitor_scale })
+</code></pre>
+<p>No rotation. Grok added a specific rule for the Samsung (and the other HDMI port, in case I plug it there again):</p>
+<pre><code class="language-lua">hl.monitor({ output = &quot;HDMI-A-2&quot;, mode = &quot;preferred&quot;, position = &quot;auto-left&quot;, scale = omarchy_monitor_scale, transform = 1 })
+hl.monitor({ output = &quot;HDMI-A-1&quot;, mode = &quot;preferred&quot;, position = &quot;auto-right&quot;, scale = omarchy_monitor_scale, transform = 1 })
+</code></pre>
+<p><code>hyprctl reload</code>, then <code>hyprctl monitors</code> reported <code>transform: 1</code>. The desktop was portrait again. That was the immediate fix.</p>
+<h2 id="then-i-wanted-it-in-the-display-panel">Then I wanted it in the Display panel</h2>
+<p>Quattro ships a Display plugin on the bar — brightness, text size, scale, enable/disable extra monitors. No rotation. <code>Super+Ctrl+D</code> opens it.</p>
+<p>Grok found it as first-party plugin <code>omarchy.monitor</code>:</p>
+<pre><code>/usr/share/omarchy/shell/plugins/panels/monitor/
+  manifest.json
+  Model.js
+  Panel.qml
+</code></pre>
+<p>Editing that tree is a bad idea. The next <code>omarchy update</code> overwrites it. The supported way to change a built-in panel is to clone it into your own config:</p>
+<pre><code class="language-bash">omarchy plugin clone omarchy.monitor
+</code></pre>
+<p>That copied it to <code>~/.config/omarchy/plugins/ew.monitor/</code>, disabled the stock widget, and put <code>ew.monitor</code> on the bar. Existing IPC still answers as <code>omarchy.monitor</code>, so <code>Super+Ctrl+D</code> keeps working.</p>
+<h2 id="adding-a-rotation-row">Adding a Rotation row</h2>
+<p>The clone got a <strong>ROTATION</strong> section under Scale, four pills: <strong>0° / 90° / 180° / 270°</strong>. Click one (or <code>j/k</code> to the row, <code>h/l</code> to pick, Enter to apply).</p>
+<p>Two small scripts live next to the QML:</p>
+<ul>
+<li><code>state.sh</code> — wraps <code>omarchy-monitor-state</code> and adds each display's Hyprland <code>transform</code> so the panel knows which pill is active</li>
+<li><code>rotate.sh</code> — sets the focused monitor immediately via <code>hyprctl eval</code>, then writes <code>transform = N</code> into <code>~/.config/hypr/monitors.lua</code> so it survives a reload</li>
+</ul>
+<p>The apply call looks like this:</p>
+<pre><code class="language-bash">hyprctl eval &quot;hl.monitor({ output = \&quot;HDMI-A-2\&quot;, mode = \&quot;preferred\&quot;, position = \&quot;-1440x0\&quot;, scale = 1.5, transform = 1 })&quot;
+</code></pre>
+<p>I tried it. 90° is highlighted, the other three work, and the file on disk updates. It just works.</p>
+<img width="70%" alt="Display panel with the new Rotation row" src="/posts/images/omarchy-quattro-monitor/display-rotation.png" />
+<h2 id="why-this-survives-the-next-update">Why this survives the next update</h2>
+<p>User plugins live under <code>~/.config/omarchy/plugins/</code>. Omarchy does not touch that on update. To go back to stock:</p>
+<pre><code class="language-bash">omarchy plugin remove ew.monitor
+</code></pre>
+<p>Open it anytime with <code>Super+Ctrl+D</code>.</p>
+						<hr>
+                </div>       
+                <div>
                     <a href="/posts/unaligned-ai">
                         <h2>Unaligned AI has crossed the Rubicon</h2>
                     </a>
@@ -399,113 +456,6 @@ VCP Features:
 <p>I need to figure out how to wire up these commands to the brightness up / down key commands on Omarchy - so I can control the brightness on the keyboard. Still not sure how to get that configuration working, since it doesn't work out of the box with my screen with the default tooling.</p>
 						<hr>
                 </div>       
-                <div>
-                    <a href="/posts/omarchy-brightness2">
-                        <h2>Omarchy - Integrating screen brightness via key binds</h2>
-                    </a>
-                    <p>Posted on Wednesday, 10 September 2025</p>
-<h1 id="controlling-external-monitor-brightness-ddcci-in-hyprland-with-a-real-osd">Controlling External Monitor Brightness (DDC/CI) in Hyprland with a Real OSD</h1>
-<p>As a follow-up to the previous entry on how to get the <a href="https://ewinnington.github.io/posts/omarchy-brightness">brightness adapted by ddcutil</a>, I actually asked <a href="https://openai.com/codex/">OpenAI's Codex</a> to wire it up in my keyboard bindings. Once it succeeded and get the osd wired up, I asked it to document the process. Here is the Codex generated documentation.</p>
-<p>As a side note I created a small script to increase or decrease the brightness on the command line, that is executable.</p>
-<pre><code class="language-bash">#!/bin/bash
-# brightness up/down script using ddcutil
-STEP=10
-case &quot;$1&quot; in
-  up)   ddcutil setvcp 10 +$STEP ;;
-  down) ddcutil setvcp 10 -$STEP ;;
-  get)  ddcutil getvcp 10 ;;
-  *)    echo &quot;Usage: $0 {up|down|get}&quot; ;;
-esac
-</code></pre>
-<h1 id="openai-codex-steps-and-explanations">OpenAI Codex steps and explanations</h1>
-<ul>
-<li>Environment: Hyprland (Omarchy on Arch), SwayOSD, ddcutil</li>
-<li>Goal: Make hardware brightness keys and Alt+F1/F2 control HDMI monitor brightness via DDC/CI, with a correct on-screen display (OSD).</li>
-</ul>
-<h2 id="the-problem">The Problem</h2>
-<ul>
-<li>Omarchy’s default media bindings show the OSD and call brightnessctl, which targets laptop backlights—not external HDMI displays.</li>
-<li>My script ~/bin/hdmi-brightness already adjusts HDMI brightness using ddcutil, but Hyprland wasn’t calling it from brightness keys.</li>
-<li>Bonus ask: show an OSD reflecting the real HDMI brightness level.</li>
-</ul>
-<h2 id="solution-summary">Solution Summary</h2>
-<ul>
-<li>Unbind default brightness keys.</li>
-<li>Bind brightness keys and Alt+F1/F2 to the hdmi-brightness script.</li>
-<li>After each adjustment, read the real brightness via ddcutil getvcp 10 and display an OSD using SwayOSD’s custom-progress mode.</li>
-</ul>
-<h2 id="keybindings">Keybindings</h2>
-<ul>
-<li>File: ~/.config/hypr/bindings.conf</li>
-<li>Unbind defaults:
-<ul>
-<li>unbind = , XF86MonBrightnessUp</li>
-<li>unbind = , XF86MonBrightnessDown</li>
-<li>unbind = ALT, XF86MonBrightnessUp</li>
-<li>unbind = ALT, XF86MonBrightnessDown</li>
-</ul>
-</li>
-<li>Bind to DDC/CI script + OSD:
-<ul>
-<li><code>bindeld = , XF86MonBrightnessUp, HDMI Brightness up, exec, bash -lc &quot;~/bin/hdmi-brightness raise; read P R &lt;&lt;&lt; $(ddcutil getvcp 10 2&gt;/dev/null | awk 'BEGIN{FS=\&quot;[=,]\&quot;} /current value/ {cv=$2+0; mv=$4+0; if(mv&lt;=0){p=0;r=0}else{p=int((cv*100+mv/2)/mv); r=cv/mv}; if(r&lt;0) r=0; if(r&gt;1) r=1; printf(\&quot;%d %.2f\&quot;, p, r)}'); $osdclient --custom-icon display-brightness --custom-progress-text \&quot;Brightness: $P%\&quot; --custom-progress \&quot;$R\&quot;&quot;</code></li>
-<li><code>bindeld = , XF86MonBrightnessDown, HDMI Brightness down, exec, bash -lc &quot;~/bin/hdmi-brightness lower; read P R &lt;&lt;&lt; $(ddcutil getvcp 10 2&gt;/dev/null | awk 'BEGIN{FS=\&quot;[=,]\&quot;} /current value/ {cv=$2+0; mv=$4+0; if(mv&lt;=0){p=0;r=0}else{p=int((cv*100+mv/2)/mv); r=cv/mv}; if(r&lt;0) r=0; if(r&gt;1) r=1; printf(\&quot;%d %.2f\&quot;, p, r)}'); $osdclient --custom-icon display-brightness --custom-progress-text \&quot;Brightness: $P%\&quot; --custom-progress \&quot;$R\&quot;&quot;</code></li>
-<li><code>bindeld = ALT, F2, HDMI Brightness up, exec, [same as above with raise]</code></li>
-<li><code>bindeld = ALT, F1, HDMI Brightness down, exec, [same as above with lower]</code></li>
-</ul>
-</li>
-<li>$osdclient comes from Omarchy’s defaults and shows OSD on the focused monitor:
-<ul>
-<li><code>swayosd-client --monitor &quot;$(hyprctl monitors -j | jq -r '.[] | select(.focused == true).name')&quot;</code></li>
-</ul>
-</li>
-</ul>
-<h2 id="osd-integration">OSD Integration</h2>
-<ul>
-<li>ddcutil getvcp 10 returns a line containing “current value” and “maximum value”.</li>
-<li>We parse it to get:
-<ul>
-<li>P (percent, e.g., 72)</li>
-<li>R (ratio 0.00–1.00 for a progress bar)</li>
-</ul>
-</li>
-<li>SwayOSD’s --custom-progress shows a clean bar without changing any backlight devices:
-<ul>
-<li>--custom-progress &quot;$R&quot;</li>
-<li>--custom-progress-text &quot;Brightness: $P%&quot;</li>
-<li>--custom-icon display-brightness</li>
-</ul>
-</li>
-</ul>
-<h2 id="testing">Testing</h2>
-<ul>
-<li>Ensure the script is executable: chmod +x ~/bin/hdmi-brightness</li>
-<li>Reload Hyprland: hyprctl reload</li>
-<li>Press brightness keys and Alt+F1/F2:
-<ul>
-<li>External monitor brightness changes (DDC/CI)</li>
-<li>OSD shows an accurate bar and percentage</li>
-</ul>
-</li>
-<li>If no OSD appears:
-<ul>
-<li>systemctl --user enable --now swayosd</li>
-<li>Keep a window on the monitor you want the OSD (defaults to focused)</li>
-</ul>
-</li>
-</ul>
-<h2 id="troubleshooting">Troubleshooting</h2>
-<ul>
-<li>No brightness change: confirm ddcutil works (ddcutil detect, ddcutil getvcp 10), user in i2c group, and i2c-dev is loaded.</li>
-<li>Different keycodes: use wev to check actual keysyms and update the binds accordingly.</li>
-<li>OSD on the wrong output: we can pin $osdclient to a specific monitor name (e.g., --monitor &quot;HDMI-A-1&quot;).</li>
-</ul>
-<h2 id="why-this-works">Why This Works</h2>
-<ul>
-<li>It replaces backlight-centric controls with DDC/CI, which external monitors use.</li>
-<li>The OSD is decoupled from any system backlight and directly reflects DDC/CI state, so it’s always accurate.</li>
-</ul>
-						<hr>
-                </div>       
         <ul class="pager">
             <li class="previous">                
             </li>
@@ -518,15 +468,15 @@ esac
             <h5>Tags</h5>
             <ul class="actions small">
                     <li><a role="button" href="/tags/Migrated" class="button small">Migrated (38)</a></li>
-                    <li><a role="button" href="/tags/Architecture" class="button small">Architecture (12)</a></li>
                     <li><a role="button" href="/tags/Thoughts" class="button small">Thoughts (12)</a></li>
+                    <li><a role="button" href="/tags/Architecture" class="button small">Architecture (12)</a></li>
                     <li><a role="button" href="/tags/Database" class="button small">Database (11)</a></li>
                     <li><a role="button" href="/tags/CSharp" class="button small">CSharp (10)</a></li>
                     <li><a role="button" href="/tags/Oracle" class="button small">Oracle (7)</a></li>
                     <li><a role="button" href="/tags/Dotnet-try" class="button small">Dotnet try (7)</a></li>
                     <li><a role="button" href="/tags/Jupyter-notebook" class="button small">Jupyter notebook (7)</a></li>
                     <li><a role="button" href="/tags/WPF" class="button small">WPF (4)</a></li>
-                    <li><a role="button" href="/tags/CommandLine" class="button small">CommandLine (4)</a></li>
+                    <li><a role="button" href="/tags/Omarchy" class="button small">Omarchy (4)</a></li>
             </ul>
             <ul class="actions small">
                 <li><a href="/tags" class="button small">View All Tags &rarr;</a></li>
@@ -534,10 +484,10 @@ esac
 
             <h5>Older Posts</h5>
             <ul>
+                    <li><a href="/posts/omarchy-brightness2">Omarchy - Integrating screen brightness via key binds</a></li>
                     <li><a href="/posts/MIQP">It&#x2019;s a proportional allocation - how hard can it be? Going from Water filling to QP</a></li>
                     <li><a href="/posts/SimplePerf3">In-memory software design 2025 ? - from 40GB/s to 55GB/s</a></li>
                     <li><a href="/posts/SimplePerf2">In-memory software design 2025 - Applied to energy</a></li>
-                    <li><a href="/posts/SimplePerf">Performance of in-memory in 2025</a></li>
             </ul>
                 <ul class="actions small">
                     <li><a href="/posts" class="button small">Archive &rarr;</a></li>
