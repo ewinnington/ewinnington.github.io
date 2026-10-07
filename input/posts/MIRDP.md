@@ -39,3 +39,7 @@ is proved here; the source result and the scope of its supplied Lean formalizati
 identified separately.
 
 [skiving_stock_integrality_gaps.pdf](https://github.com/user-attachments/files/33156312/skiving_stock_integrality_gaps.pdf)
+
+<img width="60%" height="60%" alt="image" src="https://github.com/user-attachments/assets/81f75f38-e070-46e8-afcc-053a131e5c5a" />
+
+You can find the pdf and tex at https://github.com/ewinnington/math/tree/main/MIRDP 
