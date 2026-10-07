@@ -5,8 +5,43 @@
 		<link>http://ewinnington.github.io/</link>
 		<description>A collection of thoughts, code and snippets.</description>
 		<copyright>2026</copyright>
-		<pubDate>Fri, 14 Aug 2026 21:14:57 GMT</pubDate>
-		<lastBuildDate>Fri, 14 Aug 2026 21:14:57 GMT</lastBuildDate>
+		<pubDate>Wed, 07 Oct 2026 12:54:23 GMT</pubDate>
+		<lastBuildDate>Wed, 07 Oct 2026 12:54:23 GMT</lastBuildDate>
+		<item>
+			<title>Unbounded Integrality Gaps and Additive Hardness for the Skiving Stock Problem (MIRDP)</title>
+			<link>http://ewinnington.github.io/posts/MIRDP</link>
+			<description>&lt;p&gt;OpenAI publishing their &lt;a href="https://github.com/openai/math"&gt;OpenAI Math&lt;/a&gt; repository enables us to search for problems that are related to and impacted by these proofs.&lt;/p&gt;</description>
+			<guid>http://ewinnington.github.io/posts/MIRDP</guid>
+			<pubDate>Wed, 07 Oct 2026 00:00:00 GMT</pubDate>
+			<content:encoded>&lt;h1 id="openais-math"&gt;OpenAI's Math&lt;/h1&gt;
+&lt;p&gt;OpenAI publishing their &lt;a href="https://github.com/openai/math"&gt;OpenAI Math&lt;/a&gt; repository enables us to search for problems that are related to and impacted by these proofs.&lt;/p&gt;
+&lt;p&gt;Here I present one that I found and selected by talking to Fable 5.1.&lt;/p&gt;
+&lt;h2 id="unbounded-integrality-gaps-and-additive-hardness-for-the-skiving-stock-problem"&gt;Unbounded Integrality Gaps and Additive Hardness for the Skiving Stock Problem&lt;/h2&gt;
+&lt;p&gt;&lt;strong&gt;Eric Winnington&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;7 October 2026&lt;/p&gt;
+&lt;h3 id="abstract"&gt;Abstract&lt;/h3&gt;
+&lt;p&gt;We prove that the additive integrality gaps of both the ordinary and the proper
+pattern linear programming relaxations of the one-dimensional skiving stock problem are
+unbounded. In particular, this refutes Zak’s modified integer round-down conjecture for
+the ordinary relaxation and also disproves its analogue for the stronger proper relaxation.
+For every fixed integer c ≥0, distinguishing instances that cover B bins from instances
+that cannot cover B −c bins is NP-hard. Consequently, a deterministic polynomial-time
+algorithm with an absolute additive guarantee exists if and only if P= NP.
+The proofs apply a cardinality-saturated complement transfer to the bin-packing
+construction of OpenAI (24 September 2026). On an instance with 5B items, the map
+bi = 2 −ai, with covering threshold 9, identifies feasible five-item packing and covering
+configurations. Saturation of the packing LP forces exact use of every item and preserves
+both covering LP values. Pooling all exceptional groups and unused items converts
+a covering deficit d into a packing excess at most ⌈3d/2⌉ for the source’s size range.
+More generally, we prove an abstract transfer theorem and exact formulas for both
+integer optima in terms of a common uniform-hypergraph matching deficiency. The
+counterexamples and hardness instances can be restricted to an arbitrarily narrow fixed
+neighborhood of one fifth of the covering threshold. The source-independent transfer
+is proved here; the source result and the scope of its supplied Lean formalization are
+identified separately.&lt;/p&gt;
+&lt;p&gt;&lt;a href="https://github.com/user-attachments/files/33156312/skiving_stock_integrality_gaps.pdf"&gt;skiving_stock_integrality_gaps.pdf&lt;/a&gt;&lt;/p&gt;
+</content:encoded>
+		</item>
 		<item>
 			<title>Omarchy - Quattro and the vertical monitor</title>
 			<link>http://ewinnington.github.io/posts/omarchy-quattro-monitor</link>
@@ -2040,21 +2075,6 @@ On Minis2, a &lt;a href="https://github.com/cloudflare/cloudflared"&gt;cloudflar
 &lt;h2 id="section"&gt;22.04.2023&lt;/h2&gt;
 &lt;p&gt;I now put a OpenVPN on the Qnap NAS to act as a S2S VPN. Not sure that will be the solution I keep for the long term but it works for now.&lt;/p&gt;
 &lt;p&gt;&lt;img src="/posts/images/network/network2.drawio.svg" class="img-fluid" width="100%" alt="Network" /&gt;&lt;/p&gt;
-</content:encoded>
-		</item>
-		<item>
-			<title>The era of the sub $200 PC</title>
-			<link>http://ewinnington.github.io/posts/mini-pc</link>
-			<description>&lt;p&gt;I recently purchased (arrived yesterday!) two mini PCs, for 170.- CHF each (~$187). They sport the latest low power CPU from Intel, the N95, which is amazingly efficient, powerful and cheap.&lt;/p&gt;</description>
-			<guid>http://ewinnington.github.io/posts/mini-pc</guid>
-			<pubDate>Wed, 05 Apr 2023 00:00:00 GMT</pubDate>
-			<content:encoded>&lt;p&gt;I recently purchased (arrived yesterday!) two mini PCs, for 170.- CHF each (~$187). They sport the latest low power CPU from Intel, the N95, which is amazingly efficient, powerful and cheap.&lt;/p&gt;
-&lt;p&gt;The Beelink Mini S12 with the N95 intel CPU 4c, 16 GB Ram, 512 GB NVME storage drive, with space for an additional 2.5&amp;quot; SSD inside too. Amazingly small and light to carry around.&lt;/p&gt;
-&lt;p&gt;&lt;img src="/posts/images/minipc.jpg" class="img-fluid" width="80%" alt="" /&gt;
-(coffee cup for scale)&lt;/p&gt;
-&lt;p&gt;I just got two of these to put in a Kubernetes cluster, and I've been playing around with them and they are super impressive. They pack a punch and sip power at 9-20W. The internal video card does 4k youtube playback without any issue.&lt;/p&gt;
-&lt;p&gt;Windows 11 comes included with the machine for the price. I've already put ubuntu server on one of them. These machines are powerful enough for family members to do all their online activities, zoom (with a webcam), or use as a media machine.&lt;/p&gt;
-&lt;p&gt;Over the next weeks, I'll be documenting configuring them and setting them up to serve as highly available servers from my home, using a reverse VPN tunneling.&lt;/p&gt;
 </content:encoded>
 		</item>
 	</channel>

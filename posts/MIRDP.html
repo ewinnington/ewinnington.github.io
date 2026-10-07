@@ -1,0 +1,170 @@
+﻿
+<!DOCTYPE html>
+<!--
+	Phantom by HTML5 UP
+	html5up.net | @ajlkn
+	Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
+-->
+<html lang="en">
+
+	<head>
+		<title>Eric Winnington - Unbounded Integrality Gaps and Additive Hardness for the Skiving Stock Problem (MIRDP)</title>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1" />		
+        <link href="/assets/css/highlight.css" rel="stylesheet">
+		<!--[if lte IE 8]><script src="/assets/js/ie/html5shiv.js"></script><![endif]-->
+		<link rel="stylesheet" href="/assets/css/main.css" />
+		<!--[if lte IE 9]><link rel="stylesheet" href="/assets/css/ie9.css" /><![endif]-->
+		<!--[if lte IE 8]><link rel="stylesheet" href="/assets/css/ie8.css" /><![endif]-->
+        <link href="/assets/css/override.css" rel="stylesheet" />
+
+		<meta name="description" content="A collection of thoughts, code and snippets." />
+		<link type="application/rss+xml" rel="alternate" title="Eric Winnington" href="/feed.rss" />
+				<link type="application/atom+xml" rel="alternate" title="Eric Winnington" href="/feed.atom" />
+		<link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+		<link rel="icon" href="/favicon.ico" type="image/x-icon">
+
+		<meta name="application-name" content="Eric Winnington" />
+		<meta name="msapplication-tooltip" content="Eric Winnington" />
+		<meta name="msapplication-starturl" content="/" />
+
+		<meta property="og:title" content="Eric Winnington - Unbounded Integrality Gaps and Additive Hardness for the Skiving Stock Problem (MIRDP)" /> 
+		<meta property="og:type" content="website" />
+		<meta property="og:url" content="http://ewinnington.github.io/posts/MIRDP" />
+		<!-- TODO: More social graph meta tags -->
+
+        <script src="/assets/js/highlight.pack.js"></script>   
+		
+        <meta name="twitter:card" content="summary" />
+<meta name="twitter:site" content="@ewinnington" />
+<meta name="twitter:title" content="Eric Winnington - Unbounded Integrality Gaps and Additive Hardness for the Skiving Stock Problem (MIRDP)" />
+<meta name="twitter:description" content="A collection of thoughts, code and snippets." />
+
+<script type="text/javascript" id="MathJax-script" async
+  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
+</script>
+		
+	</head>
+
+	<body>
+		<!-- Wrapper -->
+		<div id="wrapper">
+
+			<!-- Header -->
+			<header id="header">
+				<div class="inner">
+
+					<!-- Logo -->
+					<a href="/" class="logo">
+						<span class="title">Eric Winnington</span>
+					</a>
+
+					<!-- Nav -->
+					<nav>
+						<ul>
+							<li><a href="#menu">Menu</a></li>
+						</ul>
+					</nav>
+
+				</div>
+			</header>
+
+			<!-- Menu -->
+			<nav id="menu">
+				<h2>Menu</h2>
+				<ul>
+					        <li><a href="/posts">Archive</a></li>
+        <li><a href="/tags">Tags</a></li>
+        <li><a href="/about">About Me</a></li>
+        <li><a href="/videos">Videos on programming</a></li>
+
+				</ul>
+			</nav>
+
+			<!-- Main -->
+			<div id="main">
+				<div class="inner">
+
+    
+<header>
+    <h1>Unbounded Integrality Gaps and Additive Hardness for the Skiving Stock Problem (MIRDP)</h1>
+            <p><em>Published on Wednesday, 7 October 2026</em></p>
+            <ul class="actions small">
+                    <li><a role="button" href="/tags/Math" class="button small">Math</a></li>
+        </ul>     
+</header>
+
+					
+					<div id="content">
+						
+
+<h1 id="openais-math">OpenAI's Math</h1>
+<p>OpenAI publishing their <a href="https://github.com/openai/math">OpenAI Math</a> repository enables us to search for problems that are related to and impacted by these proofs.</p>
+<p>Here I present one that I found and selected by talking to Fable 5.1.</p>
+<h2 id="unbounded-integrality-gaps-and-additive-hardness-for-the-skiving-stock-problem">Unbounded Integrality Gaps and Additive Hardness for the Skiving Stock Problem</h2>
+<p><strong>Eric Winnington</strong></p>
+<p>7 October 2026</p>
+<h3 id="abstract">Abstract</h3>
+<p>We prove that the additive integrality gaps of both the ordinary and the proper
+pattern linear programming relaxations of the one-dimensional skiving stock problem are
+unbounded. In particular, this refutes Zak’s modified integer round-down conjecture for
+the ordinary relaxation and also disproves its analogue for the stronger proper relaxation.
+For every fixed integer c ≥0, distinguishing instances that cover B bins from instances
+that cannot cover B −c bins is NP-hard. Consequently, a deterministic polynomial-time
+algorithm with an absolute additive guarantee exists if and only if P= NP.
+The proofs apply a cardinality-saturated complement transfer to the bin-packing
+construction of OpenAI (24 September 2026). On an instance with 5B items, the map
+bi = 2 −ai, with covering threshold 9, identifies feasible five-item packing and covering
+configurations. Saturation of the packing LP forces exact use of every item and preserves
+both covering LP values. Pooling all exceptional groups and unused items converts
+a covering deficit d into a packing excess at most ⌈3d/2⌉ for the source’s size range.
+More generally, we prove an abstract transfer theorem and exact formulas for both
+integer optima in terms of a common uniform-hypergraph matching deficiency. The
+counterexamples and hardness instances can be restricted to an arbitrarily narrow fixed
+neighborhood of one fifth of the covering threshold. The source-independent transfer
+is proved here; the source result and the scope of its supplied Lean formalization are
+identified separately.</p>
+<p><a href="https://github.com/user-attachments/files/33156312/skiving_stock_integrality_gaps.pdf">skiving_stock_integrality_gaps.pdf</a></p>
+
+
+<hr>
+					</div>
+				</div>
+			</div>
+
+			<!-- Footer -->
+			<footer id="footer">
+				<div class="inner">
+    <section>
+        <h2>Feeds</h2>
+        <ul class="actions small vertical">
+            <li><a href="/feed.rss" class="button small"><i class="fa fa-rss"></i> RSS Feed</a></li>
+                        <li><a href="/feed.atom" class="button small"><i class="fa fa-rss"></i> Atom Feed</a></li>
+        </ul>
+    </section>
+    <section>
+    </section>
+    <ul class="copyright">
+        <li>Copyright © 2026</li>
+        <li>Design: <a href="http://html5up.net">HTML5 UP</a></li>
+        <li><a href="https://wyam.io">Generated by Wyam</a></li>
+    </ul>
+</div>
+
+			</footer>
+
+		</div>
+		
+		
+
+		<!-- Scripts -->
+		<script>hljs.initHighlightingOnLoad();</script>
+		<script src="/assets/js/jquery.min.js"></script>
+		<script src="/assets/js/skel.min.js"></script>
+		<script src="/assets/js/util.js"></script>
+		<!--[if lte IE 8]><script src="/assets/js/ie/respond.min.js"></script><![endif]-->
+		<script src="/assets/js/main.js"></script>
+
+	</body>
+
+</html>
